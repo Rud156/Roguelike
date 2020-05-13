@@ -3,5 +3,11 @@
         "dependencies": [
             "Arcade/Core"
         ]
+    },
+    "triggerSettings": {
+        "usedUnits": [
+            "Breakable Wall",
+            "Wall"
+        ]
     }
 }

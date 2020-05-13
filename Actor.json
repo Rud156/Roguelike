@@ -1,1 +1,20 @@
-{}
+{
+    "actors": {
+        "Breakable Wall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "darkspire_rank01_base"
+                }
+            }
+        },
+        "Wall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_rank03"
+                }
+            }
+        }
+    }
+}

@@ -1,11 +1,159 @@
+local ArcadeCore = GameModules["Arcade/Core"] -- Maybe be required
 
--- VARIABLES
-local core = GameModules["Arcade/Core"]
+-- Extension Functions
+function VectorDistance(vectorA, vectorB)
+    local x = vectorA.x - vectorB.x
+    local y = vectorA.y - vectorB.y
 
--- TRIGGERS
-function OnMapStart()
-    core.HideDefaultUi()
+    return math.sqrt(x * x + y * y)
 end
 
--- INITIALIZE
-DCEI.TriggerAddTimerEventElapsed(OnMapStart, 0)
+-- Rectangle Class
+Rect = { x = 0, y = 0, width = 0, height = 0 }
+Rect.__index = Rect
+function Rect:new(x, y, width, height)
+    local rect = {}
+    setmetatable(rect, Rect)
+    
+    rect.x = x
+    rect.y = y
+    rect.width = width
+    rect.height = height
+
+    return rect
+end
+function Rect:center()
+    local xPosition = self.x + self.width / 2.0
+    local yPosition = self.y + self.height / 2.0
+
+    return xPosition, yPosition
+end
+function Rect:topLeft()
+    return self.x, self.y
+end
+function Rect:bottomRight()
+    return self.x + self.width, self.y + self.height
+end
+function Rect:overlaps(rect)
+    return self.x < rect.x + rect.width and self.x + self.width > rect.x and
+            self.y < rect.y + rect.height and self.y + self.height > rect.y
+end
+
+-- Room Data Class
+RoomData = { rect = nil, solidWalls = {}, breakableWalls = {}, enemySpawnPositions = {}, collectiblePositions = {} }
+RoomData.__index = RoomData
+-- Patterns contains Map Generation data
+-- 0: Solid Wall
+-- 1: Breakable Wall
+-- 2: Doorway
+-- 3: Enemy Spawn Positions
+-- 4: Collectible Positions
+-- This is just a basic map template for testing
+function RoomData:new(rect, pattern, solidWallPrefab, breakableWallPrefab, enemyPrefabs, collectiblePrefabs)
+    local roomData = {}
+    setmetatable(roomData, RoomData)
+
+    roomData.rect = rect
+    roomData.solidWalls = {}
+    roomData.breakableWalls = {}
+    roomData.enemySpawnPositions = {}
+    roomData.collectiblePositions = {}
+
+    local startX = rect.x
+    local startY = rect.y
+
+    for i = 1, #pattern do
+        for j = 1, #pattern[i] do
+            local patternValue = pattern[i][j]
+
+            if patternValue == 0 then
+                local xPosition = startX + i
+                local yPosition = startY + j
+                local solidWallInstance = DCEI.CreateUnit(1, 1, solidWallPrefab, xPosition, yPosition)
+                table.insert(roomData.solidWalls, solidWallInstance)
+
+            elseif patternValue == 1 then
+                local xPosition = startX + i
+                local yPosition = startY + j
+                local breakableWallInstance = DCEI.CreateUnit(1, 1, breakableWallPrefab, xPosition, yPosition)
+                table.insert(roomData.breakableWalls, breakableWallInstance)
+
+            elseif patternValue == 2 then
+                -- TODO: Complete this part...
+
+            elseif patternValue == 3 then
+                -- TODO: Complete this part...
+
+            elseif patternValue == 4 then
+                -- TODO: Complete this part...
+
+            else
+                -- Any other value is Empty Space
+            end
+        end
+    end
+
+    return roomData
+end
+
+-- Variables
+-- Prefabs
+local SOLID_WALL_PREFAB = "Wall"
+local BREAKABLE_WALL_PREFAB = "Breakable Wall"
+local ENEMY_PREFABS = { "Melee Enemy", "Ranged Enemy" }
+local COLLECTIBLE_PREFAB = "Collectible"
+local WORLD_WIDTH = 30
+local WORLD_HEIGHT = 30
+local GAME_LOOP_RATE = 0.0625
+local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
+
+-- Public Variables
+local RoomSize = 10
+local RoomTemplates = {
+    {
+        {0, 0, 0, 0, 0, 2, 0, 0, 0, 0},
+        {0, 5, 5, 5, 5, 5, 5, 5, 5, 0},
+        {2, 5, 5, 0, 0, 0, 5, 5, 5, 0},
+        {2, 0, 1, 5, 5, 5, 5, 5, 5, 2},
+        {0, 5, 1, 1, 5, 1, 5, 5, 5, 0},
+        {0, 5, 1, 1, 5, 5, 5, 5, 5, 0},
+        {0, 5, 5, 5, 5, 5, 5, 5, 5, 0},
+        {0, 5, 5, 1, 1, 1, 5, 5, 5, 0},
+        {0, 5, 5, 5, 5, 5, 5, 5, 5, 0},
+        {0, 0, 0, 0, 0, 2, 0, 0, 0, 0},
+    }
+}
+
+-- Private Variables
+local m_rooms = {}
+
+
+-- LifeCycle Functions
+function Start()
+    local xCounter = 0
+    local yCounter = 0
+    local i = 0
+    local j = 0
+
+    while j < WORLD_HEIGHT do
+        while i < WORLD_WIDTH do
+            local rect = Rect:new(i, j, BASE_ROOM_SIZE, BASE_ROOM_SIZE)
+            local randomPatternIndex = math.random(1, #RoomTemplates)
+            
+            local roomData = RoomData:new(rect, RoomTemplates[randomPatternIndex], SOLID_WALL_PREFAB, BREAKABLE_WALL_PREFAB, ENEMY_PREFABS, COLLECTIBLE_PREFAB)
+            table.insert(m_rooms, roomData)
+
+            i = i + BASE_ROOM_SIZE
+        end
+        j = j + BASE_ROOM_SIZE
+        i = 0
+    end
+
+    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
+end
+
+function Update()
+end
+
+-- Initialization
+Start()

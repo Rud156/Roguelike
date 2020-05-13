@@ -1,1 +1,33 @@
-{}
+{
+    "units": {
+        "Breakable Wall": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 50
+                },
+                "behavior": {
+                    "behaviorType": 4
+                }
+            }
+        },
+        "Wall": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": false,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 4
+                }
+            }
+        }
+    }
+}

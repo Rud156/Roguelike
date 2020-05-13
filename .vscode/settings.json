@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+      "*.lua.*": "lua"
+    },
+    "files.autoSave": "onWindowChange"
+  }
+  
