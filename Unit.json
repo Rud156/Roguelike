@@ -28,7 +28,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 1000
+                    "maxHealth": 10
                 },
                 "behavior": {
                     "behaviorType": 0
@@ -45,7 +45,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 1000
+                    "maxHealth": 10
                 },
                 "behavior": {
                     "behaviorType": 0
@@ -59,7 +59,7 @@
             "baseUnit": "_CUnit",
             "components": {
                 "unitStats": {
-                    "radius": 0.3,
+                    "radius": 0.25,
                     "selectable": false
                 },
                 "health": {
@@ -77,6 +77,56 @@
             "references": {
                 "behaviorList": [
                     "Player Character Weapon 1 Search Behaviour"
+                ]
+            }
+        },
+        "Ranged Enemy Type 1": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 20
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "Ranged Enemy Type 1 Ability"
+                ]
+            }
+        },
+        "Ranged Enemy Type 2": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 30
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "Ranged Enemy Type 2 Ability"
+                ]
+            }
+        },
+        "Ranged Enemy Type 1 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Ranged Enemy Type 1 Search Behaviour"
+                ]
+            }
+        },
+        "Ranged Enemy Type 2 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Ranged Enemy Type 2 Search Behaviour"
                 ]
             }
         }

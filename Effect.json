@@ -14,16 +14,11 @@
                 "damageAmount": 10
             }
         },
-        "Player Character Remove Missile": {
-            "remove": {
-                "whichUnit": 2
-            }
-        },
         "Player Character Weapon 1 Set": {
             "set": {
                 "effectList": [
                     "Player Character Weapon 1 Damage",
-                    "Player Character Remove Missile"
+                    "Remove Source"
                 ]
             }
         },
@@ -38,9 +33,80 @@
                 "filter": {
                     "player": 2,
                     "ally": 2,
-                    "air": 2
+                    "air": 0
                 },
                 "effect": "Player Character Weapon 1 Set"
+            }
+        },
+        "Ranged Enemy Type 1 Damage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 5
+            }
+        },
+        "Ranged Enemy Type 1 Search": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "filter": {
+                    "enemy": 2
+                },
+                "effect": "Ranged Enemy Type 1 Set"
+            }
+        },
+        "Ranged Enemy Type 1 Set": {
+            "set": {
+                "effectList": [
+                    "Ranged Enemy Type 1 Damage",
+                    "Remove Source"
+                ]
+            }
+        },
+        "Ranged Enemy Type 1 Launch": {
+            "launchMissile": {
+                "missileUnit": "Ranged Enemy Type 1 Missile",
+                "effect": "Ranged Enemy Type 1 Damage",
+                "impactLocation": 2,
+                "mover": "Ranged Enemy Type 1 Weapon Mover"
+            }
+        },
+        "Ranged Enemy Type 2 Damage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 10
+            }
+        },
+        "Ranged Enemy Type 2 Launch": {
+            "launchMissile": {
+                "missileUnit": "Ranged Enemy Type 2 Missile",
+                "effect": "Ranged Enemy Type 2 Damage",
+                "impactLocation": 2,
+                "mover": "Ranged Enemy Type 2 Weapon Mover"
+            }
+        },
+        "Ranged Enemy Type 2 Set": {
+            "set": {
+                "effectList": [
+                    "Ranged Enemy Type 2 Damage",
+                    "Remove Source"
+                ]
+            }
+        },
+        "Ranged Enemy Type 2 Search": {
+            "areaSearch": {
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "filter": {
+                    "enemy": 2
+                },
+                "effect": "Ranged Enemy Type 2 Set"
             }
         }
     }

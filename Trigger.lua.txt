@@ -162,7 +162,7 @@ function RoomData:InitializePlayerEntered()
 
     self.playerInRoom = true
     self:CreateDoors()
-    -- self:SpawnNextWave() -- TODO: Enable this later on...
+    self:SpawnNextWave()
 end
 function RoomData:RemovedDeadEnemy(enemyUnit)
     if not self.playerInRoom then
@@ -187,7 +187,7 @@ function RoomData:RemovedDeadEnemy(enemyUnit)
     end
 end
 function RoomData:SpawnNextWave()
-    if self.currentWaveCount > self.totalWaveCount then
+    if self.currentWaveCount >= self.totalWaveCount then
         self:MarkRoomCleared()
         return
     end
@@ -196,7 +196,10 @@ function RoomData:SpawnNextWave()
         local randomValue = math.random()
         if randomValue <= 0.5 then
             local randomEnemy = math.random(1, #self.enemyPrefabs)
-            local enemy = DCEI.CreateUnit(-1, -1, self.enemyPrefabs[randomEnemy], enemyPosition.x, enemyPosition.y)
+
+            -- TODO: Replace this with enemy class
+            local enemyName = self.enemyPrefabs[randomEnemy].name
+            local enemy = DCEI.CreateUnit(-1, -1, enemyName, enemyPosition.x, enemyPosition.y)
             table.insert(self.enemies, enemy)
         end
     end
@@ -220,13 +223,39 @@ function RoomData:RemoveDoors()
 
     self.roomExits = {}
 end
+function RoomData:GetNearestEnemy(player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    local lastNearestEnemy = nil
+    local lastEnemyDistance = 100
+
+    for i, enemyUnit in ipairs(self.enemies) do
+        local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit)
+        local distance = VectorDistance(playerPosition, enemyPosition)
+        
+        if distance < lastEnemyDistance then
+            lastNearestEnemy = enemyUnit
+            lastEnemyDistance = distance
+        end
+    end
+
+    return lastNearestEnemy
+end
 
 -- Variables
 -- Prefabs
 local SOLID_WALL_PREFAB = "Wall"
 local BREAKABLE_WALL_PREFAB = "Breakable Wall"
 local DOORWAY = "Doorway"
-local ENEMY_PREFABS = { "Melee Enemy", "Ranged Enemy" }
+local ENEMY_PREFABS = {
+    {
+        name = "Ranged Enemy Type 1",
+        ability = "Ranged Enemy Type 1 Ability"
+    },
+    {
+        name = "Ranged Enemy Type 2",
+        ability = "Ranged Enemy Type 2 Ability"
+    }
+}
 local COLLECTIBLE_PREFAB = "Collectible"
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30

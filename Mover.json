@@ -5,6 +5,16 @@
                 "speed": 5
             },
             "upright": false
+        },
+        "Ranged Enemy Type 1 Weapon Mover": {
+            "ballistic": {
+                "speed": 3
+            }
+        },
+        "Ranged Enemy Type 2 Weapon Mover": {
+            "ballistic": {
+                "speed": 8
+            }
         }
     }
 }

@@ -9,7 +9,9 @@
             "Breakable Wall",
             "Wall",
             "Doorway",
-            "Player Character"
+            "Player Character",
+            "Ranged Enemy Type 1",
+            "Ranged Enemy Type 2"
         ]
     }
 }
