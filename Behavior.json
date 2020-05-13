@@ -1,1 +1,8 @@
-{}
+{
+    "behaviors": {
+        "Player Character Weapon 1 Search Behaviour": {
+            "periodicInterval": 0.01,
+            "periodicEffect": "Player Character Weapon 1 Search"
+        }
+    }
+}

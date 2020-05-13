@@ -38,9 +38,39 @@ function Rect:overlaps(rect)
     return self.x < rect.x + rect.width and self.x + self.width > rect.x and
             self.y < rect.y + rect.height and self.y + self.height > rect.y
 end
+function Rect:contains(xPosition, yPosition)
+    return self.x <= xPosition and self.x + self.width >= xPosition and 
+            self.y <= yPosition and self.y + self.height >= yPosition
+end
 
 -- Room Data Class
-RoomData = { rect = nil, solidWalls = {}, breakableWalls = {}, enemySpawnPositions = {}, collectiblePositions = {} }
+RoomData = { 
+    rect = nil, 
+    
+    -- Walls
+    solidWalls = {}, 
+    breakableWalls = {}, 
+    
+    -- Other Positions
+    enemySpawnPositions = {}, 
+    collectiblePositions = {},
+
+    -- Exits
+    roomExits = {},
+    roomExitPositions = {},
+    roomExitPrefab = "",
+
+    -- Spawn Info
+    playerInRoom = false,
+    roomCleared = false,
+
+    -- Room Enemies
+    enemies = {},
+    enemyPositions = {},
+    enemyPrefabs = {},
+    totalWaveCount = 0,
+    currentWaveCount = 0
+}
 RoomData.__index = RoomData
 -- Patterns contains Map Generation data
 -- 0: Solid Wall
@@ -49,15 +79,35 @@ RoomData.__index = RoomData
 -- 3: Enemy Spawn Positions
 -- 4: Collectible Positions
 -- This is just a basic map template for testing
-function RoomData:new(rect, pattern, solidWallPrefab, breakableWallPrefab, enemyPrefabs, collectiblePrefabs)
+function RoomData:new(
+    rect, pattern, 
+    totalWaveCount,
+    solidWallPrefab, breakableWallPrefab, doorwayPrefab,
+    enemyPrefabs, collectiblePrefabs
+)
     local roomData = {}
     setmetatable(roomData, RoomData)
 
     roomData.rect = rect
+
     roomData.solidWalls = {}
     roomData.breakableWalls = {}
+    
     roomData.enemySpawnPositions = {}
     roomData.collectiblePositions = {}
+
+    roomData.roomExits = {}
+    roomData.roomExitPositions = {}
+    roomData.roomExitPrefab = doorwayPrefab
+    
+    roomData.playerInRoom = false
+    roomData.roomCleared = false
+
+    roomData.enemies = {}
+    roomData.enemyPositions = {}
+    roomData.enemyPrefabs = enemyPrefabs
+    roomData.totalWaveCount = totalWaveCount
+    roomData.currentWaveCount = 0
 
     local startX = rect.x
     local startY = rect.y
@@ -65,24 +115,24 @@ function RoomData:new(rect, pattern, solidWallPrefab, breakableWallPrefab, enemy
     for i = 1, #pattern do
         for j = 1, #pattern[i] do
             local patternValue = pattern[i][j]
+            local xPosition = startX + i
+            local yPosition = startY + j
 
             if patternValue == 0 then
-                local xPosition = startX + i
-                local yPosition = startY + j
-                local solidWallInstance = DCEI.CreateUnit(1, 1, solidWallPrefab, xPosition, yPosition)
+                local solidWallInstance = DCEI.CreateUnit(-1, -1, solidWallPrefab, xPosition, yPosition)
                 table.insert(roomData.solidWalls, solidWallInstance)
 
             elseif patternValue == 1 then
-                local xPosition = startX + i
-                local yPosition = startY + j
-                local breakableWallInstance = DCEI.CreateUnit(1, 1, breakableWallPrefab, xPosition, yPosition)
+                local breakableWallInstance = DCEI.CreateUnit(-1, -1, breakableWallPrefab, xPosition, yPosition)
                 table.insert(roomData.breakableWalls, breakableWallInstance)
 
             elseif patternValue == 2 then
-                -- TODO: Complete this part...
-
+                local doorwayPosition = { x = xPosition, y = yPosition }
+                table.insert(roomData.roomExitPositions, doorwayPosition)
+                
             elseif patternValue == 3 then
-                -- TODO: Complete this part...
+                local enemyPosition = { x = xPosition, y = yPosition }
+                table.insert(roomData.enemyPositions, enemyPosition)
 
             elseif patternValue == 4 then
                 -- TODO: Complete this part...
@@ -95,11 +145,87 @@ function RoomData:new(rect, pattern, solidWallPrefab, breakableWallPrefab, enemy
 
     return roomData
 end
+function RoomData:IsPlayerInRoom(player)
+    if self.playerInRoom then
+        return
+    end
+
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    if self.rect:contains(playerPosition.x, playerPosition.y) then
+        self:InitializePlayerEntered()
+    end
+end
+function RoomData:InitializePlayerEntered()
+    if self.roomCleared then
+        return -- Don't do anything as the player has already cleared the room
+    end
+
+    self.playerInRoom = true
+    self:CreateDoors()
+    -- self:SpawnNextWave() -- TODO: Enable this later on...
+end
+function RoomData:RemovedDeadEnemy(enemyUnit)
+    if not self.playerInRoom then
+        return
+    end
+
+    local index = -1
+    for i, enemy in ipairs(self.enemies) do
+        if enemy == enemyUnit then
+            index = i
+            break
+        end
+    end
+
+    if index ~= -1 then
+        table.remove(self.enemies, index)
+    end
+
+    local totalEnemyCount = #self.enemies
+    if totalEnemyCount == 0 then
+        self:SpawnNextWave()
+    end
+end
+function RoomData:SpawnNextWave()
+    if self.currentWaveCount > self.totalWaveCount then
+        self:MarkRoomCleared()
+        return
+    end
+
+    for i, enemyPosition in ipairs(self.enemyPositions) do
+        local randomValue = math.random()
+        if randomValue <= 0.5 then
+            local randomEnemy = math.random(1, #self.enemyPrefabs)
+            local enemy = DCEI.CreateUnit(-1, -1, self.enemyPrefabs[randomEnemy], enemyPosition.x, enemyPosition.y)
+            table.insert(self.enemies, enemy)
+        end
+    end
+
+    self.currentWaveCount = self.currentWaveCount + 1
+end
+function RoomData:MarkRoomCleared()
+    self.roomCleared = true
+    self:RemoveDoors()
+end
+function RoomData:CreateDoors()
+    for i, doorwayPosition in ipairs(self.roomExitPositions) do
+        local doorway = DCEI.CreateUnit(-1, -1, self.roomExitPrefab, doorwayPosition.x, doorwayPosition.y)
+        table.insert(self.roomExits, doorway)
+    end
+end
+function RoomData:RemoveDoors()
+    for i, doorway in ipairs(self.roomExits) do
+        DCEI.RemoveUnit(doorway)
+    end
+
+    self.roomExits = {}
+end
 
 -- Variables
 -- Prefabs
 local SOLID_WALL_PREFAB = "Wall"
 local BREAKABLE_WALL_PREFAB = "Breakable Wall"
+local DOORWAY = "Doorway"
 local ENEMY_PREFABS = { "Melee Enemy", "Ranged Enemy" }
 local COLLECTIBLE_PREFAB = "Collectible"
 local WORLD_WIDTH = 30
@@ -107,26 +233,33 @@ local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
 local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 
+-- Player
+local PLAYER_NAME = "Player Character"
+local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
+
 -- Public Variables
 local RoomSize = 10
 local RoomTemplates = {
     {
         {0, 0, 0, 0, 0, 2, 0, 0, 0, 0},
-        {0, 5, 5, 5, 5, 5, 5, 5, 5, 0},
+        {0, 5, 3, 5, 5, 3, 3, 5, 5, 0},
         {2, 5, 5, 0, 0, 0, 5, 5, 5, 0},
-        {2, 0, 1, 5, 5, 5, 5, 5, 5, 2},
-        {0, 5, 1, 1, 5, 1, 5, 5, 5, 0},
+        {2, 0, 1, 5, 5, 5, 3, 5, 3, 2},
+        {0, 5, 1, 1, 5, 1, 3, 5, 5, 0},
         {0, 5, 1, 1, 5, 5, 5, 5, 5, 0},
-        {0, 5, 5, 5, 5, 5, 5, 5, 5, 0},
-        {0, 5, 5, 1, 1, 1, 5, 5, 5, 0},
+        {0, 5, 5, 3, 5, 5, 5, 5, 5, 0},
+        {0, 5, 5, 1, 1, 1, 3, 5, 5, 0},
         {0, 5, 5, 5, 5, 5, 5, 5, 5, 0},
         {0, 0, 0, 0, 0, 2, 0, 0, 0, 0},
     }
 }
+local MinWaveCount = 1
+local MaxWaveCount = 3
+local PlayerSpawnPosition = { x = 27, y = 27 }
 
 -- Private Variables
 local m_rooms = {}
-
+local m_player
 
 -- LifeCycle Functions
 function Start()
@@ -137,10 +270,21 @@ function Start()
 
     while j < WORLD_HEIGHT do
         while i < WORLD_WIDTH do
+            -- Don't Spawn the Last Room
+            if i == WORLD_WIDTH - BASE_ROOM_SIZE and j == WORLD_HEIGHT - BASE_ROOM_SIZE then
+                break
+            end
+
             local rect = Rect:new(i, j, BASE_ROOM_SIZE, BASE_ROOM_SIZE)
             local randomPatternIndex = math.random(1, #RoomTemplates)
+            local randomWaveCount = math.random(MinWaveCount, MaxWaveCount)
             
-            local roomData = RoomData:new(rect, RoomTemplates[randomPatternIndex], SOLID_WALL_PREFAB, BREAKABLE_WALL_PREFAB, ENEMY_PREFABS, COLLECTIBLE_PREFAB)
+            local roomData = RoomData:new(
+                rect, RoomTemplates[randomPatternIndex],
+                randomWaveCount,
+                SOLID_WALL_PREFAB, BREAKABLE_WALL_PREFAB, DOORWAY,
+                ENEMY_PREFABS, COLLECTIBLE_PREFAB
+            )
             table.insert(m_rooms, roomData)
 
             i = i + BASE_ROOM_SIZE
@@ -149,10 +293,51 @@ function Start()
         i = 0
     end
 
+    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+
+    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
+
+    -- DCEI.SetCameraDistanceSmooth(20)
+
+    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseClicked)
+    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseClicked)
 end
 
 function Update()
+    for i, room in ipairs(m_rooms) do
+        room:IsPlayerInRoom(m_player)
+    end
+
+    if m_player ~= nil then
+        -- local position = DCEI.GetUnitPosition2D(m_player)
+        -- DCEI.SetCameraFocusSmooth(position.x, position.y, true)
+    end
+end
+
+-- Event Functions
+function HandleUnitDied()
+    local unit = DCEI.TriggeringUnit
+
+    -- Just go through all rooms and trigger it
+    -- The correct one will automatically trigger
+    for i, room in ipairs(m_rooms) do
+        room:RemovedDeadEnemy(unit)
+    end
+end
+
+function HandleLeftMouseClicked()
+    if m_player ~= nil then
+        local mousePosition = DCEI.GetMousePosition2D()
+        DCEI.Move(m_player, mousePosition.x, mousePosition.y)
+    end
+end
+
+function HandleRightMouseClicked()
+    if m_player ~= nil then
+        local mousePosition = DCEI.GetMousePosition2D()
+        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
+    end
 end
 
 -- Initialization

@@ -15,6 +15,72 @@
                     "name": "barracks_rank03"
                 }
             }
+        },
+        "Doorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_rank01"
+                }
+            }
+        },
+        "Player Character": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_unit_rank03"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Player Character Weapon 1 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Player Character Weapon 1 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Player Character Weapon 1 Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_icemage_weapon_missile"
+                }
+            }
         }
     }
 }

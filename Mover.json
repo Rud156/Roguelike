@@ -1,1 +1,10 @@
-{}
+{
+    "movers": {
+        "Player Character Weapon 1 Mover": {
+            "ballistic": {
+                "speed": 5
+            },
+            "upright": false
+        }
+    }
+}

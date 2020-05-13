@@ -1,1 +1,17 @@
-{}
+{
+    "abilities": {
+        "Player Character Weapon 1 Ability": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "Player Charater Weapon 1 Launch",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 1,
+                "range": 7,
+                "arc": 60
+            }
+        }
+    }
+}

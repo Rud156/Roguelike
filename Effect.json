@@ -1,1 +1,47 @@
-{}
+{
+    "effects": {
+        "Player Charater Weapon 1 Launch": {
+            "launchMissile": {
+                "missileUnit": "Player Character Weapon 1 Missile",
+                "effect": "Player Character Weapon 1 Damage",
+                "impactLocation": 2,
+                "mover": "Player Character Weapon 1 Mover"
+            }
+        },
+        "Player Character Weapon 1 Damage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 10
+            }
+        },
+        "Player Character Remove Missile": {
+            "remove": {
+                "whichUnit": 2
+            }
+        },
+        "Player Character Weapon 1 Set": {
+            "set": {
+                "effectList": [
+                    "Player Character Weapon 1 Damage",
+                    "Player Character Remove Missile"
+                ]
+            }
+        },
+        "Player Character Weapon 1 Search": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "air": 2
+                },
+                "effect": "Player Character Weapon 1 Set"
+            }
+        }
+    }
+}

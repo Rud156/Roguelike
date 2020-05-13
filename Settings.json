@@ -7,7 +7,9 @@
     "triggerSettings": {
         "usedUnits": [
             "Breakable Wall",
-            "Wall"
+            "Wall",
+            "Doorway",
+            "Player Character"
         ]
     }
 }

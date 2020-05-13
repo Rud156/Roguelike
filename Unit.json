@@ -4,29 +4,80 @@
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
+                    "radius": 0.3,
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 50
+                    "maxHealth": 20
                 },
                 "behavior": {
                     "behaviorType": 4
                 }
+            },
+            "healthBar": {
+                "type": 1
             }
         },
         "Wall": {
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
-                    "immortal": false,
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 10
+                    "maxHealth": 1000
                 },
                 "behavior": {
-                    "behaviorType": 4
+                    "behaviorType": 0
                 }
+            }
+        },
+        "Doorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 1000
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "healthBar": {
+                "type": 0
+            }
+        },
+        "Player Character": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 100
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "Player Character Weapon 1 Ability"
+                ]
+            }
+        },
+        "Player Character Weapon 1 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Player Character Weapon 1 Search Behaviour"
+                ]
             }
         }
     }
