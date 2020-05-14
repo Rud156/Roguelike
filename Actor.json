@@ -63,7 +63,15 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "hostSites": {
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.5,
+                            "up": 0.5
+                        }
+                    }
+                }
             }
         },
         "Player Character Weapon 1 Missile": {
@@ -108,8 +116,23 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
                     }
-                ]
+                ],
+                "hostSites": {
+                    "SiteWeapon": {}
+                }
             }
         },
         "Ranged Enemy Type 1 Missile": {
@@ -151,6 +174,18 @@
                             {
                                 "stopAnimation": {
                                     "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
                                 }
                             }
                         ]

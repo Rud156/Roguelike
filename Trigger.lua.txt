@@ -207,7 +207,7 @@ function RoomData:SpawnNextWave()
 
     for i, enemyPosition in ipairs(self.enemyPositions) do
         local randomValue = math.random()
-        if randomValue <= 0.1 then
+        if randomValue <= 0.25 then
             local randomEnemyIndex = math.random(1, #self.enemyPrefabs)
             local randomEnemy = self.enemyPrefabs[randomEnemyIndex]
             local enemy
@@ -439,11 +439,11 @@ local SOLID_WALL_PREFAB = "Wall"
 local BREAKABLE_WALL_PREFAB = "Breakable Wall"
 local DOORWAY = "Doorway"
 local ENEMY_PREFABS = {
-    -- {
-    --     name = "Ranged Enemy Type 1",
-    --     ability = "Ranged Enemy Type 1 Ability",
-    --     isMulti = false
-    -- },
+    {
+        name = "Ranged Enemy Type 1",
+        ability = "Ranged Enemy Type 1 Ability",
+        isMulti = false
+    },
     {
         name = "Ranged Enemy Type 2",
         blankUnitName = "Ranged Enemy Type 2 Blank",
@@ -479,7 +479,7 @@ local RoomTemplates = {
 }
 local MinWaveCount = 1
 local MaxWaveCount = 3
-local PlayerSpawnPosition = { x = 21, y = 27 }
+local PlayerSpawnPosition = { x = 27, y = 27 }
 
 -- Private Variables
 local m_rooms = {}
@@ -487,6 +487,8 @@ local m_player
 
 -- LifeCycle Functions
 function Start()
+    math.randomseed(os.time())
+
     local xCounter = 0
     local yCounter = 0
     local i = 0
@@ -522,7 +524,7 @@ function Start()
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 
-    -- DCEI.SetCameraDistanceSmooth(20)
+    DCEI.SetCameraDistanceSmooth(20)
 
     DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseClicked)
     DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseClicked)
@@ -535,8 +537,8 @@ function Update()
     end
 
     if m_player ~= nil then
-        -- local position = DCEI.GetUnitPosition2D(m_player)
-        -- DCEI.SetCameraFocusSmooth(position.x, position.y, true)
+        local position = DCEI.GetUnitPosition2D(m_player)
+        DCEI.SetCameraFocusSmooth(position.x, position.y, true)
     end
 end
 
@@ -551,16 +553,14 @@ function HandleUnitDied()
     end
 end
 
-function HandleLeftMouseClicked()
+function HandleLeftMouseClicked(mousePosition)
     if m_player ~= nil then
-        local mousePosition = DCEI.GetMousePosition2D()
         DCEI.Move(m_player, mousePosition.x, mousePosition.y)
     end
 end
 
-function HandleRightMouseClicked()
+function HandleRightMouseClicked(mousePosition)
     if m_player ~= nil then
-        local mousePosition = DCEI.GetMousePosition2D()
         DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
     end
 end

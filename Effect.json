@@ -8,7 +8,7 @@
         },
         "Player Character Weapon 1 Search": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25

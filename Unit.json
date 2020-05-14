@@ -46,7 +46,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 100
+                    "maxHealth": 1000
                 }
             },
             "references": {
@@ -143,18 +143,26 @@
             "baseUnit": "_CUnit",
             "components": {
                 "unitStats": {
-                    "radius": 0.25,
+                    "radius": 0,
+                    "immortal": false,
                     "selectable": false,
-                    "ignoreCollision": false
+                    "ignoreCollision": true
                 },
                 "health": {
-                    "maxHealth": 1000
+                    "maxHealth": 0
+                },
+                "behavior": {
+                    "behaviorType": 1
                 }
             },
             "references": {
                 "abilityList": [
                     "Ranged Enemy Type 2 Ability"
                 ]
+            },
+            "healthBar": {
+                "type": 0,
+                "showWhenFull": false
             }
         }
     }
