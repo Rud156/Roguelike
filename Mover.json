@@ -13,7 +13,7 @@
         },
         "Ranged Enemy Type 2 Weapon Mover": {
             "ballistic": {
-                "speed": 8
+                "speed": 3
             }
         }
     }

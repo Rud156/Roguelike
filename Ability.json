@@ -20,11 +20,15 @@
             "targetRangeMode": 2,
             "effect": "Ranged Enemy Type 1 Launch",
             "stats": {
-                "period": 1
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 1,
+                "range": 7,
+                "arc": 60
             },
             "canCastWhileMoving": true,
             "targetFilter": {
-                "enemy": 2
+                "enemy": 0
             }
         },
         "Ranged Enemy Type 2 Ability": {
@@ -33,11 +37,15 @@
             "targetRangeMode": 2,
             "effect": "Ranged Enemy Type 2 Launch",
             "stats": {
-                "period": 0.3
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 0.3,
+                "range": 7,
+                "arc": 60
             },
             "canCastWhileMoving": true,
             "targetFilter": {
-                "enemy": 2
+                "enemy": 0
             }
         }
     }

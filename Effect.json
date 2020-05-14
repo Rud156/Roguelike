@@ -16,7 +16,7 @@
                 },
                 "filter": {
                     "player": 2,
-                    "ally": 2,
+                    "ally": 0,
                     "air": 0
                 },
                 "effect": "Player Character Weapon 1 Set"
@@ -54,14 +54,18 @@
         },
         "Ranged Enemy Type 1 Search": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
                     }
                 },
+                "caster": 2,
+                "source": 2,
                 "filter": {
-                    "enemy": 2
+                    "player": 2,
+                    "ally": 0,
+                    "enemy": 0
                 },
                 "effect": "Ranged Enemy Type 1 Set"
             }
@@ -90,13 +94,18 @@
         },
         "Ranged Enemy Type 2 Search": {
             "areaSearch": {
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
                     }
                 },
+                "caster": 2,
+                "source": 2,
                 "filter": {
-                    "enemy": 2
+                    "player": 2,
+                    "ally": 0,
+                    "enemy": 0
                 },
                 "effect": "Ranged Enemy Type 2 Set"
             }

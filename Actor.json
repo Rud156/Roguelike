@@ -178,7 +178,7 @@
             "unitActor": {
                 "resource": {
                     "type": "None",
-                    "name": "boss_drowmage_red"
+                    "name": "airship_cargo"
                 },
                 "events": [
                     {

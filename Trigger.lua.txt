@@ -121,11 +121,11 @@ function RoomData:new(
             local yPosition = startY + j
 
             if patternValue == 0 then
-                local solidWallInstance = DCEI.CreateUnit(-1, -1, solidWallPrefab, xPosition, yPosition)
+                local solidWallInstance = DCEI.CreateUnit(0, 0, solidWallPrefab, xPosition, yPosition)
                 table.insert(roomData.solidWalls, solidWallInstance)
 
             elseif patternValue == 1 then
-                local breakableWallInstance = DCEI.CreateUnit(-1, -1, breakableWallPrefab, xPosition, yPosition)
+                local breakableWallInstance = DCEI.CreateUnit(0, 0, breakableWallPrefab, xPosition, yPosition)
                 table.insert(roomData.breakableWalls, breakableWallInstance)
 
             elseif patternValue == 2 then
@@ -207,7 +207,7 @@ function RoomData:SpawnNextWave()
 
     for i, enemyPosition in ipairs(self.enemyPositions) do
         local randomValue = math.random()
-        if randomValue <= 0.5 then
+        if randomValue <= 0.1 then
             local randomEnemyIndex = math.random(1, #self.enemyPrefabs)
             local randomEnemy = self.enemyPrefabs[randomEnemyIndex]
             local enemy
@@ -241,7 +241,7 @@ function RoomData:MarkRoomCleared()
 end
 function RoomData:CreateDoors()
     for i, doorwayPosition in ipairs(self.roomExitPositions) do
-        local doorway = DCEI.CreateUnit(-1, -1, self.roomExitPrefab, doorwayPosition.x, doorwayPosition.y)
+        local doorway = DCEI.CreateUnit(0, 0, self.roomExitPrefab, doorwayPosition.x, doorwayPosition.y)
         table.insert(self.roomExits, doorway)
     end
 end
@@ -316,6 +316,8 @@ function SingleAttackEnemy:Update(deltaTime, playerPosition)
         end
     end
 
+    DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
+
     self.currentTimer = self.currentTimer - deltaTime
     if self.currentTimer <= 0 then
         DCEI.CastAbilityAtPosition(self.attackName, self.unit, playerPosition.x, playerPosition.y)
@@ -327,7 +329,6 @@ function SingleAttackEnemy:SetRandomEnemyMovePosition()
     local randomIndex = math.random(1, #positions)
 
     self.targetPosition = positions[randomIndex]
-    DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
 end
 function SingleAttackEnemy:GetMainUnit()
     return self.unit
@@ -387,6 +388,12 @@ function MultiAttackEnemy:Update(deltaTime, playerPosition)
         end
     end
 
+    DCEI.Move(self.mainUnit, self.targetPosition.x, self.targetPosition.y)
+    local mainUnitPosition = DCEI.GetUnitPosition2D(self.mainUnit)
+    for i, unit in ipairs(self.blankUnits) do
+        DCEI.SetUnitPosition2D(unit, mainUnitPosition.x, mainUnitPosition.y)
+    end
+
     self.currentTimer = self.currentTimer - deltaTime
     if self.currentTimer <= 0 then
         self:AttackCirclePattern(playerPosition)
@@ -401,8 +408,8 @@ function MultiAttackEnemy:AttackCirclePattern(playerPosition)
     local currentAngle = 0
 
     for i, unit in ipairs(self.blankUnits) do
-        local xPosition = math.cos(math.rad(currentAngle)) * distance
-        local yPosition = math.sin(math.rad(currentAngle)) * distance
+        local xPosition = math.cos(math.rad(currentAngle)) * distance + currentPosition.x
+        local yPosition = math.sin(math.rad(currentAngle)) * distance + currentPosition.y
 
         DCEI.CastAbilityAtPosition(self.attackName, unit, xPosition, yPosition)
 
@@ -414,11 +421,6 @@ function MultiAttackEnemy:SetRandomEnemyMovePosition()
     local randomIndex = math.random(1, #positions)
 
     self.targetPosition = positions[randomIndex]
-    DCEI.Move(self.mainUnit, self.targetPosition.x, self.targetPosition.y)
-
-    for i, unit in ipairs(self.blankUnits) do
-        DCEI.Move(unit, self.targetPosition.x, self.targetPosition.y)
-    end
 end
 function MultiAttackEnemy:GetMainUnit()
     return self.mainUnit
@@ -437,11 +439,11 @@ local SOLID_WALL_PREFAB = "Wall"
 local BREAKABLE_WALL_PREFAB = "Breakable Wall"
 local DOORWAY = "Doorway"
 local ENEMY_PREFABS = {
-    {
-        name = "Ranged Enemy Type 1",
-        ability = "Ranged Enemy Type 1 Ability",
-        isMulti = false
-    },
+    -- {
+    --     name = "Ranged Enemy Type 1",
+    --     ability = "Ranged Enemy Type 1 Ability",
+    --     isMulti = false
+    -- },
     {
         name = "Ranged Enemy Type 2",
         blankUnitName = "Ranged Enemy Type 2 Blank",
@@ -477,7 +479,7 @@ local RoomTemplates = {
 }
 local MinWaveCount = 1
 local MaxWaveCount = 3
-local PlayerSpawnPosition = { x = 27, y = 27 }
+local PlayerSpawnPosition = { x = 21, y = 27 }
 
 -- Private Variables
 local m_rooms = {}

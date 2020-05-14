@@ -53,6 +53,9 @@
                 "abilityList": [
                     "Player Character Weapon 1 Ability"
                 ]
+            },
+            "healthBar": {
+                "type": 3
             }
         },
         "Player Character Weapon 1 Missile": {
@@ -78,6 +81,9 @@
                 "abilityList": [
                     "Ranged Enemy Type 1 Ability"
                 ]
+            },
+            "healthBar": {
+                "type": 1
             }
         },
         "Ranged Enemy Type 1 Missile": {
@@ -103,6 +109,9 @@
                 "abilityList": [
                     "Ranged Enemy Type 2 Ability"
                 ]
+            },
+            "healthBar": {
+                "type": 1
             }
         },
         "Ranged Enemy Type 2 Missile": {
@@ -136,10 +145,10 @@
                 "unitStats": {
                     "radius": 0.25,
                     "selectable": false,
-                    "ignoreCollision": true
+                    "ignoreCollision": false
                 },
                 "health": {
-                    "maxHealth": 30
+                    "maxHealth": 1000
                 }
             },
             "references": {
