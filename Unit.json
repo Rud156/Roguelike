@@ -18,23 +18,6 @@
                 "type": 1
             }
         },
-        "Wall": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
         "Doorway": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -97,6 +80,14 @@
                 ]
             }
         },
+        "Ranged Enemy Type 1 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Ranged Enemy Type 1 Search Behaviour"
+                ]
+            }
+        },
         "Ranged Enemy Type 2": {
             "baseUnit": "_CUnit",
             "components": {
@@ -114,19 +105,46 @@
                 ]
             }
         },
-        "Ranged Enemy Type 1 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Ranged Enemy Type 1 Search Behaviour"
-                ]
-            }
-        },
         "Ranged Enemy Type 2 Missile": {
             "baseUnit": "_CMissile",
             "references": {
                 "behaviorList": [
                     "Ranged Enemy Type 2 Search Behaviour"
+                ]
+            }
+        },
+        "Wall": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "Ranged Enemy Type 2 Blank": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 30
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "Ranged Enemy Type 2 Ability"
                 ]
             }
         }

@@ -8,14 +8,6 @@
                 }
             }
         },
-        "Wall": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "barracks_rank03"
-                }
-            }
-        },
         "Doorway": {
             "unitActor": {
                 "resource": {
@@ -120,6 +112,14 @@
                 ]
             }
         },
+        "Ranged Enemy Type 1 Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_green"
+                }
+            }
+        },
         "Ranged Enemy Type 2": {
             "unitActor": {
                 "resource": {
@@ -158,20 +158,58 @@
                 ]
             }
         },
-        "Ranged Enemy Type 1 Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_green"
-                }
-            }
-        },
         "Ranged Enemy Type 2 Missile": {
             "unitActor": {
                 "resource": {
                     "type": "ParticleAnimation",
                     "name": "vfx_arcade_missile_blue"
                 }
+            }
+        },
+        "Wall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_rank03"
+                }
+            }
+        },
+        "Ranged Enemy Type 2 Blank": {
+            "unitActor": {
+                "resource": {
+                    "type": "None",
+                    "name": "boss_drowmage_red"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Ranged Enemy Type 2 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Ranged Enemy Type 2 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         }
     }

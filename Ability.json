@@ -11,7 +11,8 @@
                 "period": 0.5,
                 "range": 7,
                 "arc": 60
-            }
+            },
+            "canCastWhileMoving": true
         },
         "Ranged Enemy Type 1 Ability": {
             "abilityType": 1,
@@ -21,6 +22,7 @@
             "stats": {
                 "period": 1
             },
+            "canCastWhileMoving": true,
             "targetFilter": {
                 "enemy": 2
             }
@@ -33,6 +35,7 @@
             "stats": {
                 "period": 0.3
             },
+            "canCastWhileMoving": true,
             "targetFilter": {
                 "enemy": 2
             }
