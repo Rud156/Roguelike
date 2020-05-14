@@ -5,6 +5,14 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "darkspire_rank01_base"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
                 }
             }
         },
@@ -13,6 +21,14 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "barracks_rank01"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
                 }
             }
         },
@@ -69,6 +85,12 @@
                         "offset": {
                             "forward": 0.5,
                             "up": 0.5
+                        }
+                    },
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
                         }
                     }
                 }
@@ -131,7 +153,18 @@
                     }
                 ],
                 "hostSites": {
-                    "SiteWeapon": {}
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.5,
+                            "up": 0.5
+                        }
+                    },
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
                 }
             }
         },
@@ -190,7 +223,21 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "hostSites": {
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.5,
+                            "up": 0.5
+                        }
+                    },
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
             }
         },
         "Ranged Enemy Type 2 Missile": {
@@ -206,6 +253,14 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "barracks_rank03"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
                 }
             }
         },
@@ -245,6 +300,24 @@
                         ]
                     }
                 ]
+            }
+        },
+        "Player Character Weapon 1 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Player Charater Weapon 1 Launch"
+            }
+        },
+        "Ranged Enemy Type 1 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Ranged Enemy Type 1 Launch"
+            }
+        },
+        "Ranged Enemy Type 2 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Ranged Enemy Type 2 Launch"
             }
         }
     }
