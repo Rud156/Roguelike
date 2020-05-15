@@ -253,6 +253,10 @@ function RoomData:RemoveDoors()
     self.roomExits = {}
 end
 function RoomData:GetNearestEnemy(player)
+    if not self.playerInRoom then
+        return nil
+    end
+
     local playerPosition = DCEI.GetUnitPosition2D(player)
     local lastNearestEnemy = nil
     local lastEnemyDistance = 100
@@ -561,7 +565,13 @@ end
 
 function HandleRightMouseClicked(mousePosition)
     if m_player ~= nil then
-        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
+        for i, room in ipairs(m_rooms) do
+            local enemy = room:GetNearestEnemy(m_player)
+            if enemy ~= nil then
+                local position = DCEI.GetUnitPosition2D(enemy)
+                DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, position.x, position.y)
+            end
+        end
     end
 end
 

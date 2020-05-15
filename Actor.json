@@ -81,19 +81,25 @@
                     }
                 ],
                 "hostSites": {
-                    "SiteWeapon": {
-                        "offset": {
-                            "forward": 0.5,
-                            "up": 0.5
-                        }
-                    },
                     "SiteHit": {
                         "offset": {
                             "forward": 0.1,
                             "up": 0.375
                         }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.5,
+                            "up": 0.5
+                        }
                     }
                 }
+            }
+        },
+        "Player Character Weapon 1 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Player Charater Weapon 1 Launch"
             }
         },
         "Player Character Weapon 1 Missile": {
@@ -153,19 +159,25 @@
                     }
                 ],
                 "hostSites": {
-                    "SiteWeapon": {
-                        "offset": {
-                            "forward": 0.5,
-                            "up": 0.5
-                        }
-                    },
                     "SiteHit": {
                         "offset": {
                             "forward": 0.1,
                             "up": 0.375
                         }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.5,
+                            "up": 0.5
+                        }
                     }
                 }
+            }
+        },
+        "Ranged Enemy Type 1 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Ranged Enemy Type 1 Launch"
             }
         },
         "Ranged Enemy Type 1 Missile": {
@@ -225,40 +237,16 @@
                     }
                 ],
                 "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
                     "SiteWeapon": {
                         "offset": {
                             "forward": 0.5,
                             "up": 0.5
-                        }
-                    },
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                }
-            }
-        },
-        "Ranged Enemy Type 2 Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_blue"
-                }
-            }
-        },
-        "Wall": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "barracks_rank03"
-                },
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
                         }
                     }
                 }
@@ -302,22 +290,34 @@
                 ]
             }
         },
-        "Player Character Weapon 1 Launch FX": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "Player Charater Weapon 1 Launch"
-            }
-        },
-        "Ranged Enemy Type 1 Launch FX": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "Ranged Enemy Type 1 Launch"
-            }
-        },
         "Ranged Enemy Type 2 Launch FX": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
                 "effect": "Ranged Enemy Type 2 Launch"
+            }
+        },
+        "Ranged Enemy Type 2 Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_blue"
+                }
+            }
+        },
+        "Wall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_rank03"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
             }
         }
     }

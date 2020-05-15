@@ -114,31 +114,6 @@
                 "type": 1
             }
         },
-        "Ranged Enemy Type 2 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Ranged Enemy Type 2 Search Behaviour"
-                ]
-            }
-        },
-        "Wall": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
         "Ranged Enemy Type 2 Blank": {
             "baseUnit": "_CUnit",
             "components": {
@@ -163,6 +138,31 @@
             "healthBar": {
                 "type": 0,
                 "showWhenFull": false
+            }
+        },
+        "Ranged Enemy Type 2 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Ranged Enemy Type 2 Search Behaviour"
+                ]
+            }
+        },
+        "Wall": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
             }
         }
     }
