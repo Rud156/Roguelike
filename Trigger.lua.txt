@@ -570,6 +570,8 @@ function HandleRightMouseClicked(mousePosition)
             if enemy ~= nil then
                 local position = DCEI.GetUnitPosition2D(enemy)
                 DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, position.x, position.y)
+            else
+                DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
             end
         end
     end

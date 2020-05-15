@@ -41,6 +41,18 @@
                 "events": [
                     {
                         "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
                             "unitAbilityStart": {
                                 "ability": "Player Character Weapon 1 Ability"
                             }
@@ -63,18 +75,6 @@
                             {
                                 "stopAnimation": {
                                     "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitDeath": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 1
                                 }
                             }
                         ]
