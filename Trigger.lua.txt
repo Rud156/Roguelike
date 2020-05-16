@@ -464,8 +464,11 @@ local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 -- Player
 local PLAYER_NAME = "Player Character"
 local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
+local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
+local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
 
 -- Public Variables
+-- Room
 local RoomSize = 10
 local RoomTemplates = {
     {
@@ -481,13 +484,20 @@ local RoomTemplates = {
         {0, 0, 0, 0, 0, 2, 0, 0, 0, 0},
     }
 }
+-- Waves
 local MinWaveCount = 1
 local MaxWaveCount = 3
+-- Player
 local PlayerSpawnPosition = { x = 27, y = 27 }
+-- Mouse
+local SingleClickTriggerTime = 0.3
 
 -- Private Variables
 local m_rooms = {}
 local m_player
+local m_mouseDownTimer = -1
+local m_mouseDownTriggered = false
+local m_mousePosition = 0
 
 -- LifeCycle Functions
 function Start()
@@ -526,12 +536,14 @@ function Start()
     m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
 
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
+    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 
     DCEI.SetCameraDistanceSmooth(20)
 
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseClicked)
-    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseClicked)
+    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
+    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
+    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
 end
 
 function Update()
@@ -544,9 +556,16 @@ function Update()
         local position = DCEI.GetUnitPosition2D(m_player)
         DCEI.SetCameraFocusSmooth(position.x, position.y, true)
     end
+
+    if m_mouseDownTriggered then
+        m_mouseDownTimer = m_mouseDownTimer + GAME_LOOP_RATE
+        
+    end
 end
 
 -- Event Functions
+
+-- Unit Events
 function HandleUnitDied()
     local unit = DCEI.TriggeringUnit
 
@@ -555,27 +574,122 @@ function HandleUnitDied()
     for i, room in ipairs(m_rooms) do
         room:RemovedDeadEnemy(unit)
     end
-end
 
-function HandleLeftMouseClicked(mousePosition)
-    if m_player ~= nil then
-        DCEI.Move(m_player, mousePosition.x, mousePosition.y)
+    local unitName = DCEI.UnitName(unit)
+    if unitName == PLAYER_NAME then
+        -- TODO: Do something when the player dies...
     end
 end
 
-function HandleRightMouseClicked(mousePosition)
+function HandleBehaviourAdded()
+    local behaviourName = DCEI.TriggeringBehaviorName
+
+    if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
+        DCEI.LogMessage("Player Collided")
+    end
+end
+
+-- Unit Events
+
+-- Mouse Events
+function HandleLeftMouseDownEvent(mousePosition)
+    UpdateMousePosition(mousePosition)
+    m_mouseDownTriggered = true
+    m_mouseDownTimer = 0
+end
+
+function HandleLeftMouseUpEvent(mousePosition)
+    UpdateMousePosition(mousePosition)
+
+    if m_mouseDownTriggered then
+        if m_mousePosition == 1 then
+            if m_mouseDownTimer <= SingleClickTriggerTime then
+                LaunchPlayerLightAttack(mousePosition)
+            else
+                LaunchPlayerHeavyAttack(mousePosition)
+            end
+        elseif m_mousePosition == -1 then
+
+        end
+    end
+
+    m_mouseDownTriggered = false
+    m_mouseDownTimer = 0
+end
+
+function UpdateMousePosition(mousePosition)
+    if m_player ~= nil then
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        if mousePosition.x < playerPosition.x then
+            m_mousePosition = -1
+        elseif mousePosition.x > playerPosition.x then
+            m_mousePosition = 1
+        else
+            m_mousePosition = 0
+        end
+    end
+end
+-- Mouse Events
+
+-- Joystick Events
+function HandleJoystickMoved()
+    if m_player ~= nil then
+        local axes = DCEI.TriggeringJoystickAxes
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+
+        DCEI.Move(m_player, playerPosition.x + axes.x, playerPosition.y + axes.y)
+    end
+end
+-- Joystick Events
+
+
+-- Utility Fuctions
+function LaunchPlayerLightAttack(mousePosition)
+    DCEI.LogMessage("Launching Light Attack")
+
+    local abilityCasted = false
     if m_player ~= nil then
         for i, room in ipairs(m_rooms) do
             local enemy = room:GetNearestEnemy(m_player)
             if enemy ~= nil then
                 local position = DCEI.GetUnitPosition2D(enemy)
                 DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, position.x, position.y)
-            else
-                DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
+                abilityCasted = true
+                break                
             end
+        end
+
+        if not abilityCasted then
+            DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
         end
     end
 end
+
+function LaunchPlayerHeavyAttack(mousePosition)
+    DCEI.LogMessage("Launching Heavy Attack")
+
+    local abilityCasted = false
+    if m_player ~= nil then
+        for i, room in ipairs(m_rooms) do
+            local enemy = room:GetNearestEnemy(m_player)
+            if enemy ~= nil then
+                local position = DCEI.GetUnitPosition2D(enemy)
+                DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, position.x, position.y)
+                abilityCasted = true
+                break
+            end
+        end
+
+        if not abilityCasted then
+            DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, mousePosition.x, mousePosition.y)
+        end
+    end
+end
+
+function PlayerDodgeAndRoll()
+    DCEI.LogMessage("Make Player Dodge and Roll")
+end
+-- Utility Fuctions
 
 -- Initialization
 Start()

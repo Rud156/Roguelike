@@ -319,6 +319,20 @@
                     }
                 }
             }
+        },
+        "Player Character Weapon 2 Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_red"
+                }
+            }
+        },
+        "Player Character Weapon 2 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Player Charater Weapon 1 Launch"
+            }
         }
     }
 }
