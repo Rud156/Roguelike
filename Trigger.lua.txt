@@ -645,9 +645,8 @@ end
 
 -- Utility Fuctions
 function LaunchPlayerLightAttack(mousePosition)
-    DCEI.LogMessage("Launching Light Attack")
-
     local abilityCasted = false
+
     if m_player ~= nil then
         for i, room in ipairs(m_rooms) do
             local enemy = room:GetNearestEnemy(m_player)
@@ -666,9 +665,8 @@ function LaunchPlayerLightAttack(mousePosition)
 end
 
 function LaunchPlayerHeavyAttack(mousePosition)
-    DCEI.LogMessage("Launching Heavy Attack")
-
     local abilityCasted = false
+
     if m_player ~= nil then
         for i, room in ipairs(m_rooms) do
             local enemy = room:GetNearestEnemy(m_player)
