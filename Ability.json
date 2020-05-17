@@ -14,6 +14,20 @@
             },
             "canCastWhileMoving": true
         },
+        "Player Character Weapon 2 Ability": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "Player Character Weapon 2 Launch",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 0.5,
+                "range": 7,
+                "arc": 60
+            },
+            "canCastWhileMoving": true
+        },
         "Ranged Enemy Type 1 Ability": {
             "abilityType": 1,
             "castType": 1,
@@ -47,20 +61,6 @@
             "targetFilter": {
                 "enemy": 0
             }
-        },
-        "Player Character Weapon 2 Ability": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "Player Character Weapon 2 Launch",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.5,
-                "range": 7,
-                "arc": 60
-            },
-            "canCastWhileMoving": true
         }
     }
 }

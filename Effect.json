@@ -52,6 +52,44 @@
                 ]
             }
         },
+        "Player Character Weapon 2 Damage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 20
+            }
+        },
+        "Player Character Weapon 2 Launch": {
+            "launchMissile": {
+                "missileUnit": "Player Character Weapon 2 Missile",
+                "effect": "Player Character Weapon 2 Damage",
+                "impactLocation": 2,
+                "mover": "Player Character Weapon 2 Mover"
+            }
+        },
+        "Player Character Weapon 2 Search": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "filter": {
+                    "player": 2,
+                    "ally": 0,
+                    "air": 0
+                },
+                "effect": "Player Character Weapon 2 Set"
+            }
+        },
+        "Player Character Weapon 2 Set": {
+            "set": {
+                "effectList": [
+                    "Player Character Weapon 2 Damage",
+                    "Remove Source"
+                ]
+            }
+        },
         "Player Charater Weapon 1 Launch": {
             "launchMissile": {
                 "missileUnit": "Player Character Weapon 1 Missile",
@@ -138,44 +176,6 @@
                     "Ranged Enemy Type 2 Damage",
                     "Remove Source"
                 ]
-            }
-        },
-        "Player Character Weapon 2 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 20
-            }
-        },
-        "Player Character Weapon 2 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "filter": {
-                    "player": 2,
-                    "ally": 0,
-                    "air": 0
-                },
-                "effect": "Player Character Weapon 2 Set"
-            }
-        },
-        "Player Character Weapon 2 Set": {
-            "set": {
-                "effectList": [
-                    "Player Character Weapon 2 Damage",
-                    "Remove Source"
-                ]
-            }
-        },
-        "Player Character Weapon 2 Launch": {
-            "launchMissile": {
-                "missileUnit": "Player Character Weapon 2 Missile",
-                "effect": "Player Character Weapon 2 Damage",
-                "impactLocation": 2,
-                "mover": "Player Character Weapon 2 Mover"
             }
         }
     }

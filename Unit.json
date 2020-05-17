@@ -70,6 +70,14 @@
                 ]
             }
         },
+        "Player Character Weapon 2 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Player Character Weapon 2 Search Behaviour"
+                ]
+            }
+        },
         "Ranged Enemy Type 1": {
             "baseUnit": "_CUnit",
             "components": {
@@ -167,14 +175,6 @@
                 "behavior": {
                     "behaviorType": 0
                 }
-            }
-        },
-        "Player Character Weapon 2 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Player Character Weapon 2 Search Behaviour"
-                ]
             }
         }
     }
