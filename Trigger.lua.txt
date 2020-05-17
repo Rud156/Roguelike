@@ -532,8 +532,6 @@ function Start()
 
     DCEI.SetCameraDistanceSmooth(20)
 
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
-    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
 
     CreateUIButtons()
@@ -570,6 +568,9 @@ function Start()
 end
 
 function Update()
+    local mousePosition = DCEI.GetMousePosition2D()
+    UpdateMousePosition(mousePosition)
+
     for i, room in ipairs(m_rooms) do
         room:IsPlayerInRoom(m_player)
         room:UpdateEnemies(GAME_LOOP_RATE, m_player)
@@ -622,31 +623,6 @@ end
 -- Unit Events
 
 -- Mouse Events
-function HandleLeftMouseDownEvent(mousePosition)
-    UpdateMousePosition(mousePosition)
-    m_mouseDownTriggered = true
-    m_mouseDownTimer = 0
-end
-
-function HandleLeftMouseUpEvent(mousePosition)
-    UpdateMousePosition(mousePosition)
-
-    -- if m_mouseDownTriggered then
-    --     if m_mousePosition == 1 then
-    --         if m_mouseDownTimer <= SingleClickTriggerTime then
-    --             LaunchPlayerLightAttack(mousePosition)
-    --         else
-    --             LaunchPlayerHeavyAttack(mousePosition)
-    --         end
-    --     elseif m_mousePosition == -1 then
-    --         MakePlayerDodgeAndRoll()
-    --     end
-    -- end
-
-    m_mouseDownTriggered = false
-    m_mouseDownTimer = 0
-end
-
 function UpdateMousePosition(mousePosition)
     if m_player ~= nil then
         local playerPosition = DCEI.GetUnitPosition2D(m_player)
