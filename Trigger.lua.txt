@@ -603,7 +603,9 @@ function HandleBehaviourAdded()
     local behaviourName = DCEI.TriggeringBehaviorName
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
-        DCEI.LogMessage("Player Collided")
+        m_dashTimer = 0
+        m_dashVelocity.x = 0
+        m_dashVelocity.y = 0
     end
 end
 
