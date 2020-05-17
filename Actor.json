@@ -141,7 +141,7 @@
         "Player Character Weapon 2 Launch FX": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
-                "effect": "Player Charater Weapon 1 Launch"
+                "effect": "Player Character Weapon 2 Launch"
             }
         },
         "Player Character Weapon 2 Missile": {

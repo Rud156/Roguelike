@@ -507,6 +507,7 @@ local SingleClickTriggerTime = 0.3
 -- Private Variables
 local m_rooms = {}
 local m_player
+local m_playerCollided = false
 local m_dashTimer = 0
 local m_dashVelocity = { x = 0, y = 0 }
 local m_mouseDownTimer = -1
@@ -577,8 +578,9 @@ function Update()
 
     if m_mouseDownTriggered then
         m_mouseDownTimer = m_mouseDownTimer + GAME_LOOP_RATE
-        
     end
+
+    m_playerCollided = false
 end
 
 -- Event Functions
@@ -603,9 +605,7 @@ function HandleBehaviourAdded()
     local behaviourName = DCEI.TriggeringBehaviorName
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
-        m_dashTimer = 0
-        m_dashVelocity.x = 0
-        m_dashVelocity.y = 0
+        m_playerCollided = true
     end
 end
 
@@ -723,12 +723,10 @@ function MakePlayerDodgeAndRoll()
     local yRotation = playerRotation.y
     -- Everything is different in the mirror world
     if playerRotation.x == -180.0 or playerRotation.z == -180.0 then -- Bad hack but the engine does not return consistent Y Rotations
-        if playerRotation.y < 0 then
-            yRotation = yRotation + 270.0
-        else
-            yRotation = yRotation + 90
-        end
+        yRotation = 180 - yRotation
     end
+
+    yRotation = To360Angle(yRotation)
 
     local xVelocity = math.sin(math.rad(yRotation)) * PlayerDashSpeed
     local yVelocity = math.cos(math.rad(yRotation)) * PlayerDashSpeed
@@ -738,17 +736,24 @@ function MakePlayerDodgeAndRoll()
 end
 
 function UpdatePlayerDashMovement(deltaTime)
+    if m_playerCollided then
+        m_dashTimer = 0
+        m_dashVelocity.x = 0
+        m_dashVelocity.y = 0
+        return
+    end
+
     m_dashTimer = m_dashTimer - deltaTime
     
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    playerPosition.x = playerPosition.x + m_dashVelocity.x * deltaTime
-    playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
-
-    DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
-
     if m_dashTimer <= 0 then
         m_dashVelocity.x = 0
         m_dashVelocity.y = 0
+    else
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        playerPosition.x = playerPosition.x + m_dashVelocity.x * deltaTime
+        playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
+
+        DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
     end
 end
 -- Utility Fuctions
