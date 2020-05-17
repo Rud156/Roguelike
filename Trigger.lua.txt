@@ -505,18 +505,38 @@ local PlayerDashSpeed = 5
 local SingleClickTriggerTime = 0.3
 
 -- Private Variables
+-- Rooms
 local m_rooms = {}
+-- Player
 local m_player
 local m_playerCollided = false
 local m_dashTimer = 0
 local m_dashVelocity = { x = 0, y = 0 }
+-- Mouse
 local m_mouseDownTimer = -1
 local m_mouseDownTriggered = false
 local m_mousePosition = 0
+-- UI
+local m_uiRoot
 
--- LifeCycle Functions
+-- #region LifeCycle Functions
 function Start()
     math.randomseed(os.time())
+
+    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    m_uiRoot = DCEI.GetUiRoot()
+
+    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
+    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
+    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
+
+    DCEI.SetCameraDistanceSmooth(20)
+
+    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
+    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
+    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
+
+    CreateUIButtons()
 
     local xCounter = 0
     local yCounter = 0
@@ -547,18 +567,6 @@ function Start()
         j = j + BASE_ROOM_SIZE
         i = 0
     end
-
-    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
-
-    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
-    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
-    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
-
-    DCEI.SetCameraDistanceSmooth(20)
-
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
-    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
-    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
 end
 
 function Update()
@@ -583,7 +591,9 @@ function Update()
     m_playerCollided = false
 end
 
--- Event Functions
+-- #endregion LifeCycle Functions
+
+-- #region Event Functions
 
 -- Unit Events
 function HandleUnitDied()
@@ -621,17 +631,17 @@ end
 function HandleLeftMouseUpEvent(mousePosition)
     UpdateMousePosition(mousePosition)
 
-    if m_mouseDownTriggered then
-        if m_mousePosition == 1 then
-            if m_mouseDownTimer <= SingleClickTriggerTime then
-                LaunchPlayerLightAttack(mousePosition)
-            else
-                LaunchPlayerHeavyAttack(mousePosition)
-            end
-        elseif m_mousePosition == -1 then
-            MakePlayerDodgeAndRoll()
-        end
-    end
+    -- if m_mouseDownTriggered then
+    --     if m_mousePosition == 1 then
+    --         if m_mouseDownTimer <= SingleClickTriggerTime then
+    --             LaunchPlayerLightAttack(mousePosition)
+    --         else
+    --             LaunchPlayerHeavyAttack(mousePosition)
+    --         end
+    --     elseif m_mousePosition == -1 then
+    --         MakePlayerDodgeAndRoll()
+    --     end
+    -- end
 
     m_mouseDownTriggered = false
     m_mouseDownTimer = 0
@@ -665,8 +675,11 @@ function HandleJoystickMoved()
 end
 -- Joystick Events
 
+-- #endregion Event Functions
 
--- Utility Fuctions
+-- #region Utility Fuctions
+
+-- #region Player Functions
 function LaunchPlayerLightAttack(mousePosition)
     if m_player == nil then
         DCEI.LogMessage("Player Died")
@@ -756,7 +769,38 @@ function UpdatePlayerDashMovement(deltaTime)
         DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
     end
 end
--- Utility Fuctions
+-- #endregion Player Functions
+
+-- #region UI Functions
+
+function CreateUIButtons()
+    local mainStack = DCEI.NewHStack(m_uiRoot)
+    local leftButton = DCEI.NewButton(mainStack)
+    local rightButton = DCEI.NewButton(mainStack)
+
+    DCEI.SetBackgroundImageColor(leftButton, 0, 0, 0, 0)
+    DCEI.SetMatchParent(leftButton, true, true)
+    DCEI.SetOnClickCallback(leftButton, HandleLeftButtonClick)
+
+    DCEI.SetBackgroundImageColor(rightButton, 0, 0, 0, 0)
+    DCEI.SetMatchParent(rightButton, true, true)
+    DCEI.SetOnClickCallback(rightButton, HandleRightButtonClick)
+end
+
+function HandleLeftButtonClick()
+    DCEI.LogMessage("Left Button Clicked")
+    MakePlayerDodgeAndRoll()
+end
+
+function HandleRightButtonClick()
+    DCEI.LogMessage("Right Button Clicked")
+    local mousePosition = DCEI.GetMousePosition2D()
+    LaunchPlayerLightAttack(mousePosition)
+end
+
+-- #endregion
+
+-- #endregion Utility Fuctions
 
 -- Initialization
 Start()
