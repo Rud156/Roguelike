@@ -512,10 +512,6 @@ local m_player
 local m_playerCollided = false
 local m_dashTimer = 0
 local m_dashVelocity = { x = 0, y = 0 }
--- Mouse
-local m_mouseDownTimer = -1
-local m_mouseDownTriggered = false
-local m_mousePosition = 0
 -- UI
 local m_uiRoot
 
@@ -568,9 +564,6 @@ function Start()
 end
 
 function Update()
-    local mousePosition = DCEI.GetMousePosition2D()
-    UpdateMousePosition(mousePosition)
-
     for i, room in ipairs(m_rooms) do
         room:IsPlayerInRoom(m_player)
         room:UpdateEnemies(GAME_LOOP_RATE, m_player)
@@ -583,10 +576,6 @@ function Update()
         if m_dashTimer > 0 then
             UpdatePlayerDashMovement(GAME_LOOP_RATE)
         end
-    end
-
-    if m_mouseDownTriggered then
-        m_mouseDownTimer = m_mouseDownTimer + GAME_LOOP_RATE
     end
 
     m_playerCollided = false
@@ -621,21 +610,6 @@ function HandleBehaviourAdded()
 end
 
 -- Unit Events
-
--- Mouse Events
-function UpdateMousePosition(mousePosition)
-    if m_player ~= nil then
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        if mousePosition.x < playerPosition.x then
-            m_mousePosition = -1
-        elseif mousePosition.x > playerPosition.x then
-            m_mousePosition = 1
-        else
-            m_mousePosition = 0
-        end
-    end
-end
--- Mouse Events
 
 -- Joystick Events
 function HandleJoystickMoved()
