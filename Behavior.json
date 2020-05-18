@@ -1,8 +1,19 @@
 {
     "behaviors": {
+        "Player Character Area Search Behaviour": {
+            "periodicInterval": 0.01,
+            "periodicEffect": "Player Character Area Search"
+        },
+        "Player Character Collision Detected Behaviour": {
+            "duration": 0.01
+        },
         "Player Character Weapon 1 Search Behaviour": {
             "periodicInterval": 0.01,
             "periodicEffect": "Player Character Weapon 1 Search"
+        },
+        "Player Character Weapon 2 Search Behaviour": {
+            "periodicInterval": 0.01,
+            "periodicEffect": "Player Character Weapon 2 Search"
         },
         "Ranged Enemy Type 1 Search Behaviour": {
             "periodicInterval": 0.01,

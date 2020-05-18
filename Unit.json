@@ -51,7 +51,11 @@
             },
             "references": {
                 "abilityList": [
-                    "Player Character Weapon 1 Ability"
+                    "Player Character Weapon 1 Ability",
+                    "Player Character Weapon 2 Ability"
+                ],
+                "behaviorList": [
+                    "Player Character Area Search Behaviour"
                 ]
             },
             "healthBar": {
@@ -63,6 +67,14 @@
             "references": {
                 "behaviorList": [
                     "Player Character Weapon 1 Search Behaviour"
+                ]
+            }
+        },
+        "Player Character Weapon 2 Missile": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Player Character Weapon 2 Search Behaviour"
                 ]
             }
         },

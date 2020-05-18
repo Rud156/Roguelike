@@ -7,6 +7,16 @@ function VectorDistance(vectorA, vectorB)
 
     return math.sqrt(x * x + y * y)
 end
+function To360Angle(rotationDeg)
+    while rotationDeg < 0 do
+        rotationDeg = rotationDeg + 360
+    end
+    while rotationDeg > 360 do
+        rotationDeg = rotationDeg - 360
+    end
+
+    return rotationDeg
+end
 
 -- Rectangle Class
 Rect = { x = 0, y = 0, width = 0, height = 0 }
@@ -464,8 +474,11 @@ local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 -- Player
 local PLAYER_NAME = "Player Character"
 local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
+local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
+local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
 
 -- Public Variables
+-- Room
 local RoomSize = 10
 local RoomTemplates = {
     {
@@ -481,17 +494,46 @@ local RoomTemplates = {
         {0, 0, 0, 0, 0, 2, 0, 0, 0, 0},
     }
 }
+-- Waves
 local MinWaveCount = 1
 local MaxWaveCount = 3
+-- Player
 local PlayerSpawnPosition = { x = 27, y = 27 }
+local PlayerDashTimer = 0.3
+local PlayerDashSpeed = 5
+-- Mouse
+local SingleClickTriggerTime = 0.3
 
 -- Private Variables
+-- Rooms
 local m_rooms = {}
+-- Player
 local m_player
+local m_playerCollided = false
+local m_dashTimer = 0
+local m_dashVelocity = { x = 0, y = 0 }
+-- UI
+local m_uiRoot
 
--- LifeCycle Functions
+-- #region LifeCycle Functions
 function Start()
     math.randomseed(os.time())
+
+    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    m_uiRoot = DCEI.GetUiRoot()
+
+    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
+    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
+    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
+
+    DCEI.SetCameraDistanceSmooth(20)
+
+    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
+    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
+    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
+    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
+
+    CreateUIButtons()
 
     local xCounter = 0
     local yCounter = 0
@@ -522,16 +564,6 @@ function Start()
         j = j + BASE_ROOM_SIZE
         i = 0
     end
-
-    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
-
-    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
-    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
-
-    DCEI.SetCameraDistanceSmooth(20)
-
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseClicked)
-    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseClicked)
 end
 
 function Update()
@@ -543,10 +575,20 @@ function Update()
     if m_player ~= nil then
         local position = DCEI.GetUnitPosition2D(m_player)
         DCEI.SetCameraFocusSmooth(position.x, position.y, true)
+
+        if m_dashTimer > 0 then
+            UpdatePlayerDashMovement(GAME_LOOP_RATE)
+        end
     end
+
+    m_playerCollided = false
 end
 
--- Event Functions
+-- #endregion LifeCycle Functions
+
+-- #region Event Functions
+
+-- Unit Events
 function HandleUnitDied()
     local unit = DCEI.TriggeringUnit
 
@@ -555,27 +597,182 @@ function HandleUnitDied()
     for i, room in ipairs(m_rooms) do
         room:RemovedDeadEnemy(unit)
     end
-end
 
-function HandleLeftMouseClicked(mousePosition)
-    if m_player ~= nil then
-        DCEI.Move(m_player, mousePosition.x, mousePosition.y)
+    local unitName = DCEI.UnitName(unit)
+    if unitName == PLAYER_NAME then
+        -- TODO: Do something when the player dies...
     end
 end
 
-function HandleRightMouseClicked(mousePosition)
-    if m_player ~= nil then
-        for i, room in ipairs(m_rooms) do
-            local enemy = room:GetNearestEnemy(m_player)
-            if enemy ~= nil then
-                local position = DCEI.GetUnitPosition2D(enemy)
-                DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, position.x, position.y)
-            else
-                DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
-            end
+function HandleBehaviourAdded()
+    local behaviourName = DCEI.TriggeringBehaviorName
+
+    if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
+        m_playerCollided = true
+    end
+end
+
+-- Unit Events
+
+-- Joystick Events
+function HandleJoystickMoved()
+    -- When Dashing the Player cannot move normally
+    if m_player == nil or m_dashTimer > 0 then
+        return
+    end
+
+    local axes = DCEI.TriggeringJoystickAxes
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+
+    DCEI.Move(m_player, playerPosition.x + axes.x, playerPosition.y + axes.y)
+end
+
+function HandleJoystickButtonClicked()
+    local buttonId = DCEI.TriggeringJoystickButtonId
+    local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+
+    if buttonEvent ~= 1 then
+        return
+    end
+
+    local mousePosition = DCEI.GetMousePosition2D()
+
+    if buttonId == 0 then
+        LaunchPlayerLightAttack(mousePosition)
+    elseif buttonId == 1 then
+        LaunchPlayerHeavyAttack(mousePosition)
+    elseif buttonId == 2 then
+        MakePlayerDodgeAndRoll()
+    end
+end
+-- Joystick Events
+
+-- #endregion Event Functions
+
+-- #region Utility Fuctions
+
+-- #region Player Functions
+function LaunchPlayerLightAttack(mousePosition)
+    if m_player == nil then
+        DCEI.LogMessage("Player Died")
+        return
+    end
+
+    local abilityCasted = false
+
+    for i, room in ipairs(m_rooms) do
+        local enemy = room:GetNearestEnemy(m_player)
+        if enemy ~= nil then
+            local position = DCEI.GetUnitPosition2D(enemy)
+            DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, position.x, position.y)
+            abilityCasted = true
+            break                
         end
     end
+
+    if not abilityCasted then
+        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
+    end
 end
+
+function LaunchPlayerHeavyAttack(mousePosition)
+    if m_player == nil then
+        DCEI.LogMessage("Player Died")
+        return
+    end
+
+    local abilityCasted = false
+
+    for i, room in ipairs(m_rooms) do
+        local enemy = room:GetNearestEnemy(m_player)
+        if enemy ~= nil then
+            local position = DCEI.GetUnitPosition2D(enemy)
+            DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, position.x, position.y)
+            abilityCasted = true
+            break
+        end
+    end
+
+    if not abilityCasted then
+        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, mousePosition.x, mousePosition.y)
+    end
+end
+
+function MakePlayerDodgeAndRoll()
+    if m_player == nil then
+        DCEI.LogMessage("Player Died")
+        return
+    end
+
+    local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+    local yRotation = playerRotation.y
+    -- Everything is different in the mirror world
+    if playerRotation.x == -180.0 or playerRotation.z == -180.0 then -- Bad hack but the engine does not return consistent Y Rotations
+        yRotation = 180 - yRotation
+    end
+
+    yRotation = To360Angle(yRotation)
+
+    local xVelocity = math.sin(math.rad(yRotation)) * PlayerDashSpeed
+    local yVelocity = math.cos(math.rad(yRotation)) * PlayerDashSpeed
+    m_dashVelocity.x = xVelocity
+    m_dashVelocity.y = yVelocity
+    m_dashTimer = PlayerDashTimer
+end
+
+function UpdatePlayerDashMovement(deltaTime)
+    if m_playerCollided then
+        m_dashTimer = 0
+        m_dashVelocity.x = 0
+        m_dashVelocity.y = 0
+        return
+    end
+
+    m_dashTimer = m_dashTimer - deltaTime
+    
+    if m_dashTimer <= 0 then
+        m_dashVelocity.x = 0
+        m_dashVelocity.y = 0
+    else
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        playerPosition.x = playerPosition.x + m_dashVelocity.x * deltaTime
+        playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
+
+        DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
+    end
+end
+-- #endregion Player Functions
+
+-- #region UI Functions
+
+function CreateUIButtons()
+    -- local mainStack = DCEI.NewHStack(m_uiRoot)
+    -- local leftButton = DCEI.NewButton(mainStack)
+    -- local rightButton = DCEI.NewButton(mainStack)
+
+    -- DCEI.SetBackgroundImageColor(leftButton, 0, 0, 0, 0)
+    -- DCEI.SetMatchParent(leftButton, true, true)
+    -- DCEI.SetOnClickCallback(leftButton, HandleLeftButtonClick)
+
+    -- DCEI.SetBackgroundImageColor(rightButton, 0, 0, 0, 0)
+    -- DCEI.SetMatchParent(rightButton, true, true)
+    -- DCEI.SetOnClickCallback(rightButton, HandleRightButtonClick)
+end
+
+function HandleLeftButtonClick()
+    DCEI.LogMessage("Left Button Clicked")
+    MakePlayerDodgeAndRoll()
+end
+
+function HandleRightButtonClick()
+    DCEI.LogMessage("Right Button Clicked")
+    local mousePosition = DCEI.GetMousePosition2D()
+    LaunchPlayerLightAttack(mousePosition)
+end
+
+-- #endregion
+
+-- #endregion Utility Fuctions
 
 -- Initialization
 Start()

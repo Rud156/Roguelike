@@ -78,6 +78,34 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Player Character Weapon 2 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Player Character Weapon 2 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
                     }
                 ],
                 "hostSites": {
@@ -107,6 +135,20 @@
                 "resource": {
                     "type": "ParticleAnimation",
                     "name": "vfx_icemage_weapon_missile"
+                }
+            }
+        },
+        "Player Character Weapon 2 Launch FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "Player Character Weapon 2 Launch"
+            }
+        },
+        "Player Character Weapon 2 Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_red"
                 }
             }
         },

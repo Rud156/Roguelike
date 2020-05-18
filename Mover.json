@@ -6,6 +6,11 @@
             },
             "upright": false
         },
+        "Player Character Weapon 2 Mover": {
+            "ballistic": {
+                "speed": 7
+            }
+        },
         "Ranged Enemy Type 1 Weapon Mover": {
             "ballistic": {
                 "speed": 3
