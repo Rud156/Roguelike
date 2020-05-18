@@ -529,9 +529,9 @@ function Start()
     DCEI.SetCameraDistanceSmooth(20)
 
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
-    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, {icon = "icon_ingame_towerslot_barracks"})
-    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, {icon = "icon_ingame_towerslot_arrowtower"})
-    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, {icon = "icon_gear_soldier_helmet_01"})
+    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
+    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
+    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
 
     CreateUIButtons()
 
