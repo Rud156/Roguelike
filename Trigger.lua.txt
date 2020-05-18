@@ -529,6 +529,9 @@ function Start()
     DCEI.SetCameraDistanceSmooth(20)
 
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
+    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, {icon = "icon_ingame_towerslot_barracks"})
+    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, {icon = "icon_ingame_towerslot_arrowtower"})
+    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, {icon = "icon_gear_soldier_helmet_01"})
 
     CreateUIButtons()
 
@@ -622,6 +625,25 @@ function HandleJoystickMoved()
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
 
     DCEI.Move(m_player, playerPosition.x + axes.x, playerPosition.y + axes.y)
+end
+
+function HandleJoystickButtonClicked()
+    local buttonId = DCEI.TriggeringJoystickButtonId
+    local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+
+    if buttonEvent ~= 1 then
+        return
+    end
+
+    local mousePosition = DCEI.GetMousePosition2D()
+
+    if buttonId == 0 then
+        LaunchPlayerLightAttack(mousePosition)
+    elseif buttonId == 1 then
+        LaunchPlayerHeavyAttack(mousePosition)
+    elseif buttonId == 2 then
+        MakePlayerDodgeAndRoll()
+    end
 end
 -- Joystick Events
 
@@ -724,17 +746,17 @@ end
 -- #region UI Functions
 
 function CreateUIButtons()
-    local mainStack = DCEI.NewHStack(m_uiRoot)
-    local leftButton = DCEI.NewButton(mainStack)
-    local rightButton = DCEI.NewButton(mainStack)
+    -- local mainStack = DCEI.NewHStack(m_uiRoot)
+    -- local leftButton = DCEI.NewButton(mainStack)
+    -- local rightButton = DCEI.NewButton(mainStack)
 
-    DCEI.SetBackgroundImageColor(leftButton, 0, 0, 0, 0)
-    DCEI.SetMatchParent(leftButton, true, true)
-    DCEI.SetOnClickCallback(leftButton, HandleLeftButtonClick)
+    -- DCEI.SetBackgroundImageColor(leftButton, 0, 0, 0, 0)
+    -- DCEI.SetMatchParent(leftButton, true, true)
+    -- DCEI.SetOnClickCallback(leftButton, HandleLeftButtonClick)
 
-    DCEI.SetBackgroundImageColor(rightButton, 0, 0, 0, 0)
-    DCEI.SetMatchParent(rightButton, true, true)
-    DCEI.SetOnClickCallback(rightButton, HandleRightButtonClick)
+    -- DCEI.SetBackgroundImageColor(rightButton, 0, 0, 0, 0)
+    -- DCEI.SetMatchParent(rightButton, true, true)
+    -- DCEI.SetOnClickCallback(rightButton, HandleRightButtonClick)
 end
 
 function HandleLeftButtonClick()
