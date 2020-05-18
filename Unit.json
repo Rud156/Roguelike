@@ -50,7 +50,7 @@
                 },
                 "mana": {
                     "maxMana": 100,
-                    "regeneration": 1
+                    "regeneration": 10
                 }
             },
             "references": {
