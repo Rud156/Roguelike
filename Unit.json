@@ -47,19 +47,25 @@
                 },
                 "health": {
                     "maxHealth": 1000
+                },
+                "mana": {
+                    "maxMana": 100,
+                    "regeneration": 1
                 }
             },
             "references": {
                 "abilityList": [
                     "Player Character Weapon 1 Ability",
-                    "Player Character Weapon 2 Ability"
+                    "Player Character Weapon 2 Ability",
+                    "Player Character Dash Ability"
                 ],
                 "behaviorList": [
                     "Player Character Area Search Behaviour"
                 ]
             },
+            "hideUnitStatusBar": true,
             "healthBar": {
-                "type": 3
+                "type": 0
             }
         },
         "Player Character Weapon 1 Missile": {

@@ -2,7 +2,7 @@
     "effects": {
         "Player Character Area Search": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25

@@ -475,6 +475,7 @@ local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 local PLAYER_NAME = "Player Character"
 local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
 local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
+local PLAYER_DASH_ABILITY = "Player Character Dash Ability"
 local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
 
 -- Public Variables
@@ -501,6 +502,7 @@ local MaxWaveCount = 3
 local PlayerSpawnPosition = { x = 27, y = 27 }
 local PlayerDashTimer = 0.3
 local PlayerDashSpeed = 5
+local PlayerDashMana = 30
 -- Mouse
 local SingleClickTriggerTime = 0.3
 
@@ -533,7 +535,7 @@ function Start()
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
 
-    CreateUIButtons()
+    CreatePlayerUIElements()
 
     local xCounter = 0
     local yCounter = 0
@@ -704,6 +706,15 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
+    -- To show UI
+    DCEI.CastAbility(PLAYER_DASH_ABILITY, m_player, m_player)
+
+    local playerMana = DCEI.GetManaValue(m_player)
+    if playerMana < PlayerDashMana then
+        DCEI.LogMessage("Not enough mana for dash")
+        return
+    end
+
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local yRotation = playerRotation.y
     -- Everything is different in the mirror world
@@ -745,18 +756,35 @@ end
 
 -- #region UI Functions
 
-function CreateUIButtons()
-    -- local mainStack = DCEI.NewHStack(m_uiRoot)
-    -- local leftButton = DCEI.NewButton(mainStack)
-    -- local rightButton = DCEI.NewButton(mainStack)
+function CreatePlayerUIElements()
+    -- Health Bar
+    local healthBarBackground = DCEI.NewFrame(m_uiRoot)
+    local healthBar = DCEI.NewFrame(healthBarBackground)
 
-    -- DCEI.SetBackgroundImageColor(leftButton, 0, 0, 0, 0)
-    -- DCEI.SetMatchParent(leftButton, true, true)
-    -- DCEI.SetOnClickCallback(leftButton, HandleLeftButtonClick)
+    DCEI.SetBackgroundImage(healthBarBackground, "bar_progression00_empty")
+    DCEI.SetBackgroundImage(healthBar, "bar_exp00_fill")
+    DCEI.SetBackgroundImageColor(healthBar, 0, 1, 0, 1)
 
-    -- DCEI.SetBackgroundImageColor(rightButton, 0, 0, 0, 0)
-    -- DCEI.SetMatchParent(rightButton, true, true)
-    -- DCEI.SetOnClickCallback(rightButton, HandleRightButtonClick)
+    DCEI.SetMinSize(healthBarBackground, 67, 10)
+    DCEI.SetMinSize(healthBar, 65, 7)
+
+    DCEI.SetBackgroundImageFillAmountExpression(healthBar, "MainCharacter.Health.Fraction")
+    DCEI.BindUnit("MainCharacter", m_player)
+    DCEI.AttachToUnit(healthBarBackground, m_player, { offset = { up = 0.8, right = 0, front = 0 } })
+
+    -- Mana Bar
+    local manaBarBackground = DCEI.NewFrame(m_uiRoot)
+    local manaBar = DCEI.NewFrame(manaBarBackground)
+
+    DCEI.SetBackgroundImage(manaBarBackground, "bar_progression00_empty")
+    DCEI.SetBackgroundImage(manaBar, "bar_exp00_fill")
+
+    DCEI.SetMinSize(manaBarBackground, 67, 10)
+    DCEI.SetMinSize(manaBar, 65, 7)
+
+    DCEI.SetBackgroundImageFillAmountExpression(manaBar, "MainCharacter.Mana.Fraction")
+    DCEI.BindUnit("MainCharacter", m_player)
+    DCEI.AttachToUnit(manaBarBackground, m_player, { offset = { up = 0.6, right = 0, front = 0 } })
 end
 
 function HandleLeftButtonClick()

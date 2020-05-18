@@ -12,6 +12,9 @@
                 "range": 7,
                 "arc": 60
             },
+            "cost": {
+                "mana": 20
+            },
             "canCastWhileMoving": true
         },
         "Player Character Weapon 2 Ability": {
@@ -25,6 +28,9 @@
                 "period": 0.5,
                 "range": 7,
                 "arc": 60
+            },
+            "cost": {
+                "mana": 50
             },
             "canCastWhileMoving": true
         },
@@ -61,6 +67,23 @@
             "targetFilter": {
                 "enemy": 0
             }
+        },
+        "Player Character Dash Ability": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "DoNothing",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 0.5,
+                "range": 7,
+                "arc": 60
+            },
+            "cost": {
+                "mana": 30
+            },
+            "canCastWhileMoving": true
         }
     }
 }
