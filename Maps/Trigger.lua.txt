@@ -1,22 +1,6 @@
 local ArcadeCore = GameModules["Arcade/Core"] -- Maybe be required
+local ExtensionFunction = GameModules["Mods/ExtensionFunctionMod"]
 
--- Extension Functions
-function VectorDistance(vectorA, vectorB)
-    local x = vectorA.x - vectorB.x
-    local y = vectorA.y - vectorB.y
-
-    return math.sqrt(x * x + y * y)
-end
-function To360Angle(rotationDeg)
-    while rotationDeg < 0 do
-        rotationDeg = rotationDeg + 360
-    end
-    while rotationDeg > 360 do
-        rotationDeg = rotationDeg - 360
-    end
-
-    return rotationDeg
-end
 
 -- Rectangle Class
 Rect = { x = 0, y = 0, width = 0, height = 0 }
@@ -273,7 +257,7 @@ function RoomData:GetNearestEnemy(player)
 
     for i, enemyUnit in ipairs(self.enemies) do
         local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
-        local distance = VectorDistance(playerPosition, enemyPosition)
+        local distance = ExtensionFunction.VectorDistance(playerPosition, enemyPosition)
         
         if distance < lastEnemyDistance then
             lastNearestEnemy = enemyUnit:GetMainUnit()
@@ -324,7 +308,7 @@ function SingleAttackEnemy:Update(deltaTime, playerPosition)
         self:SetRandomEnemyMovePosition()
     else
         local currentPosition = DCEI.GetUnitPosition2D(self.unit)
-        local distance = VectorDistance(self.targetPosition, currentPosition)
+        local distance = ExtensionFunction.VectorDistance(self.targetPosition, currentPosition)
         if distance < ENEMY_REACHED_DISTANCE then
             self:SetRandomEnemyMovePosition()
         end
@@ -396,7 +380,7 @@ function MultiAttackEnemy:Update(deltaTime, playerPosition)
         self:SetRandomEnemyMovePosition()
     else
         local currentPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-        local distance = VectorDistance(self.targetPosition, currentPosition)
+        local distance = ExtensionFunction.VectorDistance(self.targetPosition, currentPosition)
         if distance < ENEMY_REACHED_DISTANCE then
             self:SetRandomEnemyMovePosition()
         end
@@ -416,7 +400,7 @@ function MultiAttackEnemy:Update(deltaTime, playerPosition)
 end
 function MultiAttackEnemy:AttackCirclePattern(playerPosition)
     local currentPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-    local distance = VectorDistance(currentPosition, playerPosition)
+    local distance = ExtensionFunction.VectorDistance(currentPosition, playerPosition)
 
     local angleDiff = 360.0 / self.totalUnits
     local currentAngle = 0
@@ -722,7 +706,7 @@ function MakePlayerDodgeAndRoll()
         yRotation = 180 - yRotation
     end
 
-    yRotation = To360Angle(yRotation)
+    yRotation = ExtensionFunction.To360Angle(yRotation)
 
     local xVelocity = math.sin(math.rad(yRotation)) * PlayerDashSpeed
     local yVelocity = math.cos(math.rad(yRotation)) * PlayerDashSpeed

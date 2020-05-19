@@ -1,0 +1,21 @@
+local mod = {}
+
+function mod.VectorDistance(vectorA, vectorB)
+    local x = vectorA.x - vectorB.x
+    local y = vectorA.y - vectorB.y
+
+    return math.sqrt(x * x + y * y)
+end
+
+function mod.To360Angle(rotationDeg)
+    while rotationDeg < 0 do
+        rotationDeg = rotationDeg + 360
+    end
+    while rotationDeg > 360 do
+        rotationDeg = rotationDeg - 360
+    end
+
+    return rotationDeg
+end
+
+return mod
