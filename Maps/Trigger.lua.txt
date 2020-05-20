@@ -514,6 +514,7 @@ function Start()
 
     DCEI.SetCameraDistanceSmooth(20)
 
+    -- DCEI.TriggerAddMouseDownEvent(0, HandleMouseDown)
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
@@ -597,7 +598,6 @@ function HandleBehaviourAdded()
         m_playerCollided = true
     end
 end
-
 -- Unit Events
 
 -- Joystick Events
@@ -632,6 +632,16 @@ function HandleJoystickButtonClicked()
     end
 end
 -- Joystick Events
+
+-- Mouse Events
+function HandleMouseDown(mousePosition)
+    if m_player == nil or m_dashTimer > 0 then
+        return
+    end
+
+    DCEI.Move(m_player, mousePosition.x, mousePosition.y)
+end
+-- Mouse Events
 
 -- #endregion Event Functions
 
