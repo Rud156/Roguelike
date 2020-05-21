@@ -4,7 +4,7 @@
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "DoNothing",
+            "effect": "Player Chararacter Set Dash Behaviour",
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,

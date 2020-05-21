@@ -18,6 +18,14 @@
                 "type": 1
             }
         },
+        "DebugMarkerUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
         "Doorway": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -46,7 +54,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 1000
+                    "maxHealth": 100
                 },
                 "mana": {
                     "maxMana": 100,
@@ -178,14 +186,6 @@
                 "health": {
                     "maxHealth": 10
                 },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
-        "DebugMarkerUnit": {
-            "baseUnit": "_CBuilding",
-            "components": {
                 "behavior": {
                     "behaviorType": 0
                 }

@@ -16,6 +16,14 @@
                 }
             }
         },
+        "DebugMarkerUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bomb_gold_missile"
+                }
+            }
+        },
         "Doorway": {
             "unitActor": {
                 "resource": {
@@ -387,14 +395,6 @@
                             "up": 0.375
                         }
                     }
-                }
-            }
-        },
-        "DebugMarkerUnit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "bomb_gold_missile"
                 }
             }
         }

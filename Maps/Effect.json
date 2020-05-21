@@ -90,6 +90,13 @@
                 ]
             }
         },
+        "Player Chararacter Set Dash Behaviour": {
+            "applyBehavior": {
+                "behavior": "Player Character Dash Behaviour",
+                "target": 3,
+                "duration": 0.3
+            }
+        },
         "Player Charater Weapon 1 Launch": {
             "launchMissile": {
                 "missileUnit": "Player Character Weapon 1 Missile",
@@ -101,7 +108,14 @@
         "Ranged Enemy Type 1 Damage": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 5
+                "damageAmount": 5,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "Ranged Enemy Type 1 Launch": {
@@ -141,7 +155,14 @@
         "Ranged Enemy Type 2 Damage": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 10
+                "damageAmount": 10,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "Ranged Enemy Type 2 Launch": {

@@ -7,6 +7,14 @@
         "Player Character Collision Detected Behaviour": {
             "duration": 0.01
         },
+        "Player Character Dash Behaviour": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_invincible",
+                    "count": 1
+                }
+            ]
+        },
         "Player Character Weapon 1 Search Behaviour": {
             "periodicInterval": 0.01,
             "periodicEffect": "Player Character Weapon 1 Search"
