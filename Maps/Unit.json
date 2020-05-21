@@ -182,6 +182,14 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "DebugMarkerUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
         }
     }
 }

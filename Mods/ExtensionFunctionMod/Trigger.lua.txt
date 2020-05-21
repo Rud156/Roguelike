@@ -18,4 +18,16 @@ function mod.To360Angle(rotationDeg)
     return rotationDeg
 end
 
+function mod.NormalizeUnitRotation(unitRotation)
+    local yRotation = unitRotation.y
+    -- Everything is different in the mirror world
+    if unitRotation.x == -180.0 or unitRotation.z == -180.0 then -- Bad hack but the engine does not return consistent Y Rotations
+        yRotation = 180 - yRotation
+    end
+
+    yRotation = mod.To360Angle(yRotation)
+
+    return yRotation
+end
+
 return mod

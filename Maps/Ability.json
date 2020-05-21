@@ -30,7 +30,7 @@
                 "arc": 60
             },
             "cost": {
-                "mana": 20
+                "mana": 0
             },
             "canCastWhileMoving": true
         },

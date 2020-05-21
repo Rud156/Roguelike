@@ -389,6 +389,14 @@
                     }
                 }
             }
+        },
+        "DebugMarkerUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bomb_gold_missile"
+                }
+            }
         }
     }
 }

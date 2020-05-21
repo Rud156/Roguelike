@@ -13,7 +13,8 @@
             "Player Character",
             "Ranged Enemy Type 1",
             "Ranged Enemy Type 2",
-            "Ranged Enemy Type 2 Blank"
+            "Ranged Enemy Type 2 Blank",
+            "DebugMarkerUnit"
         ]
     }
 }

@@ -432,6 +432,9 @@ function MultiAttackEnemy:CleanupEnemyDied()
 end
 
 -- Variables
+-- Debug
+local DEBUG_UNIT = "DebugMarkerUnit"
+
 -- Prefabs
 local SOLID_WALL_PREFAB = "Wall"
 local BREAKABLE_WALL_PREFAB = "Breakable Wall"
@@ -648,7 +651,7 @@ end
 -- #region Utility Fuctions
 
 -- #region Player Functions
-function LaunchPlayerLightAttack(mousePosition)
+function LaunchPlayerLightAttack()
     if m_player == nil then
         DCEI.LogMessage("Player Died")
         return
@@ -667,11 +670,17 @@ function LaunchPlayerLightAttack(mousePosition)
     end
 
     if not abilityCasted then
-        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, mousePosition.x, mousePosition.y)
+        local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+        
+        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, xPoint, yPoint)
     end
 end
 
-function LaunchPlayerHeavyAttack(mousePosition)
+function LaunchPlayerHeavyAttack()
     if m_player == nil then
         DCEI.LogMessage("Player Died")
         return
@@ -690,7 +699,13 @@ function LaunchPlayerHeavyAttack(mousePosition)
     end
 
     if not abilityCasted then
-        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, mousePosition.x, mousePosition.y)
+        local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+        
+        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, xPoint, yPoint)
     end
 end
 
@@ -710,13 +725,7 @@ function MakePlayerDodgeAndRoll()
     end
 
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-    local yRotation = playerRotation.y
-    -- Everything is different in the mirror world
-    if playerRotation.x == -180.0 or playerRotation.z == -180.0 then -- Bad hack but the engine does not return consistent Y Rotations
-        yRotation = 180 - yRotation
-    end
-
-    yRotation = ExtensionFunction.To360Angle(yRotation)
+    local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
 
     local xVelocity = math.sin(math.rad(yRotation)) * PlayerDashSpeed
     local yVelocity = math.cos(math.rad(yRotation)) * PlayerDashSpeed
