@@ -298,6 +298,23 @@ end
 function RoomData:GetEmptyPositions()
     return self.emptyPositions
 end
+function RoomData:ClearEnemies()
+    for i, enemy in ipairs(self.enemies) do
+        local mainUnit = enemy:GetMainUnit()
+        DCEI.RemoveUnit(mainUnit)
+        enemy:CleanupEnemyDied()
+    end
+
+    self.enemies = {}
+end
+function RoomData:Reset()
+    self:ClearEnemies()
+    self:RemoveDoors()
+
+    self.currentWaveCount = 0
+    self.playerInRoom = false
+    self.roomCleared = false
+end
 -- #endregion
 
 -- #region Single Attack Enemy
@@ -536,9 +553,6 @@ local m_playerMoving = false
 -- UI
 local m_uiRoot
 
--- Testing
-local m_testTarget
-
 -- #region LifeCycle Functions
 function Start()
     math.randomseed(os.time())
@@ -559,9 +573,8 @@ function Start()
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
 
+    ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
-
-    m_testTarget = DCEI.CreateUnit(0, 0, DEBUG_UNIT, 25, 25)
 
     local xCounter = 0
     local yCounter = 0
@@ -609,8 +622,6 @@ function Update()
         end
     end
 
-    DCEI.LogMessage(m_playerMoving)
-
     MakePlayerLookTowardsNearestEnemy()
     m_playerCollided = false
 end
@@ -631,7 +642,7 @@ function HandleUnitDied()
 
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME then
-        -- TODO: Do something when the player dies...
+        DisplayGameOverSequence()
     end
 end
 
@@ -698,6 +709,35 @@ end
 -- #endregion Event Functions
 
 -- #region Utility Fuctions
+
+-- #region GameOver State
+
+function DisplayGameOverSequence()
+    local maskOptions = {
+        color = { r = 0, g = 0, b = 0 },
+        duration = 0.5
+    }
+
+    DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
+    DCEI.Wait(maskOptions.duration)
+
+    ResetGameState()
+
+    DCEI.ShowScreenMaskWithAlpha(0, maskOptions)
+    DCEI.Wait(maskOptions.duration)
+    DCEI.HideScreenMask()
+end
+
+function ResetGameState()
+    for i, room in ipairs(m_rooms) do
+        room:Reset()
+    end
+
+    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    CreatePlayerUIElements()
+end
+
+-- #endregion GameOver State
 
 -- #region Player Functions
 function MakePlayerLookTowardsNearestEnemy()
@@ -857,6 +897,22 @@ function CreatePlayerUIElements()
     DCEI.SetBackgroundImageFillAmountExpression(manaBar, "MainCharacter.Mana.Fraction")
     DCEI.BindUnit("MainCharacter", m_player)
     DCEI.AttachToUnit(manaBarBackground, m_player, { offset = { up = 0.6 } })
+    
+
+    DCEI.TriggerAddUnitDiedEvent(
+        m_player, 
+        function()
+            DCEI.Destroy(healthBarBackground)
+            DCEI.Destroy(manaBarBackground)
+        end
+    )
+    DCEI.TriggerAddUnitRemovedEvent(
+        m_player,
+        function()
+            DCEI.Destroy(healthBarBackground)
+            DCEI.Destroy(manaBarBackground)
+        end
+    )
 end
 
 function HandleLeftButtonClick()
