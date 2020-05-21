@@ -54,7 +54,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 10
+                    "maxHealth": 100
                 },
                 "mana": {
                     "maxMana": 100,
