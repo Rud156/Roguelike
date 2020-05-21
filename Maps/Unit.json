@@ -59,6 +59,9 @@
                 "mana": {
                     "maxMana": 100,
                     "regeneration": 10
+                },
+                "turning": {
+                    "turningSpeed": 9000
                 }
             },
             "references": {

@@ -30,6 +30,7 @@
         "Ranged Enemy Type 2 Search Behaviour": {
             "periodicInterval": 0.01,
             "periodicEffect": "Ranged Enemy Type 2 Search"
-        }
+        },
+        "Player Character Movement Behaviour": {}
     }
 }

@@ -7,6 +7,13 @@ function mod.VectorDistance(vectorA, vectorB)
     return math.sqrt(x * x + y * y)
 end
 
+function mod.VectorSubtract(vectorA, vectorB)
+    local xDiff = vectorA.x - vectorB.x
+    local yDiff = vectorA.y - vectorB.y
+
+    return { x = xDiff, y = yDiff }
+end
+
 function mod.To360Angle(rotationDeg)
     while rotationDeg < 0 do
         rotationDeg = rotationDeg + 360

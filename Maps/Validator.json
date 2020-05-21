@@ -1,4 +1,26 @@
 {
+    "validators": {
+        "Player Character Reached Position": {
+            "expression": {
+                "compare": {
+                    "left": {
+                        "value": {
+                            "remainingPathDistance": {
+                                "unit": 1
+                            }
+                        }
+                    },
+                    "right": {
+                        "value": {
+                            "constant": {
+                                "int32Value": 0
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
     "expressions": {
         "DamageResistance": {
             "add": {

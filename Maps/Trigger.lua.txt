@@ -532,8 +532,12 @@ local m_player
 local m_playerCollided = false
 local m_dashTimer = 0
 local m_dashVelocity = { x = 0, y = 0 }
+local m_playerMoving = false
 -- UI
 local m_uiRoot
+
+-- Testing
+local m_testTarget
 
 -- #region LifeCycle Functions
 function Start()
@@ -550,11 +554,14 @@ function Start()
 
     -- DCEI.TriggerAddMouseDownEvent(0, HandleMouseDown)
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
+    DCEI.TriggerAddJoystickReleaseEvent(HandleJoystickReleased)
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
 
     CreatePlayerUIElements()
+
+    m_testTarget = DCEI.CreateUnit(0, 0, DEBUG_UNIT, 25, 25)
 
     local xCounter = 0
     local yCounter = 0
@@ -602,6 +609,9 @@ function Update()
         end
     end
 
+    DCEI.LogMessage(m_playerMoving)
+
+    MakePlayerLookTowardsNearestEnemy()
     m_playerCollided = false
 end
 
@@ -643,8 +653,16 @@ function HandleJoystickMoved()
 
     local axes = DCEI.TriggeringJoystickAxes
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    m_playerMoving = true
 
     DCEI.Move(m_player, playerPosition.x + axes.x, playerPosition.y + axes.y)
+end
+
+function HandleJoystickReleased()
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    m_playerMoving = false
+
+    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 end
 
 function HandleJoystickButtonClicked()
@@ -682,6 +700,26 @@ end
 -- #region Utility Fuctions
 
 -- #region Player Functions
+function MakePlayerLookTowardsNearestEnemy()
+    if m_player == nil or m_playerMoving then
+        return
+    end
+
+    for i, room in ipairs(m_rooms) do
+        local enemy = room:GetNearestEnemy(m_player)
+        if enemy ~= nil then
+            local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+            local playerPosition = DCEI.GetUnitPosition2D(m_player)
+
+            local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
+            local angle = math.deg(math.atan(direction.x, direction.y))
+
+            DCEI.SetUnitRotationEuler(m_player, 0, angle, 0)
+            break
+        end
+    end
+end
+
 function LaunchPlayerLightAttack()
     if m_player == nil then
         DCEI.LogMessage("Player Died")
