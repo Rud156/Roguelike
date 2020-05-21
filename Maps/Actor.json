@@ -386,7 +386,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "barracks_rank03"
+                    "name": "forestworld_castleset_wall_tower"
                 },
                 "hostSites": {
                     "SiteHit": {
@@ -395,7 +395,8 @@
                             "up": 0.375
                         }
                     }
-                }
+                },
+                "modelScale": 1.5
             }
         }
     }

@@ -2,7 +2,7 @@ local ArcadeCore = GameModules["Arcade/Core"] -- Maybe be required
 local ExtensionFunction = GameModules["Mods/ExtensionFunctionMod"]
 
 
--- Rectangle Class
+-- #region Rectangle Class
 Rect = { x = 0, y = 0, width = 0, height = 0 }
 Rect.__index = Rect
 function Rect:new(x, y, width, height)
@@ -36,8 +36,36 @@ function Rect:contains(xPosition, yPosition)
     return self.x <= xPosition and self.x + self.width >= xPosition and 
             self.y <= yPosition and self.y + self.height >= yPosition
 end
+-- #endregion
 
--- Room Data Class
+-- #region Wall
+Wall = {
+    unit_1 = nil,
+    unit_2 = nil
+}
+Wall.__index = Wall
+function Wall:new(xPosition, yPosition, yRotation, wallPrefab, teamId)
+    local wall = {}
+    setmetatable(wall, Wall)
+
+    local unit_1 = DCEI.CreateUnit(teamId, teamId, wallPrefab, xPosition, yPosition)
+    local unit_2 = DCEI.CreateUnit(teamId, teamId, wallPrefab, xPosition, yPosition)
+    local flippedRotation = ExtensionFunction.To360Angle(yRotation + 180)
+
+    DCEI.SetUnitRotationEuler(unit_1, 0, yRotation, 0)
+    DCEI.SetUnitRotationEuler(unit_2, 0, flippedRotation, 0)
+
+    wall.unit_1 = unit_1
+    wall.unit_2 = unit_2
+    return wall
+end
+function Wall:DestroyWalls()
+    DCEI.RemoveUnit(self.unit_1)
+    DCEI.RemoveUnit(self.unit_2)
+end
+--#endregion
+
+-- #region Room Data Class
 RoomData = { 
     rect = nil, 
     
@@ -270,8 +298,9 @@ end
 function RoomData:GetEmptyPositions()
     return self.emptyPositions
 end
+-- #endregion
 
--- Single Attack Enemy
+-- #region Single Attack Enemy
 local ENEMY_REACHED_DISTANCE = 3
 SingleAttackEnemy = {
     -- Units
@@ -334,8 +363,9 @@ end
 function SingleAttackEnemy:CleanupEnemyDied()
     -- Do nothing here...
 end
+-- #endregion
 
--- Multi Attack Enemy
+-- #region Multi Attack Enemy
 MultiAttackEnemy = {
     -- Units
     room = nil,
@@ -430,6 +460,7 @@ function MultiAttackEnemy:CleanupEnemyDied()
 
     self.blankUnits = {}
 end
+-- #endregion
 
 -- Variables
 -- Debug
