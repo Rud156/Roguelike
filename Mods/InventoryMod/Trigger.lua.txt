@@ -1,6 +1,3 @@
-local mod = {}
-
-
 -- Item  Type
 -- -1: Empty
 -- 0: Weapon
@@ -114,6 +111,8 @@ function Inventory:AddItemToSlot(collectibleItem)
     return itemAdded
 end
 
+
+local mod = {}
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
 mod.InventoryItem = InventoryItem

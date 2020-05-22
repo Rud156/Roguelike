@@ -3,7 +3,9 @@
         "dependencies": [
             "Arcade/Core",
             "Mods/ExtensionFunctionMod",
-            "Mods/InventoryMod"
+            "Mods/InventoryMod",
+            "Mods/EnemyMod",
+            "Mods/RoomMod"
         ]
     },
     "triggerSettings": {

@@ -16,6 +16,22 @@
                 }
             }
         },
+        "Collectible Test 1": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_drow_lord_missile_red"
+                }
+            }
+        },
+        "Collectible Test 2": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "beartrap"
+                }
+            }
+        },
         "DebugMarkerUnit": {
             "unitActor": {
                 "resource": {
@@ -397,22 +413,6 @@
                     }
                 },
                 "modelScale": 1.5
-            }
-        },
-        "Collectible Test 2": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "beartrap"
-                }
-            }
-        },
-        "Collectible Test 1": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_drow_lord_missile_red"
-                }
             }
         }
     }
