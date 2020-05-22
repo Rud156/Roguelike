@@ -2,7 +2,10 @@
     "settings": {
         "dependencies": [
             "Arcade/Core",
-            "Mods/ExtensionFunctionMod"
+            "Mods/ExtensionFunctionMod",
+            "Mods/InventoryMod",
+            "Mods/EnemyMod",
+            "Mods/RoomMod"
         ]
     },
     "triggerSettings": {
@@ -14,7 +17,9 @@
             "Ranged Enemy Type 1",
             "Ranged Enemy Type 2",
             "Ranged Enemy Type 2 Blank",
-            "DebugMarkerUnit"
+            "DebugMarkerUnit",
+            "Collectible Test 1",
+            "Collectible Test 2"
         ]
     }
 }
