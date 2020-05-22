@@ -575,6 +575,7 @@ function Start()
 
     ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
+    CreateInvertoryUI()
 
     local xCounter = 0
     local yCounter = 0
@@ -913,6 +914,31 @@ function CreatePlayerUIElements()
             DCEI.Destroy(manaBarBackground)
         end
     )
+end
+
+function CreateInvertoryUI()
+    local horizontalStack = DCEI.NewHStack(m_uiRoot)
+    DCEI.SetTopAlignmentInParent(horizontalStack)
+    DCEI.SetPaddingTop(horizontalStack, 21)
+    
+    for i = 0, 5 do
+        local iValue = i
+        
+        local slotItem = DCEI.NewButton(horizontalStack)
+        DCEI.SetMinSize(slotItem, 75, 75)
+        DCEI.SetBackgroundImage(slotItem, "btn_grey_invert")
+        
+        local inventoryIcon = DCEI.NewFrame(slotItem)
+        DCEI.SetMinSize(inventoryIcon, 70, 70)
+        DCEI.SetBackgroundImage(inventoryIcon, "btn_yellow_invert")
+        
+        DCEI.SetOnClickCallback(
+            slotItem, 
+            function()
+                DCEI.LogMessage("Value: " .. iValue)
+            end
+        )
+    end
 end
 
 function HandleLeftButtonClick()
