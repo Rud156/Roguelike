@@ -8,9 +8,13 @@ local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryItem = InventoryMod.InventoryItem
 
+EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 local SingleAttackEnemy = EnemyMod.SingleAttackEnemy
 local MultiAttackEnemy = EnemyMod.MultiAttackEnemy
 
+RoomMod.VectorDistance = ExtensionFunction.VectorDistance
+RoomMod.SingleAttackEnemy = SingleAttackEnemy
+RoomMod.MultiAttackEnemy = MultiAttackEnemy
 local RoomData = RoomMod.RoomData
 
 

@@ -1,3 +1,5 @@
+local mod = {}
+
 -- #region Single Attack Enemy
 local ENEMY_REACHED_DISTANCE = 3
 local SingleAttackEnemy = {
@@ -11,14 +13,10 @@ local SingleAttackEnemy = {
     -- Movement/Attack
     targetPosition = nil,
     attackTimer = 0,
-    currentTimer = 0,
-
-    -- This needs to be done as Mods cannot communiate between each other
-    -- Util Functions
-    VectorDistance = nil
+    currentTimer = 0
 }
 SingleAttackEnemy.__index = SingleAttackEnemy
-function SingleAttackEnemy:new(room, enemyName, attackName, attackTimer, xPosition, yPosition, VectorDistance)
+function SingleAttackEnemy:new(room, enemyName, attackName, attackTimer, xPosition, yPosition)
     local singleAttackEnemy = {}
     setmetatable(singleAttackEnemy, SingleAttackEnemy)
 
@@ -32,8 +30,6 @@ function SingleAttackEnemy:new(room, enemyName, attackName, attackTimer, xPositi
     singleAttackEnemy.attackTimer = attackTimer
     singleAttackEnemy.currentTimer = attackTimer
 
-    singleAttackEnemy.VectorDistance = VectorDistance
-
     return singleAttackEnemy
 end
 function SingleAttackEnemy:Update(deltaTime, playerPosition)
@@ -41,7 +37,7 @@ function SingleAttackEnemy:Update(deltaTime, playerPosition)
         self:SetRandomEnemyMovePosition()
     else
         local currentPosition = DCEI.GetUnitPosition2D(self.unit)
-        local distance = self.VectorDistance(self.targetPosition, currentPosition)
+        local distance = mod.VectorDistance(self.targetPosition, currentPosition)
         if distance < ENEMY_REACHED_DISTANCE then
             self:SetRandomEnemyMovePosition()
         end
@@ -83,14 +79,10 @@ local MultiAttackEnemy = {
     -- Movement/Attack
     targetPosition = nil,
     attackTimer = 0,
-    currentTimer = 0,
-
-    -- This needs to be done as Mods cannot communiate between each other
-    -- Util Functions
-    VectorDistance = nil
+    currentTimer = 0
 }
 MultiAttackEnemy.__index = MultiAttackEnemy
-function MultiAttackEnemy:new(room, enemyName, blankEnemyName, totalUnits, attackName, attackTimer, xPosition, yPosition, VectorDistance)
+function MultiAttackEnemy:new(room, enemyName, blankEnemyName, totalUnits, attackName, attackTimer, xPosition, yPosition)
     local multiAttackEnemy = {}
     setmetatable(multiAttackEnemy, MultiAttackEnemy)
 
@@ -106,8 +98,6 @@ function MultiAttackEnemy:new(room, enemyName, blankEnemyName, totalUnits, attac
     multiAttackEnemy.attackTimer = attackTimer
     multiAttackEnemy.currentTimer = attackTimer
 
-    multiAttackEnemy.VectorDistance = VectorDistance
-
     for i = 1, totalUnits do
         local unit = DCEI.CreateUnit(-1, -1, blankEnemyName, xPosition, yPosition)
         table.insert(multiAttackEnemy.blankUnits, unit)
@@ -120,7 +110,7 @@ function MultiAttackEnemy:Update(deltaTime, playerPosition)
         self:SetRandomEnemyMovePosition()
     else
         local currentPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-        local distance = self.VectorDistance(self.targetPosition, currentPosition)
+        local distance = mod.VectorDistance(self.targetPosition, currentPosition)
         if distance < ENEMY_REACHED_DISTANCE then
             self:SetRandomEnemyMovePosition()
         end
@@ -140,7 +130,7 @@ function MultiAttackEnemy:Update(deltaTime, playerPosition)
 end
 function MultiAttackEnemy:AttackCirclePattern(playerPosition)
     local currentPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-    local distance = self.VectorDistance(currentPosition, playerPosition)
+    local distance = mod.VectorDistance(currentPosition, playerPosition)
 
     local angleDiff = 360.0 / self.totalUnits
     local currentAngle = 0
@@ -173,7 +163,7 @@ end
 -- #endregion
 
 
-local mod = {}
 mod.SingleAttackEnemy = SingleAttackEnemy
 mod.MultiAttackEnemy = MultiAttackEnemy
+mod.VectorDistance = nil
 return mod

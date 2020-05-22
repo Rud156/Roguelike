@@ -1,3 +1,5 @@
+local mod = {}
+
 -- #region Room Data Class
 local RoomData = { 
     rect = nil, 
@@ -25,13 +27,7 @@ local RoomData = {
     enemyPositions = {},
     enemyPrefabs = {},
     totalWaveCount = 0,
-    currentWaveCount = 0,
-
-    -- This needs to be done as Mods cannot communiate between each other
-    -- Util Functions
-    VectorDistance = nil,
-    MultiAttackEnemy = nil,
-    SingleAttackEnemy = nil
+    currentWaveCount = 0
 }
 RoomData.__index = RoomData
 -- Patterns contains Map Generation data
@@ -45,9 +41,7 @@ function RoomData:new(
     rect, pattern, 
     totalWaveCount,
     solidWallPrefab, breakableWallPrefab, doorwayPrefab,
-    enemyPrefabs, collectiblePrefabs,
-    VectorDistance,
-    MultiAttackEnemy, SingleAttackEnemy
+    enemyPrefabs, collectiblePrefabs
 )
     local roomData = {}
     setmetatable(roomData, RoomData)
@@ -73,10 +67,6 @@ function RoomData:new(
     roomData.enemyPrefabs = enemyPrefabs
     roomData.totalWaveCount = totalWaveCount
     roomData.currentWaveCount = 0
-
-    roomData.VectorDistance = VectorDistance
-    roomData.MultiAttackEnemy = MultiAttackEnemy
-    roomData.SingleAttackEnemy = SingleAttackEnemy
 
     local startX = rect.x
     local startY = rect.y
@@ -180,21 +170,19 @@ function RoomData:SpawnNextWave()
             local enemy
 
             if randomEnemy.isMulti then
-                enemy = self.MultiAttackEnemy:new(
+                enemy = mod.MultiAttackEnemy:new(
                     self,
                     randomEnemy.name, randomEnemy.blankUnitName,
                     5,
                     randomEnemy.ability, 2.5,
-                    enemyPosition.x, enemyPosition.y,
-                    self.VectorDistance
+                    enemyPosition.x, enemyPosition.y
                 )
             else
-                enemy = self.SingleAttackEnemy:new(
+                enemy = mod.SingleAttackEnemy:new(
                     self,
                     randomEnemy.name, randomEnemy.ability,
                     1,
-                    enemyPosition.x, enemyPosition.y,
-                    self.VectorDistance
+                    enemyPosition.x, enemyPosition.y
                 )
             end
             
@@ -232,7 +220,7 @@ function RoomData:GetNearestEnemy(player)
 
     for i, enemyUnit in ipairs(self.enemies) do
         local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
-        local distance = self.VectorDistance(playerPosition, enemyPosition)
+        local distance = mod.VectorDistance(playerPosition, enemyPosition)
         
         if distance < lastEnemyDistance then
             lastNearestEnemy = enemyUnit:GetMainUnit()
@@ -265,6 +253,8 @@ end
 -- #endregion
 
 
-local mod = {}
+mod.VectorDistance = nil
+mod.SingleAttackEnemy = nil
+mod.MultiAttackEnemy = nil
 mod.RoomData = RoomData
 return mod
