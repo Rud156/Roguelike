@@ -2,7 +2,8 @@
     "settings": {
         "dependencies": [
             "Arcade/Core",
-            "Mods/ExtensionFunctionMod"
+            "Mods/ExtensionFunctionMod",
+            "Mods/InventoryMod"
         ]
     },
     "triggerSettings": {

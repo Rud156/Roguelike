@@ -15,6 +15,7 @@
                 }
             ]
         },
+        "Player Character Movement Behaviour": {},
         "Player Character Weapon 1 Search Behaviour": {
             "periodicInterval": 0.01,
             "periodicEffect": "Player Character Weapon 1 Search"
@@ -30,7 +31,6 @@
         "Ranged Enemy Type 2 Search Behaviour": {
             "periodicInterval": 0.01,
             "periodicEffect": "Ranged Enemy Type 2 Search"
-        },
-        "Player Character Movement Behaviour": {}
+        }
     }
 }
