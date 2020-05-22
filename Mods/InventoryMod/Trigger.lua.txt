@@ -1,11 +1,120 @@
+local mod = {}
 
--- VARIABLES
-local core = GameModules["Arcade/Core"]
 
--- TRIGGERS
-function OnMapStart()
-    core.HideDefaultUi()
+-- Item  Type
+-- -1: Empty
+-- 0: Weapon
+-- 1: Consumable
+local InventorySlot = { emptyItemImage = "", itemType = 0, inventoryBackground = nil, inventoryIcon = nil }
+InventorySlot.__index = InventorySlot
+function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFunction)
+    local inventory = {}
+    setmetatable(inventory, InventorySlot)
+
+    local slotItem = DCEI.NewButton(uiParent)
+    DCEI.SetMinSize(slotItem, 75, 75)
+    DCEI.SetBackgroundImage(slotItem, backgroundImage)
+
+    local inventoryIcon = DCEI.NewFrame(slotItem)
+    DCEI.SetMinSize(inventoryIcon, 70, 70)
+    DCEI.SetBackgroundImage(inventoryIcon, emptyItemImage)
+    
+    DCEI.SetOnClickCallback(
+        slotItem,
+        function()
+            callbackFunction(inventory:GetInventoryItem())
+        end
+    )
+
+    inventory.emptyItemImage = emptyItemImage
+    inventory.itemType = -1
+    inventory.inventoryBackground = slotItem
+    inventory.inventoryIcon = inventoryIcon
+
+    return inventory
+end
+function InventorySlot:GetInventoryItem()
+    return self.itemType
+end
+function InventorySlot:UpdateInventoryItem(itemImage, itemType)
+    self.itemType = itemType
+    DCEI.SetBackgroundImage(self.inventoryIcon, itemImage)
+end
+function InventorySlot:Clear()
+    DCEI.SetBackgroundImage(self.inventoryIcon, self.emptyItemImage)
+    self.itemType = -1
+end
+function InventorySlot:IsEmpty()
+    return self.itemType == -1
+end
+function InventorySlot:Destroy()
+    DCEI.Destroy(self.inventoryUi)
 end
 
--- INITIALIZE
-DCEI.TriggerAddTimerEventElapsed(OnMapStart, 0)
+
+-- Item  Type
+-- 0: Weapon
+-- 1: Consumable
+local InventoryItem = { unit = nil, itemType = 0, itemImage = ""  }
+InventoryItem.__index = InventoryItem
+function InventoryItem:new(itemPrefab, xPosition, yPosition, itemType, itemImage)
+    local inventoryItem = {}
+    setmetatable(inventoryItem, InventoryItem)
+
+    local unit = DCEI.CreateUnit(0, 0, itemPrefab, xPosition, yPosition)
+
+    inventoryItem.unit = unit
+    inventoryItem.itemType = itemType
+    inventoryItem.itemImage = itemImage
+    return inventoryItem
+end
+function InventoryItem:GetItemInfo()
+    return self.itemType, self.itemImage
+end
+function InventoryItem:CompareUnits(unit)
+    -- TODO: Check if this works...
+    if self.unit == unit then
+        return true
+    end
+
+    return false
+end
+function InventoryItem:Destroy()
+    DCEI.RemoveUnit(self.unit)
+end
+
+local Inventory = { inventorySlots = {}, totalSlotCount = 0 }
+Inventory.__index = Inventory
+function Inventory:new(inventorySlots, totalSlotCount)
+    local inventory = {}
+    setmetatable(inventory, Inventory)
+
+    inventory.inventorySlots = inventorySlots
+    inventory.totalSlotCount = totalSlotCount
+
+    return inventory
+end
+function Inventory:DropItemInSlot(index)
+    local inventorySlot = self.inventorySlots[index]
+    inventorySlot:Clear()
+end
+function Inventory:IsFull()
+    return #self.inventorySlots == totalSlotCount
+end
+function Inventory:AddItemToSlot(collectibleItem)
+    local itemAdded = false
+    for i, slot in ipairs(self.inventorySlots) do
+        if slot:IsEmpty() then
+            slot:UpdateInventoryItem(collectibleItem.itemImage, collectibleItem.itemType)
+            itemAdded = true
+            break
+        end
+    end
+
+    return itemAdded
+end
+
+mod.Inventory = Inventory
+mod.InventorySlot = InventorySlot
+mod.InventoryItem = InventoryItem
+return mod

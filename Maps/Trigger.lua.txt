@@ -1,5 +1,10 @@
 local ArcadeCore = GameModules["Arcade/Core"] -- Maybe be required
 local ExtensionFunction = GameModules["Mods/ExtensionFunctionMod"]
+local InventoryMod = GameModules["Mods/InventoryMod"]
+
+local Inventory = InventoryMod.Inventory
+local InventorySlot = InventoryMod.InventorySlot
+local InventoryItem = InventoryMod.InventoryItem
 
 
 -- #region Rectangle Class
@@ -38,7 +43,7 @@ function Rect:contains(xPosition, yPosition)
 end
 -- #endregion
 
--- #region Wall
+-- #region Wall Class
 Wall = {
     unit_1 = nil,
     unit_2 = nil
@@ -500,7 +505,7 @@ local ENEMY_PREFABS = {
         isMulti = true
     }
 }
-local COLLECTIBLE_PREFAB = "Collectible"
+local COLLECTIBLE_PREFAB = "Collectible" -- TODO: Remove this later on...
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
@@ -512,6 +517,12 @@ local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
 local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
 local PLAYER_DASH_ABILITY = "Player Character Dash Ability"
 local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
+
+-- Collectibles
+local COLLECTIBLES = {
+    { itemType = 0, itemPrefab = "Collectible Test 1", itemImage = "icon_affinity_brown" },
+    { itemType = 1, itemPrefab = "Collectible Test 2", itemImage = "icon_affinity_gold" }
+}
 
 -- Public Variables
 -- Room
@@ -552,6 +563,8 @@ local m_dashVelocity = { x = 0, y = 0 }
 local m_playerMoving = false
 -- UI
 local m_uiRoot
+local m_inventory
+local m_collectibleItems = {} -- TODO: Check if there is a better way...
 
 -- #region LifeCycle Functions
 function Start()
@@ -562,6 +575,7 @@ function Start()
 
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
+    DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 
     DCEI.SetCameraDistanceSmooth(20)
@@ -606,6 +620,12 @@ function Start()
         j = j + BASE_ROOM_SIZE
         i = 0
     end
+
+    local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
+    local collectible_2 = InventoryItem:new(COLLECTIBLES[2].itemPrefab, 23, 23, COLLECTIBLES[2].itemType, COLLECTIBLES[2].itemImage)
+
+    table.insert(m_collectibleItems, collectible_1)
+    table.insert(m_collectibleItems, collectible_2)
 end
 
 function Update()
@@ -652,6 +672,28 @@ function HandleBehaviourAdded()
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
         m_playerCollided = true
+    end
+end
+
+function HandleUnitSelected()
+    -- TODO: Maybe use names to specify what type of Unit was select
+    -- Like __Collectible or something...
+    local unit = DCEI.TriggeringUnit
+    local index = -1
+
+    for i, collectibleItem in ipairs(m_collectibleItems) do
+        if collectibleItem:CompareUnits(unit) then
+            if not m_inventory:IsFull() then
+                m_inventory:AddItemToSlot(collectibleItem)
+                index = i
+            end
+        end
+    end
+
+    if index ~= -1 then
+        local collectibleItem = m_collectibleItems[index]
+        collectibleItem:Destroy()
+        table.remove(m_collectibleItems, index)
     end
 end
 -- Unit Events
@@ -899,7 +941,7 @@ function CreatePlayerUIElements()
     DCEI.BindUnit("MainCharacter", m_player)
     DCEI.AttachToUnit(manaBarBackground, m_player, { offset = { up = 0.6 } })
     
-
+    -- Destroy UI when player dies
     DCEI.TriggerAddUnitDiedEvent(
         m_player, 
         function()
@@ -920,25 +962,20 @@ function CreateInvertoryUI()
     local horizontalStack = DCEI.NewHStack(m_uiRoot)
     DCEI.SetTopAlignmentInParent(horizontalStack)
     DCEI.SetPaddingTop(horizontalStack, 21)
+
+    local inventoryItems = {}
     
-    for i = 0, 5 do
-        local iValue = i
-        
-        local slotItem = DCEI.NewButton(horizontalStack)
-        DCEI.SetMinSize(slotItem, 75, 75)
-        DCEI.SetBackgroundImage(slotItem, "btn_grey_invert")
-        
-        local inventoryIcon = DCEI.NewFrame(slotItem)
-        DCEI.SetMinSize(inventoryIcon, 70, 70)
-        DCEI.SetBackgroundImage(inventoryIcon, "btn_yellow_invert")
-        
-        DCEI.SetOnClickCallback(
-            slotItem, 
-            function()
-                DCEI.LogMessage("Value: " .. iValue)
-            end
-        )
+    for i = 0, 3 do
+        local inventoryItem = InventorySlot:new("btn_yellow_invert", "btn_grey_invert", horizontalStack, HandleInventorySlotClicked)
+        table.insert(inventoryItems, inventoryItem)
     end
+
+    local inventory = Inventory:new(inventoryItems, 4)
+    m_inventory = inventory
+end
+
+function HandleInventorySlotClicked(itemType)
+    DCEI.LogMessage("Inventory Item: " .. itemType)
 end
 
 function HandleLeftButtonClick()

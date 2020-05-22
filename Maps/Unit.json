@@ -193,6 +193,25 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "Collectible Test 1": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "selectable": true
+                }
+            }
+        },
+        "Collectible Test 2": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            }
         }
     }
 }

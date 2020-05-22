@@ -15,7 +15,9 @@
             "Ranged Enemy Type 1",
             "Ranged Enemy Type 2",
             "Ranged Enemy Type 2 Blank",
-            "DebugMarkerUnit"
+            "DebugMarkerUnit",
+            "Collectible Test 1",
+            "Collectible Test 2"
         ]
     }
 }
