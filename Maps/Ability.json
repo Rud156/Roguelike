@@ -17,6 +17,27 @@
             },
             "canCastWhileMoving": true
         },
+        "Player Character Melee Attack 1 Ability": {
+            "effect": "Player Character Melee Attack 1 Search",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 1
+            },
+            "canCastWhileMoving": true
+        },
+        "Player Character Melee Attack 2 Ability": {
+            "effect": "Player Character Melee Attack 2 Search",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 1
+            },
+            "cost": {
+                "mana": 50
+            },
+            "canCastWhileMoving": true
+        },
         "Player Character Weapon 1 Ability": {
             "abilityType": 1,
             "castType": 1,
@@ -84,27 +105,6 @@
             "targetFilter": {
                 "enemy": 0
             }
-        },
-        "Player Character Melee Attack 1 Ability": {
-            "effect": "Player Character Melee Attack 1 Search",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 1
-            },
-            "canCastWhileMoving": true
-        },
-        "Player Character Melee Attack 2 Ability": {
-            "effect": "Player Character Melee Attack 2 Search",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 1
-            },
-            "cost": {
-                "mana": 50
-            },
-            "canCastWhileMoving": true
         }
     }
 }

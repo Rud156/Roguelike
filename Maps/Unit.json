@@ -98,6 +98,39 @@
                 "type": 0
             }
         },
+        "Player Character Melee": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 500
+                },
+                "mana": {
+                    "maxMana": 100,
+                    "regeneration": 10
+                },
+                "turning": {
+                    "turningSpeed": 720
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "Player Character Melee Attack 1 Ability",
+                    "Player Character Melee Attack 2 Ability",
+                    "Player Character Dash Ability"
+                ],
+                "behaviorList": [
+                    "Player Character Area Search Behaviour"
+                ]
+            },
+            "hideUnitStatusBar": true,
+            "healthBar": {
+                "type": 0
+            }
+        },
         "Player Character Weapon 1 Missile": {
             "baseUnit": "_CMissile",
             "references": {
@@ -211,39 +244,6 @@
                 "behavior": {
                     "behaviorType": 0
                 }
-            }
-        },
-        "Player Character Melee": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 500
-                },
-                "mana": {
-                    "maxMana": 100,
-                    "regeneration": 10
-                },
-                "turning": {
-                    "turningSpeed": 720
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "Player Character Melee Attack 1 Ability",
-                    "Player Character Melee Attack 2 Ability",
-                    "Player Character Dash Ability"
-                ],
-                "behaviorList": [
-                    "Player Character Area Search Behaviour"
-                ]
-            },
-            "hideUnitStatusBar": true,
-            "healthBar": {
-                "type": 0
             }
         }
     }

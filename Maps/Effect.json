@@ -22,6 +22,48 @@
                 "duration": 0.1
             }
         },
+        "Player Character Melee Attack 1 Damage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 15
+            }
+        },
+        "Player Character Melee Attack 1 Search": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.75
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "Player Character Melee Attack 1 Damage"
+            }
+        },
+        "Player Character Melee Attack 2 Damage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 30
+            }
+        },
+        "Player Character Melee Attack 2 Search": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "Player Character Melee Attack 2 Damage"
+            }
+        },
         "Player Character Weapon 1 Damage": {
             "damage": {
                 "whichUnit": 1,
@@ -197,48 +239,6 @@
                     "Ranged Enemy Type 2 Damage",
                     "Remove Source"
                 ]
-            }
-        },
-        "Player Character Melee Attack 1 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.75
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "Player Character Melee Attack 1 Damage"
-            }
-        },
-        "Player Character Melee Attack 2 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 1
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "Player Character Melee Attack 2 Damage"
-            }
-        },
-        "Player Character Melee Attack 1 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 15
-            }
-        },
-        "Player Character Melee Attack 2 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 30
             }
         }
     }

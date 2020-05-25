@@ -5,7 +5,8 @@
             "Mods/ExtensionFunctionMod",
             "Mods/InventoryMod",
             "Mods/EnemyMod",
-            "Mods/RoomMod"
+            "Mods/RoomMod",
+            "Mods/CameraMod"
         ]
     },
     "triggerSettings": {

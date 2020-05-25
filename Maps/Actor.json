@@ -176,6 +176,189 @@
                 }
             }
         },
+        "Player Character Melee": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_troop_rank03_armored"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Player Character Dash Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Player Character Dash Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Player Character Melee Attack 1 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "DelayedAttack1Spawn",
+                                    "duration": 0.3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Player Character Melee Attack 1 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Player Character Melee Attack 2 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 10
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "DelayedAttack2Spawn",
+                                    "duration": 0.3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Player Character Melee Attack 2 Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 10
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "DelayedAttack1Spawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "Player Character Melee Weapon 1 FX",
+                                    "hostSite": "Melee Attack Host Site"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "DelayedAttack2Spawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "Player Character Melee Weapon 2 FX"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "ShakeCamera"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "Melee Attack Host Site": {
+                        "offset": {
+                            "forward": 0.5
+                        }
+                    }
+                }
+            }
+        },
+        "Player Character Melee Weapon 1 FX": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_drow_mage_blue_impact"
+                },
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
+        "Player Character Melee Weapon 2 FX": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_ogre_slam_impact_aoe"
+                },
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
         "Player Character Weapon 1 Launch FX": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
@@ -415,117 +598,27 @@
                 "modelScale": 1.5
             }
         },
-        "Player Character Melee": {
-            "unitActor": {
+        "ShakeCamera": {
+            "parent": "",
+            "modelActor": {
                 "resource": {
-                    "type": "GpuAnimation",
-                    "name": "barracks_troop_rank03_armored"
+                    "type": "None"
                 },
                 "events": [
                     {
                         "actorTerm": {
-                            "unitDeath": {}
+                            "actorCreate": {}
                         },
                         "actions": [
                             {
-                                "playAnimation": {
-                                    "clipId": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Melee Attack 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 4
+                                "createTimer": {
+                                    "name": "DestroyActor",
+                                    "duration": 1
                                 }
                             },
                             {
-                                "createTimer": {
-                                    "name": "DelayedAttack1Spawn",
-                                    "duration": 0.3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Melee Attack 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 4
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Melee Attack 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 10
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "DelayedAttack2Spawn",
-                                    "duration": 0.3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Melee Attack 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 10
+                                "shakeCamera": {
+                                    "value": 14
                                 }
                             }
                         ]
@@ -533,58 +626,16 @@
                     {
                         "actorTerm": {
                             "onTimer": {
-                                "name": "DelayedAttack1Spawn"
+                                "name": "DestroyActor"
                             }
                         },
                         "actions": [
                             {
-                                "create": {
-                                    "actor": "Player Character Melee Weapon 1 FX",
-                                    "hostSite": "Melee Attack Host Site"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "DelayedAttack2Spawn"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "Player Character Melee Weapon 2 FX"
-                                }
+                                "destroy": {}
                             }
                         ]
                     }
-                ],
-                "hostSites": {
-                    "Melee Attack Host Site": {
-                        "offset": {
-                            "forward": 0.5
-                        }
-                    }
-                }
-            }
-        },
-        "Player Character Melee Weapon 1 FX": {
-            "parent": "_FX OneShot SelfRemoving",
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_drow_mage_blue_impact"
-                }
-            }
-        },
-        "Player Character Melee Weapon 2 FX": {
-            "parent": "_FX OneShot SelfRemoving",
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_ogre_slam_impact_aoe"
-                }
+                ]
             }
         }
     }

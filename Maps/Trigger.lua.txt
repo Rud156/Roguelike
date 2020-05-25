@@ -4,6 +4,7 @@ local ExtensionFunction = GameModules["Mods/ExtensionFunctionMod"]
 local InventoryMod = GameModules["Mods/InventoryMod"]
 local EnemyMod = GameModules["Mods/EnemyMod"]
 local RoomMod = GameModules["Mods/RoomMod"]
+local CameraMod = GameModules["Mods/CameraMod"]
 
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
@@ -17,6 +18,8 @@ RoomMod.VectorDistance = ExtensionFunction.VectorDistance
 RoomMod.SingleAttackEnemy = SingleAttackEnemy
 RoomMod.MultiAttackEnemy = MultiAttackEnemy
 local RoomData = RoomMod.RoomData
+
+local Camera = CameraMod.Camera
 -- #endregion Mods and Includes
 
 -- TODO: Maybe shift util class to another file
@@ -139,6 +142,8 @@ local m_playerCollided = false
 local m_dashTimer = 0
 local m_dashVelocity = { x = 0, y = 0 }
 local m_playerMoving = false
+-- Camera
+local m_camera
 -- UI
 local m_uiRoot
 local m_inventory
@@ -154,13 +159,12 @@ function Start()
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     end
     m_uiRoot = DCEI.GetUiRoot()
+    m_camera = Camera:new(m_player)
 
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
-
-    DCEI.SetCameraDistanceSmooth(20)
 
     -- DCEI.TriggerAddMouseDownEvent(0, HandleMouseDown)
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
@@ -219,8 +223,7 @@ function Update()
     end
 
     if m_player ~= nil then
-        local position = DCEI.GetUnitPosition2D(m_player)
-        DCEI.SetCameraFocusSmooth(position.x, position.y, true)
+        m_camera:Update(GAME_LOOP_RATE)
 
         if m_dashTimer > 0 then
             UpdatePlayerDashMovement(GAME_LOOP_RATE)
@@ -340,6 +343,8 @@ end
 -- #region GameOver State
 
 function DisplayGameOverSequence()
+    m_camera:UpdateTarget(nil)
+
     local maskOptions = {
         color = { r = 0, g = 0, b = 0 },
         duration = 0.5
@@ -361,6 +366,7 @@ function ResetGameState()
     end
 
     m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    m_camera:UpdateTarget(m_player)
     CreatePlayerUIElements()
 end
 
@@ -459,6 +465,8 @@ function LaunchPlayerRangedHeavyAttack()
         local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, xPoint, yPoint)
     end
+
+    m_camera:StartShake(1, 0)
 end
 
 function LaunchPlayerMeleeLightAttack()
@@ -474,6 +482,8 @@ end
 function LaunchPlayerMeleeHeavyAttack()
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2_MELEE, m_player, playerPosition.x, playerPosition.y)
+
+    m_camera:StartShake(1, 0.3)
 end
 
 function MakePlayerDodgeAndRoll()
