@@ -1,3 +1,4 @@
+-- #region Mods and Includes
 local ArcadeCore = GameModules["Arcade/Core"] -- Maybe be required
 local ExtensionFunction = GameModules["Mods/ExtensionFunctionMod"]
 local InventoryMod = GameModules["Mods/InventoryMod"]
@@ -16,8 +17,9 @@ RoomMod.VectorDistance = ExtensionFunction.VectorDistance
 RoomMod.SingleAttackEnemy = SingleAttackEnemy
 RoomMod.MultiAttackEnemy = MultiAttackEnemy
 local RoomData = RoomMod.RoomData
+-- #endregion Mods and Includes
 
-
+-- TODO: Maybe shift util class to another file
 -- #region Rectangle Class
 Rect = { x = 0, y = 0, width = 0, height = 0 }
 Rect.__index = Rect
@@ -81,12 +83,17 @@ local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
 local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 
--- Player
+-- Player Ranged
 local PLAYER_NAME = "Player Character"
 local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
 local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
 local PLAYER_DASH_ABILITY = "Player Character Dash Ability"
 local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
+
+-- Player Melee
+local PLAYER_NAME_MELEE = "Player Character Melee"
+local PLAYER_WEAPON_1_MELEE = "Player Character Melee Attack 1 Ability"
+local PLAYER_WEAPON_2_MELEE = "Player Character Melee Attack 2 Ability"
 
 -- Collectibles
 local COLLECTIBLES = {
@@ -119,6 +126,7 @@ local PlayerSpawnPosition = { x = 27, y = 27 }
 local PlayerDashTimer = 0.3
 local PlayerDashSpeed = 5
 local PlayerDashMana = 30
+local useMeleePlayer = true -- TODO: Change this as required
 -- Mouse
 local SingleClickTriggerTime = 0.3
 
@@ -140,7 +148,11 @@ local m_collectibleItems = {} -- TODO: Check if there is a better way...
 function Start()
     math.randomseed(os.time())
 
-    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    if useMeleePlayer then
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    else
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    end
     m_uiRoot = DCEI.GetUiRoot()
 
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
@@ -381,6 +393,27 @@ function LaunchPlayerLightAttack()
         return
     end
 
+    if useMeleePlayer then
+        LaunchPlayerMeleeLightAttack()
+    else
+        LaunchPlayerRangedLightAttack()
+    end
+end
+
+function LaunchPlayerHeavyAttack()
+    if m_player == nil then
+        DCEI.LogMessage("Player Died")
+        return
+    end
+
+    if useMeleePlayer then
+        LaunchPlayerMeleeHeavyAttack()
+    else
+        LaunchPlayerRangedHeavyAttack()
+    end
+end
+
+function LaunchPlayerRangedLightAttack()
     local abilityCasted = false
 
     for i, room in ipairs(m_rooms) do
@@ -404,12 +437,7 @@ function LaunchPlayerLightAttack()
     end
 end
 
-function LaunchPlayerHeavyAttack()
-    if m_player == nil then
-        DCEI.LogMessage("Player Died")
-        return
-    end
-
+function LaunchPlayerRangedHeavyAttack()
     local abilityCasted = false
 
     for i, room in ipairs(m_rooms) do
@@ -431,6 +459,21 @@ function LaunchPlayerHeavyAttack()
         local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, xPoint, yPoint)
     end
+end
+
+function LaunchPlayerMeleeLightAttack()
+    local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+    
+    local xPoint = math.sin(math.rad(yRotation)) * 0.3 + playerPosition.x
+    local yPoint = math.cos(math.rad(yRotation))  * 0.3 + playerPosition.y
+    DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1_MELEE, m_player, xPoint, yPoint)
+end
+
+function LaunchPlayerMeleeHeavyAttack()
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2_MELEE, m_player, playerPosition.x, playerPosition.y)
 end
 
 function MakePlayerDodgeAndRoll()
