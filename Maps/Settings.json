@@ -18,10 +18,10 @@
             "Ranged Enemy Type 1",
             "Ranged Enemy Type 2",
             "Ranged Enemy Type 2 Blank",
-            "DebugMarkerUnit",
             "Collectible Test 1",
             "Collectible Test 2",
-            "Player Character Melee"
+            "Player Character Melee",
+            "Camera Shaker Unit"
         ]
     }
 }

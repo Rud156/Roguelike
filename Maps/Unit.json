@@ -245,6 +245,23 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "Camera Shaker Unit": {
+            "baseUnit": "",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "ground": false,
+                    "selectable": false,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 1000
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
         }
     }
 }

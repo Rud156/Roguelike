@@ -1,3 +1,4 @@
+local ArcadeCore = GameModules["Arcade/Core"]
 local mod = {}
 
 -- #region Room Data Class
@@ -110,6 +111,14 @@ end
 function RoomData:UpdateEnemies(deltaTime, player)
     local playerPosition = DCEI.GetUnitPosition2D(player)
     for i, enemy in ipairs(self.enemies) do
+
+        -- This is a fallback check in case a dead enemy still remains in queue
+        local mainUnit = enemy:GetMainUnit()
+        if not ArcadeCore.UnitIsAlive(mainUnit) then
+            self:ForceRemoveUnitAtIndex(i)
+            break
+        end
+
         enemy:Update(deltaTime, playerPosition)
     end
 end
@@ -151,6 +160,17 @@ function RoomData:RemovedDeadEnemy(enemyUnit)
         table.remove(self.enemies, index)
     end
 
+    local totalEnemyCount = #self.enemies
+    if totalEnemyCount == 0 then
+        self:SpawnNextWave()
+    end
+end
+function RoomData:ForceRemoveUnitAtIndex(index)
+    if index == -1 then
+        return
+    end
+
+    table.remove(self.enemies, index)
     local totalEnemyCount = #self.enemies
     if totalEnemyCount == 0 then
         self:SpawnNextWave()

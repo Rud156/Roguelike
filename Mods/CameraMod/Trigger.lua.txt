@@ -5,7 +5,10 @@ local Camera = {
 
     shakeStarted = false,
     shakeTimeLeft = 0,
-    shakeDelayTime = 0
+    shakeDelayTime = 0,
+
+    shakeWithUnit = false,
+    shakeUnit = nil
 }
 Camera.__index = Camera
 function Camera:new(targetUnit)
@@ -19,6 +22,9 @@ function Camera:new(targetUnit)
     camera.shakeStarted = false
     camera.shakeTimeLeft = 0
     camera.shakeDelayTime = 0
+
+    camera.shakeWithUnit = false
+    camera.shakeUnit = nil 
 
     return camera
 end
@@ -36,6 +42,10 @@ function Camera:Update(deltaTime)
             if self.shakeTimeLeft <= 0 then
                 self.shakeStarted = false
                 self.shakeTimeLeft = 0
+
+                if self.shakeWithUnit then
+                    DCEI.RemoveUnit(self.shakeUnit)
+                end
             end
         end
     end
@@ -54,9 +64,28 @@ function Camera:GetTargetUnit()
     return self.targetUnit
 end
 function Camera:StartShake(shakeTime, shakeDelayTime)
+    if self.shakeStarted or self.shakeDelayTime > 0 then
+        return
+    end
+
     self.shakeTimeLeft = shakeTime
     self.shakeDelayTime = shakeDelayTime
+    if shakeDelayTime <= 0 then
+        self.shakeStarted = true
+    end
+end
+function Camera:StartShakeWithUnit(shakeTime, shakeDelayTime)
+    if self.shakeStarted or self.shakeDelayTime > 0 then
+        return
+    end
+
+    local shakerUnit = DCEI.CreateUnit(0, 0, mod.CAMERA_SHAKER_UNIT, 0, 0)
+
+    self.shakeWithUnit = true
+    self.shakeUnit = shakerUnit
+    self:StartShake(shakeTime, shakeDelayTime)
 end
 
+mod.CAMERA_SHAKER_UNIT = "Camera Shaker Unit"
 mod.Camera = Camera
 return mod

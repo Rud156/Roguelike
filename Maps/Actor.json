@@ -637,6 +637,29 @@
                     }
                 ]
             }
+        },
+        "Camera Shaker Unit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_missile"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "ShakeCamera"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.1
+            }
         }
     }
 }

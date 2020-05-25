@@ -60,9 +60,6 @@ end
 -- #endregion
 
 -- Variables
--- Debug
-local DEBUG_UNIT = "DebugMarkerUnit"
-
 -- Prefabs
 local SOLID_WALL_PREFAB = "Wall"
 local BREAKABLE_WALL_PREFAB = "Breakable Wall"
@@ -142,6 +139,7 @@ local m_playerCollided = false
 local m_dashTimer = 0
 local m_dashVelocity = { x = 0, y = 0 }
 local m_playerMoving = false
+local m_lastFramePlayerHealth = 0
 -- Camera
 local m_camera
 -- UI
@@ -158,6 +156,9 @@ function Start()
     else
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     end
+    local playerHealth = DCEI.GetHealthValue(m_player)
+    m_lastFramePlayerHealth = playerHealth
+
     m_uiRoot = DCEI.GetUiRoot()
     m_camera = Camera:new(m_player)
 
@@ -232,6 +233,14 @@ function Update()
 
     MakePlayerLookTowardsNearestEnemy()
     m_playerCollided = false
+
+    if m_player ~= nil then
+        local playerHealth = DCEI.GetHealthValue(m_player)
+        if m_lastFramePlayerHealth > playerHealth then
+            m_camera:StartShakeWithUnit(1, 0)
+        end
+        m_lastFramePlayerHealth = playerHealth
+    end
 end
 
 -- #endregion LifeCycle Functions
