@@ -68,6 +68,9 @@ local COLLECTIBLES = {
     { itemType = 1, itemPrefab = "Collectible Test 2", itemImage = "icon_affinity_gold" }
 }
 
+-- Debug
+local USE_KEYBOARD = true
+
 -- Public Variables
 -- Room
 local RoomSize = 10
@@ -140,6 +143,10 @@ function Start()
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
+    if USE_KEYBOARD then
+        DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseUpEvent)
+        DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseUpEvent)
+    end
 
     ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
@@ -289,15 +296,19 @@ function HandleJoystickButtonClicked()
     if buttonEvent ~= 1 then
         return
     end
-
-    local mousePosition = DCEI.GetMousePosition2D()
-
-    if buttonId == 0 then
-        LaunchPlayerLightAttack(mousePosition)
-    elseif buttonId == 1 then
-        LaunchPlayerHeavyAttack(mousePosition)
-    elseif buttonId == 2 then
-        MakePlayerDodgeAndRoll()
+    
+    if not USE_KEYBOARD then
+        if buttonId == 0 then
+            LaunchPlayerLightAttack()
+        elseif buttonId == 1 then
+            LaunchPlayerHeavyAttack()
+        elseif buttonId == 2 then
+            MakePlayerDodgeAndRoll()
+        end
+    else
+        if buttonId == 0 then
+            MakePlayerDodgeAndRoll()
+        end
     end
 end
 -- Joystick Events
@@ -309,6 +320,24 @@ function HandleMouseDown(mousePosition)
     end
 
     DCEI.Move(m_player, mousePosition.x, mousePosition.y)
+end
+
+function HandleLeftMouseUpEvent()
+    if m_player == nil then
+        return
+    end
+
+    DCEI.LogMessage("Left Button Clicked")
+
+    LaunchPlayerLightAttack()
+end
+
+function HandleRightMouseUpEvent()
+    if m_player == nil then
+        return
+    end
+
+    LaunchPlayerHeavyAttack()
 end
 -- Mouse Events
 
@@ -477,6 +506,9 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
+
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
 
@@ -506,6 +538,7 @@ function UpdatePlayerDashMovement(deltaTime)
         playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
 
         DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
+        DCEI.Move(m_player, playerPosition.x, playerPosition.y)
     end
 end
 -- #endregion Player Functions
