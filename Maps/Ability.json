@@ -13,9 +13,9 @@
                 "arc": 60
             },
             "cost": {
-                "mana": 0
+                "mana": 30
             },
-            "canCastWhileMoving": false
+            "canCastWhileMoving": true
         },
         "Player Character Melee Attack 1 Ability": {
             "effect": "Player Character Melee Attack 1 Search",
@@ -104,6 +104,15 @@
             "canCastWhileMoving": true,
             "targetFilter": {
                 "enemy": 0
+            }
+        },
+        "_Ability_Effect_Hobgoblin": {
+            "abilityType": 0,
+            "effect": "_Attack_Search_Hobgoblin",
+            "stats": {
+                "prepTime": 1,
+                "finishTime": 1,
+                "period": 0.5
             }
         }
     }
