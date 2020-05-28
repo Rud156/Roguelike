@@ -55,14 +55,6 @@
                 }
             }
         },
-        "DebugMarkerUnit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "arrowtower_rank03"
-                }
-            }
-        },
         "Doorway": {
             "unitActor": {
                 "resource": {
@@ -659,6 +651,14 @@
                     }
                 },
                 "modelScale": 1.5
+            }
+        },
+        "Debug Marker Unit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_rank03"
+                }
             }
         }
     }
