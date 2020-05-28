@@ -283,6 +283,11 @@ function HandleJoystickMoved()
 end
 
 function HandleJoystickReleased()
+    -- When Dashing the Player cannot move normally
+    if m_player == nil or m_dashTimer > 0 then
+        return
+    end
+
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     m_playerMoving = false
 
@@ -326,8 +331,6 @@ function HandleLeftMouseUpEvent()
     if m_player == nil then
         return
     end
-
-    DCEI.LogMessage("Left Button Clicked")
 
     LaunchPlayerLightAttack()
 end
