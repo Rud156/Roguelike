@@ -6,7 +6,8 @@
             "Mods/InventoryMod",
             "Mods/EnemyMod",
             "Mods/RoomMod",
-            "Mods/CameraMod"
+            "Mods/CameraMod",
+            "Mods/UtilClassMod"
         ]
     },
     "triggerSettings": {

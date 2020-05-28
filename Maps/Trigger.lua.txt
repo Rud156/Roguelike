@@ -5,6 +5,7 @@ local InventoryMod = GameModules["Mods/InventoryMod"]
 local EnemyMod = GameModules["Mods/EnemyMod"]
 local RoomMod = GameModules["Mods/RoomMod"]
 local CameraMod = GameModules["Mods/CameraMod"]
+local UtilClassMod = GameModules["Mods/UtilClassMod"]
 
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
@@ -20,44 +21,10 @@ RoomMod.MultiAttackEnemy = MultiAttackEnemy
 local RoomData = RoomMod.RoomData
 
 local Camera = CameraMod.Camera
+
+local Rect = UtilClassMod.Rect
 -- #endregion Mods and Includes
 
--- TODO: Maybe shift util class to another file
--- #region Rectangle Class
-Rect = { x = 0, y = 0, width = 0, height = 0 }
-Rect.__index = Rect
-function Rect:new(x, y, width, height)
-    local rect = {}
-    setmetatable(rect, Rect)
-    
-    rect.x = x
-    rect.y = y
-    rect.width = width
-    rect.height = height
-
-    return rect
-end
-function Rect:center()
-    local xPosition = self.x + self.width / 2.0
-    local yPosition = self.y + self.height / 2.0
-
-    return xPosition, yPosition
-end
-function Rect:topLeft()
-    return self.x, self.y
-end
-function Rect:bottomRight()
-    return self.x + self.width, self.y + self.height
-end
-function Rect:overlaps(rect)
-    return self.x < rect.x + rect.width and self.x + self.width > rect.x and
-            self.y < rect.y + rect.height and self.y + self.height > rect.y
-end
-function Rect:contains(xPosition, yPosition)
-    return self.x <= xPosition and self.x + self.width >= xPosition and 
-            self.y <= yPosition and self.y + self.height >= yPosition
-end
--- #endregion
 
 -- Variables
 -- Prefabs

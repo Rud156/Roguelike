@@ -1,6 +1,8 @@
 local ArcadeCore = GameModules["Arcade/Core"]
 local mod = {}
 
+local ROOM_ENTRY_DETECT_OFFSET = 2
+
 -- #region Room Data Class
 local RoomData = { 
     rect = nil, 
@@ -128,7 +130,7 @@ function RoomData:IsPlayerInRoom(player)
     end
 
     local playerPosition = DCEI.GetUnitPosition2D(player)
-    if self.rect:contains(playerPosition.x, playerPosition.y) then
+    if self.rect:containsWithOffset(playerPosition.x, playerPosition.y, ROOM_ENTRY_DETECT_OFFSET) then
         self:InitializePlayerEntered()
     end
 end

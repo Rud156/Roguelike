@@ -18,6 +18,23 @@
                 "type": 1
             }
         },
+        "Camera Shaker Unit": {
+            "baseUnit": "",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "ground": false,
+                    "selectable": false,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 1000
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
         "Collectible Test 1": {
             "baseUnit": "_CUnit",
             "components": {
@@ -40,6 +57,10 @@
         "DebugMarkerUnit": {
             "baseUnit": "_CBuilding",
             "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
                 "behavior": {
                     "behaviorType": 0
                 }
@@ -240,23 +261,6 @@
                 },
                 "health": {
                     "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
-        "Camera Shaker Unit": {
-            "baseUnit": "",
-            "components": {
-                "unitStats": {
-                    "immortal": true,
-                    "ground": false,
-                    "selectable": false,
-                    "ignoreCollision": true
-                },
-                "health": {
-                    "maxHealth": 1000
                 },
                 "behavior": {
                     "behaviorType": 0

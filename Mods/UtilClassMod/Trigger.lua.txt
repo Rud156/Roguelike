@@ -1,0 +1,89 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+local mod = {}
+
+local UTIL_DEBUG_UNIT = "DebugMarkerUnit"
+
+-- #region Rectangle Class
+local Rect = { x = 0, y = 0, width = 0, height = 0, debugUnits = {} }
+Rect.__index = Rect
+function Rect:new(x, y, width, height)
+    local rect = {}
+    setmetatable(rect, Rect)
+    
+    rect.x = x
+    rect.y = y
+    rect.width = width
+    rect.height = height
+    debugUnits = {}
+
+    return rect
+end
+function Rect:center()
+    local xPosition = self.x + self.width / 2.0
+    local yPosition = self.y + self.height / 2.0
+
+    return xPosition, yPosition
+end
+function Rect:topLeft()
+    return self.x, self.y + self.height
+end
+function Rect:bottomRight()
+    return self.x + self.width, self.y
+end
+function Rect:overlaps(rect)
+    return self.x < rect.x + rect.width and self.x + self.width > rect.x and
+            self.y < rect.y + rect.height and self.y + self.height > rect.y
+end
+function Rect:contains(xPosition, yPosition)
+    return self.x <= xPosition and self.x + self.width >= xPosition and 
+            self.y <= yPosition and self.y + self.height >= yPosition
+end
+function Rect:containsWithOffset(xPosition, yPosition, sideOffset)
+    local startX = self.x + sideOffset / 2.0
+    local startY = self.y + sideOffset / 2.0
+    local newWidth = self.width - sideOffset
+    local newHeight = self.height - sideOffset
+
+    return startX <= xPosition and startX + newWidth >= xPosition and
+            startY <= yPosition and startY + newHeight >= yPosition
+end
+function Rect:drawDebugRect()
+    local bottomLeft = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, self.x, self.y)
+    local bottomRight = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, self.x + self.width, self.y)
+    local topLeft = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, self.x, self.y + self.height)
+    local topRight = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, self.x + self.width, self.y + self.height)
+
+    table.insert(self.debugUnits, bottomLeft)
+    table.insert(self.debugUnits, bottomRight)
+    table.insert(self.debugUnits, topLeft)
+    table.insert(self.debugUnits, topRight)
+end
+function Rect:drawDebugRectWithOffset(sideOffset)
+    local startX = self.x + sideOffset / 2.0
+    local startY = self.y + sideOffset / 2.0
+    local newWidth = self.width - sideOffset
+    local newHeight = self.height - sideOffset
+
+    local bottomLeft = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, startX, startY)
+    local bottomRight = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, startX + newWidth, startY)
+    local topLeft = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, startX, startY + newHeight)
+    local topRight = DCEI.CreateUnit(0, 0, UTIL_DEBUG_UNIT, startX + newWidth, startY + newHeight)
+
+    table.insert(self.debugUnits, bottomLeft)
+    table.insert(self.debugUnits, bottomRight)
+    table.insert(self.debugUnits, topLeft)
+    table.insert(self.debugUnits, topRight)
+end
+function Rect:clearDebugUnits()
+    for i, debugUnit in ipairs(self.debugUnits) do
+        if ArcadeCore.UnitIsAlive(debugUnit) then
+            DCEI.RemoveUnit(debugUnit)
+        end
+    end
+
+    self.debugUnits = {}
+end
+-- #endregion
+
+mod.Rect = Rect
+return mod
