@@ -240,6 +240,11 @@
                     "Remove Source"
                 ]
             }
+        },
+        "StopMovement": {
+            "stop": {
+                "whichUnit": 1
+            }
         }
     }
 }

@@ -23,6 +23,9 @@
             "Collectible Test 2",
             "Player Character Melee",
             "Camera Shaker Unit"
+        ],
+        "usedEffects": [
+            "StopMovement"
         ]
     }
 }

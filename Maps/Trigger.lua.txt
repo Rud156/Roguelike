@@ -50,6 +50,8 @@ local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
 local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 
+local STOP_MOVEMENT = "StopMovement"
+
 -- Player Ranged
 local PLAYER_NAME = "Player Character"
 local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
@@ -288,10 +290,8 @@ function HandleJoystickReleased()
         return
     end
 
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
     m_playerMoving = false
-
-    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
+    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
 end
 
 function HandleJoystickButtonClicked()
@@ -505,9 +505,6 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
 
@@ -516,6 +513,8 @@ function MakePlayerDodgeAndRoll()
     m_dashVelocity.x = xVelocity
     m_dashVelocity.y = yVelocity
     m_dashTimer = PlayerDashTimer
+
+    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
 end
 
 function UpdatePlayerDashMovement(deltaTime)
@@ -537,7 +536,7 @@ function UpdatePlayerDashMovement(deltaTime)
         playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
 
         DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
-        DCEI.Move(m_player, playerPosition.x, playerPosition.y)
+        DCEI.CreateEffect(STOP_MOVEMENT, m_player)
     end
 end
 -- #endregion Player Functions
