@@ -284,6 +284,10 @@ function HandleJoystickMoved()
         return
     end
 
+    if m_playerCooldownTimer > 0 and UseMeleePlayer then
+        return
+    end
+
     local axes = DCEI.TriggeringJoystickAxes
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     m_playerMoving = true
@@ -495,6 +499,8 @@ function LaunchPlayerRangedHeavyAttack()
 end
 
 function LaunchPlayerMeleeLightAttack()
+    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
+
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
@@ -507,6 +513,8 @@ function LaunchPlayerMeleeLightAttack()
 end
 
 function LaunchPlayerMeleeHeavyAttack()
+    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
+    
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2_MELEE, m_player, playerPosition.x, playerPosition.y)
 
