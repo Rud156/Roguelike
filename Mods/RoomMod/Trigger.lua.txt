@@ -212,6 +212,36 @@ function RoomData:SpawnNextWave()
         end
     end
 
+    local enemyCount = #self.enemies
+    if enemyCount == 0 then
+        DCEI.LogMessage("0 enemies were spawned. Force spawning 1 enemy")
+
+        local randomPositionIndex = math.random(1, #self.enemyPositions)
+        local randomPosition = self.enemyPositions[randomPositionIndex]
+        local randomEnemyIndex = math.random(1, #self.enemyPrefabs)
+        local randomEnemy = self.enemyPrefabs[randomEnemyIndex]
+        local enemy
+
+        if randomEnemy.isMulti then
+            enemy = mod.MultiAttackEnemy:new(
+                self,
+                randomEnemy.name, randomEnemy.blankUnitName,
+                5,
+                randomEnemy.ability, 2.5,
+                enemyPosition.x, enemyPosition.y
+            )
+        else
+            enemy = mod.SingleAttackEnemy:new(
+                self,
+                randomEnemy.name, randomEnemy.ability,
+                1,
+                enemyPosition.x, enemyPosition.y
+            )
+        end
+        
+        table.insert(self.enemies, enemy)
+    end
+
     self.currentWaveCount = self.currentWaveCount + 1
 end
 function RoomData:MarkRoomCleared()
