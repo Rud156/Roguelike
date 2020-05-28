@@ -25,7 +25,7 @@
             "Camera Shaker Unit"
         ],
         "usedEffects": [
-            "StopMovement"
+            "Stop Movement"
         ]
     }
 }

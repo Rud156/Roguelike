@@ -50,7 +50,7 @@ local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
 local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 
-local STOP_MOVEMENT = "StopMovement"
+local STOP_MOVEMENT = "Stop Movement"
 
 -- Player Ranged
 local PLAYER_NAME = "Player Character"

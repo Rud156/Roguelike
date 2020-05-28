@@ -1,7 +1,7 @@
 local ArcadeCore = GameModules["Arcade/Core"]
 local mod = {}
 
-local UTIL_DEBUG_UNIT = "DebugMarkerUnit"
+local UTIL_DEBUG_UNIT = "Debug Marker Unit"
 
 -- #region Rectangle Class
 local Rect = { x = 0, y = 0, width = 0, height = 0, debugUnits = {} }

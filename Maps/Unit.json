@@ -54,18 +54,6 @@
                 }
             }
         },
-        "DebugMarkerUnit": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "immortal": true,
-                    "selectable": false
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
         "Doorway": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -261,6 +249,18 @@
                 },
                 "health": {
                     "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "Debug Marker Unit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
                 },
                 "behavior": {
                     "behaviorType": 0

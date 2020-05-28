@@ -241,7 +241,7 @@
                 ]
             }
         },
-        "StopMovement": {
+        "Stop Movement": {
             "stop": {
                 "whichUnit": 1
             }
