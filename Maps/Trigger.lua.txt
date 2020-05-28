@@ -514,7 +514,7 @@ end
 
 function LaunchPlayerMeleeHeavyAttack()
     DCEI.CreateEffect(STOP_MOVEMENT, m_player)
-    
+
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2_MELEE, m_player, playerPosition.x, playerPosition.y)
 
@@ -528,6 +528,10 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
+    if m_dashTimer > 0 then
+        return
+    end
+
     -- To show UI
     DCEI.CastAbility(PLAYER_DASH_ABILITY, m_player, m_player)
 
@@ -536,6 +540,9 @@ function MakePlayerDodgeAndRoll()
         DCEI.LogMessage("Not enough mana for dash")
         return
     end
+
+    local updatedMana = playerMana - PlayerDashMana
+    DCEI.SetManaValue(m_player, updatedMana)
 
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
