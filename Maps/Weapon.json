@@ -1,16 +1,1 @@
-{
-    "weapons": {
-        "_Weapon_Hobgoblin": {
-            "effectName": "_Attack_Search_Hobgoblin",
-            "independentPreAndBackSwing": false,
-            "stats": {
-                "preSwing": 0.8,
-                "backSwing": 0.5,
-                "range": 0
-            },
-            "targetFilter": {
-                "neutral": 2
-            }
-        }
-    }
-}
+{}

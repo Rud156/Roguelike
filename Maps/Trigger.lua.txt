@@ -241,7 +241,7 @@ function HandleUnitDied()
     end
 
     local unitName = DCEI.UnitName(unit)
-    if unitName == PLAYER_NAME then
+    if unitName == PLAYER_NAME or unitName == PLAYER_NAME_MELEE then
         DisplayGameOverSequence()
     end
 end

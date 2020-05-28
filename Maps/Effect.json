@@ -245,31 +245,6 @@
             "stop": {
                 "whichUnit": 1
             }
-        },
-        "_Attack_Damage_Hobgoblin": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 50
-            }
-        },
-        "_Attack_Search_Hobgoblin": {
-            "areaSearch": {
-                "debugDraw": true,
-                "areaSearchType": {
-                    "rectangle": {
-                        "width": 0.8,
-                        "length": 1
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "_Attack_Damage_Hobgoblin",
-                "offset": {
-                    "forward": 0.5
-                }
-            }
         }
     }
 }
