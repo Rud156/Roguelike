@@ -24,7 +24,7 @@
                 "finishTime": 0.3,
                 "period": 0.5
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "Player Character Melee Attack 2 Ability": {
             "effect": "Player Character Melee Attack 2 Search",
@@ -36,7 +36,7 @@
             "cost": {
                 "mana": 50
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "Player Character Weapon 1 Ability": {
             "abilityType": 1,

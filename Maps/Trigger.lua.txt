@@ -96,7 +96,7 @@ local PlayerSpawnPosition = { x = 27, y = 27 }
 local PlayerDashTimer = 0.3
 local PlayerDashSpeed = 5
 local PlayerDashMana = 30
-local useMeleePlayer = true -- TODO: Change this as required
+local UseMeleePlayer = true -- TODO: Change this as required
 -- Mouse
 local SingleClickTriggerTime = 0.3
 
@@ -121,7 +121,7 @@ local m_collectibleItems = {} -- TODO: Check if there is a better way...
 function Start()
     math.randomseed(os.time())
 
-    if useMeleePlayer then
+    if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     else
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
@@ -137,20 +137,18 @@ function Start()
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 
-    -- DCEI.TriggerAddMouseDownEvent(0, HandleMouseDown)
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
     DCEI.TriggerAddJoystickReleaseEvent(HandleJoystickReleased)
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
-    if USE_KEYBOARD then
-        DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseUpEvent)
-        DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseUpEvent)
-    end
+    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseUpEvent)
+    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseUpEvent)
 
     ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
     CreateInvertoryUI()
+    CreateDebugUI()
 
     local xCounter = 0
     local yCounter = 0
@@ -319,16 +317,8 @@ end
 -- Joystick Events
 
 -- Mouse Events
-function HandleMouseDown(mousePosition)
-    if m_player == nil or m_dashTimer > 0 then
-        return
-    end
-
-    DCEI.Move(m_player, mousePosition.x, mousePosition.y)
-end
-
 function HandleLeftMouseUpEvent()
-    if m_player == nil then
+    if m_player == nil or not USE_KEYBOARD then
         return
     end
 
@@ -336,7 +326,7 @@ function HandleLeftMouseUpEvent()
 end
 
 function HandleRightMouseUpEvent()
-    if m_player == nil then
+    if m_player == nil or not USE_KEYBOARD then
         return
     end
 
@@ -373,7 +363,11 @@ function ResetGameState()
         room:Reset()
     end
 
-    m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    if UseMeleePlayer then
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    else
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+    end
     m_camera:UpdateTarget(m_player)
     CreatePlayerUIElements()
 end
@@ -407,7 +401,7 @@ function LaunchPlayerLightAttack()
         return
     end
 
-    if useMeleePlayer then
+    if UseMeleePlayer then
         LaunchPlayerMeleeLightAttack()
     else
         LaunchPlayerRangedLightAttack()
@@ -420,7 +414,7 @@ function LaunchPlayerHeavyAttack()
         return
     end
 
-    if useMeleePlayer then
+    if UseMeleePlayer then
         LaunchPlayerMeleeHeavyAttack()
     else
         LaunchPlayerRangedHeavyAttack()
@@ -611,19 +605,49 @@ function CreateInvertoryUI()
     m_inventory = inventory
 end
 
+function CreateDebugUI()
+    local horizontalStack = DCEI.NewHStack(m_uiRoot)
+    DCEI.SetTopAlignmentInParent(horizontalStack)
+    DCEI.SetLeftAlignmentInParent(horizontalStack)
+    DCEI.SetPaddingTop(horizontalStack, 21)
+    DCEI.SetPaddingLeft(horizontalStack, 21)
+    DCEI.SetSpacing(horizontalStack, 14)
+
+    local characterButton = DCEI.NewButton(horizontalStack)
+    DCEI.SetMinSize(characterButton, 50, 50)
+    DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
+    DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
+    
+    local keyboardButton = DCEI.NewButton(horizontalStack)
+    DCEI.SetMinSize(keyboardButton, 50, 50)
+    DCEI.SetBackgroundImage(keyboardButton, "pointy_finger")
+    DCEI.SetOnClickCallback(keyboardButton, HandleKeyboardMouseSwitch)
+end
+
 function HandleInventorySlotClicked(itemType)
     DCEI.LogMessage("Inventory Item: " .. itemType)
 end
 
-function HandleLeftButtonClick()
-    DCEI.LogMessage("Left Button Clicked")
-    MakePlayerDodgeAndRoll()
+function HandleCharacterSwitch()
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+
+    if m_player ~= nil then
+        DCEI.RemoveUnit(m_player)
+    end
+
+    if UseMeleePlayer then
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, playerPosition.x, playerPosition.y)
+    else
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, playerPosition.x, playerPosition.y)
+    end
+
+    UseMeleePlayer = not UseMeleePlayer
+    m_camera:UpdateTarget(m_player)
+    CreatePlayerUIElements()
 end
 
-function HandleRightButtonClick()
-    DCEI.LogMessage("Right Button Clicked")
-    local mousePosition = DCEI.GetMousePosition2D()
-    LaunchPlayerLightAttack(mousePosition)
+function HandleKeyboardMouseSwitch()
+    USE_KEYBOARD = not USE_KEYBOARD
 end
 
 -- #endregion
