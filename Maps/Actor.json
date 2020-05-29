@@ -55,14 +55,6 @@
                 }
             }
         },
-        "DebugMarkerUnit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "arrowtower_rank03"
-                }
-            }
-        },
         "Doorway": {
             "unitActor": {
                 "resource": {
@@ -661,44 +653,12 @@
                 "modelScale": 1.5
             }
         },
-        "_Enemy_Hobgoblin": {
-            "parent": "_StandardUnit DecayOnDeath",
+        "Debug Marker Unit": {
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "hobgoblin"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Ability_Effect_Hobgoblin"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Ability_Effect_Hobgoblin"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "modelScale": 1.5
+                    "name": "arrowtower_rank03"
+                }
             }
         }
     }

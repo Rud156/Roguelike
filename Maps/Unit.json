@@ -54,18 +54,6 @@
                 }
             }
         },
-        "Debug Marker Unit": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "immortal": true,
-                    "selectable": false
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
         "Doorway": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -127,7 +115,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 150
+                    "maxHealth": 500
                 },
                 "mana": {
                     "maxMana": 100,
@@ -267,39 +255,17 @@
                 }
             }
         },
-        "_Enemy_Hobgoblin": {
-            "baseUnit": "_CUnit",
+        "Debug Marker Unit": {
+            "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 50
-                },
-                "movement": {
-                    "moveSpeed": 1
-                },
-                "turning": {
-                    "turningSpeed": 900
+                    "immortal": true,
+                    "selectable": false
                 },
                 "behavior": {
-                    "behaviorType": 1
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 5,
-                    "resetRadius": 2
+                    "behaviorType": 0
                 }
-            },
-            "references": {
-                "weaponList": [
-                    "_Weapon_Hobgoblin"
-                ],
-                "abilityList": [
-                    "_Ability_Effect_Hobgoblin"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
+            }
         }
     }
 }
