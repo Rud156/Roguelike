@@ -163,7 +163,7 @@
                         "actions": [
                             {
                                 "playAnimation": {
-                                    "clipId": 4
+                                    "clipId": 3
                                 }
                             }
                         ]
@@ -177,7 +177,7 @@
                         "actions": [
                             {
                                 "stopAnimation": {
-                                    "clipId": 4
+                                    "clipId": 3
                                 }
                             }
                         ]
@@ -214,34 +214,6 @@
                             {
                                 "playAnimation": {
                                     "clipId": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
                                 }
                             }
                         ]
@@ -344,6 +316,34 @@
                             {
                                 "create": {
                                     "actor": "ShakeCamera"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "Player Character Dash Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "Player Character Dash Ability"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 3
                                 }
                             }
                         ]
