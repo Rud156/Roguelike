@@ -556,7 +556,7 @@
             "unitActor": {
                 "resource": {
                     "type": "None",
-                    "name": "airship_cargo"
+                    "name": ""
                 },
                 "events": [
                     {
