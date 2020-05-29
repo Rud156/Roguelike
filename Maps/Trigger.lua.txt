@@ -56,8 +56,8 @@ local STOP_MOVEMENT = "Stop Movement"
 local PLAYER_NAME = "Player Character"
 local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
 local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
-local PLAYER_WEAPON_1_COOLDOWN = 0.4
-local PLAYER_WEAPON_2_COOLDOWN = 0.4
+local PLAYER_WEAPON_1_COOLDOWN = 0.3
+local PLAYER_WEAPON_2_COOLDOWN = 0.3
 local PLAYER_DASH_ABILITY = "Player Character Dash Ability"
 local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
 
@@ -65,8 +65,8 @@ local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviou
 local PLAYER_NAME_MELEE = "Player Character Melee"
 local PLAYER_WEAPON_1_MELEE = "Player Character Melee Attack 1 Ability"
 local PLAYER_WEAPON_2_MELEE = "Player Character Melee Attack 2 Ability"
-local PLAYER_WEAPON_1_MELEE_COOLDOWN = 0.4
-local PLAYER_WEAPON_2_MELEE_COOLDOWN = 0.7
+local PLAYER_WEAPON_1_MELEE_COOLDOWN = 0.3
+local PLAYER_WEAPON_2_MELEE_COOLDOWN = 0.4
 
 -- Collectibles
 local COLLECTIBLES = {

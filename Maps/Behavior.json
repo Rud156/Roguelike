@@ -28,10 +28,6 @@
             "periodicInterval": 0.01,
             "periodicEffect": "Ranged Enemy Type 1 Search"
         },
-        "Ranged Enemy Type 2 Search Behaviour": {
-            "periodicInterval": 0.01,
-            "periodicEffect": "Ranged Enemy Type 2 Search"
-        },
         "Ranged Enemy Type 2 Blank Behaviour": {
             "behaviorTagArray": [
                 {
@@ -39,6 +35,10 @@
                     "count": 1
                 }
             ]
+        },
+        "Ranged Enemy Type 2 Search Behaviour": {
+            "periodicInterval": 0.01,
+            "periodicEffect": "Ranged Enemy Type 2 Search"
         }
     }
 }
