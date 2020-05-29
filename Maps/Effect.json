@@ -25,7 +25,14 @@
         "Player Character Melee Attack 1 Damage": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 15
+                "damageAmount": 15,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "Player Character Melee Attack 1 Search": {
@@ -46,7 +53,14 @@
         "Player Character Melee Attack 2 Damage": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 30
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "Player Character Melee Attack 2 Search": {
@@ -67,7 +81,14 @@
         "Player Character Weapon 1 Damage": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 10
+                "damageAmount": 10,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "Player Character Weapon 1 Search": {
@@ -97,7 +118,14 @@
         "Player Character Weapon 2 Damage": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 20
+                "damageAmount": 20,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "Player Character Weapon 2 Launch": {

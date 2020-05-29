@@ -31,6 +31,14 @@
         "Ranged Enemy Type 2 Search Behaviour": {
             "periodicInterval": 0.01,
             "periodicEffect": "Ranged Enemy Type 2 Search"
+        },
+        "Ranged Enemy Type 2 Blank Behaviour": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_invincible",
+                    "count": 1
+                }
+            ]
         }
     }
 }

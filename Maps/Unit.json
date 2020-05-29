@@ -226,7 +226,7 @@
                     "ignoreCollision": true
                 },
                 "health": {
-                    "maxHealth": 0
+                    "maxHealth": 1000
                 },
                 "behavior": {
                     "behaviorType": 1
@@ -235,6 +235,9 @@
             "references": {
                 "abilityList": [
                     "Ranged Enemy Type 2 Ability"
+                ],
+                "behaviorList": [
+                    "Ranged Enemy Type 2 Blank Behaviour"
                 ]
             },
             "healthBar": {
