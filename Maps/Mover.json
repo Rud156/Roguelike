@@ -1,20 +1,20 @@
 {
     "movers": {
-        "_PlayerCharacter_LightAttack": {
+        "_Enemy_GoblinChef_Attack": {
             "ballistic": {
-                "speed": 14
-            },
-            "upright": false
+                "speed": 3
+            }
         },
         "_PlayerCharacter_HeavyAttack": {
             "ballistic": {
                 "speed": 7
             }
         },
-        "_Enemy_GoblinChef_Attack": {
+        "_PlayerCharacter_LightAttack": {
             "ballistic": {
-                "speed": 3
-            }
+                "speed": 14
+            },
+            "upright": false
         }
     }
 }

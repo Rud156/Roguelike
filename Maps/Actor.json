@@ -63,13 +63,59 @@
                 "modelScale": 0.1
             }
         },
+        "_Collectible_Test1": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_drow_lord_missile_red"
+                }
+            }
+        },
+        "_Collectible_Test2": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "beartrap"
+                }
+            }
+        },
         "_Enemy_GoblinChef": {
             "parent": "_StandardUnit DecayOnDeath",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "goblinchef"
-                }
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinChef_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinChef_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         },
         "_Enemy_Hobgoblin": {
@@ -337,79 +383,6 @@
                 }
             }
         },
-        "_Wall_BreakableWall": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "darkspire_rank01_base"
-                },
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                }
-            }
-        },
-        "_Wall_Doorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "barracks_rank01"
-                },
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                }
-            }
-        },
-        "_Wall_SolidWall": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "forestworld_castleset_wall_tower"
-                },
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                },
-                "modelScale": 1.5
-            }
-        },
-        "__DebugMarkerUnit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "arrowtower_rank03"
-                }
-            }
-        },
-        "_Collectible_Test1": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_drow_lord_missile_red"
-                }
-            }
-        },
-        "_Collectible_Test2": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "beartrap"
-                }
-            }
-        },
         "_PlayerCharacter_Ranged": {
             "unitActor": {
                 "resource": {
@@ -527,6 +500,63 @@
                             "up": 0.5
                         }
                     }
+                }
+            }
+        },
+        "_Wall_BreakableWall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "darkspire_rank01_base"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
+            }
+        },
+        "_Wall_Doorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_rank01"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
+            }
+        },
+        "_Wall_SolidWall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "forestworld_castleset_wall_tower"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "modelScale": 1.5
+            }
+        },
+        "__DebugMarkerUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_rank03"
                 }
             }
         }

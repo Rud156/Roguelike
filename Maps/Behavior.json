@@ -1,12 +1,9 @@
 {
     "behaviors": {
-        "_Search_PlayerCharacter": {
-            "periodicInterval": 0.01,
-            "periodicEffect": "_Search_PlayerCharacter"
-        },
         "_CollisionDetection_PlayerCharacter": {
             "duration": 0.01
         },
+        "_PlayerCharacter_Movement": {},
         "_PlayerChartacter_Dash": {
             "behaviorTagArray": [
                 {
@@ -15,18 +12,21 @@
                 }
             ]
         },
-        "_PlayerCharacter_Movement": {},
-        "_Search_PlayerCharacter_Ranged_LightAttack": {
+        "_Search_Enemy_GoblinChef": {
             "periodicInterval": 0.01,
-            "periodicEffect": "_Search_PlayerCharacter_Ranged_LightAttack"
+            "periodicEffect": "_Search_Enemy_GoblinChef"
+        },
+        "_Search_PlayerCharacter": {
+            "periodicInterval": 0.01,
+            "periodicEffect": "_Search_PlayerCharacter"
         },
         "_Search_PlayerCharacter_Ranged_HeavyAttack": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_HeavyAttack"
         },
-        "_Search_Enemy_GoblinChef": {
+        "_Search_PlayerCharacter_Ranged_LightAttack": {
             "periodicInterval": 0.01,
-            "periodicEffect": "_Search_Enemy_GoblinChef"
+            "periodicEffect": "_Search_PlayerCharacter_Ranged_LightAttack"
         }
     }
 }

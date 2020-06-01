@@ -17,6 +17,25 @@
                 }
             }
         },
+        "_Collectible_Test1": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "selectable": true
+                }
+            }
+        },
+        "_Collectible_Test2": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            }
+        },
         "_Enemy_GoblinChef": {
             "baseUnit": "_CUnit",
             "components": {
@@ -127,6 +146,39 @@
                 "type": 0
             }
         },
+        "_PlayerCharacter_Ranged": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "mana": {
+                    "maxMana": 5,
+                    "regeneration": 1
+                },
+                "turning": {
+                    "turningSpeed": 720
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_PlayerCharacter_Ranged_LightAttack",
+                    "_PlayerCharacter_Ranged_HeavyAttack",
+                    "_PlayerCharacter_Dash"
+                ],
+                "behaviorList": [
+                    "_Search_PlayerCharacter"
+                ]
+            },
+            "hideUnitStatusBar": true,
+            "healthBar": {
+                "type": 0
+            }
+        },
         "_Wall_BreakableWall": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -192,58 +244,6 @@
                 "behavior": {
                     "behaviorType": 0
                 }
-            }
-        },
-        "_Collectible_Test1": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "selectable": true
-                }
-            }
-        },
-        "_Collectible_Test2": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                }
-            }
-        },
-        "_PlayerCharacter_Ranged": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 100
-                },
-                "mana": {
-                    "maxMana": 5,
-                    "regeneration": 1
-                },
-                "turning": {
-                    "turningSpeed": 720
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "_PlayerCharacter_Ranged_LightAttack",
-                    "_PlayerCharacter_Ranged_HeavyAttack",
-                    "_PlayerCharacter_Dash"
-                ],
-                "behaviorList": [
-                    "_Search_PlayerCharacter"
-                ]
-            },
-            "hideUnitStatusBar": true,
-            "healthBar": {
-                "type": 0
             }
         }
     }

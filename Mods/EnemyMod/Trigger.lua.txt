@@ -1,16 +1,19 @@
 -- Constants
 local GOBLIN_CHEF = "_Enemy_GoblinChef"
 local GOBLIN_CHEF_ATTACK = "_Enemy_GoblinChef_Attack"
-local GOBLIN_CHEF_ATTACK_RANGE = 6
-local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.1
+local GOBLIN_CHEF_ATTACK_RANGE = 3
+local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.5
 local GOBLIN_CHEF_SHOT_COUNT = 3
 local GOBLIN_CHEF_ATTACK_COOLDOWN = 3
+local GOBLIN_CHEF_MIN_CLOSEST_DISTANCE = 2.5
 
 local GOBLIN_HOB = "_Enemy_Hobgoblin"
 local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
-local GOBLIN_HOB_ATTACK_RANGE = 1.5
+local GOBLIN_HOB_ATTACK_RANGE = 1
 local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
+local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
 
+local STOP_MOVEMENT = "__StopMovement"
 
 local mod = {}
 
@@ -50,20 +53,26 @@ function GoblinChef:Update(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
         self:AttackPlayer(deltaTime, playerPosition)
     end
-    
+end
+function GoblinChef:TargetPlayer(deltaTime, playerPosition)
+    self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
 
+    if distanceFromPlayer > GOBLIN_CHEF_MIN_CLOSEST_DISTANCE then
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+    end
+
+    -- Switch to Attack State only when moving normally
     if distanceFromPlayer <= GOBLIN_CHEF_ATTACK_RANGE and self.attackCooldownTimer <= 0 then
         self.currentShotCount = GOBLIN_CHEF_SHOT_COUNT
         self.currentTimeBetweenAttacks = 0
         self.attackCooldownTimer = 0
+
+        local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+        DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
         self:SetEnemyState(1)
     end
-end
-function GoblinChef:TargetPlayer(deltaTime, playerPosition)
-    self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
-    DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
 end
 function GoblinChef:AttackPlayer(deltaTime, playerPosition)
     self:LookAtPlayer(playerPosition)
@@ -75,7 +84,7 @@ function GoblinChef:AttackPlayer(deltaTime, playerPosition)
         self.currentTimeBetweenAttacks = GOBLIN_CHEF_TIME_BETWEEN_ATTACKS
     end
 
-    if self.currentShotCount <= 0 then
+    if self.currentShotCount < 0 then
         self.attackCooldownTimer = GOBLIN_CHEF_ATTACK_COOLDOWN
         self:SetEnemyState(0)
     end
@@ -131,17 +140,20 @@ function HobGoblin:Update(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
         self:WaitAfterAttack(deltaTime, playerPosition)
     end
-
+end
+function HobGoblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
 
+    if distanceFromPlayer > GOBLIN_HOB_MIN_CLOSEST_DISTANCE then
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+    end
+    
+    -- Switch to Attack State only when moving normally
     if distanceFromPlayer <= GOBLIN_HOB_ATTACK_RANGE and self.attackWaitTimer <= 0 then
         self.attackWaitTimer = 0
         self:AttackPlayer(playerPosition)
     end
-end
-function HobGoblin:TargetPlayer(deltaTime, playerPosition)
-    DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
 end
 function HobGoblin:WaitAfterAttack(deltaTime, playerPosition)
     self.attackWaitTimer = self.attackWaitTimer - deltaTime
