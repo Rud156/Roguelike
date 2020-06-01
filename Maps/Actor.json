@@ -83,7 +83,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
-                                "ability": "_Enemy_Hobgoblin"
+                                "ability": "_Enemy_Hobgoblin_Attack"
                             }
                         },
                         "actions": [
@@ -97,7 +97,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStop": {
-                                "ability": "_Enemy_Hobgoblin"
+                                "ability": "_Enemy_Hobgoblin_Attack"
                             }
                         },
                         "actions": [

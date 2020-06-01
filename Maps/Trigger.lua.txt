@@ -12,12 +12,13 @@ local InventorySlot = InventoryMod.InventorySlot
 local InventoryItem = InventoryMod.InventoryItem
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
-local SingleAttackEnemy = EnemyMod.SingleAttackEnemy
-local MultiAttackEnemy = EnemyMod.MultiAttackEnemy
+EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
+local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
+local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
-RoomMod.SingleAttackEnemy = SingleAttackEnemy
-RoomMod.MultiAttackEnemy = MultiAttackEnemy
+RoomMod.EnemyHobGoblin = EnemyHobGoblin
+RoomMod.EnemyGoblinChef = EnemyGoblinChef
 local RoomData = RoomMod.RoomData
 
 local Camera = CameraMod.Camera
@@ -31,17 +32,9 @@ local Rect = UtilClassMod.Rect
 local SOLID_WALL_PREFAB = "_Wall_SolidWall"
 local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
 local DOORWAY = "_Wall_Doorway"
+-- 0: Goblin Chef, 1: Hob Goblin
 local ENEMY_PREFABS = {
-    {
-        name = "_Enemy_GoblinChef",
-        ability = "_Ability_Enemy_GoblinChef",
-        isMulti = false
-    },
-    {
-        name = "_Enemy_Hobgoblin",
-        ability = "_Ability_Enemy_Hobgoblin",
-        isMulti = false
-    }
+    0, 1
 }
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
@@ -182,9 +175,7 @@ function Start()
                 rect, RoomTemplates[randomPatternIndex],
                 randomWaveCount,
                 SOLID_WALL_PREFAB, BREAKABLE_WALL_PREFAB, DOORWAY,
-                ENEMY_PREFABS, COLLECTIBLE_PREFAB,
-                ExtensionFunction.VectorDistance,
-                MultiAttackEnemy, SingleAttackEnemy
+                ENEMY_PREFABS, COLLECTIBLE_PREFAB
             )
             table.insert(m_rooms, roomData)
 

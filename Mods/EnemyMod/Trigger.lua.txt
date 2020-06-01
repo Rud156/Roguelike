@@ -1,169 +1,185 @@
+-- Constants
+local GOBLIN_CHEF = "_Enemy_GoblinChef"
+local GOBLIN_CHEF_ATTACK = "_Enemy_GoblinChef_Attack"
+local GOBLIN_CHEF_ATTACK_RANGE = 6
+local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.1
+local GOBLIN_CHEF_SHOT_COUNT = 3
+local GOBLIN_CHEF_ATTACK_COOLDOWN = 3
+
+local GOBLIN_HOB = "_Enemy_Hobgoblin"
+local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
+local GOBLIN_HOB_ATTACK_RANGE = 1.5
+local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
+
+
 local mod = {}
 
--- #region Single Attack Enemy
-local ENEMY_REACHED_DISTANCE = 3
-local SingleAttackEnemy = {
+-- #region Goblin Chef Enemy
+local GoblinChef = {
     -- Units
     room = nil,
     unit = nil,
+    
+    enemyState = 0, -- 0: Targetting Movement, 1: Attacking
 
-    -- Static Data
-    attackName = "",
-
-    -- Movement/Attack
-    targetPosition = nil,
-    attackTimer = 0,
-    currentTimer = 0
+    -- Attack
+    attackCooldownTimer = 0,
+    currentTimeBetweenAttacks = 0,
+    currentShotCount = 0
 }
-SingleAttackEnemy.__index = SingleAttackEnemy
-function SingleAttackEnemy:new(room, enemyName, attackName, attackTimer, xPosition, yPosition)
-    local singleAttackEnemy = {}
-    setmetatable(singleAttackEnemy, SingleAttackEnemy)
+GoblinChef.__index = GoblinChef
+function GoblinChef:new(room, xPosition, yPosition)
+    local goblinChef = {}
+    setmetatable(goblinChef, GoblinChef)
 
-    local enemyUnit = DCEI.CreateUnit(-1, -1, enemyName, xPosition, yPosition)
-    singleAttackEnemy.room = room
-    singleAttackEnemy.unit = enemyUnit
+    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_CHEF, xPosition, yPosition)
+    goblinChef.room = room
+    goblinChef.unit = enemyUnit
 
-    singleAttackEnemy.attackName = attackName
+    goblinChef.enemyState = 0
 
-    singleAttackEnemy.targetPosition = nil
-    singleAttackEnemy.attackTimer = attackTimer
-    singleAttackEnemy.currentTimer = attackTimer
+    goblinChef.attackCooldownTimer = 0
+    goblinChef.currentTimeBetweenAttacks = 0
+    goblinChef.currentShotCount = 0
 
-    return singleAttackEnemy
+    return goblinChef
 end
-function SingleAttackEnemy:Update(deltaTime, playerPosition)
-    if self.targetPosition == nil then
-        self:SetRandomEnemyMovePosition()
-    else
-        local currentPosition = DCEI.GetUnitPosition2D(self.unit)
-        local distance = mod.VectorDistance(self.targetPosition, currentPosition)
-        if distance < ENEMY_REACHED_DISTANCE then
-            self:SetRandomEnemyMovePosition()
-        end
+function GoblinChef:Update(deltaTime, playerPosition)
+    if self.enemyState == 0 then
+        self:TargetPlayer(deltaTime, playerPosition)
+    elseif self.enemyState == 1 then
+        self:AttackPlayer(deltaTime, playerPosition)
     end
+    
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
 
-    DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
-
-    self.currentTimer = self.currentTimer - deltaTime
-    if self.currentTimer <= 0 then
-        DCEI.CastAbilityAtPosition(self.attackName, self.unit, playerPosition.x, playerPosition.y)
-        self.currentTimer = self.attackTimer
+    if distanceFromPlayer <= GOBLIN_CHEF_ATTACK_RANGE and self.attackCooldownTimer <= 0 then
+        self.currentShotCount = GOBLIN_CHEF_SHOT_COUNT
+        self.currentTimeBetweenAttacks = 0
+        self.attackCooldownTimer = 0
+        self:SetEnemyState(1)
     end
 end
-function SingleAttackEnemy:SetRandomEnemyMovePosition()
-    local positions = self.room:GetEmptyPositions()
-    local randomIndex = math.random(1, #positions)
-
-    self.targetPosition = positions[randomIndex]
+function GoblinChef:TargetPlayer(deltaTime, playerPosition)
+    self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
+    DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
 end
-function SingleAttackEnemy:GetMainUnit()
+function GoblinChef:AttackPlayer(deltaTime, playerPosition)
+    self:LookAtPlayer(playerPosition)
+
+    self.currentTimeBetweenAttacks = self.currentTimeBetweenAttacks - deltaTime
+    if self.currentTimeBetweenAttacks <= 0 then
+        DCEI.CastAbilityAtPosition(GOBLIN_CHEF_ATTACK, self.unit, playerPosition.x, playerPosition.y)
+        self.currentShotCount = self.currentShotCount - 1
+        self.currentTimeBetweenAttacks = GOBLIN_CHEF_TIME_BETWEEN_ATTACKS
+    end
+
+    if self.currentShotCount <= 0 then
+        self.attackCooldownTimer = GOBLIN_CHEF_ATTACK_COOLDOWN
+        self:SetEnemyState(0)
+    end
+end
+function GoblinChef:LookAtPlayer(playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+
+    local direction = mod.VectorSubtract(playerPosition, enemyPosition)
+    local angle = math.deg(math.atan(direction.x, direction.y))
+
+    DCEI.SetUnitRotationEuler(self.unit, 0, angle, 0)
+end
+function GoblinChef:SetEnemyState(enemyState)
+    self.enemyState = enemyState
+end
+function GoblinChef:GetMainUnit()
     return self.unit
 end
-function SingleAttackEnemy:CleanupEnemyDied()
+function GoblinChef:CleanupEnemyDied()
     -- Do nothing here...
 end
 -- #endregion
 
--- #region Multi Attack Enemy
-local MultiAttackEnemy = {
-    -- Units
-    room = nil,
-    mainUnit = nil,
-    blankUnits = {},
-    totalUnits = 0,
-
-    -- Static Data
-    attackName = "",
-
-    -- Movement/Attack
-    targetPosition = nil,
-    attackTimer = 0,
-    currentTimer = 0
+-- #region Hob Goblin Enemy
+local HobGoblin = {
+     -- Units
+     room = nil,
+     unit = nil,
+     
+     enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting
+ 
+     -- Attack
+     attackWaitTimer = 0
 }
-MultiAttackEnemy.__index = MultiAttackEnemy
-function MultiAttackEnemy:new(room, enemyName, blankEnemyName, totalUnits, attackName, attackTimer, xPosition, yPosition)
-    local multiAttackEnemy = {}
-    setmetatable(multiAttackEnemy, MultiAttackEnemy)
+HobGoblin.__index = HobGoblin
+function HobGoblin:new(room, xPosition, yPosition)
+    local hobGoblin = {}
+    setmetatable(hobGoblin, HobGoblin)
 
-    local enemyUnit = DCEI.CreateUnit(-1, -1, enemyName, xPosition, yPosition)
-    multiAttackEnemy.room = room
-    multiAttackEnemy.mainUnit = enemyUnit
-    multiAttackEnemy.blankUnits = {}
-    multiAttackEnemy.totalUnits = totalUnits
+    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_HOB, xPosition, yPosition)
+    hobGoblin.room = room
+    hobGoblin.unit = enemyUnit
 
-    multiAttackEnemy.attackName = attackName
+    hobGoblin.enemyState = 0
 
-    multiAttackEnemy.targetPosition = nil
-    multiAttackEnemy.attackTimer = attackTimer
-    multiAttackEnemy.currentTimer = attackTimer
+    hobGoblin.attackWaitTimer = 0
 
-    for i = 1, totalUnits do
-        local unit = DCEI.CreateUnit(-1, -1, blankEnemyName, xPosition, yPosition)
-        table.insert(multiAttackEnemy.blankUnits, unit)
+    return hobGoblin
+end
+function HobGoblin:Update(deltaTime, playerPosition)
+    if self.enemyState == 0 then
+        self:TargetPlayer(deltaTime, playerPosition)
+    elseif self.enemyState == 1 then
+        self:WaitAfterAttack(deltaTime, playerPosition)
     end
 
-    return multiAttackEnemy
-end
-function MultiAttackEnemy:Update(deltaTime, playerPosition)
-    if self.targetPosition == nil then
-        self:SetRandomEnemyMovePosition()
-    else
-        local currentPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-        local distance = mod.VectorDistance(self.targetPosition, currentPosition)
-        if distance < ENEMY_REACHED_DISTANCE then
-            self:SetRandomEnemyMovePosition()
-        end
-    end
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
 
-    DCEI.Move(self.mainUnit, self.targetPosition.x, self.targetPosition.y)
-    local mainUnitPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-    for i, unit in ipairs(self.blankUnits) do
-        DCEI.SetUnitPosition2D(unit, mainUnitPosition.x, mainUnitPosition.y)
-    end
-
-    self.currentTimer = self.currentTimer - deltaTime
-    if self.currentTimer <= 0 then
-        self:AttackCirclePattern(playerPosition)
-        self.currentTimer = self.attackTimer
+    if distanceFromPlayer <= GOBLIN_HOB_ATTACK_RANGE and self.attackWaitTimer <= 0 then
+        self.attackWaitTimer = 0
+        self:AttackPlayer(playerPosition)
     end
 end
-function MultiAttackEnemy:AttackCirclePattern(playerPosition)
-    local currentPosition = DCEI.GetUnitPosition2D(self.mainUnit)
-    local distance = mod.VectorDistance(currentPosition, playerPosition)
-
-    local angleDiff = 360.0 / self.totalUnits
-    local currentAngle = 0
-
-    for i, unit in ipairs(self.blankUnits) do
-        local xPosition = math.cos(math.rad(currentAngle)) * distance + currentPosition.x
-        local yPosition = math.sin(math.rad(currentAngle)) * distance + currentPosition.y
-
-        DCEI.CastAbilityAtPosition(self.attackName, unit, xPosition, yPosition)
-
-        currentAngle = currentAngle + angleDiff
+function HobGoblin:TargetPlayer(deltaTime, playerPosition)
+    DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+end
+function HobGoblin:WaitAfterAttack(deltaTime, playerPosition)
+    self.attackWaitTimer = self.attackWaitTimer - deltaTime
+    if self.attackWaitTimer <= 0 then
+        self:SetEnemyState(0)
     end
 end
-function MultiAttackEnemy:SetRandomEnemyMovePosition()
-    local positions = self.room:GetEmptyPositions()
-    local randomIndex = math.random(1, #positions)
+function HobGoblin:AttackPlayer(playerPosition)
+    self:LookAtPlayer(playerPosition) -- This is probably not required
 
-    self.targetPosition = positions[randomIndex]
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.CastAbilityAtPosition(GOBLIN_HOB_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
+
+    self.attackWaitTimer = GOBLIN_HOB_ATTACK_WAIT_TIMER
+    self:SetEnemyState(1)
 end
-function MultiAttackEnemy:GetMainUnit()
-    return self.mainUnit
+function HobGoblin:LookAtPlayer(playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+
+    local direction = mod.VectorSubtract(playerPosition, enemyPosition)
+    local angle = math.deg(math.atan(direction.x, direction.y))
+
+    DCEI.SetUnitRotationEuler(self.unit, 0, angle, 0)
 end
-function MultiAttackEnemy:CleanupEnemyDied()
-    for i, unit in ipairs(self.blankUnits) do
-        DCEI.RemoveUnit(unit)
-    end
-
-    self.blankUnits = {}
+function HobGoblin:SetEnemyState(enemyState)
+    self.enemyState = enemyState
 end
--- #endregion
+function HobGoblin:GetMainUnit()
+    return self.unit
+end
+function HobGoblin:CleanupEnemyDied()
+    -- Do nothing here...
+end
 
+--#endregion
 
-mod.SingleAttackEnemy = SingleAttackEnemy
-mod.MultiAttackEnemy = MultiAttackEnemy
+mod.EnemyGoblinChef = GoblinChef 
+mod.EnemyHobGoblin = HobGoblin
 mod.VectorDistance = nil
+mod.VectorSubtract = nil
 return mod

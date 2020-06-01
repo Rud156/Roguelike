@@ -1,22 +1,5 @@
 {
     "abilities": {
-        "_Enemy_GoblinChef": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "_Launch_Enemy_GoblinChef",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 1,
-                "range": 7,
-                "arc": 60
-            },
-            "canCastWhileMoving": true,
-            "targetFilter": {
-                "enemy": 0
-            }
-        },
         "_PlayerCharacter_Dash": {
             "abilityType": 1,
             "castType": 1,
@@ -33,15 +16,6 @@
                 "mana": 1
             },
             "canCastWhileMoving": true
-        },
-        "_Enemy_Hobgoblin": {
-            "abilityType": 0,
-            "effect": "_Attack_Search_Hobgoblin",
-            "stats": {
-                "prepTime": 1,
-                "finishTime": 1,
-                "period": 0.5
-            }
         },
         "_PlayerCharacter_Melee_HeavyAttack": {
             "effect": "_Search_PlayerCharacter_Melee_HeavyAttack",
@@ -97,6 +71,32 @@
                 "mana": 0
             },
             "canCastWhileMoving": true
+        },
+        "_Enemy_GoblinChef_Attack": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_Enemy_GoblinChef",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 1,
+                "range": 7,
+                "arc": 60
+            },
+            "canCastWhileMoving": true,
+            "targetFilter": {
+                "enemy": 0
+            }
+        },
+        "_Enemy_Hobgoblin_Attack": {
+            "abilityType": 0,
+            "effect": "_Attack_Search_Hobgoblin",
+            "stats": {
+                "prepTime": 1,
+                "finishTime": 1,
+                "period": 0.5
+            }
         }
     }
 }

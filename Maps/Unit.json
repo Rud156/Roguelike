@@ -21,10 +21,13 @@
             "baseUnit": "_CUnit",
             "components": {
                 "health": {
-                    "maxHealth": 50
+                    "maxHealth": 30
                 },
                 "movement": {
                     "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 800
                 },
                 "unitBattleData": {
                     "enemySearchRange": 5
@@ -57,7 +60,7 @@
             },
             "references": {
                 "abilityList": [
-                    "_Enemy_Hobgoblin"
+                    "_Enemy_Hobgoblin_Attack"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
