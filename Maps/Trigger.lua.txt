@@ -608,6 +608,8 @@ function CreatePlayerUIElements()
     DCEI.AttachToUnit(healthBarBackground, m_player, { offset = { up = 0.8 } })
 
     -- Mana Bar
+    m_playerStaminaList = {}
+
     local manaBarHolder = DCEI.NewHStack(m_uiRoot)
     DCEI.SetSpacing(manaBarHolder, 3)
     for i = 1, PLAYER_STAMINA_AMOUNT do
