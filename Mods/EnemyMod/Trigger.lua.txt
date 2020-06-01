@@ -12,8 +12,7 @@ local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
 local GOBLIN_HOB_ATTACK_RANGE = 1
 local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
-
-local STOP_MOVEMENT = "__StopMovement"
+local GOBLIN_HOB_ROTATION_SPEED = 900
 
 local mod = {}
 
