@@ -97,8 +97,8 @@
                     "maxHealth": 100
                 },
                 "mana": {
-                    "maxMana": 100,
-                    "regeneration": 10
+                    "maxMana": 5,
+                    "regeneration": 1
                 },
                 "turning": {
                     "turningSpeed": 720
@@ -130,8 +130,8 @@
                     "maxHealth": 150
                 },
                 "mana": {
-                    "maxMana": 100,
-                    "regeneration": 10
+                    "maxMana": 5,
+                    "regeneration": 1
                 },
                 "turning": {
                     "turningSpeed": 720

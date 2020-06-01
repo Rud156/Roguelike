@@ -68,6 +68,9 @@ local PLAYER_WEAPON_2_MELEE = "Player Character Melee Attack 2 Ability"
 local PLAYER_WEAPON_1_MELEE_COOLDOWN = 0.3
 local PLAYER_WEAPON_2_MELEE_COOLDOWN = 0.4
 
+-- Player UI
+local PLAYER_STAMINA_AMOUNT = 5
+
 -- Collectibles
 local COLLECTIBLES = {
     { itemType = 0, itemPrefab = "Collectible Test 1", itemImage = "icon_affinity_brown" },
@@ -101,7 +104,7 @@ local MaxWaveCount = 3
 local PlayerSpawnPosition = { x = 27, y = 27 }
 local PlayerDashTimer = 0.3
 local PlayerDashSpeed = 5
-local PlayerDashMana = 30
+local PlayerDashMana = 1
 local UseMeleePlayer = true -- TODO: Change this as required
 -- Mouse
 local SingleClickTriggerTime = 0.3
@@ -117,6 +120,8 @@ local m_dashVelocity = { x = 0, y = 0 }
 local m_playerMoving = false
 local m_lastFramePlayerHealth = 0
 local m_playerCooldownTimer = 0
+-- Player UI
+local m_playerStaminaList = {}
 -- Camera
 local m_camera
 -- UI
@@ -199,6 +204,8 @@ function Start()
 end
 
 function Update()
+    UpdatePlayerStaminaUI()
+
     for i, room in ipairs(m_rooms) do
         room:IsPlayerInRoom(m_player)
         room:UpdateEnemies(GAME_LOOP_RATE, m_player)
@@ -601,32 +608,30 @@ function CreatePlayerUIElements()
     DCEI.AttachToUnit(healthBarBackground, m_player, { offset = { up = 0.8 } })
 
     -- Mana Bar
-    local manaBarBackground = DCEI.NewFrame(m_uiRoot)
-    local manaBar = DCEI.NewFrame(manaBarBackground)
+    local manaBarHolder = DCEI.NewHStack(m_uiRoot)
+    DCEI.SetSpacing(manaBarHolder, 3)
+    for i = 1, PLAYER_STAMINA_AMOUNT do
+        local mannaItem = DCEI.NewFrame(manaBarHolder)
+        DCEI.SetMinSize(mannaItem, 11, 11)
+        table.insert(m_playerStaminaList, mannaItem)
 
-    DCEI.SetBackgroundImage(manaBarBackground, "bar_progression00_empty")
-    DCEI.SetBackgroundImage(manaBar, "bar_exp00_fill")
-
-    DCEI.SetMinSize(manaBarBackground, 67, 10)
-    DCEI.SetMinSize(manaBar, 65, 7)
-
-    DCEI.SetBackgroundImageFillAmountExpression(manaBar, "MainCharacter.Mana.Fraction")
-    DCEI.BindUnit("MainCharacter", m_player)
-    DCEI.AttachToUnit(manaBarBackground, m_player, { offset = { up = 0.6 } })
+        DCEI.SetBackgroundImage(mannaItem, "bar_reward00_pin")
+    end
+    DCEI.AttachToUnit(manaBarHolder, m_player, { offset = { up = 0.6 } })
     
     -- Destroy UI when player dies
     DCEI.TriggerAddUnitDiedEvent(
         m_player, 
         function()
             DCEI.Destroy(healthBarBackground)
-            DCEI.Destroy(manaBarBackground)
+            DCEI.Destroy(manaBarHolder)
         end
     )
     DCEI.TriggerAddUnitRemovedEvent(
         m_player,
         function()
             DCEI.Destroy(healthBarBackground)
-            DCEI.Destroy(manaBarBackground)
+            DCEI.Destroy(manaBarHolder)
         end
     )
 end
@@ -664,6 +669,26 @@ function CreateDebugUI()
     DCEI.SetMinSize(keyboardButton, 50, 50)
     DCEI.SetBackgroundImage(keyboardButton, "pointy_finger")
     DCEI.SetOnClickCallback(keyboardButton, HandleKeyboardMouseSwitch)
+end
+
+function UpdatePlayerStaminaUI()
+    if m_player == nil then
+        return
+    end
+
+    local currentStamina = DCEI.GetManaValue(m_player)
+    if currentStamina > PLAYER_STAMINA_AMOUNT then
+        DCEI.LogError("Invalid Mana Amount")
+        return
+    end
+    
+    for i = 1, PLAYER_STAMINA_AMOUNT do
+        if i <= currentStamina then
+            DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 1)
+        else
+            DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 0)
+        end
+    end
 end
 
 function HandleInventorySlotClicked(itemType)

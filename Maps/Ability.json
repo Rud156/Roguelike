@@ -13,7 +13,7 @@
                 "arc": 60
             },
             "cost": {
-                "mana": 30
+                "mana": 1
             },
             "canCastWhileMoving": true
         },
@@ -34,7 +34,7 @@
                 "period": 1
             },
             "cost": {
-                "mana": 50
+                "mana": 3
             },
             "canCastWhileMoving": false
         },
@@ -68,7 +68,7 @@
                 "arc": 60
             },
             "cost": {
-                "mana": 50
+                "mana": 3
             },
             "canCastWhileMoving": true
         },
