@@ -1,24 +1,6 @@
 {
     "units": {
-        "Breakable Wall": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 20
-                },
-                "behavior": {
-                    "behaviorType": 4
-                }
-            },
-            "healthBar": {
-                "type": 1
-            }
-        },
-        "Camera Shaker Unit": {
+        "_Camera_ShakerUnit": {
             "baseUnit": "",
             "components": {
                 "unitStats": {
@@ -35,241 +17,17 @@
                 }
             }
         },
-        "Collectible Test 1": {
+        "_Enemy_GoblinChef": {
             "baseUnit": "_CUnit",
             "components": {
-                "unitStats": {
-                    "selectable": true
-                }
-            }
-        },
-        "Collectible Test 2": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "selectable": true
-                },
                 "health": {
-                    "maxHealth": 10
-                }
-            }
-        },
-        "Debug Marker Unit": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "immortal": true,
-                    "selectable": false
+                    "maxHealth": 50
                 },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            }
-        },
-        "Doorway": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "healthBar": {
-                "type": 0
-            }
-        },
-        "Player Character": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 100
-                },
-                "mana": {
-                    "maxMana": 5,
-                    "regeneration": 1
-                },
-                "turning": {
-                    "turningSpeed": 720
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "Player Character Weapon 1 Ability",
-                    "Player Character Weapon 2 Ability",
-                    "Player Character Dash Ability"
-                ],
-                "behaviorList": [
-                    "Player Character Area Search Behaviour"
-                ]
-            },
-            "hideUnitStatusBar": true,
-            "healthBar": {
-                "type": 0
-            }
-        },
-        "Player Character Melee": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 150
-                },
-                "mana": {
-                    "maxMana": 5,
-                    "regeneration": 1
-                },
-                "turning": {
-                    "turningSpeed": 720
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "Player Character Melee Attack 1 Ability",
-                    "Player Character Melee Attack 2 Ability",
-                    "Player Character Dash Ability"
-                ],
-                "behaviorList": [
-                    "Player Character Area Search Behaviour"
-                ]
-            },
-            "hideUnitStatusBar": true,
-            "healthBar": {
-                "type": 0
-            }
-        },
-        "Player Character Weapon 1 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Player Character Weapon 1 Search Behaviour"
-                ]
-            }
-        },
-        "Player Character Weapon 2 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Player Character Weapon 2 Search Behaviour"
-                ]
-            }
-        },
-        "Ranged Enemy Type 1": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 20
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "Ranged Enemy Type 1 Ability"
-                ]
-            },
-            "healthBar": {
-                "type": 1
-            }
-        },
-        "Ranged Enemy Type 1 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Ranged Enemy Type 1 Search Behaviour"
-                ]
-            }
-        },
-        "Ranged Enemy Type 2": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 30
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "Ranged Enemy Type 2 Ability"
-                ]
-            },
-            "healthBar": {
-                "type": 1
-            }
-        },
-        "Ranged Enemy Type 2 Blank": {
-            "baseUnit": "_CUnit",
-            "components": {
-                "unitStats": {
-                    "radius": 0,
-                    "immortal": false,
-                    "selectable": false,
-                    "ignoreCollision": true
-                },
-                "health": {
-                    "maxHealth": 1000
-                },
-                "behavior": {
-                    "behaviorType": 1
+                "movement": {
+                    "moveSpeed": 1
                 },
                 "unitBattleData": {
-                    "enemySearchRange": 7
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "Ranged Enemy Type 2 Ability"
-                ],
-                "behaviorList": [
-                    "Ranged Enemy Type 2 Blank Behaviour"
-                ]
-            },
-            "healthBar": {
-                "type": 0,
-                "showWhenFull": false
-            }
-        },
-        "Ranged Enemy Type 2 Missile": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "Ranged Enemy Type 2 Search Behaviour"
-                ]
-            }
-        },
-        "Wall": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
+                    "enemySearchRange": 5
                 }
             }
         },
@@ -298,14 +56,187 @@
                 }
             },
             "references": {
-                "weaponList": [
-                    "_Weapon_Hobgoblin"
-                ],
                 "abilityList": [
-                    "_Ability_Effect_Hobgoblin"
+                    "_Enemy_Hobgoblin"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Missile_Enemy_GoblinChef": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_Enemy_GoblinChef"
+                ]
+            }
+        },
+        "_Missile_PlayerCharacter_HeavyAttack": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_PlayerCharacter_Ranged_HeavyAttack"
+                ]
+            }
+        },
+        "_Missile_PlayerCharacter_LightAttack": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_PlayerCharacter_Ranged_LightAttack"
+                ]
+            }
+        },
+        "_PlayerCharacter_Melee": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 150
+                },
+                "mana": {
+                    "maxMana": 5,
+                    "regeneration": 1
+                },
+                "turning": {
+                    "turningSpeed": 720
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_PlayerCharacter_Melee_LightAttack",
+                    "_PlayerCharacter_Melee_HeavyAttack",
+                    "_PlayerCharacter_Dash"
+                ],
+                "behaviorList": [
+                    "_Search_PlayerCharacter"
+                ]
+            },
+            "hideUnitStatusBar": true,
+            "healthBar": {
+                "type": 0
+            }
+        },
+        "_Wall_BreakableWall": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 20
+                },
+                "behavior": {
+                    "behaviorType": 4
+                }
+            },
+            "healthBar": {
+                "type": 1
+            }
+        },
+        "_Wall_Doorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "healthBar": {
+                "type": 0
+            }
+        },
+        "_Wall_SolidWall": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "__DebugMarkerUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "_Collectible_Test1": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "selectable": true
+                }
+            }
+        },
+        "_Collectible_Test2": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            }
+        },
+        "_PlayerCharacter_Ranged": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "mana": {
+                    "maxMana": 5,
+                    "regeneration": 1
+                },
+                "turning": {
+                    "turningSpeed": 720
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_PlayerCharacter_Ranged_LightAttack",
+                    "_PlayerCharacter_Ranged_HeavyAttack",
+                    "_PlayerCharacter_Dash"
+                ],
+                "behaviorList": [
+                    "_Search_PlayerCharacter"
+                ]
+            },
+            "hideUnitStatusBar": true,
+            "healthBar": {
+                "type": 0
+            }
         }
     }
 }

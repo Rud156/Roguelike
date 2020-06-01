@@ -1,13 +1,13 @@
 {
     "behaviors": {
-        "Player Character Area Search Behaviour": {
+        "_Search_PlayerCharacter": {
             "periodicInterval": 0.01,
-            "periodicEffect": "Player Character Area Search"
+            "periodicEffect": "_Search_PlayerCharacter"
         },
-        "Player Character Collision Detected Behaviour": {
+        "_CollisionDetection_PlayerCharacter": {
             "duration": 0.01
         },
-        "Player Character Dash Behaviour": {
+        "_PlayerChartacter_Dash": {
             "behaviorTagArray": [
                 {
                     "name": "gt_invincible",
@@ -15,30 +15,18 @@
                 }
             ]
         },
-        "Player Character Movement Behaviour": {},
-        "Player Character Weapon 1 Search Behaviour": {
+        "_PlayerCharacter_Movement": {},
+        "_Search_PlayerCharacter_Ranged_LightAttack": {
             "periodicInterval": 0.01,
-            "periodicEffect": "Player Character Weapon 1 Search"
+            "periodicEffect": "_Search_PlayerCharacter_Ranged_LightAttack"
         },
-        "Player Character Weapon 2 Search Behaviour": {
+        "_Search_PlayerCharacter_Ranged_HeavyAttack": {
             "periodicInterval": 0.01,
-            "periodicEffect": "Player Character Weapon 2 Search"
+            "periodicEffect": "_Search_PlayerCharacter_Ranged_HeavyAttack"
         },
-        "Ranged Enemy Type 1 Search Behaviour": {
+        "_Search_Enemy_GoblinChef": {
             "periodicInterval": 0.01,
-            "periodicEffect": "Ranged Enemy Type 1 Search"
-        },
-        "Ranged Enemy Type 2 Blank Behaviour": {
-            "behaviorTagArray": [
-                {
-                    "name": "gt_invincible",
-                    "count": 1
-                }
-            ]
-        },
-        "Ranged Enemy Type 2 Search Behaviour": {
-            "periodicInterval": 0.01,
-            "periodicEffect": "Ranged Enemy Type 2 Search"
+            "periodicEffect": "_Search_Enemy_GoblinChef"
         }
     }
 }

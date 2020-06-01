@@ -28,53 +28,51 @@ local Rect = UtilClassMod.Rect
 
 -- Variables
 -- Prefabs
-local SOLID_WALL_PREFAB = "Wall"
-local BREAKABLE_WALL_PREFAB = "Breakable Wall"
-local DOORWAY = "Doorway"
+local SOLID_WALL_PREFAB = "_Wall_SolidWall"
+local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
+local DOORWAY = "_Wall_Doorway"
 local ENEMY_PREFABS = {
     {
-        name = "Ranged Enemy Type 1",
-        ability = "Ranged Enemy Type 1 Ability",
+        name = "_Enemy_GoblinChef",
+        ability = "_Ability_Enemy_GoblinChef",
         isMulti = false
     },
     {
-        name = "Ranged Enemy Type 2",
-        blankUnitName = "Ranged Enemy Type 2 Blank",
-        ability = "Ranged Enemy Type 2 Ability",
-        isMulti = true
+        name = "_Enemy_Hobgoblin",
+        ability = "_Ability_Enemy_Hobgoblin",
+        isMulti = false
     }
 }
-local COLLECTIBLE_PREFAB = "Collectible" -- TODO: Remove this later on...
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
 local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 
-local STOP_MOVEMENT = "Stop Movement"
+local STOP_MOVEMENT = "__StopMovement"
 
 -- Player Ranged
-local PLAYER_NAME = "Player Character"
-local PLAYER_WEAPON_1 = "Player Character Weapon 1 Ability"
-local PLAYER_WEAPON_2 = "Player Character Weapon 2 Ability"
-local PLAYER_WEAPON_1_COOLDOWN = 0.3
-local PLAYER_WEAPON_2_COOLDOWN = 0.3
-local PLAYER_DASH_ABILITY = "Player Character Dash Ability"
-local PLAYER_COLLISION_BEHAVIOUR = "Player Character Collision Detected Behaviour"
+local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
+local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
+local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
+local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.3
+local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.3
+local PLAYER_DASH_ABILITY = "_PlayerCharacter_Dash"
+local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 
 -- Player Melee
-local PLAYER_NAME_MELEE = "Player Character Melee"
-local PLAYER_WEAPON_1_MELEE = "Player Character Melee Attack 1 Ability"
-local PLAYER_WEAPON_2_MELEE = "Player Character Melee Attack 2 Ability"
-local PLAYER_WEAPON_1_MELEE_COOLDOWN = 0.3
-local PLAYER_WEAPON_2_MELEE_COOLDOWN = 0.4
+local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
+local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
+local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
+local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.3
+local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.4
 
 -- Player UI
 local PLAYER_STAMINA_AMOUNT = 5
 
 -- Collectibles
 local COLLECTIBLES = {
-    { itemType = 0, itemPrefab = "Collectible Test 1", itemImage = "icon_affinity_brown" },
-    { itemType = 1, itemPrefab = "Collectible Test 2", itemImage = "icon_affinity_gold" }
+    { itemType = 0, itemPrefab = "_Collectible_Test1", itemImage = "icon_affinity_brown" },
+    { itemType = 1, itemPrefab = "_Collectible_Test2", itemImage = "icon_affinity_gold" }
 }
 
 -- Debug
@@ -138,7 +136,7 @@ function Start()
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     else
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     end
     local playerHealth = DCEI.GetHealthValue(m_player)
     m_lastFramePlayerHealth = playerHealth
@@ -250,7 +248,7 @@ function HandleUnitDied()
     end
 
     local unitName = DCEI.UnitName(unit)
-    if unitName == PLAYER_NAME or unitName == PLAYER_NAME_MELEE then
+    if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE then
         DisplayGameOverSequence()
     end
 end
@@ -389,7 +387,7 @@ function ResetGameState()
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     else
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     end
     m_camera:UpdateTarget(m_player)
     CreatePlayerUIElements()
@@ -461,7 +459,7 @@ function LaunchPlayerRangedLightAttack()
         local enemy = room:GetNearestEnemy(m_player)
         if enemy ~= nil then
             local position = DCEI.GetUnitPosition2D(enemy)
-            DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, position.x, position.y)
+            DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, position.x, position.y)
             abilityCasted = true
             break                
         end
@@ -474,10 +472,10 @@ function LaunchPlayerRangedLightAttack()
         
         local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
         local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
-        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1, m_player, xPoint, yPoint)
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, xPoint, yPoint)
     end
 
-    m_playerCooldownTimer = PLAYER_WEAPON_1_COOLDOWN
+    m_playerCooldownTimer = PLAYER_RANGED_LIGHT_WEAPON_CD
 end
 
 function LaunchPlayerRangedHeavyAttack()
@@ -487,7 +485,7 @@ function LaunchPlayerRangedHeavyAttack()
         local enemy = room:GetNearestEnemy(m_player)
         if enemy ~= nil then
             local position = DCEI.GetUnitPosition2D(enemy)
-            DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, position.x, position.y)
+            DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, m_player, position.x, position.y)
             abilityCasted = true
             break
         end
@@ -500,10 +498,10 @@ function LaunchPlayerRangedHeavyAttack()
         
         local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
         local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
-        DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2, m_player, xPoint, yPoint)
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, m_player, xPoint, yPoint)
     end
 
-    m_playerCooldownTimer = PLAYER_WEAPON_2_COOLDOWN
+    m_playerCooldownTimer = PLAYER_RANGED_HEAVY_WEAPON_CD
     m_camera:StartShake(1, 0)
 end
 
@@ -516,18 +514,18 @@ function LaunchPlayerMeleeLightAttack()
     
     local xPoint = math.sin(math.rad(yRotation)) * 0.3 + playerPosition.x
     local yPoint = math.cos(math.rad(yRotation))  * 0.3 + playerPosition.y
-    DCEI.CastAbilityAtPosition(PLAYER_WEAPON_1_MELEE, m_player, xPoint, yPoint)
+    DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
 
-    m_playerCooldownTimer = PLAYER_WEAPON_1_MELEE_COOLDOWN
+    m_playerCooldownTimer = PLAYER_MELEE_LIGHT_WEAPON_CD
 end
 
 function LaunchPlayerMeleeHeavyAttack()
     DCEI.CreateEffect(STOP_MOVEMENT, m_player)
 
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    DCEI.CastAbilityAtPosition(PLAYER_WEAPON_2_MELEE, m_player, playerPosition.x, playerPosition.y)
+    DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, m_player, playerPosition.x, playerPosition.y)
 
-    m_playerCooldownTimer = PLAYER_WEAPON_2_MELEE_COOLDOWN
+    m_playerCooldownTimer = PLAYER_MELEE_HEAVY_WEAPON_CD
     m_camera:StartShake(1, 0.3)
 end
 
@@ -705,7 +703,7 @@ function HandleCharacterSwitch()
     end
 
     if UseMeleePlayer then
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME, playerPosition.x, playerPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, playerPosition.x, playerPosition.y)
     else
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, playerPosition.x, playerPosition.y)
     end

@@ -1,82 +1,10 @@
 {
     "abilities": {
-        "Player Character Dash Ability": {
+        "_Enemy_GoblinChef": {
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "Player Chararacter Set Dash Behaviour",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.5,
-                "range": 7,
-                "arc": 60
-            },
-            "cost": {
-                "mana": 1
-            },
-            "canCastWhileMoving": true
-        },
-        "Player Character Melee Attack 1 Ability": {
-            "effect": "Player Character Melee Attack 1 Search",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.5
-            },
-            "canCastWhileMoving": false
-        },
-        "Player Character Melee Attack 2 Ability": {
-            "effect": "Player Character Melee Attack 2 Search",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 1
-            },
-            "cost": {
-                "mana": 3
-            },
-            "canCastWhileMoving": false
-        },
-        "Player Character Weapon 1 Ability": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "Player Charater Weapon 1 Launch",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.5,
-                "range": 7,
-                "arc": 60
-            },
-            "cost": {
-                "mana": 0
-            },
-            "canCastWhileMoving": true
-        },
-        "Player Character Weapon 2 Ability": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "Player Character Weapon 2 Launch",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.5,
-                "range": 7,
-                "arc": 60
-            },
-            "cost": {
-                "mana": 3
-            },
-            "canCastWhileMoving": true
-        },
-        "Ranged Enemy Type 1 Ability": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "Ranged Enemy Type 1 Launch",
+            "effect": "_Launch_Enemy_GoblinChef",
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
@@ -89,24 +17,24 @@
                 "enemy": 0
             }
         },
-        "Ranged Enemy Type 2 Ability": {
+        "_PlayerCharacter_Dash": {
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "Ranged Enemy Type 2 Launch",
+            "effect": "_Set_PlayerCharacter_DashBehaviour",
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.3,
+                "period": 0.5,
                 "range": 7,
                 "arc": 60
             },
-            "canCastWhileMoving": true,
-            "targetFilter": {
-                "enemy": 0
-            }
+            "cost": {
+                "mana": 1
+            },
+            "canCastWhileMoving": true
         },
-        "_Ability_Effect_Hobgoblin": {
+        "_Enemy_Hobgoblin": {
             "abilityType": 0,
             "effect": "_Attack_Search_Hobgoblin",
             "stats": {
@@ -114,6 +42,61 @@
                 "finishTime": 1,
                 "period": 0.5
             }
+        },
+        "_PlayerCharacter_Melee_HeavyAttack": {
+            "effect": "_Search_PlayerCharacter_Melee_HeavyAttack",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 1
+            },
+            "cost": {
+                "mana": 3
+            },
+            "canCastWhileMoving": false
+        },
+        "_PlayerCharacter_Melee_LightAttack": {
+            "effect": "_Search_PlayerCharacter_Melee_LightAttack",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 0.5
+            },
+            "canCastWhileMoving": false
+        },
+        "_PlayerCharacter_Ranged_HeavyAttack": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_PlayerCharacter_Ranged_HeavyAttack",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 0.5,
+                "range": 7,
+                "arc": 60
+            },
+            "cost": {
+                "mana": 3
+            },
+            "canCastWhileMoving": true
+        },
+        "_PlayerCharacter_Ranged_LightAttack": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_PlayerCharacter_LightAttack",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "period": 0.5,
+                "range": 7,
+                "arc": 60
+            },
+            "cost": {
+                "mana": 0
+            },
+            "canCastWhileMoving": true
         }
     }
 }

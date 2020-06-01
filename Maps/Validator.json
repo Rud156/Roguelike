@@ -1,6 +1,6 @@
 {
     "validators": {
-        "Player Character Reached Position": {
+        "_ReachedPosition_PlayerCharacter": {
             "expression": {
                 "compare": {
                     "left": {

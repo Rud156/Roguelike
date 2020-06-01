@@ -1,22 +1,17 @@
 {
     "movers": {
-        "Player Character Weapon 1 Mover": {
+        "_PlayerCharacter_LightAttack": {
             "ballistic": {
                 "speed": 14
             },
             "upright": false
         },
-        "Player Character Weapon 2 Mover": {
+        "_PlayerCharacter_HeavyAttack": {
             "ballistic": {
                 "speed": 7
             }
         },
-        "Ranged Enemy Type 1 Weapon Mover": {
-            "ballistic": {
-                "speed": 3
-            }
-        },
-        "Ranged Enemy Type 2 Weapon Mover": {
+        "_Enemy_GoblinChef_Attack": {
             "ballistic": {
                 "speed": 3
             }

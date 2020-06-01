@@ -1,279 +1,5 @@
 {
     "effects": {
-        "Player Character Area Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "maxUnitCount": 1,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "Player Character Collision Behaviour Set"
-            }
-        },
-        "Player Character Collision Behaviour Set": {
-            "applyBehavior": {
-                "behavior": "Player Character Collision Detected Behaviour",
-                "target": 1,
-                "duration": 0.1
-            }
-        },
-        "Player Character Melee Attack 1 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 15,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "Player Character Melee Attack 1 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.75
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "Player Character Melee Attack 1 Damage"
-            }
-        },
-        "Player Character Melee Attack 2 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 30,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "Player Character Melee Attack 2 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 1
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "Player Character Melee Attack 2 Damage"
-            }
-        },
-        "Player Character Weapon 1 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 10,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "Player Character Weapon 1 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "filter": {
-                    "player": 2,
-                    "ally": 0,
-                    "air": 0
-                },
-                "effect": "Player Character Weapon 1 Set"
-            }
-        },
-        "Player Character Weapon 1 Set": {
-            "set": {
-                "effectList": [
-                    "Player Character Weapon 1 Damage",
-                    "Remove Source"
-                ]
-            }
-        },
-        "Player Character Weapon 2 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 20,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "Player Character Weapon 2 Launch": {
-            "launchMissile": {
-                "missileUnit": "Player Character Weapon 2 Missile",
-                "effect": "Player Character Weapon 2 Damage",
-                "impactLocation": 2,
-                "mover": "Player Character Weapon 2 Mover"
-            }
-        },
-        "Player Character Weapon 2 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "filter": {
-                    "player": 2,
-                    "ally": 0,
-                    "air": 0
-                },
-                "effect": "Player Character Weapon 2 Set"
-            }
-        },
-        "Player Character Weapon 2 Set": {
-            "set": {
-                "effectList": [
-                    "Player Character Weapon 2 Damage",
-                    "Remove Source"
-                ]
-            }
-        },
-        "Player Chararacter Set Dash Behaviour": {
-            "applyBehavior": {
-                "behavior": "Player Character Dash Behaviour",
-                "target": 3,
-                "duration": 0.3
-            }
-        },
-        "Player Charater Weapon 1 Launch": {
-            "launchMissile": {
-                "missileUnit": "Player Character Weapon 1 Missile",
-                "effect": "Player Character Weapon 1 Damage",
-                "impactLocation": 2,
-                "mover": "Player Character Weapon 1 Mover"
-            }
-        },
-        "Ranged Enemy Type 1 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 5,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "Ranged Enemy Type 1 Launch": {
-            "launchMissile": {
-                "missileUnit": "Ranged Enemy Type 1 Missile",
-                "effect": "Ranged Enemy Type 1 Damage",
-                "impactLocation": 2,
-                "mover": "Ranged Enemy Type 1 Weapon Mover"
-            }
-        },
-        "Ranged Enemy Type 1 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "caster": 2,
-                "source": 2,
-                "filter": {
-                    "player": 2,
-                    "ally": 0,
-                    "enemy": 0
-                },
-                "effect": "Ranged Enemy Type 1 Set"
-            }
-        },
-        "Ranged Enemy Type 1 Set": {
-            "set": {
-                "effectList": [
-                    "Ranged Enemy Type 1 Damage",
-                    "Remove Source"
-                ]
-            }
-        },
-        "Ranged Enemy Type 2 Damage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 10,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "Ranged Enemy Type 2 Launch": {
-            "launchMissile": {
-                "missileUnit": "Ranged Enemy Type 2 Missile",
-                "effect": "Ranged Enemy Type 2 Damage",
-                "impactLocation": 2,
-                "mover": "Ranged Enemy Type 2 Weapon Mover"
-            }
-        },
-        "Ranged Enemy Type 2 Search": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "caster": 2,
-                "source": 2,
-                "filter": {
-                    "player": 2,
-                    "ally": 0,
-                    "enemy": 0
-                },
-                "effect": "Ranged Enemy Type 2 Set"
-            }
-        },
-        "Ranged Enemy Type 2 Set": {
-            "set": {
-                "effectList": [
-                    "Ranged Enemy Type 2 Damage",
-                    "Remove Source"
-                ]
-            }
-        },
-        "Stop Movement": {
-            "stop": {
-                "whichUnit": 1
-            }
-        },
         "_Attack_Damage_Hobgoblin": {
             "damage": {
                 "whichUnit": 1,
@@ -297,6 +23,233 @@
                 "offset": {
                     "forward": 0.5
                 }
+            }
+        },
+        "_Damage_Enemy_GoblinChef": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 5,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Damage_PlayerCharacter_Melee_HeavyAttack": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Damage_PlayerCharacter_Melee_LightAttack": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 15,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Launch_Enemy_GoblinChef": {
+            "launchMissile": {
+                "missileUnit": "_Missile_Enemy_GoblinChef",
+                "effect": "_Damage_Enemy_GoblinChef",
+                "impactLocation": 2,
+                "mover": "_Enemy_GoblinChef_Attack"
+            }
+        },
+        "_Search_Enemy_GoblinChef": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "caster": 2,
+                "source": 2,
+                "filter": {
+                    "player": 2,
+                    "ally": 0,
+                    "enemy": 0
+                },
+                "effect": "_Set_Enemy_GoblinChef"
+            }
+        },
+        "_Search_PlayerCharacter": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Behaviour_PlayerCharacter_Collision"
+            }
+        },
+        "_Search_PlayerCharacter_Melee_LightAttack": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.75
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Damage_PlayerCharacter_Melee_LightAttack"
+            }
+        },
+        "_Set_Behaviour_PlayerCharacter_Collision": {
+            "applyBehavior": {
+                "behavior": "_CollisionDetection_PlayerCharacter",
+                "target": 1,
+                "duration": 0.1
+            }
+        },
+        "_Set_Enemy_GoblinChef": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinChef",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Search_PlayerCharacter_Melee_HeavyAttack": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Damage_PlayerCharacter_Melee_HeavyAttack"
+            }
+        },
+        "_Set_PlayerCharacter_LightAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Ranged_LightAttack",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Damage_PlayerCharacter_Ranged_HeavyAttack": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 20,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Damage_PlayerCharacter_Ranged_LightAttack": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 10,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Search_PlayerCharacter_Ranged_LightAttack": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "filter": {
+                    "player": 2,
+                    "ally": 0,
+                    "air": 0
+                },
+                "effect": "_Set_PlayerCharacter_LightAttack"
+            }
+        },
+        "_Launch_PlayerCharacter_Ranged_HeavyAttack": {
+            "launchMissile": {
+                "missileUnit": "_Missile_PlayerCharacter_HeavyAttack",
+                "effect": "_Damage_PlayerCharacter_Ranged_HeavyAttack",
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_HeavyAttack"
+            }
+        },
+        "_Search_PlayerCharacter_Ranged_HeavyAttack": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "filter": {
+                    "player": 2,
+                    "ally": 0,
+                    "air": 0
+                },
+                "effect": "_Set_PlayerCharacter_Ranged_HeavyAttack"
+            }
+        },
+        "_Set_PlayerCharacter_Ranged_HeavyAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Ranged_HeavyAttack",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_DashBehaviour": {
+            "applyBehavior": {
+                "behavior": "_PlayerChartacter_Dash",
+                "target": 3,
+                "duration": 0.3
+            }
+        },
+        "_Launch_PlayerCharacter_LightAttack": {
+            "launchMissile": {
+                "missileUnit": "_Missile_PlayerCharacter_LightAttack",
+                "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_LightAttack"
+            }
+        },
+        "__StopMovement": {
+            "stop": {
+                "whichUnit": 1
             }
         }
     }
