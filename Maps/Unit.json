@@ -32,6 +32,11 @@
                 "unitBattleData": {
                     "enemySearchRange": 5
                 }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_GoblinChef_Attack"
+                ]
             }
         },
         "_Enemy_Hobgoblin": {

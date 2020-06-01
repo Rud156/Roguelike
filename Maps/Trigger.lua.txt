@@ -33,9 +33,8 @@ local SOLID_WALL_PREFAB = "_Wall_SolidWall"
 local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
 local DOORWAY = "_Wall_Doorway"
 -- 0: Goblin Chef, 1: Hob Goblin
-local ENEMY_PREFABS = {
-    0, 1
-}
+-- TODO: Think of a better way to represent this...
+local ENEMY_PREFABS = { 0, 1 }
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625

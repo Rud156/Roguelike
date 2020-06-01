@@ -191,21 +191,10 @@ function RoomData:SpawnNextWave()
             local randomEnemy = self.enemyPrefabs[randomEnemyIndex]
             local enemy
 
-            if randomEnemy.isMulti then
-                enemy = mod.MultiAttackEnemy:new(
-                    self,
-                    randomEnemy.name, randomEnemy.blankUnitName,
-                    5,
-                    randomEnemy.ability, 2.5,
-                    enemyPosition.x, enemyPosition.y
-                )
-            else
-                enemy = mod.SingleAttackEnemy:new(
-                    self,
-                    randomEnemy.name, randomEnemy.ability,
-                    1,
-                    enemyPosition.x, enemyPosition.y
-                )
+            if randomEnemy == 0 then
+                enemy = mod.EnemyGoblinChef:new(self, enemyPosition.x, enemyPosition.y)
+            elseif randomEnemy == 1 then
+                enemy = mod.EnemyHobGoblin:new(self, enemyPosition.x, enemyPosition.y)
             end
             
             table.insert(self.enemies, enemy)
@@ -222,21 +211,10 @@ function RoomData:SpawnNextWave()
         local randomEnemy = self.enemyPrefabs[randomEnemyIndex]
         local enemy
 
-        if randomEnemy.isMulti then
-            enemy = mod.MultiAttackEnemy:new(
-                self,
-                randomEnemy.name, randomEnemy.blankUnitName,
-                5,
-                randomEnemy.ability, 2.5,
-                enemyPosition.x, enemyPosition.y
-            )
-        else
-            enemy = mod.SingleAttackEnemy:new(
-                self,
-                randomEnemy.name, randomEnemy.ability,
-                1,
-                enemyPosition.x, enemyPosition.y
-            )
+        if randomEnemy == 0 then
+            enemy = mod.EnemyGoblinChef:new(self, enemyPosition.x, enemyPosition.y)
+        elseif randomEnemy == 1 then
+            enemy = mod.EnemyHobGoblin:new(self, enemyPosition.x, enemyPosition.y)
         end
         
         table.insert(self.enemies, enemy)
@@ -306,7 +284,7 @@ end
 
 
 mod.VectorDistance = nil
-mod.SingleAttackEnemy = nil
-mod.MultiAttackEnemy = nil
+mod.EnemyHobGoblin = nil
+mod.EnemyGoblinChef = nil
 mod.RoomData = RoomData
 return mod
