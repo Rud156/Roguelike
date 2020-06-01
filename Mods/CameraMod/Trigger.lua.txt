@@ -86,6 +86,6 @@ function Camera:StartShakeWithUnit(shakeTime, shakeDelayTime)
     self:StartShake(shakeTime, shakeDelayTime)
 end
 
-mod.CAMERA_SHAKER_UNIT = "Camera Shaker Unit"
+mod.CAMERA_SHAKER_UNIT = "_Camera_ShakerUnit"
 mod.Camera = Camera
 return mod

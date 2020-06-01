@@ -12,20 +12,20 @@
     },
     "triggerSettings": {
         "usedUnits": [
-            "Breakable Wall",
-            "Wall",
-            "Doorway",
-            "Player Character",
-            "Ranged Enemy Type 1",
-            "Ranged Enemy Type 2",
-            "Ranged Enemy Type 2 Blank",
-            "Collectible Test 1",
-            "Collectible Test 2",
-            "Player Character Melee",
-            "Camera Shaker Unit"
+            "__DebugMarkerUnit",
+            "_Camera_ShakerUnit",
+            "_PlayerCharacter_Ranged",
+            "_PlayerCharacter_Melee",
+            "_Enemy_GoblinChef",
+            "_Enemy_Hobgoblin",
+            "_Collectible_Test1",
+            "_Collectible_Test2",
+            "_Wall_BreakableWall",
+            "_Wall_Doorway",
+            "_Wall_SolidWall"
         ],
         "usedEffects": [
-            "Stop Movement"
+            "__StopMovement"
         ]
     }
 }

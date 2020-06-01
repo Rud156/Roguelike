@@ -1,610 +1,6 @@
 {
     "actors": {
-        "Breakable Wall": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "darkspire_rank01_base"
-                },
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                }
-            }
-        },
-        "Camera Shaker Unit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "arrowtower_missile"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "ShakeCamera"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "modelScale": 0.1
-            }
-        },
-        "Collectible Test 1": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_drow_lord_missile_red"
-                }
-            }
-        },
-        "Collectible Test 2": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "beartrap"
-                }
-            }
-        },
-        "DebugMarkerUnit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "arrowtower_rank03"
-                }
-            }
-        },
-        "Doorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "barracks_rank01"
-                },
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                }
-            }
-        },
-        "Player Character": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "arrowtower_unit_rank03"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitDeath": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Weapon 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Weapon 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Weapon 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Weapon 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    },
-                    "SiteWeapon": {
-                        "offset": {
-                            "forward": 0.5,
-                            "up": 0.5
-                        }
-                    }
-                }
-            }
-        },
-        "Player Character Melee": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "barracks_troop_rank03_armored"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitDeath": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Melee Attack 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 4
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "DelayedAttack1Spawn",
-                                    "duration": 0.3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Melee Attack 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 4
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Melee Attack 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 10
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "DelayedAttack2Spawn",
-                                    "duration": 0.3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Melee Attack 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 10
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "DelayedAttack1Spawn"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "Player Character Melee Weapon 1 FX",
-                                    "hostSite": "Melee Attack Host Site"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "DelayedAttack2Spawn"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "Player Character Melee Weapon 2 FX"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "ShakeCamera"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Player Character Dash Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "hostSites": {
-                    "Melee Attack Host Site": {
-                        "offset": {
-                            "forward": 0.5
-                        }
-                    }
-                }
-            }
-        },
-        "Player Character Melee Weapon 1 FX": {
-            "parent": "_FX OneShot SelfRemoving",
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_drow_mage_blue_impact"
-                },
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
-                ]
-            }
-        },
-        "Player Character Melee Weapon 2 FX": {
-            "parent": "_FX OneShot SelfRemoving",
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_ogre_slam_impact_aoe"
-                },
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
-                ]
-            }
-        },
-        "Player Character Weapon 1 Launch FX": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "Player Charater Weapon 1 Launch"
-            }
-        },
-        "Player Character Weapon 1 Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_icemage_weapon_missile"
-                }
-            }
-        },
-        "Player Character Weapon 2 Launch FX": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "Player Character Weapon 2 Launch"
-            }
-        },
-        "Player Character Weapon 2 Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_red"
-                }
-            }
-        },
-        "Ranged Enemy Type 1": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "alchemist"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Ranged Enemy Type 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Ranged Enemy Type 1 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitDeath": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 1
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    },
-                    "SiteWeapon": {
-                        "offset": {
-                            "forward": 0.5,
-                            "up": 0.5
-                        }
-                    }
-                }
-            }
-        },
-        "Ranged Enemy Type 1 Launch FX": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "Ranged Enemy Type 1 Launch"
-            }
-        },
-        "Ranged Enemy Type 1 Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_green"
-                }
-            }
-        },
-        "Ranged Enemy Type 2": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_drowmage_red"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Ranged Enemy Type 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Ranged Enemy Type 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitDeath": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 1
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    },
-                    "SiteWeapon": {
-                        "offset": {
-                            "forward": 0.5,
-                            "up": 0.5
-                        }
-                    }
-                }
-            }
-        },
-        "Ranged Enemy Type 2 Blank": {
-            "unitActor": {
-                "resource": {
-                    "type": "None",
-                    "name": ""
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "Ranged Enemy Type 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "Ranged Enemy Type 2 Ability"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "Ranged Enemy Type 2 Launch FX": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "Ranged Enemy Type 2 Launch"
-            }
-        },
-        "Ranged Enemy Type 2 Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_blue"
-                }
-            }
-        },
-        "ShakeCamera": {
+        "_Camera_ShakeCameraActor": {
             "parent": "",
             "modelActor": {
                 "resource": {
@@ -644,7 +40,502 @@
                 ]
             }
         },
-        "Wall": {
+        "_Camera_ShakerUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_missile"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_Camera_ShakeCameraActor"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.1
+            }
+        },
+        "_Collectible_Test1": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_drow_lord_missile_red"
+                }
+            }
+        },
+        "_Collectible_Test2": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "beartrap"
+                }
+            }
+        },
+        "_Enemy_GoblinChef": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblinchef"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinChef_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinChef_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_Enemy_Hobgoblin": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "hobgoblin"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_Hobgoblin_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_Hobgoblin_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.5
+            }
+        },
+        "_FX_Launch_Enemy_GoblinChef": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "_Launch_Enemy_GoblinChef"
+            }
+        },
+        "_FX_Launch_PlayerCharacter_Ranged_HeavyAttack": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "_Launch_PlayerCharacter_Ranged_HeavyAttack"
+            }
+        },
+        "_FX_Launch_PlayerCharacter_Ranged_LightAttack": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "_Launch_PlayerCharacter_LightAttack"
+            }
+        },
+        "_FX_PlayerCharacter_Melee_HeavyAttack": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_ogre_slam_impact_aoe"
+                },
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
+        "_FX_PlayerCharacter_Melee_LightAttack": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_drow_mage_blue_impact"
+                },
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
+        "_Missile_Enemy_GoblinChef": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_green"
+                }
+            }
+        },
+        "_Missile_PlayerCharacter_HeavyAttack": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_red"
+                }
+            }
+        },
+        "_Missile_PlayerCharacter_LightAttack": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_icemage_weapon_missile"
+                }
+            }
+        },
+        "_PlayerCharacter_Melee": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_troop_rank03_armored"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Melee_LightAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "DelayedAttack1Spawn",
+                                    "duration": 0.3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_LightAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 10
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "DelayedAttack2Spawn",
+                                    "duration": 0.3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 10
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "DelayedAttack1Spawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_PlayerCharacter_Melee_LightAttack",
+                                    "hostSite": "Melee Attack Host Site"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "DelayedAttack2Spawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_PlayerCharacter_Melee_HeavyAttack"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_Camera_ShakeCameraActor"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "Melee Attack Host Site": {
+                        "offset": {
+                            "forward": 0.5
+                        }
+                    }
+                }
+            }
+        },
+        "_PlayerCharacter_Ranged": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_unit_rank03"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Ranged_LightAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Ranged_LightAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Ranged_HeavyAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Ranged_HeavyAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.5,
+                            "up": 0.5
+                        }
+                    }
+                }
+            }
+        },
+        "_Wall_BreakableWall": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "darkspire_rank01_base"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
+            }
+        },
+        "_Wall_Doorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "barracks_rank01"
+                },
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
+            }
+        },
+        "_Wall_SolidWall": {
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
@@ -661,44 +552,12 @@
                 "modelScale": 1.5
             }
         },
-        "_Enemy_Hobgoblin": {
-            "parent": "_StandardUnit DecayOnDeath",
+        "__DebugMarkerUnit": {
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "hobgoblin"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Ability_Effect_Hobgoblin"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Ability_Effect_Hobgoblin"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "modelScale": 1.5
+                    "name": "arrowtower_rank03"
+                }
             }
         }
     }

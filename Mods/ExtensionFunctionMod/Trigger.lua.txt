@@ -37,4 +37,11 @@ function mod.NormalizeUnitRotation(unitRotation)
     return yRotation
 end
 
+function mod.CompareUnits(unit1, unit2)
+    local unit1ID = tostring(unit1)
+    local unit2ID = tostring(unit2)
+
+    return unit1ID == unit2ID
+end
+
 return mod
