@@ -51,7 +51,7 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 1
+                "period": 0.9
             },
             "cost": {
                 "mana": 3
@@ -65,7 +65,7 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.5
+                "period": 0.4
             },
             "canCastWhileMoving": false
         },
@@ -77,7 +77,7 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.5,
+                "period": 0.4,
                 "range": 7,
                 "arc": 60
             },
@@ -94,7 +94,7 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.5,
+                "period": 0.4,
                 "range": 7,
                 "arc": 60
             },
