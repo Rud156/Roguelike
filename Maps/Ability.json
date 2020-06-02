@@ -18,7 +18,8 @@
             }
         },
         "_Enemy_Hobgoblin_Attack": {
-            "abilityType": 0,
+            "abilityType": 2,
+            "castType": 1,
             "effect": "_Attack_Search_Hobgoblin",
             "stats": {
                 "prepTime": 0.5,
@@ -44,6 +45,8 @@
             "canCastWhileMoving": true
         },
         "_PlayerCharacter_Melee_HeavyAttack": {
+            "abilityType": 2,
+            "castType": 1,
             "effect": "_Search_PlayerCharacter_Melee_HeavyAttack",
             "stats": {
                 "prepTime": 0.3,
@@ -56,6 +59,8 @@
             "canCastWhileMoving": false
         },
         "_PlayerCharacter_Melee_LightAttack": {
+            "abilityType": 2,
+            "castType": 1,
             "effect": "_Search_PlayerCharacter_Melee_LightAttack",
             "stats": {
                 "prepTime": 0.3,

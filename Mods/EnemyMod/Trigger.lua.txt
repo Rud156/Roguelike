@@ -28,10 +28,8 @@ local GoblinChef = {
     currentTimeBetweenAttacks = 0,
     currentShotCount = 0,
 
-    -- Rotation
-    targetRotation = 0,
-    currentRotation = 0,
-    currentLerpAmount = 0
+    -- Movement
+    isMoving = false
 }
 GoblinChef.__index = GoblinChef
 function GoblinChef:new(room, xPosition, yPosition)
@@ -48,9 +46,7 @@ function GoblinChef:new(room, xPosition, yPosition)
     goblinChef.currentTimeBetweenAttacks = 0
     goblinChef.currentShotCount = 0
 
-    goblinChef.targetRotation = 0
-    goblinChef.currentRotation = 0
-    goblinChef.currentLerpAmount = 0
+    goblinChef.isMoving = false
 
     return goblinChef
 end
@@ -68,6 +64,14 @@ function GoblinChef:TargetPlayer(deltaTime, playerPosition)
 
     if distanceFromPlayer > GOBLIN_CHEF_MIN_CLOSEST_DISTANCE then
         DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+        self.isMoving = true
+    else
+        if self.isMoving then
+            -- Basically stop the enemy when it gets too near
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+            self.isMoving = false
+        end
     end
 
     -- Switch to Attack State only when moving normally
@@ -126,10 +130,8 @@ local HobGoblin = {
      -- Attack
      attackWaitTimer = 0,
 
-     -- Rotation
-    targetRotation = 0,
-    currentRotation = 0,
-    currentLerpAmount = 0
+     -- Movement
+     isMoving = false
 }
 HobGoblin.__index = HobGoblin
 function HobGoblin:new(room, xPosition, yPosition)
@@ -144,9 +146,7 @@ function HobGoblin:new(room, xPosition, yPosition)
 
     hobGoblin.attackWaitTimer = 0
 
-    hobGoblin.targetRotation = 0
-    hobGoblin.currentRotation = 0
-    hobGoblin.currentLerpAmount = 0
+    hobGoblin.isMoving = false
 
     return hobGoblin
 end
@@ -163,6 +163,14 @@ function HobGoblin:TargetPlayer(deltaTime, playerPosition)
 
     if distanceFromPlayer > GOBLIN_HOB_MIN_CLOSEST_DISTANCE then
         DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+        self.isMoving = true
+    else
+        if self.isMoving then
+            -- Basically stop the enemy when it gets too near
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+            self.isMoving = false
+        end
     end
     
     -- Switch to Attack State only when moving normally
