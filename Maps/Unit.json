@@ -39,6 +39,9 @@
         "_Enemy_GoblinChef": {
             "baseUnit": "_CUnit",
             "components": {
+                "unitStats": {
+                    "radius": 0.25
+                },
                 "health": {
                     "maxHealth": 30
                 },
@@ -62,7 +65,7 @@
             "baseUnit": "_CUnit",
             "components": {
                 "unitStats": {
-                    "radius": 0.125,
+                    "radius": 0.25,
                     "selectable": true
                 },
                 "health": {

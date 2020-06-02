@@ -13,6 +13,8 @@ local InventoryItem = InventoryMod.InventoryItem
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
+EnemyMod.LerpAngleDeg = ExtensionFunction.LerpAngleDeg
+EnemyMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
 local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 
@@ -672,7 +674,7 @@ function UpdatePlayerStaminaUI()
         return
     end
     
-    for i = 1, PLAYER_STAMINA_AMOUNT do
+    for i = 1, #m_playerStaminaList do
         if i <= currentStamina then
             DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 1)
         else

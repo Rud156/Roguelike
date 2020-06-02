@@ -12,7 +12,6 @@ local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
 local GOBLIN_HOB_ATTACK_RANGE = 1
 local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
-local GOBLIN_HOB_ROTATION_SPEED = 900
 
 local mod = {}
 
@@ -27,7 +26,12 @@ local GoblinChef = {
     -- Attack
     attackCooldownTimer = 0,
     currentTimeBetweenAttacks = 0,
-    currentShotCount = 0
+    currentShotCount = 0,
+
+    -- Rotation
+    targetRotation = 0,
+    currentRotation = 0,
+    currentLerpAmount = 0
 }
 GoblinChef.__index = GoblinChef
 function GoblinChef:new(room, xPosition, yPosition)
@@ -43,6 +47,10 @@ function GoblinChef:new(room, xPosition, yPosition)
     goblinChef.attackCooldownTimer = 0
     goblinChef.currentTimeBetweenAttacks = 0
     goblinChef.currentShotCount = 0
+
+    goblinChef.targetRotation = 0
+    goblinChef.currentRotation = 0
+    goblinChef.currentLerpAmount = 0
 
     return goblinChef
 end
@@ -116,7 +124,12 @@ local HobGoblin = {
      enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting
  
      -- Attack
-     attackWaitTimer = 0
+     attackWaitTimer = 0,
+
+     -- Rotation
+    targetRotation = 0,
+    currentRotation = 0,
+    currentLerpAmount = 0
 }
 HobGoblin.__index = HobGoblin
 function HobGoblin:new(room, xPosition, yPosition)
@@ -130,6 +143,10 @@ function HobGoblin:new(room, xPosition, yPosition)
     hobGoblin.enemyState = 0
 
     hobGoblin.attackWaitTimer = 0
+
+    hobGoblin.targetRotation = 0
+    hobGoblin.currentRotation = 0
+    hobGoblin.currentLerpAmount = 0
 
     return hobGoblin
 end
@@ -151,7 +168,7 @@ function HobGoblin:TargetPlayer(deltaTime, playerPosition)
     -- Switch to Attack State only when moving normally
     if distanceFromPlayer <= GOBLIN_HOB_ATTACK_RANGE and self.attackWaitTimer <= 0 then
         self.attackWaitTimer = 0
-        self:AttackPlayer(playerPosition)
+        self:AttackPlayer(deltaTime, playerPosition)
     end
 end
 function HobGoblin:WaitAfterAttack(deltaTime, playerPosition)
@@ -160,8 +177,8 @@ function HobGoblin:WaitAfterAttack(deltaTime, playerPosition)
         self:SetEnemyState(0)
     end
 end
-function HobGoblin:AttackPlayer(playerPosition)
-    self:LookAtPlayer(playerPosition) -- This is probably not required
+function HobGoblin:AttackPlayer(deltaTime, playerPosition)
+    self:LookAtPlayer(deltaTime, playerPosition) -- This is probably not required
 
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.CastAbilityAtPosition(GOBLIN_HOB_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
@@ -169,7 +186,7 @@ function HobGoblin:AttackPlayer(playerPosition)
     self.attackWaitTimer = GOBLIN_HOB_ATTACK_WAIT_TIMER
     self:SetEnemyState(1)
 end
-function HobGoblin:LookAtPlayer(playerPosition)
+function HobGoblin:LookAtPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
 
     local direction = mod.VectorSubtract(playerPosition, enemyPosition)
@@ -191,6 +208,9 @@ end
 
 mod.EnemyGoblinChef = GoblinChef 
 mod.EnemyHobGoblin = HobGoblin
+
 mod.VectorDistance = nil
 mod.VectorSubtract = nil
+mod.LerpAngleDeg = nil
+mod.NormalizeUnitRotation = nil
 return mod

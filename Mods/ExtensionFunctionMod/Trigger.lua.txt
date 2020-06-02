@@ -25,6 +25,11 @@ function mod.To360Angle(rotationDeg)
     return rotationDeg
 end
 
+function mod.LerpAngleDeg(fromDeg, toDeg, progress)
+    local delta = (toDeg - fromDeg + 360 + 180) % 360 - 180
+	return (fromDeg + delta * progress + 360) % 360
+end
+
 function mod.NormalizeUnitRotation(unitRotation)
     local yRotation = unitRotation.y
     -- Everything is different in the mirror world
