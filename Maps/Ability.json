@@ -84,7 +84,7 @@
             "cost": {
                 "mana": 3
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Ranged_LightAttack": {
             "abilityType": 1,
@@ -101,7 +101,7 @@
             "cost": {
                 "mana": 0
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         }
     }
 }
