@@ -154,8 +154,19 @@ local ER =  "ER"
 local MAX_ROWS = 3
 local MAX_COLUMNS = 3
 
+-- Room Template Definition
+-- 0: Empty Space
+-- 1: Solid Wall
+-- 2: Destructible Wall
+-- 3: Exit
+local Room = {
+    emptyPositions = {},
+    destructiblePositions = {},
+    solidWallPositions = {},
+    exitPosition = nil,
 
-local Room = {}
+    roomMatrix = {},
+}
 Room.__index = Room
 function Room:new()
     local room = {}
@@ -163,7 +174,60 @@ function Room:new()
 
     return room
 end
+function Room:BlockTopWalls()
+    local totalColumns = #self.roomTemplate[1]
+    for i = 1, totalColumns do
+        self.roomTemplate[1][i] = 1
+    end
 
+    self:RecalculateRoomSpaces()
+end
+function Room:BlockBottomWalls()
+    local totalColumns = #self.roomTemplate[1]
+    local lastRow = #self.roomTemplate
+
+    for i = 1, totalColumns do
+        self.roomTemplate[lastRow][i] = 1
+    end
+
+    self:RecalculateRoomSpaces()
+end
+function Room:BlockLeftWalls()
+    for i = 1, #self.roomTemplate do
+        self.roomTemplate[i][1] = 1
+    end
+
+    self:RecalculateRoomSpaces()
+end
+function Room:BlockRightWalls()
+    local lastColumn = #self.roomTemplate[1]
+
+    for i = 1, #self.roomTemplate do
+        self.roomTemplate[i][lastColumn] = 1
+    end
+
+    self:RecalculateRoomSpaces()
+end
+function Room:RecalculateRoomSpaces()
+    self.emptyPositions = {}
+    self.destructibleWalls = {}
+    self.solidWallPositions = {}
+    self.exitPosition = {}
+
+    for i = 1, #self.roomMatrix do
+        for j = 1, #self.roomMatrix[i] do
+            if self.roomMatrix[i][j] == 0 then
+                table.insert(self.emptyPositions, { i, j })
+            elseif self.roomMatrix[i][j] == 1 then
+                table.insert(self.solidWallPositions, { i, j })
+            elseif self.roomMatrix[i][j] == 2 then
+                table.insert(self.destructiblePositions, { i, j })
+            elseif self.roomMatrix[i][j] == 3 then
+                self.exitPosition = { i, j }
+            end
+        end
+    end
+end
 
 -- Room Identifiers:
 -- SR: Secret Room
