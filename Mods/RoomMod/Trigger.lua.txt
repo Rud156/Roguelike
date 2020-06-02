@@ -145,11 +145,179 @@ local EXIT_ROOMS = {
 -- #endregion
 
 local mod = {}
+local PR = "PR"
+local SR = "SR"
+local CUP = "CUP"
+local CDR = "CDR"
+local CSR = "CSR"
+local ER =  "ER"
+local MAX_ROWS = 3
+local MAX_COLUMNS = 3
 
-local RoomGenerator = {}
+
+local Room = {}
+Room.__index = Room
+function Room:new()
+    local room = {}
+    setmetatable(room, Room)
+
+    return room
+end
+
+
+-- Room Identifiers:
+-- SR: Secret Room
+-- PR: Pathway Room
+-- CUP: Connector Up Room
+-- CDR: Connector Down Room
+-- CSR: Cross Section Room
+-- ER: Exit Room
+local RoomGenerator = { rooms = {}, roomMatrix = {} }
 RoomGenerator.__index = RoomGenerator
 function RoomGenerator:new()
+    local roomGenerator = {}
+    setmetatable(roomGenerator, RoomGenerator)
+
+    roomGenerator.rooms = {
+        { nil, nil, nil },
+        { nil, nil, nil },
+        { nil, nil, nil }
+    }
+    roomGenerator.roomMatrix = {
+        { "", "", "" },
+        { "", "", "" },
+        { "", "", "" }
+    }
+
+    roomGenerator:GenerateRoom()
+
+    return roomGenerator
+end
+function RoomGenerator:GenerateRoom()
+    local currentRowIndex = 1
+    local currentColumnIndex = math.random(1, MAX_COLUMNS) -- Probably read from Matrix Length?
+    local generationComplete = false
+
+    self.roomMatrix[currentRowIndex][currentColumnIndex] = PR
+
+    while true do
+        local randomNumber = math.random()
+        if randomNumber <= 0.4 then -- Left
+            local nextColumnIndex = currentColumnIndex - 1
+
+            if nextColumnIndex < 1 then
+                currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+            else
+                currentColumnIndex = nextColumnIndex
+                self:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
+            end
+
+        elseif randomNumber <= 0.8 then -- Right
+            local nextColumnIndex = currentColumnIndex + 1
+
+            if nextColumnIndex > MAX_COLUMNS then
+                currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+            else
+                currentColumnIndex = nextColumnIndex
+                self:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
+            end
+        else -- Down
+            currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+        end
+
+        if generationComplete then
+            break
+        end
+    end
+
+    for i = 1, MAX_ROWS do
+        for j = 1, MAX_COLUMNS do
+            if self.roomMatrix[i][j] == "" then
+                self.roomMatrix[i][j] = SR
+            end
+        end
+    end
+end
+function RoomGenerator:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+    local nextRowIndex = currentRowIndex + 1
+
+    if nextRowIndex > MAX_ROWS then -- This means it went out of bounds
+        self.roomMatrix[currentRowIndex][currentColumnIndex] = ER
+        return currentRowIndex, currentColumnIndex, true
+    end
+
+    if self.roomMatrix[currentRowIndex][currentColumnIndex] == CUP then
+        self.roomMatrix[currentRowIndex][currentColumnIndex] = CSR
+    else
+        self.roomMatrix[currentRowIndex][currentColumnIndex] = CDR
+    end
+
+    currentRowIndex = nextRowIndex
+    self.roomMatrix[currentRowIndex][currentColumnIndex] = CUP
+
+    return currentRowIndex, currentColumnIndex, false
+end
+function RoomGenerator:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
+    local randomNumber = math.random()
     
+    if randomNumber <= 0.5 then
+        self.roomMatrix[currentRowIndex][currentColumnIndex] = CUP
+    else
+        self.roomMatrix[currentRowIndex][currentColumnIndex] = PR
+    end
+end
+function RoomGenerator:HasLeftExit(roomTemplate)
+    for i = 1, #roomTemplate do
+        if roomTemplate[i][1] == 0 then
+            return true
+        end
+    end
+
+    return false
+end
+function RoomGenerator:HasRightExit(roomTemplate)
+    local lastColumn = #roomTemplate[1]
+    for i = 1, #roomTemplate do
+        if roomTemplate[i][lastColumn] == 0 then
+            return true
+        end
+    end
+
+    return false
+end
+function RoomGenerator:HasTopExit(roomTemplate)
+    local totalColumns = #roomTemplate[1]
+
+    for i = 1, totalColumns do
+        if roomTemplate[1][i] == 0 then
+            return true
+        end
+    end
+    
+    return false
+end
+function RoomGenerator:HasBottomExit(roomTemplate)
+    local totalColumns = #roomTemplate[1]
+    local lastRow = #roomTemplate
+
+    for i = 1, totalColumns do
+        if roomTemplate[lastRow][i] == 0 then
+            return true
+        end
+    end
+
+    return false
+end
+function RoomGenerator:PrintRoomMatrix()
+    for i = 1, MAX_ROWS do
+        local stringValue = ""
+        for j = 1, MAX_COLUMNS do
+            stringValue = stringValue .. self.roomMatrix[i][j] .. ""
+        end
+        DCEI.LogMessage(stringValue)
+    end
 end
 
 mod.RoomGenerator = RoomGenerator
+mod.Room = Room
+return mod
