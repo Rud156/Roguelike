@@ -2,6 +2,7 @@
     "files.associations": {
       "*.lua.*": "lua"
     },
-    "files.autoSave": "onWindowChange"
+    "files.autoSave": "onWindowChange",
+    "python.pythonPath": "C:\\Users\\rudra\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe"
   }
   

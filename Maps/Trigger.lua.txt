@@ -186,6 +186,7 @@ function Start()
         i = 0
     end
 
+    -- TODO: Remove this later on...
     local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
     local collectible_2 = InventoryItem:new(COLLECTIBLES[2].itemPrefab, 23, 23, COLLECTIBLES[2].itemType, COLLECTIBLES[2].itemImage)
 
