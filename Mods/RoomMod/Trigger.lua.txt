@@ -233,7 +233,7 @@ function Room:new(roomTemplate, rect, roomType)
     room.destructibleWallUnits = {}
     room.exitUnit = nil
 
-    room.roomTemplate = mod.CopyRoomTemplate(roomTemplate)
+    room.roomTemplate = mod.CopyRoomTemplate(roomTemplate) -- Copy templates as tables are sent via reference
     room.hasLeftExit = false
     room.hasRightExit = false
     room.hasTopExit = false
