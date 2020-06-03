@@ -19,9 +19,11 @@ local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
+RoomMod.Rect = UtilClassMod.Rect
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
 RoomMod.EnemyGoblinChef = EnemyGoblinChef
-local RoomData = RoomMod.RoomData
+local Room = RoomMod.Room
+local RoomGenerator = RoomMod.RoomGenerator
 
 local Camera = CameraMod.Camera
 
@@ -31,16 +33,9 @@ local Rect = UtilClassMod.Rect
 
 -- Variables
 -- Prefabs
-local SOLID_WALL_PREFAB = "_Wall_SolidWall"
-local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
-local DOORWAY = "_Wall_Doorway"
--- 0: Goblin Chef, 1: Hob Goblin
--- TODO: Think of a better way to represent this...
-local ENEMY_PREFABS = { 0, 1 }
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
 local GAME_LOOP_RATE = 0.0625
-local BASE_ROOM_SIZE = 10 -- TODO: Use room size from template later on...
 
 local STOP_MOVEMENT = "__StopMovement"
 
@@ -97,13 +92,13 @@ local PlayerSpawnPosition = { x = 27, y = 27 }
 local PlayerDashTimer = 0.3
 local PlayerDashSpeed = 5
 local PlayerDashMana = 1
-local UseMeleePlayer = true -- TODO: Change this as required
+local UseMeleePlayer = true
 -- Mouse
 local SingleClickTriggerTime = 0.3
 
 -- Private Variables
 -- Rooms
-local m_rooms = {}
+local m_roomGenerator
 -- Player
 local m_player
 local m_playerCollided = false
@@ -125,7 +120,7 @@ local m_collectibleItems = {} -- TODO: Check if there is a better way...
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(randomSeed)
+    math.randomseed(1591218314)
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
@@ -156,35 +151,7 @@ function Start()
     CreateInvertoryUI()
     CreateDebugUI()
 
-    local xCounter = 0
-    local yCounter = 0
-    local i = 0
-    local j = 0
-
-    while j < WORLD_HEIGHT do
-        while i < WORLD_WIDTH do
-            -- Don't Spawn the Last Room
-            if i == WORLD_WIDTH - BASE_ROOM_SIZE and j == WORLD_HEIGHT - BASE_ROOM_SIZE then
-                break
-            end
-
-            local rect = Rect:new(i, j, BASE_ROOM_SIZE, BASE_ROOM_SIZE)
-            local randomPatternIndex = math.random(1, #RoomTemplates)
-            local randomWaveCount = math.random(MinWaveCount, MaxWaveCount)
-            
-            local roomData = RoomData:new(
-                rect, RoomTemplates[randomPatternIndex],
-                randomWaveCount,
-                SOLID_WALL_PREFAB, BREAKABLE_WALL_PREFAB, DOORWAY,
-                ENEMY_PREFABS, COLLECTIBLE_PREFAB
-            )
-            table.insert(m_rooms, roomData)
-
-            i = i + BASE_ROOM_SIZE
-        end
-        j = j + BASE_ROOM_SIZE
-        i = 0
-    end
+    m_roomGenerator = RoomGenerator:new()
 
     -- TODO: Remove this later on...
     local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
@@ -196,11 +163,6 @@ end
 
 function Update()
     UpdatePlayerStaminaUI()
-
-    for i, room in ipairs(m_rooms) do
-        room:IsPlayerInRoom(m_player)
-        room:UpdateEnemies(GAME_LOOP_RATE, m_player)
-    end
 
     if m_player ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
@@ -394,19 +356,19 @@ function MakePlayerLookTowardsNearestEnemy()
         return
     end
 
-    for i, room in ipairs(m_rooms) do
-        local enemy = room:GetNearestEnemy(m_player)
-        if enemy ~= nil then
-            local enemyPosition = DCEI.GetUnitPosition2D(enemy)
-            local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    -- for i, room in ipairs(m_rooms) do
+    --     local enemy = room:GetNearestEnemy(m_player)
+    --     if enemy ~= nil then
+    --         local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+    --         local playerPosition = DCEI.GetUnitPosition2D(m_player)
 
-            local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
-            local angle = math.deg(math.atan(direction.x, direction.y))
+    --         local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
+    --         local angle = math.deg(math.atan(direction.x, direction.y))
 
-            DCEI.SetUnitRotationEuler(m_player, 0, angle, 0)
-            break
-        end
-    end
+    --         DCEI.SetUnitRotationEuler(m_player, 0, angle, 0)
+    --         break
+    --     end
+    -- end
 end
 
 function LaunchPlayerLightAttack()

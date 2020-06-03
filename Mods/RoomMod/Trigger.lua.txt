@@ -28,7 +28,22 @@ local CROSS_ROAD_ROOMS = {
     }
 }
 
-local SECRET_ROOMS = {
+local SECRET_ROOMS_LEFT_EXIT = {
+    {
+        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+    }
+}
+
+local SECRET_ROOMS_RIGHT_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -40,8 +55,10 @@ local SECRET_ROOMS = {
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-    },
-    
+    }
+}
+
+local SECRET_ROOMS_TOP_EXIT = {
     {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -53,19 +70,21 @@ local SECRET_ROOMS = {
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-    },
-    
+    }
+}
+
+local SECRET_ROOMS_BOTTOM_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
     }
 }
 
@@ -144,7 +163,15 @@ local EXIT_ROOMS = {
 
 -- #endregion
 
-local mod = {}
+-- 0: Goblin Chef, 1: Hob Goblin
+-- TODO: Think of a better way to do this...
+local ENEMY_PREFABS = { 0, 1 }
+local BASE_ROOM_SIZE = 10
+
+local SOLID_WALL_PREFAB = "_Wall_SolidWall"
+local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
+local DOORWAY = "_Wall_Doorway"
+
 local PR = "PR"
 local SR = "SR"
 local CUP = "CUP"
@@ -154,23 +181,59 @@ local ER =  "ER"
 local MAX_ROWS = 3
 local MAX_COLUMNS = 3
 
+local mod = {}
+
 -- Room Template Definition
 -- 0: Empty Space
 -- 1: Solid Wall
 -- 2: Destructible Wall
 -- 3: Exit
 local Room = {
+    rect = nil,
+
+    -- Positions
     emptyPositions = {},
     destructiblePositions = {},
     solidWallPositions = {},
     exitPosition = nil,
 
-    roomMatrix = {},
+    -- Walls
+    solidWallUnits = {},
+    doorwayUnits = {},
+    destructibleWallUnits = {},
+    exitUnit = nil,
+
+    -- Template Info
+    roomTemplate = {},
+    hasLeftExit = false,
+    hasRightExit = false,
+    hasTopExit = false,
+    hasBottomExit = false
 }
 Room.__index = Room
-function Room:new()
+function Room:new(roomTemplate, rect)
     local room = {}
     setmetatable(room, Room)
+
+    room.rect = rect
+
+    room.emptyPositions = {}
+    room.destructiblePositions = {}
+    room.solidWallPositions = {}
+    room.exitPosition = nil
+
+    room.solidWallUnits = {}
+    room.doorwayUnits = {}
+    room.destructibleWallUnits = {}
+    room.exitUnit = nil
+
+    room.roomTemplate = roomTemplate
+    room.hasLeftExit = false
+    room.hasRightExit = false
+    room.hasTopExit = false
+    room.hasBottomExit = false
+
+    room:RecalculateRoomSpaces()
 
     return room
 end
@@ -210,23 +273,53 @@ function Room:BlockRightWalls()
 end
 function Room:RecalculateRoomSpaces()
     self.emptyPositions = {}
-    self.destructibleWalls = {}
+    self.destructiblePositions = {}
     self.solidWallPositions = {}
     self.exitPosition = {}
 
-    for i = 1, #self.roomMatrix do
-        for j = 1, #self.roomMatrix[i] do
-            if self.roomMatrix[i][j] == 0 then
+    for i = 1, #self.roomTemplate do
+        for j = 1, #self.roomTemplate[i] do
+            if self.roomTemplate[i][j] == 0 then
                 table.insert(self.emptyPositions, { i, j })
-            elseif self.roomMatrix[i][j] == 1 then
+            elseif self.roomTemplate[i][j] == 1 then
                 table.insert(self.solidWallPositions, { i, j })
-            elseif self.roomMatrix[i][j] == 2 then
+            elseif self.roomTemplate[i][j] == 2 then
                 table.insert(self.destructiblePositions, { i, j })
-            elseif self.roomMatrix[i][j] == 3 then
+            elseif self.roomTemplate[i][j] == 3 then
                 self.exitPosition = { i, j }
             end
         end
     end
+
+    self.hasLeftExit = mod.RoomHasLeftExit(self.roomTemplate)
+    self.hasRightExit = mod.RoomHasRightExit(self.roomTemplate)
+    self.hasTopExit = mod.RoomHasTopExit(self.roomTemplate)
+    self.hasBottomExit = mod.RoomHasBottomExit(self.roomTemplate)
+end
+function Room:GenerateRoomModels()
+    local startX = self.rect.x
+    local startY = self.rect.y
+
+    -- Solid Walls
+    for i = 1, #self.solidWallPositions do
+        local xPosition = startX + self.solidWallPositions[i][1]
+        local yPosition = startY + self.solidWallPositions[i][2]
+
+        local solidWallInstance = DCEI.CreateUnit(0, 0, SOLID_WALL_PREFAB, xPosition, yPosition)
+        table.insert(self.solidWallUnits, solidWallInstance)
+    end
+
+    -- Destructible Walls
+    for i = 1, #self.destructiblePositions do
+        local xPosition = startX + self.destructiblePositions[i][1]
+        local yPosition = startY + self.destructiblePositions[i][2]
+
+        local destructibleWallInstance = DCEI.CreateUnit(0, 0, BREAKABLE_WALL_PREFAB, xPosition, yPosition)
+        table.insert(self.destructibleWallUnits, destructibleWallInstance)
+    end
+end
+function Room:GetRoomTemplate()
+    return self.roomTemplate
 end
 
 -- Room Identifiers:
@@ -253,11 +346,15 @@ function RoomGenerator:new()
         { "", "", "" }
     }
 
-    roomGenerator:GenerateRoom()
+    roomGenerator:GenerateBaseRoomMatrix()
+    roomGenerator:GenerateActualBasicRooms()
+    roomGenerator:GenerateSecretRooms()
+    roomGenerator:CreateRoomWalls()
+    roomGenerator:GenerateRoomsModels()
 
     return roomGenerator
 end
-function RoomGenerator:GenerateRoom()
+function RoomGenerator:GenerateBaseRoomMatrix()
     local currentRowIndex = 1
     local currentColumnIndex = math.random(1, MAX_COLUMNS) -- Probably read from Matrix Length?
     local generationComplete = false
@@ -302,6 +399,199 @@ function RoomGenerator:GenerateRoom()
         end
     end
 end
+function RoomGenerator:GenerateActualBasicRooms()
+    for i = 1, #self.roomMatrix do
+        for j = 1, #self.roomMatrix[i] do
+            local roomType = self.roomMatrix[i][j]
+            local rect = mod.Rect:new((i - 1) * BASE_ROOM_SIZE, (j - 1) * BASE_ROOM_SIZE, BASE_ROOM_SIZE, BASE_ROOM_SIZE)
+            
+            if roomType == PR then
+                local randomIndex = math.random(1, #PATHWAY_ROOMS)
+                local room = Room:new(PATHWAY_ROOMS[randomIndex], rect)
+                self.rooms[i][j] = room
+            elseif roomType == CUP then
+                local randomIndex = math.random(1, #CONNECTOR_UP_ROOMS)
+                local room = Room:new(CONNECTOR_UP_ROOMS[randomIndex], rect)
+                self.rooms[i][j] = room
+            elseif roomType == CDR then
+                local randomIndex = math.random(1, #CONNECTOR_DOWN_ROOMS)
+                local room = Room:new(CONNECTOR_DOWN_ROOMS[randomIndex], rect)
+                self.rooms[i][j] = room
+            elseif roomType == CSR then
+                local randomIndex = math.random(1, #CROSS_ROAD_ROOMS)
+                local room = Room:new(CROSS_ROAD_ROOMS[randomIndex], rect)
+                self.rooms[i][j] = room
+            elseif roomType == ER then
+                local randomIndex = math.random(1, #EXIT_ROOMS)
+                local room = Room:new(EXIT_ROOMS[randomIndex], rect)
+                self.rooms[i][j] = room
+            elseif roomType == SR then
+                DCEI.LogMessage("Generating Secret Rooms Later")
+            else
+                DCEI.LogError("Invalid Room Type")
+            end
+        end
+    end
+end
+function RoomGenerator:GenerateSecretRooms()
+    for i = 1, #self.roomMatrix do
+        for j = 1, #self.roomMatrix[i] do
+            -- Only handle secret rooms here
+            -- This can be made clear by dynamically finding the side
+            -- But if manual values can tell the info why not use it?
+            if self.roomMatrix[i][j] == SR then
+
+                if i == 1 then -- Top Side
+                    if j == 1 then -- Top Left Side
+                        local hasLeftExit = self.rooms[i][j + 1] and self.rooms[i][j + 1].hasLeftExit or false -- Right Room
+                        local hasTopExit = self.rooms[i + 1][j] and self.rooms[i + 1][j].hasTopExit or false-- Bottom Room
+                        self:GenerateRandomSecretRoom(hasLeftExit, false, hasTopExit, false, i, j)
+
+                    elseif j == #self.roomMatrix[i] then -- Top Right Side
+                        local hasRightExit = self.rooms[i][j - 1] and self.rooms[i][j - 1].hasRightExit or false -- Left Room
+                        local hasTopExit = self.rooms[i + 1][j] and self.rooms[i + 1][j].hasTopExit or false -- Bottom Room
+                        self:GenerateRandomSecretRoom(false, hasRightExit, hasTopExit, false, i, j)
+                        
+                    else -- Side in the middle
+                        local hasLeftExit = self.rooms[i][j - 1] and self.rooms[i][j - 1].hasLeftExit or false
+                        local hasRightExit = self.rooms[i][j + 1] and self.rooms[i][j + 1].hasRightExit or false
+                        local hasTopExit = self.rooms[i + 1][j] and self.rooms[i + 1][j].hasTopExit or false
+                        self:GenerateRandomSecretRoom(hasLeftExit, hasRightExit, hasTopExit, false, i, j)
+                    end
+                elseif i == #self.roomMatrix then -- Bottom Side
+                    if j == 1 then -- Bottom Left Side
+                        local hasLeftExit = self.rooms[i][j + 1] and self.rooms[i][j + 1].hasLeftExit or false
+                        local hasBottomExit = self.rooms[i - 1][j] and self.rooms[i - 1][j].hasBottomExit or false
+                        self:GenerateRandomSecretRoom(hasLeftExit, false, false, hasBottomExit, i, j)
+
+                    elseif j == #self.roomMatrix[i] then -- Bottom Right Side
+                        local hasRightExit = self.rooms[i][j - 1] and self.rooms[i][j - 1].hasRightExit or false
+                        local hasBottomExit = self.rooms[i - 1][j] and self.rooms[i - 1][j].hasBottomExit or false
+                        self:GenerateRandomSecretRoom(false, hasRightExit, false, hasBottomExit, i, j)
+
+                    else -- Side in the middle
+                        local hasLeftExit = self.rooms[i][j - 1] and self.rooms[i][j - 1].hasLeftExit or false
+                        local hasRightExit = self.rooms[i][j + 1] and self.rooms[i][j + 1].hasRightExit or false
+                        local hasBottomExit = self.rooms[i - 1][j] and self.rooms[i - 1][j].hasBottomExit or false
+                        self:GenerateRandomSecretRoom(hasLeftExit, hasRightExit, false, hasBottomExit, i, j)
+                    end
+                else -- Side in the middle
+                    if j == 1 then -- Middle Left Side
+                        local hasTopExit = self.rooms[i + 1][j] and self.rooms[i + 1][j].hasTopExit or false
+                        local hasBottomExit = self.rooms[i - 1][j] and self.rooms[i - 1][j].hasBottomExit or false
+                        local hasLeftExit = self.rooms[i][j + 1] and self.rooms[i][j + 1].hasLeftExit or false
+                        self:GenerateRandomSecretRoom(hasLeftExit, false, hasTopExit, hasBottomExit, i, j)
+
+                    elseif j == #self.roomMatrix[i] then -- Middle Right Side
+                        local hasTopExit = self.rooms[i + 1][j] and self.rooms[i + 1][j].hasTopExit or false
+                        local hasBottomExit = self.rooms[i - 1][j] and self.rooms[i - 1][j].hasBottomExit or false
+                        local hasRightExit = self.rooms[i][j - 1] and self.rooms[i][j - 1].hasRightExit or false
+                        self:GenerateRandomSecretRoom(false, hasRightExit, hasTopExit, hasBottomExit, i, j)
+
+                    else -- Side in the middle
+                        local hasTopExit = self.rooms[i + 1][j] and self.rooms[i + 1][j].hasTopExit or false
+                        local hasBottomExit = self.rooms[i - 1][j] and self.rooms[i - 1][j].hasBottomExit or false
+                        local hasLeftExit = self.rooms[i][j + 1] and self.rooms[i][j + 1].hasLeftExit or false
+                        local hasRightExit = self.rooms[i][j - 1] and self.rooms[i][j - 1].hasRightExit or false
+                        self:GenerateRandomSecretRoom(hasLeftExit, hasRightExit, hasTopExit, hasBottomExit, i, j)
+                    end
+                end
+            end
+        end
+    end
+end
+function RoomGenerator:CreateRoomWalls()
+    -- Top Row
+    for i = 1, #self.rooms[1] do
+        if self.rooms[1][i] then
+            self.rooms[1][i]:BlockTopWalls()
+        end
+    end
+
+    -- Bottom Row
+    local lastRow = #self.rooms
+    for i = 1, #self.rooms[lastRow] do
+        if self.rooms[lastRow][i] then
+            self.rooms[lastRow][i]:BlockBottomWalls()
+        end
+    end
+
+    -- Left Row
+    for i = 1, #self.rooms do
+        if self.rooms[i][1] then
+            self.rooms[i][1]:BlockLeftWalls()
+        end
+    end
+
+    -- Right Row
+    local lastColumn = #self.rooms[1]
+    for i = 1, #self.rooms do
+        if self.rooms[i][lastColumn] then
+            self.rooms[i][lastColumn]:BlockRightWalls()
+        end
+    end
+end
+function RoomGenerator:GenerateRoomsModels()
+    for i = 1, #self.rooms do
+        for j = 1, #self.rooms[i] do
+            if self.rooms[i][j] then
+                self.rooms[i][j]:GenerateRoomModels()
+            end
+        end
+    end
+end
+function RoomGenerator:GenerateRandomSecretRoom(hasLeftExit, hasRightExit, hasTopExit, hasBottomExit, rowIndex, columnIndex)
+    local randomArray = { 0, 0, 0, 0 }
+    if hasLeftExit then
+        randomArray[1] = 1
+    end
+    if hasRightExit then
+        randomArray[2] = 1
+    end
+    if hasTopExit then
+        randomArray[3] = 1
+    end
+    if hasBottomExit then
+        randomArray[4] = 1
+    end
+
+    -- Find valid sides where the secret rooms can be placed
+    local validIndexes = {}
+    for i = 1, #randomArray do
+        if randomArray[i] == 1 then
+            table.insert(validIndexes, i)
+        end
+    end
+
+    if #validIndexes == 0 then
+        DCEI.LogMessage("Row: " .. rowIndex .. ", Column: " .. columnIndex)
+        self:PrintRoomMatrix()
+        DCEI.LogError("Inaccessible Secret Room")
+        return
+    end
+    
+    local rect = mod.Rect:new((rowIndex - 1) * BASE_ROOM_SIZE, (columnIndex - 1) * BASE_ROOM_SIZE, BASE_ROOM_SIZE, BASE_ROOM_SIZE)
+    local randomIndex = math.random(1, #validIndexes)
+    local randomValue = validIndexes[randomIndex]
+
+    if randomValue == 1 then
+        local randomRoomIndex = math.random(1, #SECRET_ROOMS_RIGHT_EXIT)
+        local room = Room:new(SECRET_ROOMS_RIGHT_EXIT[randomRoomIndex], rect)
+        self.rooms[rowIndex][columnIndex] = room
+    elseif randomValue == 2 then
+        local randomRoomIndex = math.random(1, #SECRET_ROOMS_LEFT_EXIT)
+        local room = Room:new(SECRET_ROOMS_LEFT_EXIT[randomRoomIndex], rect)
+        self.rooms[rowIndex][columnIndex] = room
+    elseif randomValue == 3 then
+        local randomRoomIndex = math.random(1, #SECRET_ROOMS_BOTTOM_EXIT)
+        local room = Room:new(SECRET_ROOMS_BOTTOM_EXIT[randomRoomIndex], rect)
+        self.rooms[rowIndex][columnIndex] = room
+    else
+        local randomRoomIndex = math.random(1, #SECRET_ROOMS_TOP_EXIT)
+        local room = Room:new(SECRET_ROOMS_TOP_EXIT[randomRoomIndex], rect)
+        self.rooms[rowIndex][columnIndex] = room
+    end
+end
 function RoomGenerator:PlaceRoomDown(currentRowIndex, currentColumnIndex)
     local nextRowIndex = currentRowIndex + 1
 
@@ -330,7 +620,17 @@ function RoomGenerator:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
         self.roomMatrix[currentRowIndex][currentColumnIndex] = PR
     end
 end
-function RoomGenerator:HasLeftExit(roomTemplate)
+function RoomGenerator:PrintRoomMatrix()
+    for i = 1, MAX_ROWS do
+        local stringValue = ""
+        for j = 1, MAX_COLUMNS do
+            stringValue = stringValue .. self.roomMatrix[i][j] .. " "
+        end
+        DCEI.LogMessage(stringValue)
+    end
+end
+
+function mod.RoomHasLeftExit(roomTemplate)
     for i = 1, #roomTemplate do
         if roomTemplate[i][1] == 0 then
             return true
@@ -339,7 +639,7 @@ function RoomGenerator:HasLeftExit(roomTemplate)
 
     return false
 end
-function RoomGenerator:HasRightExit(roomTemplate)
+function mod.RoomHasRightExit(roomTemplate)
     local lastColumn = #roomTemplate[1]
     for i = 1, #roomTemplate do
         if roomTemplate[i][lastColumn] == 0 then
@@ -349,7 +649,7 @@ function RoomGenerator:HasRightExit(roomTemplate)
 
     return false
 end
-function RoomGenerator:HasTopExit(roomTemplate)
+function mod.RoomHasTopExit(roomTemplate)
     local totalColumns = #roomTemplate[1]
 
     for i = 1, totalColumns do
@@ -360,7 +660,7 @@ function RoomGenerator:HasTopExit(roomTemplate)
     
     return false
 end
-function RoomGenerator:HasBottomExit(roomTemplate)
+function mod.RoomHasBottomExit(roomTemplate)
     local totalColumns = #roomTemplate[1]
     local lastRow = #roomTemplate
 
@@ -372,16 +672,15 @@ function RoomGenerator:HasBottomExit(roomTemplate)
 
     return false
 end
-function RoomGenerator:PrintRoomMatrix()
-    for i = 1, MAX_ROWS do
-        local stringValue = ""
-        for j = 1, MAX_COLUMNS do
-            stringValue = stringValue .. self.roomMatrix[i][j] .. ""
-        end
-        DCEI.LogMessage(stringValue)
-    end
-end
+
 
 mod.RoomGenerator = RoomGenerator
 mod.Room = Room
+
+mod.VectorDistance = nil
+mod.Rect = nil
+
+mod.EnemyHobGoblin = nil
+mod.EnemyGoblinChef = nil
+
 return mod
