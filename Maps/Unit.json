@@ -120,7 +120,7 @@
             "baseUnit": "_CUnit",
             "components": {
                 "unitStats": {
-                    "radius": 0.25,
+                    "radius": 0.125,
                     "selectable": false
                 },
                 "health": {
@@ -129,6 +129,9 @@
                 "mana": {
                     "maxMana": 5,
                     "regeneration": 1
+                },
+                "movement": {
+                    "moveSpeed": 10
                 },
                 "turning": {
                     "turningSpeed": 720
