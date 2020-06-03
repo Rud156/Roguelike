@@ -120,7 +120,7 @@ local m_collectibleItems = {} -- TODO: Check if there is a better way...
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(1591218314)
+    math.randomseed(randomSeed)
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
