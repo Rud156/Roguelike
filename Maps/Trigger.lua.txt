@@ -157,11 +157,10 @@ function Start()
     m_roomGenerator = RoomGenerator:new()
 
     -- TODO: Remove this later on...
-    local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
-    local collectible_2 = InventoryItem:new(COLLECTIBLES[2].itemPrefab, 23, 23, COLLECTIBLES[2].itemType, COLLECTIBLES[2].itemImage)
-
-    table.insert(m_collectibleItems, collectible_1)
-    table.insert(m_collectibleItems, collectible_2)
+    -- local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
+    -- local collectible_2 = InventoryItem:new(COLLECTIBLES[2].itemPrefab, 23, 23, COLLECTIBLES[2].itemType, COLLECTIBLES[2].itemImage)
+    -- table.insert(m_collectibleItems, collectible_1)
+    -- table.insert(m_collectibleItems, collectible_2)
 end
 
 function Update()
@@ -169,22 +168,21 @@ function Update()
 
     if m_player ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
+        m_roomGenerator:UpdateRooms(GAME_LOOP_RATE, m_player)
 
         if m_dashTimer > 0 then
             UpdatePlayerDashMovement(GAME_LOOP_RATE)
         end
-    end
 
-    MakePlayerLookTowardsNearestEnemy()
-    m_playerCollided = false
-
-    if m_player ~= nil then
         local playerHealth = DCEI.GetHealthValue(m_player)
         if m_lastFramePlayerHealth > playerHealth then
             m_camera:StartShakeWithUnit(1, 0)
         end
         m_lastFramePlayerHealth = playerHealth
     end
+
+    MakePlayerLookTowardsNearestEnemy()
+    m_playerCollided = false
 
     if m_playerCooldownTimer > 0 then
         m_playerCooldownTimer  = m_playerCooldownTimer - GAME_LOOP_RATE
@@ -205,9 +203,7 @@ function HandleUnitDied()
 
     -- Just go through all rooms and trigger it
     -- The correct one will automatically trigger
-    for i, room in ipairs(m_rooms) do
-        room:RemovedDeadEnemy(unit)
-    end
+    m_roomGenerator:RemoveDeadEnemy(unit)
 
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE then
@@ -349,9 +345,8 @@ function DisplayGameOverSequence()
 end
 
 function ResetGameState()
-    for i, room in ipairs(m_rooms) do
-        room:Reset()
-    end
+    m_roomGenerator:DestroyRooms()
+    m_roomGenerator:GenerateRooms()
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
@@ -370,19 +365,16 @@ function MakePlayerLookTowardsNearestEnemy()
         return
     end
 
-    -- for i, room in ipairs(m_rooms) do
-    --     local enemy = room:GetNearestEnemy(m_player)
-    --     if enemy ~= nil then
-    --         local enemyPosition = DCEI.GetUnitPosition2D(enemy)
-    --         local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
+    if enemy ~= nil then
+        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
 
-    --         local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
-    --         local angle = math.deg(math.atan(direction.x, direction.y))
+        local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
+        local angle = math.deg(math.atan(direction.x, direction.y))
 
-    --         DCEI.SetUnitRotationEuler(m_player, 0, angle, 0)
-    --         break
-    --     end
-    -- end
+        DCEI.SetUnitRotationEuler(m_player, 0, angle, 0)
+    end
 end
 
 function LaunchPlayerLightAttack()

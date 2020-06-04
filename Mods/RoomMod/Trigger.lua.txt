@@ -1,6 +1,8 @@
 -- NOTE: ROWS AND COLUMNS ARE FLIPPED
 -- KEEP A NOTE OF THIS
--- i IS y AND j IS x    
+-- i IS y AND j IS x
+
+local ArcadeCore = GameModules["Arcade/Core"]
 
 -- #region Room Templates
 
@@ -8,12 +10,12 @@ local CROSS_ROAD_ROOMS = {
     {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 4, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 4, 0, 4, 0 },
+        { 0, 0, 0, 4, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 4, 0, 0, 0, 0, 0, 0 },
+        { 1, 4, 0, 0, 0, 4, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
     },
@@ -21,13 +23,13 @@ local CROSS_ROAD_ROOMS = {
     {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 2, 2, 2, 2, 0, 0, 0 },
+        { 1, 4, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 2, 2, 2, 2, 0, 4, 0 },
         { 1, 0, 0, 2, 2, 2, 2, 0, 0, 0 },
-        { 0, 0, 0, 2, 2, 2, 2, 0, 0, 0 },
-        { 0, 0, 0, 2, 2, 2, 2, 0, 0, 0 },
+        { 0, 4, 0, 2, 2, 2, 2, 0, 0, 0 },
+        { 0, 0, 0, 2, 2, 2, 2, 0, 4, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 4, 0, 0, 0, 0, 4, 0, 0, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
     }
 }
@@ -36,13 +38,13 @@ local SECRET_ROOMS_LEFT_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 4, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 4, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 4, 0, 0, 4, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 4, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     }
 }
@@ -50,14 +52,14 @@ local SECRET_ROOMS_LEFT_EXIT = {
 local SECRET_ROOMS_RIGHT_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 0, 0, 4, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 4, 0, 0, 0, 0 },
+        { 1, 0, 0, 4, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 4, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     }
 }
@@ -67,12 +69,12 @@ local SECRET_ROOMS_TOP_EXIT = {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 4, 0, 0, 4, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 4, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 4, 0, 4, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     }
 }
@@ -80,13 +82,13 @@ local SECRET_ROOMS_TOP_EXIT = {
 local SECRET_ROOMS_BOTTOM_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 4, 0, 0, 4, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 4, 0, 4, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
     }
@@ -96,11 +98,11 @@ local PATHWAY_ROOMS = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
+        { 0, 4, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 4, 0, 0, 0, 0 },
+        { 0, 0, 0, 4, 0, 0, 4, 0, 0, 0 },
+        { 0, 4, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -109,11 +111,11 @@ local PATHWAY_ROOMS = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 4, 0, 0, 0, 0, 1 },
         { 0, 0, 0, 1, 0, 0, 1, 0, 0, 0 },
+        { 0, 4, 0, 0, 2, 2, 0, 4, 4, 0 },
         { 0, 0, 0, 0, 2, 2, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 2, 2, 0, 0, 0, 0 },
-        { 0, 0, 0, 1, 0, 0, 1, 0, 0, 0 },
+        { 0, 4, 0, 1, 0, 0, 1, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -124,12 +126,12 @@ local CONNECTOR_UP_ROOMS = {
     {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 4, 0, 0, 0, 0, 0, 1 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 4, 4, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     }
@@ -140,11 +142,11 @@ local CONNECTOR_DOWN_ROOMS = {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 4, 0, 4, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 4, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 },
+        { 1, 0, 0, 4, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
     }
@@ -154,11 +156,11 @@ local EXIT_ROOMS = {
     {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
+        { 0, 0, 4, 0, 0, 0, 0, 4, 0, 0 },
         { 0, 0, 0, 0, 3, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 4, 0, 0, 0, 0, 4, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
@@ -185,6 +187,9 @@ local ER =  "ER"
 local MAX_ROWS = 3
 local MAX_COLUMNS = 3
 
+local MAX_WAVE_COUNT = 5
+local ROOM_ENTRY_DETECT_OFFSET = 2
+
 local mod = {}
 
 -- Room Template Definition
@@ -198,8 +203,10 @@ local Room = {
 
     -- Positions
     emptyPositions = {},
+    enemySpawnPositions = {},
     destructiblePositions = {},
     solidWallPositions = {},
+    doorwayPositions = {},
     exitPosition = nil,
 
     -- Walls
@@ -213,7 +220,16 @@ local Room = {
     hasLeftExit = false,
     hasRightExit = false,
     hasTopExit = false,
-    hasBottomExit = false
+    hasBottomExit = false,
+
+    -- Spawn Info
+    playerInRoom = false,
+    roomCleared = false,
+
+    -- Room Enemies
+    enemies = {},
+    totalWaveCount = 0,
+    currentWaveCount = 0
 }
 Room.__index = Room
 function Room:new(roomTemplate, rect, roomType)
@@ -224,8 +240,10 @@ function Room:new(roomTemplate, rect, roomType)
     room.roomType = roomType
 
     room.emptyPositions = {}
+    room.enemySpawnPositions = {}
     room.destructiblePositions = {}
     room.solidWallPositions = {}
+    room.doorwayPositions = {}
     room.exitPosition = nil
 
     room.solidWallUnits = {}
@@ -239,9 +257,209 @@ function Room:new(roomTemplate, rect, roomType)
     room.hasTopExit = false
     room.hasBottomExit = false
 
+    room.playerInRoom = false
+    room.roomCleared = false
+
+    room.enemies = {}
+    room.totalWaveCount = math.random(1, MAX_WAVE_COUNT)
+    room.currentWaveCount = 0
+
     room:RecalculateRoomSpaces()
 
     return room
+end
+function Room:UpdateEnemies(deltaTime, player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    for i, enemy in ipairs(self.enemies) do
+
+        -- This is a fallback check in case a dead enemy still remains in queue
+        local mainUnit = enemy:GetMainUnit()
+        if not ArcadeCore.UnitIsAlive(mainUnit) then
+            self:ForceRemoveUnitAtIndex(i)
+            break
+        end
+
+        enemy:Update(deltaTime, playerPosition)
+    end
+end
+function Room:UpdatePlayerInRoom(player)
+    if self.playerInRoom then
+        return
+    end
+
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    if self.rect:containsWithOffset(playerPosition.x, playerPosition.y, ROOM_ENTRY_DETECT_OFFSET) then
+        self:InitializePlayerEntered()
+    end
+end
+function Room:InitializePlayerEntered()
+    if self.roomCleared then
+        return -- Don't do anything as the player has already cleared the room
+    end
+
+    DCEI.LogMessage("Player In Room")
+
+    self.playerInRoom = true
+    self:CreateDoors()
+    self:SpawnNextWave()
+end
+function Room:RemoveDeadEnemy(enemyUnit)
+    if not self.playerInRoom then
+        return
+    end
+
+    local index = -1
+    for i, enemy in ipairs(self.enemies) do
+        if enemy:GetMainUnit() == enemyUnit then
+            index = i
+            break
+        end
+    end
+
+    if index ~= -1 then
+        local enemyClassInstance = self.enemies[index]
+        enemyClassInstance:CleanupEnemyDied()
+        table.remove(self.enemies, index)
+    end
+
+    local totalEnemyCount = #self.enemies
+    if totalEnemyCount == 0 then
+        self:SpawnNextWave()
+    end
+end
+function Room:ForceRemoveUnitAtIndex(index)
+    if index == -1 then
+        return
+    end
+
+    table.remove(self.enemies, index)
+    local totalEnemyCount = #self.enemies
+    if totalEnemyCount == 0 then
+        self:SpawnNextWave()
+    end
+end
+function Room:SpawnNextWave()
+    if self.currentWaveCount >= self.totalWaveCount then
+        self:MarkRoomCleared()
+        return
+    end
+
+    local startX = self.rect.x
+    local startY = self.rect.y
+
+    for i, enemyPosition in ipairs(self.enemySpawnPositions) do
+        local randomValue = math.random()
+        if randomValue <= 0.25 then
+            local randomEnemyIndex = math.random(1, #ENEMY_PREFABS)
+            local randomEnemy = ENEMY_PREFABS[randomEnemyIndex]
+            local enemy
+
+            local xPosition = startX + enemyPosition[1]
+            local yPosition = startY + enemyPosition[2]
+
+            if randomEnemy == 0 then
+                enemy = mod.EnemyGoblinChef:new(self, xPosition, yPosition)
+            elseif randomEnemy == 1 then
+                enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
+            end
+            
+            table.insert(self.enemies, enemy)
+        end
+    end
+
+    local enemyCount = #self.enemies
+    if enemyCount == 0 then
+        DCEI.LogMessage("0 enemies were spawned. Force spawning 1 enemy")
+
+        local randomPositionIndex = math.random(1, #self.enemySpawnPositions)
+        local enemyPosition = self.enemySpawnPositions[randomPositionIndex]
+        local randomEnemyIndex = math.random(1, #self.enemyPrefabs)
+        local randomEnemy = self.enemyPrefabs[randomEnemyIndex]
+        local enemy
+        
+        if randomEnemy == 0 then
+            enemy = mod.EnemyGoblinChef:new(self, enemyPosition.x, enemyPosition.y)
+        elseif randomEnemy == 1 then
+            enemy = mod.EnemyHobGoblin:new(self, enemyPosition.x, enemyPosition.y)
+        end
+        
+        table.insert(self.enemies, enemy)
+    end
+
+    self.currentWaveCount = self.currentWaveCount + 1
+end
+function Room:MarkRoomCleared()
+    self.roomCleared = true
+    self:RemoveDoors()
+end
+function Room:CreateDoors()
+    local startX = self.rect.x
+    local startY = self.rect.y
+
+    for i, doorwayPosition in ipairs(self.doorwayPositions) do
+        local xPosition = startX + doorwayPosition[1]
+        local yPosition = startY + doorwayPosition[2]
+
+        local doorway = DCEI.CreateUnit(0, 0, DOORWAY, xPosition, yPosition)
+        table.insert(self.doorwayUnits, doorway)
+    end
+end
+function Room:RemoveDoors()
+    for i, doorway in ipairs(self.doorwayUnits) do
+        DCEI.RemoveUnit(doorway)
+    end
+
+    self.doorwayUnits = {}
+end
+function Room:GetNearestEnemy(player)
+    if not self.playerInRoom then
+        return nil
+    end
+
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    local lastNearestEnemy = nil
+    local lastEnemyDistance = 100
+
+    for i, enemyUnit in ipairs(self.enemies) do
+        local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
+        local distance = mod.VectorDistance(playerPosition, enemyPosition)
+        
+        if distance < lastEnemyDistance then
+            lastNearestEnemy = enemyUnit:GetMainUnit()
+            lastEnemyDistance = distance
+        end
+    end
+
+    return lastNearestEnemy
+end
+function Room:ClearEnemies()
+    for i, enemy in ipairs(self.enemies) do
+        local mainUnit = enemy:GetMainUnit()
+        DCEI.RemoveUnit(mainUnit)
+        enemy:CleanupEnemyDied()
+    end
+
+    self.enemies = {}
+end
+function Room:DestroyRoom()
+    self:ClearEnemies()
+    self:RemoveDoors()
+
+    for i, solidWallUnit in ipairs(self.solidWallUnits) do
+        DCEI.RemoveUnit(solidWallUnit)
+    end
+
+    for i, destructibleUnit in ipairs(self.destructibleWallUnits) do
+        DCEI.RemoveUnit(destructibleUnit)
+    end
+
+    if self.exitUnit ~= nil then
+        DCEI.RemoveUnit(self.exitUnit)
+    end
+
+    self.solidWallUnits = {}
+    self.destructibleWallUnits = {}
+    self.exitUnit = nil
 end
 function Room:BlockTopWalls()
     local totalColumns = #self.roomTemplate[1]
@@ -289,13 +507,20 @@ function Room:RecalculateRoomSpaces()
             local yPosition = BASE_ROOM_SIZE - i
 
             if self.roomTemplate[i][j] == 0 then
-                table.insert(self.emptyPositions, { xPosition, yPosition })
+                if i == 1 or i == #self.roomTemplate or j == 1 or j == #self.roomTemplate[i] then
+                    table.insert(self.doorwayPositions, { xPosition, yPosition })
+                else
+                    table.insert(self.emptyPositions,  { xPosition, yPosition })
+                end
+
             elseif self.roomTemplate[i][j] == 1 then
                 table.insert(self.solidWallPositions, { xPosition, yPosition })
             elseif self.roomTemplate[i][j] == 2 then
                 table.insert(self.destructiblePositions, { xPosition, yPosition })
             elseif self.roomTemplate[i][j] == 3 then
                 self.exitPosition = { xPosition, yPosition }
+            elseif self.roomTemplate[i][j] == 4 then
+                table.insert(self.enemySpawnPositions, { xPosition, yPosition })
             end
         end
     end
@@ -358,15 +583,63 @@ function RoomGenerator:new()
         { "*", "*", "*" }
     }
 
-    roomGenerator:GenerateBaseRoomMatrix()
-    roomGenerator:GenerateActualBasicRooms()
-    roomGenerator:GenerateSecretRooms()
-    roomGenerator:CreateRoomWalls()
-    roomGenerator:GenerateRoomsModels()
-    roomGenerator:PrintRoomMatrix()
-    roomGenerator:PrintActualRoomMatrix()
+    roomGenerator:GenerateRooms()
 
     return roomGenerator
+end
+function RoomGenerator:GenerateRooms()
+    self:GenerateBaseRoomMatrix()
+    self:GenerateActualBasicRooms()
+    self:GenerateSecretRooms()
+    self:CreateRoomWalls()
+    self:GenerateRoomsModels()
+    self:PrintRoomMatrix()
+    self:PrintActualRoomMatrix()
+end
+function RoomGenerator:DestroyRooms()
+    for i = 1, #self.rooms do
+        for j = 1, #self.rooms[i] do
+            self.rooms[i][j]:DestroyRoom()
+        end
+    end
+
+    self.rooms = {
+        { nil, nil, nil },
+        { nil, nil, nil },
+        { nil, nil, nil }
+    }
+    self.roomMatrix = {
+        { "*", "*", "*" },
+        { "*", "*", "*" },
+        { "*", "*", "*" }
+    }
+end
+function RoomGenerator:UpdateRooms(deltaTime, player)
+    for i = 1, #self.rooms do
+        for j = 1, #self.rooms[i] do
+            self.rooms[i][j]:UpdatePlayerInRoom(player)
+            self.rooms[i][j]:UpdateEnemies(deltaTime, player)
+        end
+    end
+end
+function RoomGenerator:GetRoomNearestEnemy(player)
+    for i = 1, #self.rooms do
+        for j = 1, #self.rooms[i] do
+            local enemy = self.rooms[i][j]:GetNearestEnemy(player)
+            if enemy ~= nil then
+                return enemy
+            end
+        end
+    end
+
+    return nil
+end
+function RoomGenerator:RemoveDeadEnemy(enemyUnit)
+    for i = 1, #self.rooms do
+        for j = 1, #self.rooms[i] do
+            self.rooms[i][j]:RemoveDeadEnemy(enemyUnit)
+        end
+    end
 end
 function RoomGenerator:GenerateBaseRoomMatrix()
     local currentRowIndex = 1
