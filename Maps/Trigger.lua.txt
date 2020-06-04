@@ -115,6 +115,8 @@ local m_camera
 local m_uiRoot
 local m_inventory
 local m_collectibleItems = {} -- TODO: Check if there is a better way...
+-- Mouse Data
+local m_mouseDown = false
 
 -- #region LifeCycle Functions
 function Start()
@@ -143,8 +145,9 @@ function Start()
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseUpEvent)
-    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseUpEvent)
+    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
+    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
+    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseDownEvent)
 
     ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
@@ -185,6 +188,10 @@ function Update()
 
     if m_playerCooldownTimer > 0 then
         m_playerCooldownTimer  = m_playerCooldownTimer - GAME_LOOP_RATE
+    end
+
+    if m_mouseDown and m_playerCooldownTimer <= 0 then
+        LaunchPlayerLightAttack()
     end
 end
 
@@ -292,16 +299,23 @@ end
 -- Joystick Events
 
 -- Mouse Events
+function HandleLeftMouseDownEvent()
+    if m_player == nil or not USE_KEYBOARD then
+        return
+    end
+
+    m_mouseDown = true
+end
+
 function HandleLeftMouseUpEvent()
     if m_player == nil or not USE_KEYBOARD then
         return
     end
 
-    DCEI.LogMessage("Launch Light Attack")
-    LaunchPlayerLightAttack()
+    m_mouseDown = false
 end
 
-function HandleRightMouseUpEvent()
+function HandleRightMouseDownEvent()
     if m_player == nil or not USE_KEYBOARD then
         return
     end
