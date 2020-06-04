@@ -353,9 +353,9 @@ function RoomGenerator:new()
         { nil, nil, nil }
     }
     roomGenerator.roomMatrix = {
-        { "", "", "" },
-        { "", "", "" },
-        { "", "", "" }
+        { "*", "*", "*" },
+        { "*", "*", "*" },
+        { "*", "*", "*" }
     }
 
     roomGenerator:GenerateBaseRoomMatrix()
@@ -374,6 +374,7 @@ function RoomGenerator:GenerateBaseRoomMatrix()
     local generationComplete = false
 
     self.roomMatrix[currentRowIndex][currentColumnIndex] = PR
+    self:PrintRoomMatrix()
 
     while true do
         local randomNumber = math.random()
@@ -381,37 +382,42 @@ function RoomGenerator:GenerateBaseRoomMatrix()
             local nextColumnIndex = currentColumnIndex - 1
 
             if nextColumnIndex < 1 then
-                currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+                currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomBelow(currentRowIndex, currentColumnIndex)
             else
                 currentColumnIndex = nextColumnIndex
-                self:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
+                self:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex, true)
             end
 
         elseif randomNumber <= 0.8 then -- Right
             local nextColumnIndex = currentColumnIndex + 1
 
             if nextColumnIndex > MAX_COLUMNS then
-                currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+                currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomBelow(currentRowIndex, currentColumnIndex)
             else
                 currentColumnIndex = nextColumnIndex
-                self:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
+                self:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex, false)
             end
         else -- Down
-            currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+            currentRowIndex, currentColumnIndex, generationComplete = self:PlaceRoomBelow(currentRowIndex, currentColumnIndex)
         end
 
         if generationComplete then
             break
+        else
+            self:PrintRoomMatrix()
         end
     end
 
     for i = 1, MAX_ROWS do
         for j = 1, MAX_COLUMNS do
-            if self.roomMatrix[i][j] == "" then
+            if self.roomMatrix[i][j] == "*" then
                 self.roomMatrix[i][j] = SR
             end
         end
     end
+
+    self:PrintRoomMatrix()
+    self:ConnectSecretRooms()
 end
 function RoomGenerator:GenerateActualBasicRooms()
     for i = 1, #self.roomMatrix do
@@ -626,7 +632,190 @@ function RoomGenerator:GenerateRandomSecretRoom(hasLeftExit, hasRightExit, hasTo
         self.rooms[rowIndex][columnIndex] = room
     end
 end
-function RoomGenerator:PlaceRoomDown(currentRowIndex, currentColumnIndex)
+function RoomGenerator:ConnectSecretRooms()
+    for i = 1, MAX_ROWS do
+        for j = 1, MAX_COLUMNS do
+            if self.roomMatrix[i][j] == SR then
+                local hasExit = false
+
+                if i == 1 then -- Top Row
+                    local hasTopExit = mod.StringRoomHasTopExit(self.roomMatrix[i + 1][j])
+
+                    if j == 1 then -- Left Column
+                        local hasLeftExit = mod.StringRoomHasLeftExit(self.roomMatrix[i][j + 1])
+
+                        if hasLeftExit or hasTopExit then
+                            -- Do nothing here..
+                            hasExit = true
+                        elseif not hasLeftExit then
+                            self.roomMatrix[i][j + 1] = PR
+                            hasExit = true
+                        end
+                    elseif j == MAX_COLUMNS then -- Right Column
+                        local hasRightExit = mod.StringRoomHasRightExit(self.roomMatrix[i][j - 1])
+
+                        if hasRightExit or hasTopExit then
+                            -- Do nothing here...
+                            hasExit = true
+                        elseif not hasRightExit then
+                            self.roomMatrix[i][j - 1] = PR
+                            hasExit = true
+                        end
+                    else -- Middle Column
+                        local hasLeftExit = mod.StringRoomHasLeftExit(self.roomMatrix[i][j + 1])
+                        local hasRightExit = mod.StringRoomHasRightExit(self.roomMatrix[i][j - 1])
+
+                        if hasLeftExit or hasRightExit or hasTopExit then
+                            -- Do nothing here...
+                            hasExit = true
+                        elseif not hasLeftExit then
+                            self.roomMatrix[i][j + 1] = PR
+                            hasExit = true
+                        elseif not hasRightExit then
+                            self.roomMatrix[i][j - 1] = PR
+                            hasExit = true
+                        end
+                    end
+
+                    if not hasExit then
+                        local belowRoom = self.roomMatrix[i + 1][j]
+                        if belowRoom == CSR or belowRoom == ER then
+                            -- Do Nothing Here...
+                        elseif belowRoom == CUP or belowRoom == CDR then
+                            self.roomMatrix[i + 1][j] = CSR
+                        else
+                            self.roomMatrix[i + 1][j] = CUP
+                        end
+                    end
+
+                elseif i == MAX_ROWS then -- Bottom Row
+                    local hasBottomExit = mod.StringRoomHasBottomExit(self.roomMatrix[i - 1][j])
+
+                    if j == 1 then -- Left Column
+                        local hasLeftExit = mod.StringRoomHasLeftExit(self.roomMatrix[i][j + 1])
+
+                        if hasLeftExit or hasBottomExit then
+                            -- Do nothing here..
+                            hasExit = true
+                        elseif not hasLeftExit then
+                            self.roomMatrix[i][j + 1] = PR
+                            hasExit = true
+                        end
+                    elseif j == MAX_COLUMNS then -- Right Column
+                        local hasRightExit = mod.StringRoomHasRightExit(self.roomMatrix[i][j - 1])
+
+                        if hasRightExit or hasBottomExit then
+                            -- Do nothing here...
+                            hasExit = true
+                        elseif not hasRightExit then
+                            self.roomMatrix[i][j - 1] = PR
+                            hasExit = true
+                        end
+                    else -- Middle Column
+                        local hasLeftExit = mod.StringRoomHasLeftExit(self.roomMatrix[i][j + 1])
+                        local hasRightExit = mod.StringRoomHasRightExit(self.roomMatrix[i][j - 1])
+
+                        if hasLeftExit or hasRightExit or hasBottomExit then
+                            -- DO nothing here...
+                            hasExit = true
+                        elseif not hasLeftExit then
+                            self.roomMatrix[i][j + 1] = PR
+                            hasExit = true
+                        elseif not hasRightExit then
+                            self.roomMatrix[i][j - 1] = PR
+                            hasExit = true
+                        end
+                    end
+
+                    if not hasExit then
+                        local aboveRoom = self.roomMatrix[i - 1][j]
+                        if aboveRoom == CSR or aboveRoom == ER then
+                            -- Do Nothing Here...
+                        elseif aboveRoom == CDR or aboveRoom == CUP then
+                            self.roomMatrix[i - 1][j] = CSR
+                        else
+                            self.roomMatrix[i - 1][j] = CDR
+                        end
+                    end
+
+                else -- Middle Row
+                    local hasTopExit = mod.StringRoomHasTopExit(self.roomMatrix[i + 1][j])
+                    local hasBottomExit = mod.StringRoomHasBottomExit(self.roomMatrix[i - 1][j])
+
+                    if j == 1 then -- Left Column
+                        local hasLeftExit = mod.StringRoomHasLeftExit(self.roomMatrix[i][j + 1])
+
+                        if hasLeftExit or hasTopExit or hasBottomExit then
+                            -- Do nothing here..
+                            hasExit = true
+                        elseif not hasLeftExit then
+                            self.roomMatrix[i][j + 1] = PR
+                            hasExit = true
+                        end
+                    elseif j == MAX_COLUMNS then -- Right Column
+                        local hasRightExit = mod.StringRoomHasRightExit(self.roomMatrix[i][j - 1])
+
+                        if hasRightExit or hasTopExit or hasBottomExit then
+                            -- Do nothing here...
+                            hasExit = true
+                        elseif not hasRightExit then
+                            self.roomMatrix[i][j - 1] = PR
+                            hasExit = true
+                        end
+                    else -- Middle Column
+                        local hasLeftExit = mod.StringRoomHasLeftExit(self.roomMatrix[i][j + 1])
+                        local hasRightExit = mod.StringRoomHasRightExit(self.roomMatrix[i][j - 1])
+
+                        if hasLeftExit or hasRightExit or hasTopExit or hasBottomExit then
+                            -- DO nothing here...
+                            hasExit = true
+                        elseif not hasLeftExit then
+                            self.roomMatrix[i][j + 1] = PR
+                            hasExit = true
+                        elseif not hasRightExit then
+                            self.roomMatrix[i][j - 1] = PR
+                            DCEI.LogMessage("Placing Pathway Room. I: " .. i .. ", J: " .. j)
+                            hasExit = true
+                        end
+                    end
+
+                    local aboveRoom = self.roomMatrix[i - 1][j]
+                    local belowRoom = self.roomMatrix[i + 1][j]
+
+                    if not hasExit then
+                        local aboveRoom = self.roomMatrix[i - 1][j]
+                        if aboveRoom == CSR or aboveRoom == ER then
+                            -- Do Nothing Here...
+                        elseif aboveRoom == CDR or aboveRoom == CUP then
+                            self.roomMatrix[i - 1][j] = CSR
+                        else
+                            self.roomMatrix[i - 1][j] = CDR
+                        end
+
+                        hasExit = true
+                    end
+
+                    if not hasExit then
+                        local belowRoom = self.roomMatrix[i + 1][j]
+                        if belowRoom == CSR or belowRoom == ER then
+                            -- Do Nothing Here...
+                        elseif belowRoom == CUP or belowRoom == CDR then
+                            self.roomMatrix[i + 1][j] = CSR
+                        else
+                            self.roomMatrix[i + 1][j] = CUP
+                        end
+
+                        hasExit = true
+                    end
+                end
+
+                self:PrintRoomMatrix()
+            end
+        end
+    end
+end
+function RoomGenerator:PlaceRoomBelow(currentRowIndex, currentColumnIndex)
+    DCEI.LogMessage("Placing Room Below")
     local nextRowIndex = currentRowIndex + 1
 
     if nextRowIndex > MAX_ROWS then -- This means it went out of bounds
@@ -645,9 +834,15 @@ function RoomGenerator:PlaceRoomDown(currentRowIndex, currentColumnIndex)
 
     return currentRowIndex, currentColumnIndex, false
 end
-function RoomGenerator:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex)
-    local randomNumber = math.random()
+function RoomGenerator:PlaceRoomLeftOrRight(currentRowIndex, currentColumnIndex, isLeft)
+    DCEI.LogMessage("Placing Room Left or Right. IsLeft: " .. tostring(isLeft))
+
+    local roomType = self.roomMatrix[currentRowIndex][currentColumnIndex]
+    if mod.StringRoomHasLeftExit(roomType) and mod.StringRoomHasRightExit(roomType) then
+        return
+    end
     
+    local randomNumber = math.random()
     if randomNumber <= 0.5 then
         self.roomMatrix[currentRowIndex][currentColumnIndex] = CUP
     else
@@ -675,6 +870,36 @@ function RoomGenerator:PrintActualRoomMatrix()
         DCEI.LogMessage(stringValue)
     end
 end
+
+function mod.StringRoomHasLeftExit(roomName)
+    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER then
+        return true
+    end
+
+    return false
+end
+function mod.StringRoomHasRightExit(roomName)
+    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER then
+        return true
+    end
+
+    return false
+end
+function mod.StringRoomHasTopExit(roomName)
+    if roomName == CUP or roomName == CSR or roomName == ER then
+        return true
+    end
+
+    return false
+end
+function mod.StringRoomHasBottomExit(roomName)
+    if roomName == CDR or roomName == CSR or roomName == ER then
+        return true
+    end
+
+    return false
+end
+
 
 function mod.RoomHasLeftExit(roomTemplate)
     for i = 1, #roomTemplate do
