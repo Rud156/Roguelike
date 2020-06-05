@@ -22,7 +22,7 @@
             "castType": 1,
             "effect": "_Attack_Search_Hobgoblin",
             "stats": {
-                "prepTime": 0.5,
+                "prepTime": 1,
                 "finishTime": 1,
                 "period": 1
             }

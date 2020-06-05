@@ -155,7 +155,7 @@
                         ]
                     }
                 ],
-                "modelScale": 1.5
+                "modelScale": 1.2
             }
         },
         "_FX_Launch_Enemy_GoblinChef": {
@@ -205,7 +205,8 @@
                 "resource": {
                     "type": "ParticleAnimation",
                     "name": "vfx_arcade_missile_green"
-                }
+                },
+                "modelScale": 0.5
             }
         },
         "_Missile_PlayerCharacter_HeavyAttack": {

@@ -3,16 +3,17 @@
         "_Attack_Damage_Hobgoblin": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 50
+                "damageAmount": 30
             }
         },
         "_Attack_Search_Hobgoblin": {
             "areaSearch": {
                 "debugDraw": true,
                 "areaSearchType": {
-                    "rectangle": {
-                        "width": 0.8,
-                        "length": 1
+                    "circleSector": {
+                        "outerRadius": 0.9,
+                        "innerRadius": 0.2,
+                        "angle": 45
                     }
                 },
                 "maxUnitCount": 10,
@@ -21,14 +22,14 @@
                 },
                 "effect": "_Attack_Damage_Hobgoblin",
                 "offset": {
-                    "forward": 0.5
+                    "forward": 0.2
                 }
             }
         },
         "_Damage_Enemy_GoblinChef": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 5,
+                "damageAmount": 15,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -106,9 +107,17 @@
                 "mover": "_PlayerCharacter_HeavyAttack"
             }
         },
+        "_Launch_PlayerCharacter_Ranged_LightAttack": {
+            "launchMissile": {
+                "missileUnit": "_Missile_PlayerCharacter_LightAttack",
+                "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_LightAttack"
+            }
+        },
         "_Search_Enemy_GoblinChef": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -242,14 +251,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Launch_PlayerCharacter_Ranged_LightAttack": {
-            "launchMissile": {
-                "missileUnit": "_Missile_PlayerCharacter_LightAttack",
-                "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
-                "impactLocation": 2,
-                "mover": "_PlayerCharacter_LightAttack"
             }
         }
     }
