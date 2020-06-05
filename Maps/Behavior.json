@@ -3,6 +3,7 @@
         "_CollisionDetection_PlayerCharacter": {
             "duration": 0.01
         },
+        "_PlayerCharacter_Missile_Reached": {},
         "_PlayerCharacter_Movement": {},
         "_PlayerChartacter_Dash": {
             "behaviorTagArray": [
@@ -20,6 +21,10 @@
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter"
         },
+        "_Search_PlayerCharacter_Melee_Missile": {
+            "periodicInterval": 0.01,
+            "periodicEffect": "_Search_PlayerCharacter_Melee_Missile"
+        },
         "_Search_PlayerCharacter_Ranged_HeavyAttack": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_HeavyAttack"
@@ -27,11 +32,6 @@
         "_Search_PlayerCharacter_Ranged_LightAttack": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_LightAttack"
-        },
-        "_Search_PlayerCharacter_Melee_Missile": {
-            "periodicInterval": 0.01,
-            "periodicEffect": "_Search_PlayerCharacter_Melee_Missile"
-        },
-        "_PlayerCharacter_Missile_Reached": {}
+        }
     }
 }
