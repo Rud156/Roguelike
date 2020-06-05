@@ -31,7 +31,7 @@
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "_Launch_PlayerCharacter_Melee",
+            "effect": "_Set_PlayerCharacter_DashBehaviour",
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
