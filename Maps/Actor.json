@@ -266,7 +266,7 @@
                             {
                                 "createTimer": {
                                     "name": "StopLightAttackAnim",
-                                    "duration": 0.1
+                                    "duration": 0.55
                                 }
                             }
                         ]
@@ -384,6 +384,35 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_LightAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "log": {
+                                    "type": 0,
+                                    "message": "Stopped Melee Light Attack"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "log": {
+                                    "message": "Stopped Melee Heavy Attack"
+                                }
+                            }
+                        ]
                     }
                 ],
                 "hostSites": {
@@ -439,6 +468,11 @@
                                 "stopAnimation": {
                                     "clipId": 0
                                 }
+                            },
+                            {
+                                "log": {
+                                    "message": "Stopped Ranged Light Attack"
+                                }
                             }
                         ]
                     },
@@ -466,6 +500,11 @@
                             {
                                 "stopAnimation": {
                                     "clipId": 0
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Stopped Ranged Heavy Attack"
                                 }
                             }
                         ]

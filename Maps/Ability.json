@@ -65,7 +65,8 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0
+                "period": 0,
+                "range": 0
             },
             "canCastWhileMoving": true
         },

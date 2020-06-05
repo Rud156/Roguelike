@@ -43,8 +43,8 @@ local STOP_MOVEMENT = "__StopMovement"
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
-local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.55
-local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.55
+local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
+local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
 local PLAYER_DASH_ABILITY = "_PlayerCharacter_Dash"
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 
@@ -52,8 +52,8 @@ local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
-local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.55
-local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.75
+local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
+local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 
 -- Player UI
 local PLAYER_STAMINA_AMOUNT = 5
