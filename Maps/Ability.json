@@ -50,8 +50,8 @@
             "effect": "_Search_PlayerCharacter_Melee_HeavyAttack",
             "stats": {
                 "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.9
+                "finishTime": 0.1,
+                "period": 0.3
             },
             "cost": {
                 "mana": 3
@@ -64,8 +64,8 @@
             "effect": "_Search_PlayerCharacter_Melee_LightAttack",
             "stats": {
                 "prepTime": 0.3,
-                "finishTime": 0.3,
-                "period": 0.4
+                "finishTime": 0.1,
+                "period": 0.3
             },
             "canCastWhileMoving": false
         },
