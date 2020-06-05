@@ -230,7 +230,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "barracks_troop_rank03_armored"
+                    "name": "dwarfsmith"
                 },
                 "events": [
                     {
@@ -254,7 +254,7 @@
                         "actions": [
                             {
                                 "playAnimation": {
-                                    "clipId": 4
+                                    "clipId": 0
                                 }
                             },
                             {
@@ -262,19 +262,11 @@
                                     "name": "DelayedAttack1Spawn",
                                     "duration": 0.3
                                 }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_PlayerCharacter_Melee_LightAttack"
-                            }
-                        },
-                        "actions": [
+                            },
                             {
-                                "stopAnimation": {
-                                    "clipId": 4
+                                "createTimer": {
+                                    "name": "StopLightAttackAnim",
+                                    "duration": 0.1
                                 }
                             }
                         ]
@@ -288,7 +280,7 @@
                         "actions": [
                             {
                                 "playAnimation": {
-                                    "clipId": 10
+                                    "clipId": 4
                                 }
                             },
                             {
@@ -296,19 +288,51 @@
                                     "name": "DelayedAttack2Spawn",
                                     "duration": 0.3
                                 }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "StopHeavyAttackAnim",
+                                    "duration": 0.75
+                                }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "StopLightAttackAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "StopHeavyAttackTimer"
                             }
                         },
                         "actions": [
                             {
                                 "stopAnimation": {
-                                    "clipId": 10
+                                    "clipId": 4
                                 }
                             }
                         ]
@@ -343,20 +367,6 @@
                             {
                                 "create": {
                                     "actor": "_Camera_ShakeCameraActor"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_PlayerCharacter_Dash"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 3
                                 }
                             }
                         ]

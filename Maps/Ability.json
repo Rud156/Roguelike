@@ -50,13 +50,13 @@
             "effect": "_Search_PlayerCharacter_Melee_HeavyAttack",
             "stats": {
                 "prepTime": 0.3,
-                "finishTime": 0.1,
-                "period": 0.3
+                "finishTime": 0.5,
+                "period": 0
             },
             "cost": {
                 "mana": 3
             },
-            "canCastWhileMoving": false
+            "canCastWhileMoving": true
         },
         "_PlayerCharacter_Melee_LightAttack": {
             "abilityType": 2,
@@ -64,10 +64,10 @@
             "effect": "_Search_PlayerCharacter_Melee_LightAttack",
             "stats": {
                 "prepTime": 0.3,
-                "finishTime": 0.1,
-                "period": 0.3
+                "finishTime": 0.3,
+                "period": 0
             },
-            "canCastWhileMoving": false
+            "canCastWhileMoving": true
         },
         "_PlayerCharacter_Ranged_HeavyAttack": {
             "abilityType": 1,
@@ -77,14 +77,14 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.4,
+                "period": 0,
                 "range": 7,
                 "arc": 60
             },
             "cost": {
                 "mana": 3
             },
-            "canCastWhileMoving": false
+            "canCastWhileMoving": true
         },
         "_PlayerCharacter_Ranged_LightAttack": {
             "abilityType": 1,
@@ -94,14 +94,14 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.4,
+                "period": 0,
                 "range": 7,
                 "arc": 60
             },
             "cost": {
                 "mana": 0
             },
-            "canCastWhileMoving": false
+            "canCastWhileMoving": true
         }
     }
 }

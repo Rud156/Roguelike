@@ -43,8 +43,8 @@ local STOP_MOVEMENT = "__StopMovement"
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
-local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.2
-local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.2
+local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.55
+local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.55
 local PLAYER_DASH_ABILITY = "_PlayerCharacter_Dash"
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 
@@ -52,8 +52,8 @@ local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
-local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.2
-local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.2
+local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.55
+local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.75
 
 -- Player UI
 local PLAYER_STAMINA_AMOUNT = 5
@@ -185,7 +185,7 @@ function Update()
     m_playerCollided = false
 
     if m_playerCooldownTimer > 0 then
-        m_playerCooldownTimer  = m_playerCooldownTimer - GAME_LOOP_RATE
+        m_playerCooldownTimer = m_playerCooldownTimer - GAME_LOOP_RATE
     end
 
     if m_mouseDown and m_playerCooldownTimer <= 0 then
@@ -249,7 +249,7 @@ function HandleJoystickMoved()
         return
     end
 
-    if m_playerCooldownTimer > 0 and UseMeleePlayer then
+    if m_playerCooldownTimer > 0 then
         return
     end
 
@@ -388,6 +388,11 @@ function LaunchPlayerLightAttack()
         return
     end
 
+    DCEI.LogMessage("Launching Light Attack: " .. m_playerCooldownTimer)
+
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
+
     if UseMeleePlayer then
         LaunchPlayerMeleeLightAttack()
     else
@@ -405,6 +410,9 @@ function LaunchPlayerHeavyAttack()
         DCEI.LogMessage("Player Attack On Cooldown")
         return
     end
+
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 
     if UseMeleePlayer then
         LaunchPlayerMeleeHeavyAttack()
@@ -462,8 +470,6 @@ function LaunchPlayerRangedHeavyAttack()
 end
 
 function LaunchPlayerMeleeLightAttack()
-    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
-
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
@@ -476,8 +482,6 @@ function LaunchPlayerMeleeLightAttack()
 end
 
 function LaunchPlayerMeleeHeavyAttack()
-    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
-
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, m_player, playerPosition.x, playerPosition.y)
 
@@ -516,7 +520,8 @@ function MakePlayerDodgeAndRoll()
     m_dashVelocity.y = yVelocity
     m_dashTimer = PlayerDashTimer
 
-    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 end
 
 function UpdatePlayerDashMovement(deltaTime)
@@ -538,7 +543,7 @@ function UpdatePlayerDashMovement(deltaTime)
         playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
 
         DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
-        DCEI.CreateEffect(STOP_MOVEMENT, m_player)
+        DCEI.Move(m_player, playerPosition.x, playerPosition.y)
     end
 end
 -- #endregion Player Functions
