@@ -115,7 +115,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "modelScale": 0.8
             }
         },
         "_Enemy_Hobgoblin": {

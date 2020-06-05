@@ -46,7 +46,7 @@
                     "maxHealth": 30
                 },
                 "movement": {
-                    "moveSpeed": 1
+                    "moveSpeed": 0.8
                 },
                 "turning": {
                     "turningSpeed": 800
