@@ -226,6 +226,22 @@
                 }
             }
         },
+        "_Missile_PlayerCharacter_Melee": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "dwarfsmith"
+                }
+            }
+        },
+        "_Missile_PlayerCharacter_Ranged": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_unit_rank03"
+                }
+            }
+        },
         "_PlayerCharacter_Melee": {
             "unitActor": {
                 "resource": {

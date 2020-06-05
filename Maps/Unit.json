@@ -116,9 +116,23 @@
                 ]
             }
         },
+        "_Missile_PlayerCharacter_Melee": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_PlayerCharacter_Melee_Missile"
+                ]
+            }
+        },
+        "_Missile_PlayerCharacter_Ranged": {
+            "baseUnit": "_CMissile"
+        },
         "_PlayerCharacter_Melee": {
             "baseUnit": "_CUnit",
             "components": {
+                "unit": {
+                    "unitType": 1
+                },
                 "unitStats": {
                     "radius": 0.25,
                     "selectable": false

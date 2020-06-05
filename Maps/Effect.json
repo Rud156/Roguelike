@@ -252,6 +252,37 @@
             "stop": {
                 "whichUnit": 1
             }
+        },
+        "_Search_PlayerCharacter_Melee_Missile": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Collided_PlayerCharacter_Melee_Missile"
+            }
+        },
+        "_Collided_PlayerCharacter_Melee_Missile": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Missile_Reached",
+                "target": 3
+            }
+        },
+        "_Launch_PlayerCharacter_Melee": {
+            "launchMissile": {
+                "targetType": 0,
+                "missileUnit": "_Missile_PlayerCharacter_Melee",
+                "missileDeathType": 0,
+                "effect": "_Launch_PlayerCharacter_Melee",
+                "launchLocation": 0,
+                "impactLocation": 2
+            }
         }
     }
 }
