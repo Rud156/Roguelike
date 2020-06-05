@@ -90,7 +90,7 @@
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "_Launch_PlayerCharacter_LightAttack",
+            "effect": "_Launch_PlayerCharacter_Ranged_LightAttack",
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,

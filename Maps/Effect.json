@@ -98,14 +98,6 @@
                 "mover": "_Enemy_GoblinChef_Attack"
             }
         },
-        "_Launch_PlayerCharacter_LightAttack": {
-            "launchMissile": {
-                "missileUnit": "_Missile_PlayerCharacter_LightAttack",
-                "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
-                "impactLocation": 2,
-                "mover": "_PlayerCharacter_LightAttack"
-            }
-        },
         "_Launch_PlayerCharacter_Ranged_HeavyAttack": {
             "launchMissile": {
                 "missileUnit": "_Missile_PlayerCharacter_HeavyAttack",
@@ -250,6 +242,14 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
+            }
+        },
+        "_Launch_PlayerCharacter_Ranged_LightAttack": {
+            "launchMissile": {
+                "missileUnit": "_Missile_PlayerCharacter_LightAttack",
+                "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_LightAttack"
             }
         }
     }

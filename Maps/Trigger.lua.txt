@@ -43,8 +43,8 @@ local STOP_MOVEMENT = "__StopMovement"
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
-local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.2
-local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.2
+local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.4
+local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.4
 local PLAYER_DASH_ABILITY = "_PlayerCharacter_Dash"
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 
@@ -52,8 +52,8 @@ local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
-local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.2
-local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.3
+local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.4
+local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.4
 
 -- Player UI
 local PLAYER_STAMINA_AMOUNT = 5
@@ -416,14 +416,11 @@ end
 function LaunchPlayerRangedLightAttack()
     local abilityCasted = false
 
-    for i, room in ipairs(m_rooms) do
-        local enemy = room:GetNearestEnemy(m_player)
-        if enemy ~= nil then
-            local position = DCEI.GetUnitPosition2D(enemy)
-            DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, position.x, position.y)
-            abilityCasted = true
-            break                
-        end
+    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
+    if enemy ~= nil then
+        local position = DCEI.GetUnitPosition2D(enemy)
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, position.x, position.y)
+        abilityCasted = true
     end
 
     if not abilityCasted then
@@ -436,20 +433,18 @@ function LaunchPlayerRangedLightAttack()
         DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, xPoint, yPoint)
     end
 
+    DCEI.LogMessage("Launching Light Attack")
     m_playerCooldownTimer = PLAYER_RANGED_LIGHT_WEAPON_CD
 end
 
 function LaunchPlayerRangedHeavyAttack()
     local abilityCasted = false
 
-    for i, room in ipairs(m_rooms) do
-        local enemy = room:GetNearestEnemy(m_player)
-        if enemy ~= nil then
-            local position = DCEI.GetUnitPosition2D(enemy)
-            DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, m_player, position.x, position.y)
-            abilityCasted = true
-            break
-        end
+    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
+    if enemy ~= nil then
+        local position = DCEI.GetUnitPosition2D(enemy)
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, m_player, position.x, position.y)
+        abilityCasted = true
     end
 
     if not abilityCasted then

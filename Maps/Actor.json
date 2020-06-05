@@ -173,7 +173,7 @@
         "_FX_Launch_PlayerCharacter_Ranged_LightAttack": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
-                "effect": "_Launch_PlayerCharacter_LightAttack"
+                "effect": "_Launch_PlayerCharacter_Ranged_LightAttack"
             }
         },
         "_FX_PlayerCharacter_Melee_HeavyAttack": {
