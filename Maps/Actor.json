@@ -159,6 +159,14 @@
                 "modelScale": 1.2
             }
         },
+        "_ExitDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                }
+            }
+        },
         "_FX_Launch_Enemy_GoblinChef": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
@@ -668,14 +676,6 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
-                }
-            }
-        },
-        "_ExitDoorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_trapdoor"
                 }
             }
         }

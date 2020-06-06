@@ -92,6 +92,26 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_ExitDoorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "healthBar": {
+                "type": 0
+            }
+        },
         "_Missile_Enemy_GoblinChef": {
             "baseUnit": "_CMissile",
             "references": {
@@ -270,26 +290,6 @@
                 "behavior": {
                     "behaviorType": 0
                 }
-            }
-        },
-        "_ExitDoorway": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "healthBar": {
-                "type": 0
             }
         }
     }

@@ -192,6 +192,7 @@ local BASE_ROOM_SIZE = 10
 local SOLID_WALL_PREFAB = "_Wall_SolidWall"
 local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
 local DOORWAY = "_Wall_Doorway"
+local EXIT_DOORWAY = "_ExitDoorway"
 
 local PR = "PR"
 local SR = "SR"
@@ -523,7 +524,7 @@ function Room:RecalculateRoomSpaces()
     self.emptyPositions = {}
     self.destructiblePositions = {}
     self.solidWallPositions = {}
-    self.exitPosition = {}
+    self.exitPosition = nil
 
     for i = 1, #self.roomTemplate do
         for j = 1, #self.roomTemplate[i] do
@@ -577,6 +578,12 @@ function Room:GenerateRoomModels()
 
         local destructibleWallInstance = DCEI.CreateUnit(0, 0, BREAKABLE_WALL_PREFAB, xPosition, yPosition)
         table.insert(self.destructibleWallUnits, destructibleWallInstance)
+    end
+
+    if self.exitPosition ~= nil then
+        local exitPositionX = startX + self.exitPosition[1]
+        local exitPositionY = startY + self.exitPosition[2]
+        DCEI.CreateUnit(0, 0, EXIT_DOORWAY, exitPositionX, exitPositionY)
     end
 end
 function Room:GetRoomTemplate()
@@ -644,8 +651,10 @@ end
 function RoomGenerator:UpdateRooms(deltaTime, player)
     for i = 1, #self.rooms do
         for j = 1, #self.rooms[i] do
-            self.rooms[i][j]:UpdatePlayerInRoom(player)
-            self.rooms[i][j]:UpdateEnemies(deltaTime, player)
+            if self.rooms[i][j] ~= nil then
+                self.rooms[i][j]:UpdatePlayerInRoom(player)
+                self.rooms[i][j]:UpdateEnemies(deltaTime, player)
+            end
         end
     end
 end
@@ -676,6 +685,9 @@ function RoomGenerator:GetBeginningRoomIndex()
             end
         end
     end
+
+    DCEI.LogError("No Beginning Room")
+    return nil, nil
 end
 function RoomGenerator:MakeSafeRoom(rowIndex, columnIndex)
     self.rooms[rowIndex][columnIndex].roomCleared = true
@@ -1144,6 +1156,8 @@ function RoomGenerator:PlaceRoomBelow(currentRowIndex, currentColumnIndex)
 
     if self.roomMatrix[currentRowIndex][currentColumnIndex] == CUP then
         self.roomMatrix[currentRowIndex][currentColumnIndex] = CSR
+    elseif self.roomMatrix[currentRowIndex][currentColumnIndex] == BR then
+        -- Do nothing here...
     else
         self.roomMatrix[currentRowIndex][currentColumnIndex] = CDR
     end
