@@ -35,6 +35,7 @@ local Rect = UtilClassMod.Rect
 -- Prefabs
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
+local MAX_ROOM_COLUMNS = 3
 local GAME_LOOP_RATE = 0.0625
 
 local STOP_MOVEMENT = "__StopMovement"
@@ -138,8 +139,7 @@ function Start()
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
-    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
-
+    
     DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
     DCEI.TriggerAddJoystickReleaseEvent(HandleJoystickReleased)
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
@@ -155,12 +155,23 @@ function Start()
     CreateDebugUI()
 
     m_roomGenerator = RoomGenerator:new()
+    local randomRoom = math.random(1, MAX_ROOM_COLUMNS)
+    m_roomGenerator:MakeSafeRoom(1, randomRoom)
+    local emptyPositions, rect = m_roomGenerator:GetRoomEmptyPositions(1, randomRoom)
+    local randomEmptyPositionIndex = math.random(1, #emptyPositions)
+    local emptyPosition = emptyPositions[randomEmptyPositionIndex]
+
+    local xPosition = rect.x + emptyPosition[1]
+    local yPosition = rect.y + emptyPosition[2]
+    DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
 
     -- TODO: Remove this later on...
     -- local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
     -- local collectible_2 = InventoryItem:new(COLLECTIBLES[2].itemPrefab, 23, 23, COLLECTIBLES[2].itemType, COLLECTIBLES[2].itemImage)
     -- table.insert(m_collectibleItems, collectible_1)
     -- table.insert(m_collectibleItems, collectible_2)
+
+    DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 end
 
 function Update()
@@ -331,7 +342,7 @@ function DisplayGameOverSequence()
 
     local maskOptions = {
         color = { r = 0, g = 0, b = 0 },
-        duration = 0.5
+        duration = 1
     }
 
     DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
@@ -353,6 +364,17 @@ function ResetGameState()
     else
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     end
+
+    local randomRoom = math.random(1, MAX_ROOM_COLUMNS)
+    m_roomGenerator:MakeSafeRoom(1, randomRoom)
+    local emptyPositions = m_roomGenerator:GetRoomEmptyPositions(1, randomRoom)
+    local randomEmptyPositionIndex = math.random(1, #emptyPositions)
+    local emptyPosition, rect = emptyPositions[randomEmptyPositionIndex]
+    
+    local xPosition = rect.x + emptyPosition[1]
+    local yPosition = rect.y + emptyPosition[2]
+    DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
+
     m_camera:UpdateTarget(m_player)
     CreatePlayerUIElements()
 end

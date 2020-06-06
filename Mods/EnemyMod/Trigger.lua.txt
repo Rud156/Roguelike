@@ -71,6 +71,8 @@ function GoblinChef:TargetPlayer(deltaTime, playerPosition)
             local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
             DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
             self.isMoving = false
+
+            self:LookAtPlayer(playerPosition)
         end
     end
 
