@@ -258,7 +258,7 @@ function Room:new(roomTemplate, rect, roomType)
     room.hasBottomExit = false
 
     room.playerInRoom = false
-    room.roomCleared = false
+    room.roomCleared = true -- TODO: Change this later on...
 
     room.enemies = {}
     room.totalWaveCount = math.random(1, MAX_WAVE_COUNT)

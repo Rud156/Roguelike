@@ -315,20 +315,6 @@
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_PlayerCharacter_Dash"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
                             "onTimer": {
                                 "name": "StopLightAttackAnim"
                             }
@@ -390,20 +376,6 @@
                     {
                         "actorTerm": {
                             "unitAbilityStop": {
-                                "ability": "_PlayerCharacter_Dash"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
                                 "ability": "_PlayerCharacter_Melee_LightAttack"
                             }
                         },
@@ -426,6 +398,56 @@
                             {
                                 "log": {
                                     "message": "Stopped Melee Heavy Attack"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_PlayerCharacter_Melee_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_Dash"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Normal Visibility"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_PlayerCharacter_DashEnded"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Forced Visibility"
                                 }
                             }
                         ]
@@ -528,27 +550,49 @@
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
-                                "ability": "_PlayerCharacter_Dash"
+                                "ability": "_PlayerCharacter_Ranged_Dash"
                             }
                         },
                         "actions": [
                             {
-                                "playAnimation": {
-                                    "clipId": 3
-                                }
+                                "setVisibility": {}
                             }
                         ]
                     },
                     {
                         "actorTerm": {
                             "unitAbilityStop": {
-                                "ability": "_PlayerCharacter_Dash"
+                                "ability": "_PlayerCharacter_Ranged_Dash"
                             }
                         },
                         "actions": [
                             {
-                                "stopAnimation": {
-                                    "clipId": 3
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Normal Visibility"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_PlayerCharacter_DashEnded"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Forced Visiblility"
                                 }
                             }
                         ]

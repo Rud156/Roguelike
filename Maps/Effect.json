@@ -29,7 +29,7 @@
         "_Collided_PlayerCharacter_Melee_Missile": {
             "applyBehavior": {
                 "behavior": "_PlayerCharacter_Missile_Reached",
-                "target": 3
+                "target": 2
             }
         },
         "_Damage_Enemy_GoblinChef": {
@@ -110,9 +110,10 @@
                 "targetType": 0,
                 "missileUnit": "_Missile_PlayerCharacter_Melee",
                 "missileDeathType": 0,
-                "effect": "_Launch_PlayerCharacter_Melee",
+                "effect": "_Set_PlayerCharacter_Melee_Missile_Collided",
                 "launchLocation": 0,
-                "impactLocation": 2
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_Melee"
             }
         },
         "_Launch_PlayerCharacter_Ranged_HeavyAttack": {
@@ -206,7 +207,7 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Collided_PlayerCharacter_Melee_Missile"
+                "effect": "_Set_PlayerCharacter_Melee_Missile_Collided"
             }
         },
         "_Search_PlayerCharacter_Ranged_HeavyAttack": {
@@ -238,7 +239,7 @@
                     "ally": 0,
                     "air": 0
                 },
-                "effect": "_Set_PlayerCharacter_LightAttack"
+                "effect": "_Set_PlayerCharacter_Ranged_LightAttack"
             }
         },
         "_Set_Behaviour_PlayerCharacter_Collision": {
@@ -256,21 +257,6 @@
                 ]
             }
         },
-        "_Set_PlayerCharacter_DashBehaviour": {
-            "applyBehavior": {
-                "behavior": "_PlayerChartacter_Dash",
-                "target": 3,
-                "duration": 0.3
-            }
-        },
-        "_Set_PlayerCharacter_LightAttack": {
-            "set": {
-                "effectList": [
-                    "_Damage_PlayerCharacter_Ranged_LightAttack",
-                    "Remove Source"
-                ]
-            }
-        },
         "_Set_PlayerCharacter_Ranged_HeavyAttack": {
             "set": {
                 "effectList": [
@@ -282,6 +268,67 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
+            }
+        },
+        "_Launch_PlayerCharacter_Ranged": {
+            "launchMissile": {
+                "missileUnit": "_Missile_PlayerCharacter_Ranged",
+                "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided",
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_Ranged"
+            }
+        },
+        "_Collided_PlayerCharacter_Ranged_Missile": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Missile_Reached",
+                "target": 2
+            }
+        },
+        "_Search_PlayerCharacter_Ranged_Missile": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
+            }
+        },
+        "_Set_PlayerCharacter_Melee_Missile_Collided": {
+            "set": {
+                "targetType": 1,
+                "effectList": [
+                    "_Collided_PlayerCharacter_Melee_Missile",
+                    "_Set_PlayerCharacter_Dash_Behaviour"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Ranged_Missile_Collided": {
+            "set": {
+                "targetType": 1,
+                "effectList": [
+                    "_Collided_PlayerCharacter_Ranged_Missile",
+                    "_Set_PlayerCharacter_Dash_Behaviour"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Ranged_LightAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Ranged_LightAttack",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Dash_Behaviour": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_DashEnded",
+                "target": 3
             }
         }
     }

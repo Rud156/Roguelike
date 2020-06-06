@@ -32,27 +32,27 @@ local Rect = UtilClassMod.Rect
 
 
 -- Variables
--- Prefabs
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
 local MAX_ROOM_COLUMNS = 3
 local GAME_LOOP_RATE = 0.0625
 
-local STOP_MOVEMENT = "__StopMovement"
+local DEBUG_UNIT = "__DebugMarkerUnit"
 
+local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
+local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
 -- Player Ranged
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
 local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
 local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
-local PLAYER_DASH_ABILITY = "_PlayerCharacter_Dash"
-local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
-
+local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
 -- Player Melee
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
+local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
 local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
 local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 
@@ -89,7 +89,7 @@ local RoomTemplates = {
 local MinWaveCount = 1
 local MaxWaveCount = 3
 -- Player
-local PlayerSpawnPosition = { x = 27, y = 27 }
+local PlayerSpawnPosition = { x = 27, y = 27 } -- In the final version, this will not be used...
 local PlayerDashTimer = 0.3
 local PlayerDashSpeed = 5
 local PlayerDashMana = 1
@@ -103,8 +103,7 @@ local m_roomGenerator
 -- Player
 local m_player
 local m_playerCollided = false
-local m_dashTimer = 0
-local m_dashVelocity = { x = 0, y = 0 }
+local m_playerDashActive = false
 local m_playerMoving = false
 local m_lastFramePlayerHealth = 0
 local m_playerCooldownTimer = 0
@@ -136,19 +135,6 @@ function Start()
     m_uiRoot = DCEI.GetUiRoot()
     m_camera = Camera:new(m_player)
 
-    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
-    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
-    DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
-    
-    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
-    DCEI.TriggerAddJoystickReleaseEvent(HandleJoystickReleased)
-    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
-    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
-    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
-    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
-    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseDownEvent)
-
     ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
     CreateInvertoryUI()
@@ -172,6 +158,20 @@ function Start()
     -- table.insert(m_collectibleItems, collectible_1)
     -- table.insert(m_collectibleItems, collectible_2)
 
+    -- Add Triggers At The End...
+    DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
+    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
+    DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
+    
+    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
+    DCEI.TriggerAddJoystickReleaseEvent(HandleJoystickReleased)
+    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
+    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
+    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
+    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
+    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
+    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseDownEvent)
+
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 end
 
@@ -181,10 +181,6 @@ function Update()
     if m_player ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
         m_roomGenerator:UpdateRooms(GAME_LOOP_RATE, m_player)
-
-        if m_dashTimer > 0 then
-            UpdatePlayerDashMovement(GAME_LOOP_RATE)
-        end
 
         local playerHealth = DCEI.GetHealthValue(m_player)
         if m_lastFramePlayerHealth > playerHealth then
@@ -225,9 +221,17 @@ end
 
 function HandleBehaviourAdded()
     local behaviourName = DCEI.TriggeringBehaviorName
+    local unit = DCEI.TriggeringUnit
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
         m_playerCollided = true
+
+    elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
+        m_playerDashActive = false
+        local missilePosition = DCEI.GetUnitPosition2D(unit)
+
+        DCEI.SetUnitPosition2D(m_player, missilePosition.x, missilePosition.y)
+        DCEI.Move(m_player, missilePosition.x, missilePosition.y)
     end
 end
 
@@ -257,7 +261,7 @@ end
 -- Joystick Events
 function HandleJoystickMoved()
     -- When Dashing the Player cannot move normally
-    if m_player == nil or m_dashTimer > 0 then
+    if m_player == nil or m_playerDashActive then
         return
     end
 
@@ -274,12 +278,13 @@ end
 
 function HandleJoystickReleased()
     -- When Dashing the Player cannot move normally
-    if m_player == nil or m_dashTimer > 0 then
+    if m_player == nil or m_playerDashActive then
         return
     end
 
     m_playerMoving = false
-    DCEI.CreateEffect(STOP_MOVEMENT, m_player)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 end
 
 function HandleJoystickButtonClicked()
@@ -435,6 +440,8 @@ function LaunchPlayerHeavyAttack()
         return
     end
 
+    DCEI.LogMessage("Launching Heavy Attack: " .. m_playerCooldownTimer)
+
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 
@@ -519,12 +526,9 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
-    if m_dashTimer > 0 then
+    if m_playerDashActive then
         return
     end
-
-    -- To show UI
-    DCEI.CastAbility(PLAYER_DASH_ABILITY, m_player, m_player)
 
     local playerMana = DCEI.GetManaValue(m_player)
     if playerMana < PlayerDashMana then
@@ -532,43 +536,28 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
+    DCEI.LogMessage("Making Player Dash")
+
     local updatedMana = playerMana - PlayerDashMana
     DCEI.SetManaValue(m_player, updatedMana)
 
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-
-    local xVelocity = math.sin(math.rad(yRotation)) * PlayerDashSpeed
-    local yVelocity = math.cos(math.rad(yRotation)) * PlayerDashSpeed
-    m_dashVelocity.x = xVelocity
-    m_dashVelocity.y = yVelocity
-    m_dashTimer = PlayerDashTimer
+    local xPoint = math.sin(math.rad(yRotation)) * 0.3 + playerPosition.x
+    local yPoint = math.cos(math.rad(yRotation))  * 0.3 + playerPosition.y
 
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-end
 
-function UpdatePlayerDashMovement(deltaTime)
-    if m_playerCollided then
-        m_dashTimer = 0
-        m_dashVelocity.x = 0
-        m_dashVelocity.y = 0
-        return
-    end
 
-    m_dashTimer = m_dashTimer - deltaTime
-    
-    if m_dashTimer <= 0 then
-        m_dashVelocity.x = 0
-        m_dashVelocity.y = 0
+    if UseMeleePlayer then
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_DASH_ABILITY, m_player, xPoint, yPoint)
     else
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        playerPosition.x = playerPosition.x + m_dashVelocity.x * deltaTime
-        playerPosition.y = playerPosition.y + m_dashVelocity.y * deltaTime
-
-        DCEI.SetUnitPosition2D(m_player, playerPosition.x, playerPosition.y)
-        DCEI.Move(m_player, playerPosition.x, playerPosition.y)
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_DASH_ABILITY, m_player, xPoint, yPoint)
     end
+
+    m_playerDashActive = true
 end
 -- #endregion Player Functions
 

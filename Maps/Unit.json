@@ -125,13 +125,18 @@
             }
         },
         "_Missile_PlayerCharacter_Ranged": {
-            "baseUnit": "_CMissile"
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_PlayerCharacter_Ranged_Missile"
+                ]
+            }
         },
         "_PlayerCharacter_Melee": {
             "baseUnit": "_CUnit",
             "components": {
                 "unit": {
-                    "unitType": 1
+                    "unitType": 0
                 },
                 "unitStats": {
                     "radius": 0.25,
@@ -155,7 +160,7 @@
                 "abilityList": [
                     "_PlayerCharacter_Melee_LightAttack",
                     "_PlayerCharacter_Melee_HeavyAttack",
-                    "_PlayerCharacter_Dash"
+                    "_PlayerCharacter_Melee_Dash"
                 ],
                 "behaviorList": [
                     "_Search_PlayerCharacter"
@@ -188,7 +193,7 @@
                 "abilityList": [
                     "_PlayerCharacter_Ranged_LightAttack",
                     "_PlayerCharacter_Ranged_HeavyAttack",
-                    "_PlayerCharacter_Dash"
+                    "_PlayerCharacter_Ranged_Dash"
                 ],
                 "behaviorList": [
                     "_Search_PlayerCharacter"
