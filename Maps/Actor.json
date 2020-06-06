@@ -159,6 +159,55 @@
                 "modelScale": 1.2
             }
         },
+        "_ExitDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayOpen"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseOpenAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Animation Paused"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_FX_Launch_Enemy_GoblinChef": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
@@ -669,6 +718,50 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
+            }
+        },
+        "_EntryDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseCloseAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseCloseAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         }
     }

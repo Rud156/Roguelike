@@ -22,7 +22,9 @@
             "_Collectible_Test2",
             "_Wall_BreakableWall",
             "_Wall_Doorway",
-            "_Wall_SolidWall"
+            "_Wall_SolidWall",
+            "_ExitDoorway",
+            "_EntryDoorway"
         ],
         "usedEffects": [
             "__StopMovement"

@@ -156,11 +156,26 @@ local EXIT_ROOMS = {
     {
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
-        { 0, 0, 4, 0, 0, 0, 0, 4, 0, 0 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 3, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 4, 0, 0, 0, 0, 4, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
+    }
+}
+
+local BEGINNING_ROOMS = {
+    {
+        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 5, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },
@@ -177,6 +192,11 @@ local BASE_ROOM_SIZE = 10
 local SOLID_WALL_PREFAB = "_Wall_SolidWall"
 local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
 local DOORWAY = "_Wall_Doorway"
+local EXIT_DOORWAY = "_ExitDoorway"
+local ENTRY_DOORWAY = "_EntryDoorway"
+
+local DOORWAY_OPEN = "_DoorwayOpen"
+local DOORWAY_CLOSE = "_DoorwayClose"
 
 local PR = "PR"
 local SR = "SR"
@@ -184,11 +204,12 @@ local CUP = "CUP"
 local CDR = "CDR"
 local CSR = "CSR"
 local ER =  "ER"
+local BR = "BR"
 local MAX_ROWS = 3
 local MAX_COLUMNS = 3
 
 local MAX_WAVE_COUNT = 5
-local ROOM_ENTRY_DETECT_OFFSET = 2
+local ROOM_ENTRY_DETECT_OFFSET = 3
 
 local mod = {}
 
@@ -196,7 +217,9 @@ local mod = {}
 -- 0: Empty Space
 -- 1: Solid Wall
 -- 2: Destructible Wall
--- 3: Exit
+-- 3: Exit Doorway
+-- 4: Enemy Spawn Positins
+-- 5: Entry Doorway
 local Room = {
     rect = nil,
     roomType = "",
@@ -208,12 +231,14 @@ local Room = {
     solidWallPositions = {},
     doorwayPositions = {},
     exitPosition = nil,
+    entryPosition = nil,
 
     -- Walls
     solidWallUnits = {},
     doorwayUnits = {},
     destructibleWallUnits = {},
     exitUnit = nil,
+    entryUnit = nil,
 
     -- Template Info
     roomTemplate = {},
@@ -245,11 +270,13 @@ function Room:new(roomTemplate, rect, roomType)
     room.solidWallPositions = {}
     room.doorwayPositions = {}
     room.exitPosition = nil
+    room.entryPosition = nil
 
     room.solidWallUnits = {}
     room.doorwayUnits = {}
     room.destructibleWallUnits = {}
     room.exitUnit = nil
+    room.entryUnit = nil
 
     room.roomTemplate = mod.CopyRoomTemplate(roomTemplate) -- Copy templates as tables are sent via reference
     room.hasLeftExit = false
@@ -258,7 +285,12 @@ function Room:new(roomTemplate, rect, roomType)
     room.hasBottomExit = false
 
     room.playerInRoom = false
-    room.roomCleared = false -- TODO: Change this later on...
+    
+    if roomType == ER or roomType == BR then
+        room.roomCleared = true
+    else
+        room.roomCleared = false
+    end
 
     room.enemies = {}
     room.totalWaveCount = math.random(1, MAX_WAVE_COUNT)
@@ -281,6 +313,14 @@ function Room:UpdateEnemies(deltaTime, player)
 
         enemy:Update(deltaTime, playerPosition)
     end
+end
+function Room:IsPlayerInRoom(player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    if self.rect:containsWithOffset(playerPosition.x, playerPosition.y, ROOM_ENTRY_DETECT_OFFSET) then
+        return true
+    end
+
+    return false
 end
 function Room:UpdatePlayerInRoom(player)
     if self.playerInRoom then
@@ -460,9 +500,14 @@ function Room:DestroyRoom()
         DCEI.RemoveUnit(self.exitUnit)
     end
 
+    if self.entryUnit ~= nil then
+        DCEI.RemoveUnit(self.entryUnit)
+    end
+
     self.solidWallUnits = {}
     self.destructibleWallUnits = {}
     self.exitUnit = nil
+    self.entryUnit = nil
 end
 function Room:BlockTopWalls()
     local totalColumns = #self.roomTemplate[1]
@@ -502,7 +547,8 @@ function Room:RecalculateRoomSpaces()
     self.emptyPositions = {}
     self.destructiblePositions = {}
     self.solidWallPositions = {}
-    self.exitPosition = {}
+    self.exitPosition = nil
+    self.entryPosition = nil
 
     for i = 1, #self.roomTemplate do
         for j = 1, #self.roomTemplate[i] do
@@ -522,6 +568,8 @@ function Room:RecalculateRoomSpaces()
                 table.insert(self.destructiblePositions, { xPosition, yPosition })
             elseif self.roomTemplate[i][j] == 3 then
                 self.exitPosition = { xPosition, yPosition }
+            elseif self.roomTemplate[i][j] == 5 then
+                self.entryPosition = { xPosition, yPosition }
             elseif self.roomTemplate[i][j] == 4 then
                 table.insert(self.enemySpawnPositions, { xPosition, yPosition })
             end
@@ -557,9 +605,40 @@ function Room:GenerateRoomModels()
         local destructibleWallInstance = DCEI.CreateUnit(0, 0, BREAKABLE_WALL_PREFAB, xPosition, yPosition)
         table.insert(self.destructibleWallUnits, destructibleWallInstance)
     end
+
+    if self.exitPosition ~= nil then
+        local exitPositionX = startX + self.exitPosition[1]
+        local exitPositionY = startY + self.exitPosition[2]
+        self.exitUnit = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, exitPositionX, exitPositionY)
+    end
+
+    if self.entryPosition ~= nil then
+        local entryPositionX = startX + self.entryPosition[1]
+        local entryPositionY = startY + self.entryPosition[2]
+        self.entryUnit = DCEI.CreateUnit(0, 0, ENTRY_DOORWAY, entryPositionX, entryPositionY)
+    end
 end
 function Room:GetRoomTemplate()
     return self.roomTemplate
+end
+function Room:GetEntryPosition()
+    return self.entryPosition
+end
+function Room:GetEntryDoor()
+    return self.entryUnit
+end
+function Room:PlayEntryDoorCloseAnimation()
+    if self.entryUnit ~= nil then
+        DCEI.CastAbilityAtPosition(DOORWAY_CLOSE, self.entryUnit, self.entryPosition[1], self.entryPosition[2])
+    end
+end
+function Room:PlayExitDoorOpenAnimation()
+    if self.exitUnit ~= nil then
+        DCEI.CastAbilityAtPosition(DOORWAY_OPEN, self.exitUnit, self.exitPosition[1], self.exitPosition[2])
+    end
+end
+function Room:GetExitDoor()
+    return self.exitUnit
 end
 function Room:GetRoomType()
     return self.roomType
@@ -623,8 +702,10 @@ end
 function RoomGenerator:UpdateRooms(deltaTime, player)
     for i = 1, #self.rooms do
         for j = 1, #self.rooms[i] do
-            self.rooms[i][j]:UpdatePlayerInRoom(player)
-            self.rooms[i][j]:UpdateEnemies(deltaTime, player)
+            if self.rooms[i][j] ~= nil then
+                self.rooms[i][j]:UpdatePlayerInRoom(player)
+                self.rooms[i][j]:UpdateEnemies(deltaTime, player)
+            end
         end
     end
 end
@@ -647,6 +728,37 @@ function RoomGenerator:RemoveDeadEnemy(enemyUnit)
         end
     end
 end
+function RoomGenerator:GetBeginningRoomIndex()
+    for i = 1, MAX_ROWS do
+        for j = 1, MAX_COLUMNS do
+            if self.rooms[i][j]:GetRoomType() == BR then
+                return i, j
+            end
+        end
+    end
+
+    DCEI.LogError("No Beginning Room")
+    return nil, nil
+end
+function RoomGenerator:GetExitRoomIndex()
+    for i = 1, MAX_ROWS do
+        for j = 1, MAX_COLUMNS do
+            if self.rooms[i][j]:GetRoomType() == ER then
+                return i, j
+            end
+        end
+    end
+
+    DCEI.LogError("No Beginning Room")
+    return nil, nil
+end
+function RoomGenerator:GetBeginningRoomEntryPosition()
+    local rowIndex, columnIndex = self:GetBeginningRoomIndex()
+    return self.rooms[rowIndex][columnIndex]:GetEntryPosition()
+end
+function RoomGenerator:GetRoomRect(rowIndex, columnIndex)
+    return self.rooms[rowIndex][columnIndex].rect
+end
 function RoomGenerator:MakeSafeRoom(rowIndex, columnIndex)
     self.rooms[rowIndex][columnIndex].roomCleared = true
 end
@@ -658,7 +770,7 @@ function RoomGenerator:GenerateBaseRoomMatrix()
     local currentColumnIndex = math.random(1, MAX_COLUMNS) -- Probably read from Matrix Length?
     local generationComplete = false
 
-    self.roomMatrix[currentRowIndex][currentColumnIndex] = PR
+    self.roomMatrix[currentRowIndex][currentColumnIndex] = BR
     self:PrintRoomMatrix()
 
     while true do
@@ -731,6 +843,10 @@ function RoomGenerator:GenerateActualBasicRooms()
             elseif roomType == ER then
                 local randomIndex = math.random(1, #EXIT_ROOMS)
                 local room = Room:new(EXIT_ROOMS[randomIndex], rect, ER)
+                self.rooms[mappedI][j] = room
+            elseif roomType == BR then
+                local randomIndex = math.random(1, #BEGINNING_ROOMS)
+                local room = Room:new(BEGINNING_ROOMS[randomIndex], rect, BR)
                 self.rooms[mappedI][j] = room
             elseif roomType == SR then
                 DCEI.LogMessage("Generating Secret Rooms Later")
@@ -1110,6 +1226,8 @@ function RoomGenerator:PlaceRoomBelow(currentRowIndex, currentColumnIndex)
 
     if self.roomMatrix[currentRowIndex][currentColumnIndex] == CUP then
         self.roomMatrix[currentRowIndex][currentColumnIndex] = CSR
+    elseif self.roomMatrix[currentRowIndex][currentColumnIndex] == BR then
+        -- Do nothing here...
     else
         self.roomMatrix[currentRowIndex][currentColumnIndex] = CDR
     end
@@ -1157,14 +1275,14 @@ function RoomGenerator:PrintActualRoomMatrix()
 end
 
 function mod.StringRoomHasLeftExit(roomName)
-    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER then
+    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER or roomName == BR then
         return true
     end
 
     return false
 end
 function mod.StringRoomHasRightExit(roomName)
-    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER then
+    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER or roomName == BR then
         return true
     end
 
@@ -1178,7 +1296,7 @@ function mod.StringRoomHasTopExit(roomName)
     return false
 end
 function mod.StringRoomHasBottomExit(roomName)
-    if roomName == CDR or roomName == CSR or roomName == ER then
+    if roomName == CDR or roomName == CSR or roomName == ER or roomName == BR then
         return true
     end
 

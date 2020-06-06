@@ -38,6 +38,8 @@ local MAX_ROOM_COLUMNS = 3
 local GAME_LOOP_RATE = 0.0625
 
 local DEBUG_UNIT = "__DebugMarkerUnit"
+local EXIT_DOORWAY = "_ExitDoorway"
+local ENTRY_DOORWAY_OPEN_ANIM_DELAY = 1
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
@@ -99,6 +101,8 @@ local SingleClickTriggerTime = 0.3
 -- Private Variables
 -- Rooms
 local m_roomGenerator
+local m_exitRoom
+local m_exitRoomAnimPlayed = false
 -- Player
 local m_player
 local m_playerCollided = false
@@ -122,7 +126,7 @@ local m_mouseDown = false
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(randomSeed)
+    math.randomseed(1591486418)
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
@@ -141,16 +145,25 @@ function Start()
     CreateDebugUI()
 
     m_roomGenerator = RoomGenerator:new()
-    local randomRoom = math.random(1, MAX_ROOM_COLUMNS)
-    m_roomGenerator:MakeSafeRoom(1, randomRoom)
-    local emptyPositions, rect = m_roomGenerator:GetRoomEmptyPositions(1, randomRoom)
-    local randomEmptyPositionIndex = math.random(1, #emptyPositions)
-    local emptyPosition = emptyPositions[randomEmptyPositionIndex]
+    local i, j = m_roomGenerator:GetBeginningRoomIndex()
+    local rect = m_roomGenerator:GetRoomRect(i, j)
+    local entryPositon = m_roomGenerator:GetBeginningRoomEntryPosition()
 
-    local xPosition = rect.x + emptyPosition[1]
-    local yPosition = rect.y + emptyPosition[2]
+    local xPosition = rect.x + entryPositon[1] + 1
+    local yPosition = rect.y + entryPositon[2]
     DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
     DCEI.Move(m_player, xPosition, yPosition)
+
+    local exitRowIndex, exitColumnIndex = m_roomGenerator:GetExitRoomIndex()
+    m_exitRoom = m_roomGenerator.rooms[exitRowIndex][exitColumnIndex]
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local entryRowIndex, entryColumnIndex = m_roomGenerator:GetBeginningRoomIndex()
+            m_roomGenerator.rooms[entryRowIndex][entryColumnIndex]:PlayEntryDoorCloseAnimation()
+        end,
+        ENTRY_DOORWAY_OPEN_ANIM_DELAY
+    )
 
     -- TODO: Remove this later on...
     -- local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
@@ -187,6 +200,13 @@ function Update()
             m_camera:StartShakeWithUnit(1, 0)
         end
         m_lastFramePlayerHealth = playerHealth
+
+        if m_exitRoom ~= nil then
+            if not m_exitRoomAnimPlayed and m_exitRoom:IsPlayerInRoom(m_player) then
+                m_exitRoomAnimPlayed = true
+                m_exitRoom:PlayExitDoorOpenAnimation()
+            end
+        end
     end
 
     MakePlayerLookTowardsNearestEnemy()
@@ -229,6 +249,16 @@ function HandleBehaviourAdded()
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
         m_playerCollided = true
+
+        local unitName = DCEI.UnitName(unit)
+        if unitName == EXIT_DOORWAY then
+            DCEI.RemoveUnit(m_player)
+            m_player = nil
+
+            local i, j = m_roomGenerator:GetExitRoomIndex()
+            m_roomGenerator.rooms[i][j]:PlayExitDoorOpenAnimation()
+            DisplayGameOverSequence()
+        end
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
         DCEI.LogMessage("Missile Reached Position")
@@ -351,6 +381,7 @@ end
 -- #region GameOver State
 
 function DisplayGameOverSequence()
+    m_playerStaminaList = {}
     m_camera:UpdateTarget(nil)
 
     local maskOptions = {
@@ -372,20 +403,30 @@ function ResetGameState()
     m_roomGenerator:DestroyRooms()
     m_roomGenerator:GenerateRooms()
 
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local entryRowIndex, entryColumnIndex = m_roomGenerator:GetBeginningRoomIndex()
+            m_roomGenerator.rooms[entryRowIndex][entryColumnIndex]:PlayEntryDoorCloseAnimation()
+        end,
+        ENTRY_DOORWAY_OPEN_ANIM_DELAY
+    )
+    
+    local exitRowIndex, exitColumnIndex = m_roomGenerator:GetExitRoomIndex()
+    m_exitRoom = m_roomGenerator.rooms[exitRowIndex][exitColumnIndex]
+    m_exitRoomAnimPlayed = false
+
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     else
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
     end
 
-    local randomRoom = math.random(1, MAX_ROOM_COLUMNS)
-    m_roomGenerator:MakeSafeRoom(1, randomRoom)
-    local emptyPositions = m_roomGenerator:GetRoomEmptyPositions(1, randomRoom)
-    local randomEmptyPositionIndex = math.random(1, #emptyPositions)
-    local emptyPosition, rect = emptyPositions[randomEmptyPositionIndex]
+    local i, j = m_roomGenerator:GetBeginningRoomIndex()
+    local rect = m_roomGenerator:GetRoomRect(i, j)
+    local entryPositon = m_roomGenerator:GetBeginningRoomEntryPosition()
 
-    local xPosition = rect.x + emptyPosition[1]
-    local yPosition = rect.y + emptyPosition[2]
+    local xPosition = rect.x + entryPositon[1] + 1
+    local yPosition = rect.y + entryPositon[2]
     DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
     DCEI.Move(m_player, xPosition, yPosition)
 
