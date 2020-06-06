@@ -15,7 +15,7 @@ function Camera:new(targetUnit)
     local camera = {}
     setmetatable(camera, Camera)
 
-    -- DCEI.SetCameraDistanceSmooth(20)
+    DCEI.SetCameraDistanceSmooth(20)
 
     camera.targetUnit = targetUnit
     
