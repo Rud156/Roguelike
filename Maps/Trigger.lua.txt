@@ -164,6 +164,7 @@ function Start()
     local xPosition = rect.x + emptyPosition[1]
     local yPosition = rect.y + emptyPosition[2]
     DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
+    DCEI.Move(m_player, xPosition, yPosition)
 
     -- TODO: Remove this later on...
     -- local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
@@ -370,10 +371,11 @@ function ResetGameState()
     local emptyPositions = m_roomGenerator:GetRoomEmptyPositions(1, randomRoom)
     local randomEmptyPositionIndex = math.random(1, #emptyPositions)
     local emptyPosition, rect = emptyPositions[randomEmptyPositionIndex]
-    
+
     local xPosition = rect.x + emptyPosition[1]
     local yPosition = rect.y + emptyPosition[2]
     DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
+    DCEI.Move(m_player, xPosition, yPosition)
 
     m_camera:UpdateTarget(m_player)
     CreatePlayerUIElements()
