@@ -199,6 +199,7 @@ local CUP = "CUP"
 local CDR = "CDR"
 local CSR = "CSR"
 local ER =  "ER"
+local BR = "BR"
 local MAX_ROWS = 3
 local MAX_COLUMNS = 3
 
@@ -273,7 +274,12 @@ function Room:new(roomTemplate, rect, roomType)
     room.hasBottomExit = false
 
     room.playerInRoom = false
-    room.roomCleared = false -- TODO: Change this later on...
+    
+    if roomType == ER or roomType == BR then
+        room.roomCleared = true
+    else
+        room.roomCleared = false
+    end
 
     room.enemies = {}
     room.totalWaveCount = math.random(1, MAX_WAVE_COUNT)
@@ -662,6 +668,15 @@ function RoomGenerator:RemoveDeadEnemy(enemyUnit)
         end
     end
 end
+function RoomGenerator:GetBeginningRoomIndex()
+    for i = 1, MAX_ROWS do
+        for j = 1, MAX_COLUMNS do
+            if self.rooms[i][j]:GetRoomType() == BR then
+                return i, j
+            end
+        end
+    end
+end
 function RoomGenerator:MakeSafeRoom(rowIndex, columnIndex)
     self.rooms[rowIndex][columnIndex].roomCleared = true
 end
@@ -673,7 +688,7 @@ function RoomGenerator:GenerateBaseRoomMatrix()
     local currentColumnIndex = math.random(1, MAX_COLUMNS) -- Probably read from Matrix Length?
     local generationComplete = false
 
-    self.roomMatrix[currentRowIndex][currentColumnIndex] = PR
+    self.roomMatrix[currentRowIndex][currentColumnIndex] = BR
     self:PrintRoomMatrix()
 
     while true do
@@ -746,6 +761,10 @@ function RoomGenerator:GenerateActualBasicRooms()
             elseif roomType == ER then
                 local randomIndex = math.random(1, #EXIT_ROOMS)
                 local room = Room:new(EXIT_ROOMS[randomIndex], rect, ER)
+                self.rooms[mappedI][j] = room
+            elseif roomType == BR then
+                local randomIndex = math.random(1, #BEGINNING_ROOMS)
+                local room = Room:new(BEGINNING_ROOMS[randomIndex], rect, BR)
                 self.rooms[mappedI][j] = room
             elseif roomType == SR then
                 DCEI.LogMessage("Generating Secret Rooms Later")
@@ -1172,14 +1191,14 @@ function RoomGenerator:PrintActualRoomMatrix()
 end
 
 function mod.StringRoomHasLeftExit(roomName)
-    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER then
+    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER or roomName == BR then
         return true
     end
 
     return false
 end
 function mod.StringRoomHasRightExit(roomName)
-    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER then
+    if roomName == PR or roomName == CDR or roomName == CUP or roomName == CSR or roomName == ER or roomName == BR then
         return true
     end
 
@@ -1193,7 +1212,7 @@ function mod.StringRoomHasTopExit(roomName)
     return false
 end
 function mod.StringRoomHasBottomExit(roomName)
-    if roomName == CDR or roomName == CSR or roomName == ER then
+    if roomName == CDR or roomName == CSR or roomName == ER or roomName == BR then
         return true
     end
 

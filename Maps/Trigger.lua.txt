@@ -141,9 +141,8 @@ function Start()
     CreateDebugUI()
 
     m_roomGenerator = RoomGenerator:new()
-    local randomRoom = math.random(1, MAX_ROOM_COLUMNS)
-    m_roomGenerator:MakeSafeRoom(1, randomRoom)
-    local emptyPositions, rect = m_roomGenerator:GetRoomEmptyPositions(1, randomRoom)
+    local i, j = m_roomGenerator:GetBeginningRoomIndex()
+    local emptyPositions, rect = m_roomGenerator:GetRoomEmptyPositions(i, j)
     local randomEmptyPositionIndex = math.random(1, #emptyPositions)
     local emptyPosition = emptyPositions[randomEmptyPositionIndex]
 

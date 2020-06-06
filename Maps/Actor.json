@@ -670,6 +670,14 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        },
+        "_ExitDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                }
+            }
         }
     }
 }

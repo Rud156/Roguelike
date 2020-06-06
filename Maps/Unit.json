@@ -271,6 +271,26 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "_ExitDoorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "healthBar": {
+                "type": 0
+            }
         }
     }
 }
