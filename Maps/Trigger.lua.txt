@@ -91,8 +91,6 @@ local MinWaveCount = 1
 local MaxWaveCount = 3
 -- Player
 local PlayerSpawnPosition = { x = 27, y = 27 } -- In the final version, this will not be used...
-local PlayerDashTimer = 0.3
-local PlayerDashSpeed = 5
 local PlayerDashMana = 1
 local UseMeleePlayer = true
 -- Mouse
@@ -530,8 +528,8 @@ function LaunchPlayerMeleeHeavyAttack()
 end
 
 function MakePlayerDodgeAndRoll()
-    if m_player == nil or m_playerDashCoolDownTimer > 0 then
-        DCEI.LogMessage("Player Died/Dash on CoolDown")
+    if m_player == nil or m_playerDashCoolDownTimer > 0 or m_playerCooldownTimer > 0 then
+        DCEI.LogMessage("Player Died/Dash/Attack on CoolDown")
         return
     end
 

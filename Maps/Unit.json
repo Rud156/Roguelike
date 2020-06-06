@@ -183,7 +183,8 @@
                 },
                 "mana": {
                     "maxMana": 5,
-                    "regeneration": 1
+                    "regeneration": 1,
+                    "regenerationDelay": 1
                 },
                 "turning": {
                     "turningSpeed": 720
