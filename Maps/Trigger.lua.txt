@@ -67,7 +67,7 @@ local COLLECTIBLES = {
 }
 
 -- Debug
-local USE_KEYBOARD = true
+local USE_KEYBOARD = false
 
 -- Public Variables
 -- Room
