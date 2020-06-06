@@ -41,6 +41,7 @@ local DEBUG_UNIT = "__DebugMarkerUnit"
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
+local PLAYERCHARACTER_DASH_CD = 0.3
 -- Player Ranged
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
@@ -104,6 +105,7 @@ local m_roomGenerator
 local m_player
 local m_playerCollided = false
 local m_playerDashActive = false
+local m_playerDashCoolDownTimer = 0
 local m_playerMoving = false
 local m_lastFramePlayerHealth = 0
 local m_playerCooldownTimer = 0
@@ -196,6 +198,10 @@ function Update()
         m_playerCooldownTimer = m_playerCooldownTimer - GAME_LOOP_RATE
     end
 
+    if m_playerDashCoolDownTimer > 0 then
+        m_playerDashCoolDownTimer = m_playerDashCoolDownTimer - GAME_LOOP_RATE
+    end
+
     if m_mouseDown and m_playerCooldownTimer <= 0 then
         LaunchPlayerLightAttack()
     end
@@ -227,11 +233,14 @@ function HandleBehaviourAdded()
         m_playerCollided = true
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
+        DCEI.LogMessage("Missile Reached Position")
         m_playerDashActive = false
         local missilePosition = DCEI.GetUnitPosition2D(unit)
 
         DCEI.SetUnitPosition2D(m_player, missilePosition.x, missilePosition.y)
         DCEI.Move(m_player, missilePosition.x, missilePosition.y)
+
+        m_playerDashCoolDownTimer = PLAYERCHARACTER_DASH_CD
     end
 end
 
@@ -521,12 +530,13 @@ function LaunchPlayerMeleeHeavyAttack()
 end
 
 function MakePlayerDodgeAndRoll()
-    if m_player == nil then
-        DCEI.LogMessage("Player Died")
+    if m_player == nil or m_playerDashCoolDownTimer > 0 then
+        DCEI.LogMessage("Player Died/Dash on CoolDown")
         return
     end
 
     if m_playerDashActive then
+        DCEI.LogMessage("Dash Already Active")
         return
     end
 
@@ -536,7 +546,7 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
-    DCEI.LogMessage("Making Player Dash")
+    DCEI.LogMessage("Making Player Dash: " .. m_playerDashCoolDownTimer)
 
     local updatedMana = playerMana - PlayerDashMana
     DCEI.SetManaValue(m_player, updatedMana)

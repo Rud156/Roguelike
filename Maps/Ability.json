@@ -34,7 +34,7 @@
             "effect": "_Launch_PlayerCharacter_Melee",
             "stats": {
                 "prepTime": 0,
-                "finishTime": 1,
+                "finishTime": 0.5,
                 "period": 0,
                 "range": 5,
                 "arc": 60
@@ -74,7 +74,7 @@
             "effect": "_Launch_PlayerCharacter_Ranged",
             "stats": {
                 "prepTime": 0,
-                "finishTime": 1,
+                "finishTime": 0.5,
                 "range": 5,
                 "arc": 60
             },
