@@ -177,47 +177,30 @@
                                 "playAnimation": {
                                     "clipId": 8
                                 }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_DoorwayOpen"
+                            "onTimer": {
+                                "name": "PauseOpenAnim"
                             }
                         },
                         "actions": [
                             {
-                                "stopAnimation": {
+                                "pauseAnimation": {
                                     "clipId": 8
                                 }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_DoorwayClose"
-                            }
-                        },
-                        "actions": [
+                            },
                             {
-                                "playAnimation": {
-                                    "clipId": 7
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_DoorwayClose"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 7
+                                "log": {
+                                    "message": "Animation Paused"
                                 }
                             }
                         ]
@@ -747,34 +730,6 @@
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
-                                "ability": "_DoorwayOpen"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 8
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_DoorwayOpen"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 8
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
                                 "ability": "_DoorwayClose"
                             }
                         },
@@ -783,18 +738,24 @@
                                 "playAnimation": {
                                     "clipId": 7
                                 }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseCloseAnim",
+                                    "duration": 0.55
+                                }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_DoorwayClose"
+                            "onTimer": {
+                                "name": "PauseCloseAnim"
                             }
                         },
                         "actions": [
                             {
-                                "stopAnimation": {
+                                "pauseAnimation": {
                                     "clipId": 7
                                 }
                             }

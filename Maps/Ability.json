@@ -125,12 +125,20 @@
             "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 0,
-            "effect": "DoNothing"
+            "effect": "DoNothing",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3
+            }
         },
         "_DoorwayClose": {
             "abilityType": 2,
             "castType": 1,
-            "effect": "DoNothing"
+            "effect": "DoNothing",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3
+            }
         }
     }
 }

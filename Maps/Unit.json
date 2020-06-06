@@ -96,7 +96,7 @@
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
-                    "radius": 0.1,
+                    "radius": 0.3,
                     "immortal": true,
                     "ground": true,
                     "selectable": false
@@ -110,8 +110,7 @@
             },
             "references": {
                 "abilityList": [
-                    "_DoorwayOpen",
-                    "_DoorwayClose"
+                    "_DoorwayOpen"
                 ]
             },
             "healthBar": {
@@ -316,9 +315,9 @@
             },
             "references": {
                 "abilityList": [
-                    "_DoorwayOpen",
                     "_DoorwayClose"
-                ]
+                ],
+                "onStartAbility": ""
             },
             "healthBar": {
                 "type": 0

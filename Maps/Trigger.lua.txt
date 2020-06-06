@@ -39,6 +39,7 @@ local GAME_LOOP_RATE = 0.0625
 
 local DEBUG_UNIT = "__DebugMarkerUnit"
 local EXIT_DOORWAY = "_ExitDoorway"
+local ENTRY_DOORWAY_OPEN_ANIM_DELAY = 1
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
@@ -68,7 +69,7 @@ local COLLECTIBLES = {
 }
 
 -- Debug
-local USE_KEYBOARD = true
+local USE_KEYBOARD = false
 
 -- Public Variables
 -- Room
@@ -100,6 +101,8 @@ local SingleClickTriggerTime = 0.3
 -- Private Variables
 -- Rooms
 local m_roomGenerator
+local m_exitRoom
+local m_exitRoomAnimPlayed = false
 -- Player
 local m_player
 local m_playerCollided = false
@@ -123,7 +126,7 @@ local m_mouseDown = false
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(randomSeed)
+    math.randomseed(1591486418)
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
@@ -150,6 +153,17 @@ function Start()
     local yPosition = rect.y + entryPositon[2]
     DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
     DCEI.Move(m_player, xPosition, yPosition)
+
+    local exitRowIndex, exitColumnIndex = m_roomGenerator:GetExitRoomIndex()
+    m_exitRoom = m_roomGenerator.rooms[exitRowIndex][exitColumnIndex]
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local entryRowIndex, entryColumnIndex = m_roomGenerator:GetBeginningRoomIndex()
+            m_roomGenerator.rooms[entryRowIndex][entryColumnIndex]:PlayEntryDoorCloseAnimation()
+        end,
+        ENTRY_DOORWAY_OPEN_ANIM_DELAY
+    )
 
     -- TODO: Remove this later on...
     -- local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
@@ -186,6 +200,13 @@ function Update()
             m_camera:StartShakeWithUnit(1, 0)
         end
         m_lastFramePlayerHealth = playerHealth
+
+        if m_exitRoom ~= nil then
+            if not m_exitRoomAnimPlayed and m_exitRoom:IsPlayerInRoom(m_player) then
+                m_exitRoomAnimPlayed = true
+                m_exitRoom:PlayExitDoorOpenAnimation()
+            end
+        end
     end
 
     MakePlayerLookTowardsNearestEnemy()
@@ -230,10 +251,12 @@ function HandleBehaviourAdded()
         m_playerCollided = true
 
         local unitName = DCEI.UnitName(unit)
-        DCEI.RemoveUnit(m_player)
-        m_player = nil
-
         if unitName == EXIT_DOORWAY then
+            DCEI.RemoveUnit(m_player)
+            m_player = nil
+
+            local i, j = m_roomGenerator:GetExitRoomIndex()
+            m_roomGenerator.rooms[i][j]:PlayExitDoorOpenAnimation()
             DisplayGameOverSequence()
         end
 
@@ -379,6 +402,18 @@ end
 function ResetGameState()
     m_roomGenerator:DestroyRooms()
     m_roomGenerator:GenerateRooms()
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local entryRowIndex, entryColumnIndex = m_roomGenerator:GetBeginningRoomIndex()
+            m_roomGenerator.rooms[entryRowIndex][entryColumnIndex]:PlayEntryDoorCloseAnimation()
+        end,
+        ENTRY_DOORWAY_OPEN_ANIM_DELAY
+    )
+    
+    local exitRowIndex, exitColumnIndex = m_roomGenerator:GetExitRoomIndex()
+    m_exitRoom = m_roomGenerator.rooms[exitRowIndex][exitColumnIndex]
+    m_exitRoomAnimPlayed = false
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)

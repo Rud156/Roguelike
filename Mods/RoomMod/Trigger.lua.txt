@@ -195,6 +195,9 @@ local DOORWAY = "_Wall_Doorway"
 local EXIT_DOORWAY = "_ExitDoorway"
 local ENTRY_DOORWAY = "_EntryDoorway"
 
+local DOORWAY_OPEN = "_DoorwayOpen"
+local DOORWAY_CLOSE = "_DoorwayClose"
+
 local PR = "PR"
 local SR = "SR"
 local CUP = "CUP"
@@ -206,7 +209,7 @@ local MAX_ROWS = 3
 local MAX_COLUMNS = 3
 
 local MAX_WAVE_COUNT = 5
-local ROOM_ENTRY_DETECT_OFFSET = 2
+local ROOM_ENTRY_DETECT_OFFSET = 3
 
 local mod = {}
 
@@ -310,6 +313,14 @@ function Room:UpdateEnemies(deltaTime, player)
 
         enemy:Update(deltaTime, playerPosition)
     end
+end
+function Room:IsPlayerInRoom(player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    if self.rect:containsWithOffset(playerPosition.x, playerPosition.y, ROOM_ENTRY_DETECT_OFFSET) then
+        return true
+    end
+
+    return false
 end
 function Room:UpdatePlayerInRoom(player)
     if self.playerInRoom then
@@ -613,6 +624,22 @@ end
 function Room:GetEntryPosition()
     return self.entryPosition
 end
+function Room:GetEntryDoor()
+    return self.entryUnit
+end
+function Room:PlayEntryDoorCloseAnimation()
+    if self.entryUnit ~= nil then
+        DCEI.CastAbilityAtPosition(DOORWAY_CLOSE, self.entryUnit, self.entryPosition[1], self.entryPosition[2])
+    end
+end
+function Room:PlayExitDoorOpenAnimation()
+    if self.exitUnit ~= nil then
+        DCEI.CastAbilityAtPosition(DOORWAY_OPEN, self.exitUnit, self.exitPosition[1], self.exitPosition[2])
+    end
+end
+function Room:GetExitDoor()
+    return self.exitUnit
+end
 function Room:GetRoomType()
     return self.roomType
 end
@@ -705,6 +732,18 @@ function RoomGenerator:GetBeginningRoomIndex()
     for i = 1, MAX_ROWS do
         for j = 1, MAX_COLUMNS do
             if self.rooms[i][j]:GetRoomType() == BR then
+                return i, j
+            end
+        end
+    end
+
+    DCEI.LogError("No Beginning Room")
+    return nil, nil
+end
+function RoomGenerator:GetExitRoomIndex()
+    for i = 1, MAX_ROWS do
+        for j = 1, MAX_COLUMNS do
+            if self.rooms[i][j]:GetRoomType() == ER then
                 return i, j
             end
         end
