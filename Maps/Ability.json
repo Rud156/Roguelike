@@ -27,6 +27,20 @@
                 "period": 1
             }
         },
+        "_PlayerCharacter_Melee_Dash": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_PlayerCharacter_Melee",
+            "stats": {
+                "prepTime": 0,
+                "finishTime": 1,
+                "period": 0,
+                "range": 5,
+                "arc": 60
+            },
+            "canCastWhileMoving": true
+        },
         "_PlayerCharacter_Melee_HeavyAttack": {
             "abilityType": 2,
             "castType": 1,
@@ -50,6 +64,19 @@
                 "finishTime": 0.3,
                 "period": 0,
                 "range": 0
+            },
+            "canCastWhileMoving": true
+        },
+        "_PlayerCharacter_Ranged_Dash": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_PlayerCharacter_Ranged",
+            "stats": {
+                "prepTime": 0,
+                "finishTime": 1,
+                "range": 5,
+                "arc": 60
             },
             "canCastWhileMoving": true
         },
@@ -84,33 +111,6 @@
             },
             "cost": {
                 "mana": 0
-            },
-            "canCastWhileMoving": true
-        },
-        "_PlayerCharacter_Melee_Dash": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "_Launch_PlayerCharacter_Melee",
-            "stats": {
-                "prepTime": 0,
-                "finishTime": 1,
-                "period": 0,
-                "range": 5,
-                "arc": 60
-            },
-            "canCastWhileMoving": true
-        },
-        "_PlayerCharacter_Ranged_Dash": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "_Launch_PlayerCharacter_Ranged",
-            "stats": {
-                "prepTime": 0,
-                "finishTime": 1,
-                "range": 5,
-                "arc": 60
             },
             "canCastWhileMoving": true
         }

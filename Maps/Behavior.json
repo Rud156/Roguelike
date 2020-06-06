@@ -3,6 +3,9 @@
         "_CollisionDetection_PlayerCharacter": {
             "duration": 0.01
         },
+        "_PlayerCharacter_DashEnded": {
+            "duration": 0.01
+        },
         "_PlayerCharacter_Missile_Reached": {},
         "_PlayerCharacter_Movement": {},
         "_Search_Enemy_GoblinChef": {
@@ -28,9 +31,6 @@
         "_Search_PlayerCharacter_Ranged_Missile": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
-        },
-        "_PlayerCharacter_DashEnded": {
-            "duration": 0.01
         }
     }
 }

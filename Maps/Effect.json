@@ -32,6 +32,12 @@
                 "target": 2
             }
         },
+        "_Collided_PlayerCharacter_Ranged_Missile": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Missile_Reached",
+                "target": 2
+            }
+        },
         "_Damage_Enemy_GoblinChef": {
             "damage": {
                 "whichUnit": 1,
@@ -114,6 +120,15 @@
                 "launchLocation": 0,
                 "impactLocation": 2,
                 "mover": "_PlayerCharacter_Melee"
+            }
+        },
+        "_Launch_PlayerCharacter_Ranged": {
+            "launchMissile": {
+                "missileUnit": "_Missile_PlayerCharacter_Ranged",
+                "missileDeathType": 0,
+                "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided",
+                "impactLocation": 2,
+                "mover": "_PlayerCharacter_Ranged"
             }
         },
         "_Launch_PlayerCharacter_Ranged_HeavyAttack": {
@@ -242,48 +257,6 @@
                 "effect": "_Set_PlayerCharacter_Ranged_LightAttack"
             }
         },
-        "_Set_Behaviour_PlayerCharacter_Collision": {
-            "applyBehavior": {
-                "behavior": "_CollisionDetection_PlayerCharacter",
-                "target": 1,
-                "duration": 0.1
-            }
-        },
-        "_Set_Enemy_GoblinChef": {
-            "set": {
-                "effectList": [
-                    "_Damage_Enemy_GoblinChef",
-                    "Remove Source"
-                ]
-            }
-        },
-        "_Set_PlayerCharacter_Ranged_HeavyAttack": {
-            "set": {
-                "effectList": [
-                    "_Damage_PlayerCharacter_Ranged_HeavyAttack",
-                    "Remove Source"
-                ]
-            }
-        },
-        "__StopMovement": {
-            "stop": {
-                "whichUnit": 1
-            }
-        },
-        "_Launch_PlayerCharacter_Ranged": {
-            "launchMissile": {
-                "missileUnit": "_Missile_PlayerCharacter_Ranged",
-                "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided",
-                "impactLocation": 2,
-                "mover": "_PlayerCharacter_Ranged"
-            }
-        },
-        "_Collided_PlayerCharacter_Ranged_Missile": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_Missile_Reached",
-                "target": 2
-            }
-        },
         "_Search_PlayerCharacter_Ranged_Missile": {
             "areaSearch": {
                 "debugDraw": true,
@@ -299,12 +272,49 @@
                 "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
             }
         },
+        "_Set_Behaviour_PlayerCharacter_Collision": {
+            "applyBehavior": {
+                "behavior": "_CollisionDetection_PlayerCharacter",
+                "target": 1,
+                "duration": 0.1
+            }
+        },
+        "_Set_Enemy_GoblinChef": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinChef",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Dash_Behaviour": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_DashEnded",
+                "target": 3
+            }
+        },
         "_Set_PlayerCharacter_Melee_Missile_Collided": {
             "set": {
                 "targetType": 1,
                 "effectList": [
                     "_Collided_PlayerCharacter_Melee_Missile",
                     "_Set_PlayerCharacter_Dash_Behaviour"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Ranged_HeavyAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Ranged_HeavyAttack",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Ranged_LightAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Ranged_LightAttack",
+                    "Remove Source"
                 ]
             }
         },
@@ -317,18 +327,9 @@
                 ]
             }
         },
-        "_Set_PlayerCharacter_Ranged_LightAttack": {
-            "set": {
-                "effectList": [
-                    "_Damage_PlayerCharacter_Ranged_LightAttack",
-                    "Remove Source"
-                ]
-            }
-        },
-        "_Set_PlayerCharacter_Dash_Behaviour": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_DashEnded",
-                "target": 3
+        "__StopMovement": {
+            "stop": {
+                "whichUnit": 1
             }
         }
     }

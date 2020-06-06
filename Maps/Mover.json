@@ -18,14 +18,18 @@
         },
         "_PlayerCharacter_Melee": {
             "ballistic": {
+                "flightTime": 0.5,
                 "flightTimeRange": 0,
-                "speed": 7
+                "speed": 0,
+                "gravity": 12
             }
         },
         "_PlayerCharacter_Ranged": {
             "ballistic": {
+                "flightTime": 0.5,
                 "flightTimeRange": 0,
-                "speed": 7
+                "speed": 0,
+                "gravity": 12
             }
         }
     }
