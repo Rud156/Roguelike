@@ -220,7 +220,8 @@
                 },
                 "maxUnitCount": 10,
                 "filter": {
-                    "player": 2
+                    "player": 2,
+                    "enemy": 2
                 },
                 "effect": "_Set_PlayerCharacter_Melee_Missile_Collided"
             }
@@ -267,7 +268,8 @@
                 },
                 "maxUnitCount": 10,
                 "filter": {
-                    "player": 2
+                    "player": 2,
+                    "enemy": 2
                 },
                 "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
             }

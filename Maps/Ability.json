@@ -36,8 +36,11 @@
                 "prepTime": 0,
                 "finishTime": 0.5,
                 "period": 0,
-                "range": 5,
+                "range": 2.5,
                 "arc": 60
+            },
+            "cost": {
+                "mana": 1
             },
             "canCastWhileMoving": true
         },
@@ -56,8 +59,9 @@
             "canCastWhileMoving": true
         },
         "_PlayerCharacter_Melee_LightAttack": {
-            "abilityType": 2,
+            "abilityType": 1,
             "castType": 1,
+            "targetRangeMode": 2,
             "effect": "_Search_PlayerCharacter_Melee_LightAttack",
             "stats": {
                 "prepTime": 0.3,
@@ -75,8 +79,11 @@
             "stats": {
                 "prepTime": 0,
                 "finishTime": 0.5,
-                "range": 5,
+                "range": 2.5,
                 "arc": 60
+            },
+            "cost": {
+                "mana": 1
             },
             "canCastWhileMoving": true
         },
