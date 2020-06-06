@@ -23,7 +23,8 @@
             "_Wall_BreakableWall",
             "_Wall_Doorway",
             "_Wall_SolidWall",
-            "_ExitDoorway"
+            "_ExitDoorway",
+            "_EntryDoorway"
         ],
         "usedEffects": [
             "__StopMovement"

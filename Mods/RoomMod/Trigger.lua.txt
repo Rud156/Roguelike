@@ -174,7 +174,7 @@ local BEGINNING_ROOMS = {
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 5, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -193,6 +193,7 @@ local SOLID_WALL_PREFAB = "_Wall_SolidWall"
 local BREAKABLE_WALL_PREFAB = "_Wall_BreakableWall"
 local DOORWAY = "_Wall_Doorway"
 local EXIT_DOORWAY = "_ExitDoorway"
+local ENTRY_DOORWAY = "_EntryDoorway"
 
 local PR = "PR"
 local SR = "SR"
@@ -213,7 +214,9 @@ local mod = {}
 -- 0: Empty Space
 -- 1: Solid Wall
 -- 2: Destructible Wall
--- 3: Exit
+-- 3: Exit Doorway
+-- 4: Enemy Spawn Positins
+-- 5: Entry Doorway
 local Room = {
     rect = nil,
     roomType = "",
@@ -225,12 +228,14 @@ local Room = {
     solidWallPositions = {},
     doorwayPositions = {},
     exitPosition = nil,
+    entryPosition = nil,
 
     -- Walls
     solidWallUnits = {},
     doorwayUnits = {},
     destructibleWallUnits = {},
     exitUnit = nil,
+    entryUnit = nil,
 
     -- Template Info
     roomTemplate = {},
@@ -262,11 +267,13 @@ function Room:new(roomTemplate, rect, roomType)
     room.solidWallPositions = {}
     room.doorwayPositions = {}
     room.exitPosition = nil
+    room.entryPosition = nil
 
     room.solidWallUnits = {}
     room.doorwayUnits = {}
     room.destructibleWallUnits = {}
     room.exitUnit = nil
+    room.entryUnit = nil
 
     room.roomTemplate = mod.CopyRoomTemplate(roomTemplate) -- Copy templates as tables are sent via reference
     room.hasLeftExit = false
@@ -482,9 +489,14 @@ function Room:DestroyRoom()
         DCEI.RemoveUnit(self.exitUnit)
     end
 
+    if self.entryUnit ~= nil then
+        DCEI.RemoveUnit(self.entryUnit)
+    end
+
     self.solidWallUnits = {}
     self.destructibleWallUnits = {}
     self.exitUnit = nil
+    self.entryUnit = nil
 end
 function Room:BlockTopWalls()
     local totalColumns = #self.roomTemplate[1]
@@ -525,6 +537,7 @@ function Room:RecalculateRoomSpaces()
     self.destructiblePositions = {}
     self.solidWallPositions = {}
     self.exitPosition = nil
+    self.entryPosition = nil
 
     for i = 1, #self.roomTemplate do
         for j = 1, #self.roomTemplate[i] do
@@ -544,6 +557,8 @@ function Room:RecalculateRoomSpaces()
                 table.insert(self.destructiblePositions, { xPosition, yPosition })
             elseif self.roomTemplate[i][j] == 3 then
                 self.exitPosition = { xPosition, yPosition }
+            elseif self.roomTemplate[i][j] == 5 then
+                self.entryPosition = { xPosition, yPosition }
             elseif self.roomTemplate[i][j] == 4 then
                 table.insert(self.enemySpawnPositions, { xPosition, yPosition })
             end
@@ -583,11 +598,20 @@ function Room:GenerateRoomModels()
     if self.exitPosition ~= nil then
         local exitPositionX = startX + self.exitPosition[1]
         local exitPositionY = startY + self.exitPosition[2]
-        DCEI.CreateUnit(0, 0, EXIT_DOORWAY, exitPositionX, exitPositionY)
+        self.exitUnit = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, exitPositionX, exitPositionY)
+    end
+
+    if self.entryPosition ~= nil then
+        local entryPositionX = startX + self.entryPosition[1]
+        local entryPositionY = startY + self.entryPosition[2]
+        self.entryUnit = DCEI.CreateUnit(0, 0, ENTRY_DOORWAY, entryPositionX, entryPositionY)
     end
 end
 function Room:GetRoomTemplate()
     return self.roomTemplate
+end
+function Room:GetEntryPosition()
+    return self.entryPosition
 end
 function Room:GetRoomType()
     return self.roomType
@@ -688,6 +712,13 @@ function RoomGenerator:GetBeginningRoomIndex()
 
     DCEI.LogError("No Beginning Room")
     return nil, nil
+end
+function RoomGenerator:GetBeginningRoomEntryPosition()
+    local rowIndex, columnIndex = self:GetBeginningRoomIndex()
+    return self.rooms[rowIndex][columnIndex]:GetEntryPosition()
+end
+function RoomGenerator:GetRoomRect(rowIndex, columnIndex)
+    return self.rooms[rowIndex][columnIndex].rect
 end
 function RoomGenerator:MakeSafeRoom(rowIndex, columnIndex)
     self.rooms[rowIndex][columnIndex].roomCleared = true

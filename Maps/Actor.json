@@ -164,7 +164,65 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "mineworld_trapdoor"
-                }
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayOpen"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_DoorwayOpen"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 8
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         },
         "_FX_Launch_Enemy_GoblinChef": {
@@ -677,6 +735,72 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
+            }
+        },
+        "_EntryDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayOpen"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_DoorwayOpen"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 8
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         }
     }

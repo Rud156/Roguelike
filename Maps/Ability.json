@@ -120,6 +120,17 @@
                 "mana": 0
             },
             "canCastWhileMoving": true
+        },
+        "_DoorwayOpen": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 0,
+            "effect": "DoNothing"
+        },
+        "_DoorwayClose": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "DoNothing"
         }
     }
 }
