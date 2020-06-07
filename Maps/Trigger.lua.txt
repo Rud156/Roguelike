@@ -69,7 +69,7 @@ local COLLECTIBLES = {
 }
 
 -- Debug
-local USE_KEYBOARD = false
+local USE_KEYBOARD = true
 
 -- Public Variables
 -- Room
@@ -126,7 +126,7 @@ local m_mouseDown = false
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(1591486418)
+    math.randomseed(randomSeed)
 
     if UseMeleePlayer then
         m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
@@ -255,8 +255,6 @@ function HandleBehaviourAdded()
             DCEI.RemoveUnit(m_player)
             m_player = nil
 
-            local i, j = m_roomGenerator:GetExitRoomIndex()
-            m_roomGenerator.rooms[i][j]:PlayExitDoorOpenAnimation()
             DisplayGameOverSequence()
         end
 

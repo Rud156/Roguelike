@@ -744,6 +744,11 @@
                                     "name": "PauseCloseAnim",
                                     "duration": 0.55
                                 }
+                            },
+                            {
+                                "removeTimer": {
+                                    "name": "PlayIdleAnim"
+                                }
                             }
                         ]
                     },
@@ -757,6 +762,39 @@
                             {
                                 "pauseAnimation": {
                                     "clipId": 7
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PlayIdleAnim",
+                                    "duration": 0.1,
+                                    "repeat": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PlayIdleAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
                                 }
                             }
                         ]
