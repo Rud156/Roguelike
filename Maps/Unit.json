@@ -92,6 +92,32 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_EntryDoorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_DoorwayClose"
+                ],
+                "onStartAbility": ""
+            },
+            "healthBar": {
+                "type": 0
+            }
+        },
         "_ExitDoorway": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -295,32 +321,6 @@
                 "behavior": {
                     "behaviorType": 0
                 }
-            }
-        },
-        "_EntryDoorway": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "_DoorwayClose"
-                ],
-                "onStartAbility": ""
-            },
-            "healthBar": {
-                "type": 0
             }
         }
     }

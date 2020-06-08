@@ -159,6 +159,88 @@
                 "modelScale": 1.2
             }
         },
+        "_EntryDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseCloseAnim",
+                                    "duration": 0.55
+                                }
+                            },
+                            {
+                                "removeTimer": {
+                                    "name": "PlayIdleAnim"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseCloseAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PlayIdleAnim",
+                                    "duration": 0.1,
+                                    "repeat": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PlayIdleAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_ExitDoorway": {
             "unitActor": {
                 "resource": {
@@ -243,11 +325,12 @@
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_drow_mage_blue_impact"
+                    "name": "vfx_arrow_tower_hit"
                 },
                 "hostSiteOperations": [
                     "SOp HoldPosition"
-                ]
+                ],
+                "modelScale": 2
             }
         },
         "_Missile_Enemy_GoblinChef": {
@@ -505,7 +588,7 @@
                 "hostSites": {
                     "Melee Attack Host Site": {
                         "offset": {
-                            "forward": 0.5
+                            "forward": 0.8
                         }
                     }
                 }
@@ -718,88 +801,6 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
-            }
-        },
-        "_EntryDoorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_trapdoor"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_DoorwayClose"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 7
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "PauseCloseAnim",
-                                    "duration": 0.55
-                                }
-                            },
-                            {
-                                "removeTimer": {
-                                    "name": "PlayIdleAnim"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "PauseCloseAnim"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "pauseAnimation": {
-                                    "clipId": 7
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 4
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "PlayIdleAnim",
-                                    "duration": 0.1,
-                                    "repeat": true
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "PlayIdleAnim"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 4
-                                }
-                            }
-                        ]
-                    }
-                ]
             }
         }
     }

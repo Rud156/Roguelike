@@ -1,5 +1,24 @@
 {
     "abilities": {
+        "_DoorwayClose": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "DoNothing",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3
+            }
+        },
+        "_DoorwayOpen": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 0,
+            "effect": "DoNothing",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3
+            }
+        },
         "_Enemy_GoblinChef_Attack": {
             "abilityType": 1,
             "castType": 1,
@@ -20,7 +39,7 @@
         "_Enemy_Hobgoblin_Attack": {
             "abilityType": 2,
             "castType": 1,
-            "effect": "_Attack_Search_Hobgoblin",
+            "effect": "_Search_Enemy_Hobgoblin",
             "stats": {
                 "prepTime": 1,
                 "finishTime": 1,
@@ -31,7 +50,7 @@
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "_Launch_PlayerCharacter_Melee",
+            "effect": "_Set_PlayerCharacter_Melee_Dash_Launch",
             "stats": {
                 "prepTime": 0,
                 "finishTime": 0.5,
@@ -75,7 +94,7 @@
             "abilityType": 1,
             "castType": 1,
             "targetRangeMode": 2,
-            "effect": "_Launch_PlayerCharacter_Ranged",
+            "effect": "_Set_PlayerCharacter_Ranged_Dash_Launch",
             "stats": {
                 "prepTime": 0,
                 "finishTime": 0.5,
@@ -120,25 +139,6 @@
                 "mana": 0
             },
             "canCastWhileMoving": true
-        },
-        "_DoorwayOpen": {
-            "abilityType": 2,
-            "castType": 1,
-            "targetRangeMode": 0,
-            "effect": "DoNothing",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3
-            }
-        },
-        "_DoorwayClose": {
-            "abilityType": 2,
-            "castType": 1,
-            "effect": "DoNothing",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3
-            }
         }
     }
 }

@@ -389,7 +389,7 @@ function Room:SpawnNextWave()
 
     for i, enemyPosition in ipairs(self.enemySpawnPositions) do
         local randomValue = math.random()
-        if randomValue <= 0.25 then
+        if randomValue <= 0 then
             local randomEnemyIndex = math.random(1, #ENEMY_PREFABS)
             local randomEnemy = ENEMY_PREFABS[randomEnemyIndex]
             local enemy
@@ -416,6 +416,8 @@ function Room:SpawnNextWave()
         local randomEnemyIndex = math.random(1, #ENEMY_PREFABS)
         local randomEnemy = ENEMY_PREFABS[randomEnemyIndex]
         local enemy
+
+        randomEnemy = 1
         
         local xPosition = startX + enemyPosition[1]
         local yPosition = startY + enemyPosition[2]

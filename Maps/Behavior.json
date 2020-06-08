@@ -31,6 +31,14 @@
         "_Search_PlayerCharacter_Ranged_Missile": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
+        },
+        "_PlayerCharacter_Invincible": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_invincible",
+                    "count": 1
+                }
+            ]
         }
     }
 }
