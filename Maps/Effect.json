@@ -1,5 +1,17 @@
 {
     "effects": {
+        "_Apply_Behaviour_PlayerCharacter_Dash_End": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_DashEnded",
+                "target": 3
+            }
+        },
+        "_Apply_Behaviour_PlayerCharacter_Invincibility": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Invincible",
+                "target": 3
+            }
+        },
         "_Collided_PlayerCharacter_Melee_Missile": {
             "applyBehavior": {
                 "behavior": "_PlayerCharacter_Missile_Reached",
@@ -16,6 +28,19 @@
             "damage": {
                 "whichUnit": 1,
                 "damageAmount": 15,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Damage_Enemy_Hobgoblin": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 30,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -121,6 +146,12 @@
                 "mover": "_PlayerCharacter_LightAttack"
             }
         },
+        "_Remove_Behaviour_PlayerCharacter_Invincibility": {
+            "removeBehavior": {
+                "behavior": "_PlayerCharacter_Invincible",
+                "target": 3
+            }
+        },
         "_Search_Enemy_GoblinChef": {
             "areaSearch": {
                 "debugDraw": true,
@@ -137,6 +168,26 @@
                     "enemy": 0
                 },
                 "effect": "_Set_Enemy_GoblinChef"
+            }
+        },
+        "_Search_Enemy_Hobgoblin": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circleSector": {
+                        "outerRadius": 0.9,
+                        "innerRadius": 0.2,
+                        "angle": 45
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Damage_Enemy_Hobgoblin",
+                "offset": {
+                    "forward": 0.2
+                }
             }
         },
         "_Search_PlayerCharacter": {
@@ -263,6 +314,14 @@
                 ]
             }
         },
+        "_Set_PlayerCharacter_Melee_Dash_Launch": {
+            "set": {
+                "effectList": [
+                    "_Launch_PlayerCharacter_Melee",
+                    "_Apply_Behaviour_PlayerCharacter_Invincibility"
+                ]
+            }
+        },
         "_Set_PlayerCharacter_Melee_Missile_Collided": {
             "set": {
                 "targetType": 1,
@@ -270,6 +329,14 @@
                     "_Collided_PlayerCharacter_Melee_Missile",
                     "_Apply_Behaviour_PlayerCharacter_Dash_End",
                     "_Remove_Behaviour_PlayerCharacter_Invincibility"
+                ]
+            }
+        },
+        "_Set_PlayerCharacter_Ranged_Dash_Launch": {
+            "set": {
+                "effectList": [
+                    "_Launch_PlayerCharacter_Ranged",
+                    "_Apply_Behaviour_PlayerCharacter_Invincibility"
                 ]
             }
         },
@@ -302,73 +369,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Apply_Behaviour_PlayerCharacter_Invincibility": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_Invincible",
-                "target": 3
-            }
-        },
-        "_Remove_Behaviour_PlayerCharacter_Invincibility": {
-            "removeBehavior": {
-                "behavior": "_PlayerCharacter_Invincible",
-                "target": 3
-            }
-        },
-        "_Set_PlayerCharacter_Melee_Dash_Launch": {
-            "set": {
-                "effectList": [
-                    "_Launch_PlayerCharacter_Melee",
-                    "_Apply_Behaviour_PlayerCharacter_Invincibility"
-                ]
-            }
-        },
-        "_Set_PlayerCharacter_Ranged_Dash_Launch": {
-            "set": {
-                "effectList": [
-                    "_Launch_PlayerCharacter_Ranged",
-                    "_Apply_Behaviour_PlayerCharacter_Invincibility"
-                ]
-            }
-        },
-        "_Apply_Behaviour_PlayerCharacter_Dash_End": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_DashEnded",
-                "target": 3
-            }
-        },
-        "_Search_Enemy_Hobgoblin": {
-            "areaSearch": {
-                "debugDraw": true,
-                "areaSearchType": {
-                    "circleSector": {
-                        "outerRadius": 0.9,
-                        "innerRadius": 0.2,
-                        "angle": 45
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "_Damage_Enemy_Hobgoblin",
-                "offset": {
-                    "forward": 0.2
-                }
-            }
-        },
-        "_Damage_Enemy_Hobgoblin": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 30,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
             }
         }
     }
