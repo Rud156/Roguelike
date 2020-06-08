@@ -278,7 +278,7 @@
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
-                    "radius": 0.3,
+                    "radius": 0.4,
                     "immortal": true,
                     "ground": true,
                     "selectable": false
@@ -298,7 +298,7 @@
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
-                    "radius": 0.3,
+                    "radius": 0.4,
                     "immortal": true,
                     "ground": true,
                     "selectable": false

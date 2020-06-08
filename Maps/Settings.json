@@ -1,5 +1,6 @@
 {
     "settings": {
+        "version": "0.0.4",
         "dependencies": [
             "Arcade/Core",
             "Mods/ExtensionFunctionMod",
