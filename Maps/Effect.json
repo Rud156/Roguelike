@@ -299,11 +299,34 @@
                 "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
             }
         },
+        "_Set_Behaviour_Flash_Enemy": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Damage_Taken",
+                "target": 1,
+                "duration": 1.5
+            }
+        },
         "_Set_Behaviour_PlayerCharacter_Collision": {
             "applyBehavior": {
                 "behavior": "_CollisionDetection_PlayerCharacter",
                 "target": 1,
                 "duration": 0.1
+            }
+        },
+        "_Set_Damage_PlayerCharacter_Melee_HeavyAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Melee_HeavyAttack",
+                    "_Set_Behaviour_Flash_Enemy"
+                ]
+            }
+        },
+        "_Set_Damage_PlayerCharacter_Melee_LightAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Melee_LightAttack",
+                    "_Set_Behaviour_Flash_Enemy"
+                ]
             }
         },
         "_Set_Enemy_GoblinChef": {
@@ -371,29 +394,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Set_Damage_PlayerCharacter_Melee_LightAttack": {
-            "set": {
-                "effectList": [
-                    "_Damage_PlayerCharacter_Melee_LightAttack",
-                    "_Set_Behaviour_Flash_Enemy"
-                ]
-            }
-        },
-        "_Set_Damage_PlayerCharacter_Melee_HeavyAttack": {
-            "set": {
-                "effectList": [
-                    "_Damage_PlayerCharacter_Melee_HeavyAttack",
-                    "_Set_Behaviour_Flash_Enemy"
-                ]
-            }
-        },
-        "_Set_Behaviour_Flash_Enemy": {
-            "applyBehavior": {
-                "behavior": "_Enemy_Damage_Taken",
-                "target": 1,
-                "duration": 1.5
             }
         }
     }

@@ -3,6 +3,7 @@
         "_CollisionDetection_PlayerCharacter": {
             "duration": 0.01
         },
+        "_Enemy_Damage_Taken": {},
         "_PlayerCharacter_DashEnded": {
             "duration": 0.01
         },
@@ -39,7 +40,6 @@
         "_Search_PlayerCharacter_Ranged_Missile": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
-        },
-        "_Enemy_Damage_Taken": {}
+        }
     }
 }

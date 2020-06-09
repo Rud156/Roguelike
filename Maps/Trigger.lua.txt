@@ -52,16 +52,16 @@ local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
 local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
 local PLAYER_RANGED_HEAVY_ATTACK_STAMINA = 3
-local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.55
-local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.55
+local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
+local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
 -- Player Melee
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
 local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
 local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
-local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.55
-local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.75
+local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
+local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 
 -- Collectibles
 local COLLECTIBLES = {
@@ -190,6 +190,10 @@ function Update()
 
     if m_playerCooldownTimer > 0 then
         m_playerCooldownTimer = m_playerCooldownTimer - GAME_LOOP_RATE
+        
+        if m_playerCooldownTimer <= 0 then
+            m_playerDashCoolDownTimer = PLAYER_DASH_CD
+        end
     end
     if m_mouseDown and m_playerCooldownTimer <= 0 then
         LaunchPlayerLightAttack()
@@ -421,6 +425,7 @@ end
 -- #endregion GameOver State
 
 -- #region Player Functions
+
 function MakePlayerLookTowardsNearestEnemy()
     if m_player == nil or m_playerMoving then
         return
@@ -624,6 +629,7 @@ function MakePlayerDodgeAndRoll()
     end
 
     DCEI.LogMessage("Making Player Dash: " .. m_playerDashCoolDownTimer)
+    DCEI.LogMessage("Attack Cooldown Timer: " .. m_playerCooldownTimer)
 
     local updatedStamina = playerStamina - PLAYER_DASH_STAMINA
     m_playerStaminaAmount = updatedStamina
@@ -647,6 +653,7 @@ function MakePlayerDodgeAndRoll()
 
     m_playerDashActive = true
 end
+
 -- #endregion Player Functions
 
 -- #region UI Functions
