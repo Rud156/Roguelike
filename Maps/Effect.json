@@ -217,7 +217,7 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Damage_PlayerCharacter_Melee_HeavyAttack"
+                "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
             }
         },
         "_Search_PlayerCharacter_Melee_LightAttack": {
@@ -232,7 +232,7 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Damage_PlayerCharacter_Melee_LightAttack"
+                "effect": "_Set_Damage_PlayerCharacter_Melee_LightAttack"
             }
         },
         "_Search_PlayerCharacter_Melee_Missile": {
@@ -344,6 +344,7 @@
             "set": {
                 "effectList": [
                     "_Damage_PlayerCharacter_Ranged_HeavyAttack",
+                    "_Set_Behaviour_Flash_Enemy",
                     "Remove Source"
                 ]
             }
@@ -352,6 +353,7 @@
             "set": {
                 "effectList": [
                     "_Damage_PlayerCharacter_Ranged_LightAttack",
+                    "_Set_Behaviour_Flash_Enemy",
                     "Remove Source"
                 ]
             }
@@ -369,6 +371,29 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
+            }
+        },
+        "_Set_Damage_PlayerCharacter_Melee_LightAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Melee_LightAttack",
+                    "_Set_Behaviour_Flash_Enemy"
+                ]
+            }
+        },
+        "_Set_Damage_PlayerCharacter_Melee_HeavyAttack": {
+            "set": {
+                "effectList": [
+                    "_Damage_PlayerCharacter_Melee_HeavyAttack",
+                    "_Set_Behaviour_Flash_Enemy"
+                ]
+            }
+        },
+        "_Set_Behaviour_Flash_Enemy": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Damage_Taken",
+                "target": 1,
+                "duration": 1.5
             }
         }
     }

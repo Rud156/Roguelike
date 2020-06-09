@@ -114,6 +114,34 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_Enemy_Damage_Taken"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setMeshEffect": {
+                                    "effect": "BloodThirsty"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "_Enemy_Damage_Taken"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setMeshEffect": {
+                                    "effect": "Normal"
+                                }
+                            }
+                        ]
                     }
                 ],
                 "modelScale": 0.8
@@ -151,6 +179,34 @@
                             {
                                 "stopAnimation": {
                                     "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_Enemy_Damage_Taken"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setMeshEffect": {
+                                    "effect": "BloodThirsty"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "_Enemy_Damage_Taken"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setMeshEffect": {
+                                    "effect": "Normal"
                                 }
                             }
                         ]
