@@ -31,7 +31,7 @@ local Rect = UtilClassMod.Rect
 -- #endregion Mods and Includes
 
 
--- Variables
+-- #region Constants
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
 local MAX_ROOM_COLUMNS = 3
@@ -43,24 +43,24 @@ local ENTRY_DOORWAY_OPEN_ANIM_DELAY = 1
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
-local PLAYERCHARACTER_DASH_CD = 0.3
+local PLAYER_DASH_STAMINA = 1
+local PLAYER_DASH_CD = 0.3
 -- Player Ranged
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
+local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
+local PLAYER_RANGED_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
 local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
-local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
 -- Player Melee
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
 local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
+local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
 local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
-
--- Player UI
-local PLAYER_STAMINA_AMOUNT = 5
 
 -- Collectibles
 local COLLECTIBLES = {
@@ -71,10 +71,13 @@ local COLLECTIBLES = {
 -- Debug
 local USE_KEYBOARD = true
 
+-- #endregion Constants
+
 -- Public Variables
 -- Player
-local PlayerSpawnPosition = { x = 27, y = 27 } -- In the final version, this will not be used...
-local PlayerDashMana = 1
+local PlayerMaxStamina = 5
+local PlayerStaminaRegenRate = 1
+local PlayerStaminaRegenDelay = 1
 local UseMeleePlayer = true
 -- Mouse
 local SingleClickTriggerTime = 0.3
@@ -92,8 +95,10 @@ local m_playerDashCoolDownTimer = 0
 local m_playerMoving = false
 local m_lastFramePlayerHealth = 0
 local m_playerCooldownTimer = 0
--- Player UI
+-- Player Stamina
 local m_playerStaminaList = {}
+local m_playerStaminaAmount = 0
+local m_playerStaminaRegenTimer = 0
 -- Camera
 local m_camera
 -- UI
@@ -110,9 +115,9 @@ function Start()
     math.randomseed(randomSeed)
 
     if UseMeleePlayer then
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, 0, 0)
     else
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, 0, 0)
     end
     local playerHealth = DCEI.GetHealthValue(m_player)
     m_lastFramePlayerHealth = playerHealth
@@ -170,6 +175,17 @@ function Start()
 end
 
 function Update()
+    -- Update Player Stamina
+    if m_playerStaminaRegenTimer <= 0 and m_playerStaminaAmount < PlayerMaxStamina then
+        m_playerStaminaAmount = m_playerStaminaAmount + GAME_LOOP_RATE * PlayerStaminaRegenRate
+
+        if m_playerStaminaAmount > PlayerMaxStamina then
+            m_playerStaminaAmount = PlayerMaxStamina
+        end
+    end
+    if m_playerStaminaRegenTimer > 0 then
+        m_playerStaminaRegenTimer = m_playerStaminaRegenTimer - GAME_LOOP_RATE
+    end
     UpdatePlayerStaminaUI()
 
     if m_player ~= nil then
@@ -188,13 +204,8 @@ function Update()
                 m_exitRoom:PlayExitDoorOpenAnimation()
             end
         end
-    end
 
-    MakePlayerLookTowardsNearestEnemy()
-    m_playerCollided = false
-
-    if m_playerCooldownTimer > 0 then
-        m_playerCooldownTimer = m_playerCooldownTimer - GAME_LOOP_RATE
+        MakePlayerLookTowardsNearestEnemy()
     end
 
     if m_playerDashCoolDownTimer > 0 then
@@ -204,13 +215,16 @@ function Update()
     if m_mouseDown and m_playerCooldownTimer <= 0 then
         LaunchPlayerLightAttack()
     end
+
+    -- Reset Collision. Maybe can remove it
+    m_playerCollided = false
 end
 
 -- #endregion LifeCycle Functions
 
 -- #region Event Functions
 
--- Unit Events
+-- #region Unit Events
 function HandleUnitDied()
     local unit = DCEI.TriggeringUnit
 
@@ -247,7 +261,7 @@ function HandleBehaviourAdded()
         DCEI.SetUnitPosition2D(m_player, missilePosition.x, missilePosition.y)
         DCEI.Move(m_player, missilePosition.x, missilePosition.y)
 
-        m_playerDashCoolDownTimer = PLAYERCHARACTER_DASH_CD
+        m_playerDashCoolDownTimer = PLAYER_DASH_CD
     end
 end
 
@@ -272,9 +286,9 @@ function HandleUnitSelected()
         table.remove(m_collectibleItems, index)
     end
 end
--- Unit Events
+-- #endregion Unit Events
 
--- Joystick Events
+-- #region Joystick Events
 function HandleJoystickMoved()
     -- When Dashing the Player cannot move normally
     if m_player == nil or m_playerDashActive then
@@ -325,9 +339,9 @@ function HandleJoystickButtonClicked()
         end
     end
 end
--- Joystick Events
+-- #endregion Joystick Events
 
--- Mouse Events
+-- #region Mouse Events
 function HandleLeftMouseDownEvent()
     if m_player == nil or not USE_KEYBOARD then
         return
@@ -351,7 +365,7 @@ function HandleRightMouseDownEvent()
 
     LaunchPlayerHeavyAttack()
 end
--- Mouse Events
+-- #endregion Mouse Events
 
 -- #endregion Event Functions
 
@@ -395,9 +409,9 @@ function ResetGameState()
     m_exitRoomAnimPlayed = false
 
     if UseMeleePlayer then
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, 0, 0)
     else
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, PlayerSpawnPosition.x, PlayerSpawnPosition.y)
+        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, 0, 0)
     end
 
     local i, j = m_roomGenerator:GetBeginningRoomIndex()
@@ -504,6 +518,14 @@ function LaunchPlayerRangedLightAttack()
 end
 
 function LaunchPlayerRangedHeavyAttack()
+    if m_playerStaminaAmount < PLAYER_RANGED_HEAVY_ATTACK_STAMINA then
+        DCEI.LogMessage("Not enough stamina for Ranged Heavy Attack")
+        return
+    end
+
+    m_playerStaminaAmount = m_playerStaminaAmount - PLAYER_RANGED_HEAVY_ATTACK_STAMINA
+    m_playerStaminaRegenTimer = PlayerStaminaRegenDelay
+
     local abilityCasted = false
 
     local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
@@ -540,6 +562,14 @@ function LaunchPlayerMeleeLightAttack()
 end
 
 function LaunchPlayerMeleeHeavyAttack()
+    if m_playerStaminaAmount < PLAYER_MELEE_HEAVY_ATTACK_STAMINA then
+        DCEI.LogMessage("Not enough stamina for Melee Heavy Attack")
+        return
+    end
+
+    m_playerStaminaAmount = m_playerStaminaAmount - PLAYER_MELEE_HEAVY_ATTACK_STAMINA
+    m_playerStaminaRegenTimer = PlayerStaminaRegenDelay
+
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, m_player, playerPosition.x, playerPosition.y)
 
@@ -558,16 +588,17 @@ function MakePlayerDodgeAndRoll()
         return
     end
 
-    local playerMana = DCEI.GetManaValue(m_player)
-    if playerMana < PlayerDashMana then
-        DCEI.LogMessage("Not enough mana for dash")
+    local playerStamina = m_playerStaminaAmount
+    if playerStamina < PLAYER_DASH_STAMINA then
+        DCEI.LogMessage("Not enough stamina for dash")
         return
     end
 
     DCEI.LogMessage("Making Player Dash: " .. m_playerDashCoolDownTimer)
 
-    local updatedMana = playerMana - PlayerDashMana
-    DCEI.SetManaValue(m_player, updatedMana)
+    local updatedStamina = playerStamina - PLAYER_DASH_STAMINA
+    m_playerStaminaAmount = updatedStamina
+    m_playerStaminaRegenTimer = PlayerStaminaRegenDelay
 
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
@@ -607,33 +638,33 @@ function CreatePlayerUIElements()
     DCEI.BindUnit("MainCharacter", m_player)
     DCEI.AttachToUnit(healthBarBackground, m_player, { offset = { up = 0.8 } })
 
-    -- Mana Bar
+    -- Stamina Bar
     m_playerStaminaList = {}
 
-    local manaBarHolder = DCEI.NewHStack(m_uiRoot)
-    DCEI.SetSpacing(manaBarHolder, 3)
-    for i = 1, PLAYER_STAMINA_AMOUNT do
-        local mannaItem = DCEI.NewFrame(manaBarHolder)
-        DCEI.SetMinSize(mannaItem, 11, 11)
-        table.insert(m_playerStaminaList, mannaItem)
+    local staminaBarHolder = DCEI.NewHStack(m_uiRoot)
+    DCEI.SetSpacing(staminaBarHolder, 3)
+    for i = 1, PlayerMaxStamina do
+        local staminaItem = DCEI.NewFrame(staminaBarHolder)
+        DCEI.SetMinSize(staminaItem, 11, 11)
+        table.insert(m_playerStaminaList, staminaItem)
 
-        DCEI.SetBackgroundImage(mannaItem, "bar_reward00_pin")
+        DCEI.SetBackgroundImage(staminaItem, "bar_reward00_pin")
     end
-    DCEI.AttachToUnit(manaBarHolder, m_player, { offset = { up = 0.6 } })
+    DCEI.AttachToUnit(staminaBarHolder, m_player, { offset = { up = 0.6 } })
     
     -- Destroy UI when player dies
     DCEI.TriggerAddUnitDiedEvent(
         m_player, 
         function()
             DCEI.Destroy(healthBarBackground)
-            DCEI.Destroy(manaBarHolder)
+            DCEI.Destroy(staminaBarHolder)
         end
     )
     DCEI.TriggerAddUnitRemovedEvent(
         m_player,
         function()
             DCEI.Destroy(healthBarBackground)
-            DCEI.Destroy(manaBarHolder)
+            DCEI.Destroy(staminaBarHolder)
         end
     )
 end
@@ -678,9 +709,9 @@ function UpdatePlayerStaminaUI()
         return
     end
 
-    local currentStamina = DCEI.GetManaValue(m_player)
-    if currentStamina > PLAYER_STAMINA_AMOUNT then
-        DCEI.LogError("Invalid Mana Amount")
+    local currentStamina = m_playerStaminaAmount
+    if currentStamina > PlayerMaxStamina then
+        DCEI.LogError("Invalid Stamina Amount")
         return
     end
     

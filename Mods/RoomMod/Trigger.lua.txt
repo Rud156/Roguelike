@@ -174,7 +174,7 @@ local BEGINNING_ROOMS = {
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 5, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 4, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -227,7 +227,7 @@ local mod = {}
 -- 1: Solid Wall
 -- 2: Destructible Wall
 -- 3: Exit Doorway
--- 5: Entry Doorway
+-- 4: Entry Doorway
 -- 9: Enemy Spawn Positins
 local Room = {
     rect = nil,
@@ -577,9 +577,9 @@ function Room:RecalculateRoomSpaces()
                 table.insert(self.destructiblePositions, { xPosition, yPosition })
             elseif self.roomTemplate[i][j] == 3 then
                 self.exitPosition = { xPosition, yPosition }
-            elseif self.roomTemplate[i][j] == 5 then
-                self.entryPosition = { xPosition, yPosition }
             elseif self.roomTemplate[i][j] == 4 then
+                self.entryPosition = { xPosition, yPosition }
+            elseif self.roomTemplate[i][j] == 9 then
                 table.insert(self.enemySpawnPositions, { xPosition, yPosition })
             end
         end
