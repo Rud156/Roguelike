@@ -193,8 +193,6 @@ local BEGINNING_ROOMS = {
 --	{1,1,1},{1,1,0},{1,0,0}
 -- LEVEL 3 ENEMY SETS:
 --	{1,1,1,0},{1,1,0,0},{1,0,0,0}
---
--- TODO: Think of a better way to do this...
 local ENEMY_PREFABS = { 0, 1 }
 local BASE_ROOM_SIZE = 10
 
@@ -228,7 +226,7 @@ local mod = {}
 -- 2: Destructible Wall
 -- 3: Exit Doorway
 -- 4: Entry Doorway
--- 9: Enemy Spawn Positins
+-- 9: Enemy Spawn Positions
 local Room = {
     rect = nil,
     roomType = "",
@@ -332,6 +330,10 @@ function Room:IsPlayerInRoom(player)
     return false
 end
 function Room:UpdatePlayerInRoom(player)
+    if player == nil then
+        return
+    end
+
     if self.playerInRoom then
         return
     end
