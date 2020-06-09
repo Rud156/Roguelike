@@ -80,6 +80,8 @@ local PlayerMaxStamina = 5
 local PlayerStaminaRegenRate = 1
 local PlayerStaminaRegenDelay = 1
 local PlayerInvincibleTimer = 1
+local PlayerDamageFlashCount = 3
+local PlayerDamageFlashTimer = 0.15
 local UseMeleePlayer = true
 -- Mouse
 local SingleClickTriggerTime = 0.3
@@ -103,12 +105,19 @@ local m_playerStaminaAmount = 0
 local m_playerStaminaRegenTimer = 0
 -- Player Health and Damage
 local m_playerInvincibilityTimer = 0
+local m_playerDamageUiFlashCount = 0
+local m_playerDamageUiFlashTimer = 0
+local m_playerDamageUiIsFlashOn = false
 -- Camera
 local m_camera
 -- UI
 local m_uiRoot
+local m_uiBottomLayer
+local m_uiMiddleLayer
+local m_uiTopLayer
 local m_inventory
-local m_collectibleItems = {} -- TODO: Check if there is a better way...
+local m_damageDisplay
+local m_collectibleItems = {}
 -- Mouse Data
 local m_mouseDown = false
 
@@ -120,8 +129,9 @@ function Start()
 
     m_roomGenerator = RoomGenerator:new()
     SpawnPlayerAndSetPosition()
+    CreateBaseUIElements()
+    CreatePlayerDamageDisplay()
 
-    m_uiRoot = DCEI.GetUiRoot()
     m_camera = Camera:new(m_player)
 
     ArcadeCore.HideDefaultUi()
@@ -158,6 +168,7 @@ function Update()
     UpdatePlayerStamina(GAME_LOOP_RATE)
     UpdatePlayerStaminaUI()
     UpdatePlayerHealth(GAME_LOOP_RATE)
+    UpdatePlayerDamageUI(GAME_LOOP_RATE)
 
     if m_player ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
@@ -436,7 +447,10 @@ function UpdatePlayerHealth(deltaTime)
     if m_lastFramePlayerHealth > playerHealth then
         m_camera:StartShakeWithUnit(1, 0)
         DCEI.ApplyBehavior(m_player, PLAYER_INVINCIBLE_BEHAVIOUR)
+
         m_playerInvincibilityTimer = PlayerInvincibleTimer
+        m_playerDamageUiFlashCount = PlayerDamageFlashCount
+        m_playerDamageUiIsFlashOn = false
     end
     m_lastFramePlayerHealth = playerHealth
 
@@ -637,6 +651,22 @@ end
 
 -- #region UI Functions
 
+function CreateBaseUIElements()
+    m_uiRoot = DCEI.GetUiRoot()
+
+    local bottomFrame = DCEI.NewFrame(m_uiRoot)
+    local middleFrame = DCEI.NewFrame(m_uiRoot)
+    local topFrame = DCEI.NewFrame(m_uiRoot)
+
+    DCEI.SetMatchParent(bottomFrame, true, true)
+    DCEI.SetMatchParent(middleFrame, true, true)
+    DCEI.SetMatchParent(topFrame, true, true)
+
+    m_uiBottomLayer = bottomFrame
+    m_uiMiddleLayer = middleFrame
+    m_uiTopLayer = topFrame
+end
+
 function CreatePlayerUIElements()
     -- Health Bar
     local healthBarBackground = DCEI.NewFrame(m_uiRoot)
@@ -684,8 +714,17 @@ function CreatePlayerUIElements()
     )
 end
 
+function CreatePlayerDamageDisplay()
+    local damageDisplay = DCEI.NewFrame(m_uiTopLayer)
+    DCEI.SetMatchParent(damageDisplay, true, true)
+    DCEI.SetBackgroundImage(damageDisplay, "ui_mask_blurry")
+    DCEI.SetBackgroundImageColor(damageDisplay, 1, 1, 1, 0)
+
+    m_damageDisplay = damageDisplay
+end
+
 function CreateInvertoryUI()
-    local horizontalStack = DCEI.NewHStack(m_uiRoot)
+    local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
     DCEI.SetTopAlignmentInParent(horizontalStack)
     DCEI.SetPaddingTop(horizontalStack, 21)
 
@@ -701,7 +740,7 @@ function CreateInvertoryUI()
 end
 
 function CreateDebugUI()
-    local horizontalStack = DCEI.NewHStack(m_uiRoot)
+    local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
     DCEI.SetTopAlignmentInParent(horizontalStack)
     DCEI.SetLeftAlignmentInParent(horizontalStack)
     DCEI.SetPaddingTop(horizontalStack, 21)
@@ -735,6 +774,27 @@ function UpdatePlayerStaminaUI()
             DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 1)
         else
             DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 0)
+        end
+    end
+end
+
+function UpdatePlayerDamageUI(deltaTime)
+    if m_playerDamageUiFlashCount > 0 then
+        m_playerDamageUiFlashTimer = m_playerDamageUiFlashTimer - deltaTime
+
+        if m_playerDamageUiFlashTimer <= 0 then
+            if m_playerDamageUiIsFlashOn then
+                DCEI.SetBackgroundImageColor(m_damageDisplay, 1, 1, 1, 0) -- Hide the Image
+                m_playerDamageUiFlashCount = m_playerDamageUiFlashCount - 1
+            else
+                DCEI.SetBackgroundImageColor(m_damageDisplay, 1, 0, 0, 1) -- Display a Red Image
+            end
+
+            m_playerDamageUiIsFlashOn = not m_playerDamageUiIsFlashOn
+
+            if m_playerDamageUiFlashCount ~= 0 then
+                m_playerDamageUiFlashTimer = PlayerDamageFlashTimer
+            end
         end
     end
 end
