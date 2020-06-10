@@ -154,7 +154,7 @@
         },
         "_Search_Enemy_GoblinChef": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -172,7 +172,7 @@
         },
         "_Search_Enemy_Hobgoblin": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circleSector": {
                         "outerRadius": 0.9,
@@ -317,7 +317,8 @@
             "set": {
                 "effectList": [
                     "_Damage_PlayerCharacter_Melee_HeavyAttack",
-                    "_Set_Behaviour_Flash_Enemy"
+                    "_Set_Behaviour_Flash_Enemy",
+                    "_Set_Behaviour_Enemy_Stunned"
                 ]
             }
         },
@@ -394,6 +395,12 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
+            }
+        },
+        "_Set_Behaviour_Enemy_Stunned": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Stunned",
+                "target": 1
             }
         }
     }

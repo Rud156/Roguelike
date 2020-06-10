@@ -40,6 +40,7 @@
         "_Search_PlayerCharacter_Ranged_Missile": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
-        }
+        },
+        "_Enemy_Stunned": {}
     }
 }

@@ -1,4 +1,6 @@
 -- Constants
+local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
+
 local GOBLIN_CHEF = "_Enemy_GoblinChef"
 local GOBLIN_CHEF_ATTACK = "_Enemy_GoblinChef_Attack"
 local GOBLIN_CHEF_ATTACK_RANGE = 3
@@ -6,12 +8,14 @@ local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.25
 local GOBLIN_CHEF_SHOT_COUNT = 3
 local GOBLIN_CHEF_ATTACK_COOLDOWN = 5
 local GOBLIN_CHEF_MIN_CLOSEST_DISTANCE = 2.5
+local GOBLIN_CHEF_STUN_TIME = 1.5
 
 local GOBLIN_HOB = "_Enemy_Hobgoblin"
 local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
 local GOBLIN_HOB_ATTACK_RANGE = 1
 local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
+local GOBLIN_HIOB_STUN_TIME = 1.5
 
 local mod = {}
 

@@ -150,64 +150,54 @@
                         "actions": [
                             {
                                 "create": {
-                                    "actor": "_Enemy_GoblinChef_Spawn"
+                                    "actor": "_FX_Enemy_GoblinChef_Spawn"
                                 }
                             }
                         ]
-                    }
-                ],
-                "modelScale": 0.8
-            }
-        },
-        "_Enemy_GoblinChef_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_impact_red"
-                },
-                "events": [
+                    },
                     {
                         "actorTerm": {
-                            "actorCreate": {}
+                            "behaviorOn": {
+                                "behavior": "_Enemy_Stunned"
+                            }
                         },
                         "actions": [
                             {
-                                "playAnimation": {}
+                                "create": {
+                                    "actor": "_FX_Enemy_Stunned",
+                                    "hostSite": "StunnedEffectSite"
+                                }
                             },
                             {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
+                                "create": {
+                                    "actor": "_FX_Enemy_Stun_Impact"
                                 }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
+                            "behaviorOff": {
+                                "behavior": "_Enemy_Stunned"
                             }
                         },
                         "actions": [
                             {
-                                "destroy": {}
+                                "destroy": {
+                                    "actor": "_FX_Enemy_Stunned"
+                                }
                             }
                         ]
                     }
                 ],
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
-                ]
+                "hostSites": {
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1
+                        }
+                    }
+                },
+                "modelScale": 0.8
             }
         },
         "_Enemy_Hobgoblin": {
@@ -218,6 +208,18 @@
                     "name": "hobgoblin"
                 },
                 "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Hobgoblin_Spawn"
+                                }
+                            }
+                        ]
+                    },
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
@@ -276,69 +278,47 @@
                     },
                     {
                         "actorTerm": {
-                            "unitSpawn": {}
+                            "behaviorOn": {
+                                "behavior": "_Enemy_Stunned"
+                            }
                         },
                         "actions": [
                             {
                                 "create": {
-                                    "actor": "_Enemy_Hobgoblin_Spawn"
+                                    "actor": "_FX_Enemy_Stunned",
+                                    "hostSite": "StunnedEffectSite"
                                 }
-                            }
-                        ]
-                    }
-                ],
-                "modelScale": 1.2
-            }
-        },
-        "_Enemy_Hobgoblin_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_chosen_blindingflash_impact"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
                             },
                             {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
+                                "create": {
+                                    "actor": "_FX_Enemy_Stun_Impact"
                                 }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
+                            "behaviorOff": {
+                                "behavior": "_Enemy_Stunned"
                             }
                         },
                         "actions": [
                             {
-                                "destroy": {}
+                                "destroy": {
+                                    "actor": "_FX_Enemy_Stunned"
+                                }
                             }
                         ]
                     }
                 ],
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
-                ]
+                "hostSites": {
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1
+                        }
+                    }
+                },
+                "modelScale": 1.2
             }
         },
         "_EntryDoorway": {
@@ -983,6 +963,167 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
+            }
+        },
+        "_FX_Enemy_GoblinChef_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_impact_red"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
+        "_FX_Enemy_Hobgoblin_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_blindingflash_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
+        "_FX_Enemy_Stunned": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_status_stun"
+                }
+            }
+        },
+        "_FX_Enemy_Stun_Impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_status_stun_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
             }
         }
     }
