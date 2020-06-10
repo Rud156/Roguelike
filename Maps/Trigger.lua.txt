@@ -78,9 +78,9 @@ local USE_KEYBOARD = true
 -- Player
 local PlayerMaxStamina = 5
 local PlayerStaminaRegenRate = 1
-local PlayerStaminaRegenDelay = 1
-local PlayerInvincibleTimer = 1
-local PlayerDamageFlashCount = 3
+local PlayerStaminaRegenDelay = 2
+local PlayerInvincibleTimer = 3
+local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
 local UseMeleePlayer = true
 -- Mouse

@@ -299,11 +299,17 @@
                 "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
             }
         },
+        "_Set_Behaviour_Enemy_Stunned": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Stunned",
+                "target": 1
+            }
+        },
         "_Set_Behaviour_Flash_Enemy": {
             "applyBehavior": {
                 "behavior": "_Enemy_Damage_Taken",
                 "target": 1,
-                "duration": 1.5
+                "duration": 0.15
             }
         },
         "_Set_Behaviour_PlayerCharacter_Collision": {
@@ -395,12 +401,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Set_Behaviour_Enemy_Stunned": {
-            "applyBehavior": {
-                "behavior": "_Enemy_Stunned",
-                "target": 1
             }
         }
     }
