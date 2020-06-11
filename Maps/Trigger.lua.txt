@@ -223,6 +223,7 @@ function HandleUnitDied()
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE then
         m_player = nil
+        m_currentRoomLevel = 0
         DisplayGameOverSequence()
     end
 end
