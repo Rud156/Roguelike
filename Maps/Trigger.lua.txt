@@ -19,6 +19,7 @@ local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
+RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
 RoomMod.Rect = UtilClassMod.Rect
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
 RoomMod.EnemyGoblinChef = EnemyGoblinChef
@@ -128,7 +129,7 @@ local m_mouseDown = false
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(randomSeed)
+    math.randomseed(1591823741)
 
     m_roomGenerator = RoomGenerator:new()
     SpawnPlayerAndSetPosition()

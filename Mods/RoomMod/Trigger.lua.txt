@@ -44,7 +44,7 @@ local SECRET_ROOMS_LEFT_EXIT = {
         { 0, 0, 0, 0, 0, 0, 9, 0, 0, 1 },
         { 0, 0, 0, 0, 9, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 4, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     }
 }
@@ -52,7 +52,7 @@ local SECRET_ROOMS_LEFT_EXIT = {
 local SECRET_ROOMS_RIGHT_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-        { 1, 0, 0, 4, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0 },
         { 1, 0, 0, 9, 0, 0, 0, 0, 0, 0 },
@@ -82,7 +82,7 @@ local SECRET_ROOMS_TOP_EXIT = {
 local SECRET_ROOMS_BOTTOM_EXIT = {
     {
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-        { 1, 0, 0, 0, 0, 0, 4, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 9, 9, 0, 0, 0, 1 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -182,17 +182,32 @@ local BEGINNING_ROOMS = {
     }
 }
 
--- #endregion
+-- #endregion Room Templates
+
+-- #region Enemy Sets
+
+local LEVEL_1_ENEMY_SETS = {
+    { 0, 0 },
+    { 1 ,1 }
+}
+
+local LEVEL_2_ENEMY_SETS = {
+    { 1, 1, 1 },
+    { 1, 1, 0 },
+    { 1, 0, 0 }
+}
+
+local LEVEL_3_ENEMY_SETS = {
+    { 1, 1, 1, 0 },
+    { 1, 1, 0, 0 },
+    { 1, 0, 0, 0 }
+}
+
+-- #endregion Enemy Sets
 
 
 
 -- 0: Goblin Chef, 1: Hob Goblin
--- LEVEL 1 ENEMY SETS:
---	{0,0},{1,1}
--- LEVEL 2 ENEMY SETS:
---	{1,1,1},{1,1,0},{1,0,0}
--- LEVEL 3 ENEMY SETS:
---	{1,1,1,0},{1,1,0,0},{1,0,0,0}
 local ENEMY_PREFABS = { 0, 1 }
 local BASE_ROOM_SIZE = 10
 
@@ -300,7 +315,7 @@ function Room:new(roomTemplate, rect, roomType)
     end
 
     room.enemies = {}
-    room.totalWaveCount = math.random(1, MAX_WAVE_COUNT)
+    room.totalWaveCount = 1 -- Kept in case waves are required to be added later on...
     room.currentWaveCount = 0
 
     room:RecalculateRoomSpaces()
@@ -405,46 +420,25 @@ function Room:SpawnNextWave()
 
     local startX = self.rect.x
     local startY = self.rect.y
+    local randomEnemySpawns = mod.ShuffleTable(self.enemySpawnPositions)
 
-    for i, enemyPosition in ipairs(self.enemySpawnPositions) do
-        local randomValue = math.random()
-        if randomValue <= 0.25 then
-            local randomEnemyIndex = math.random(1, #ENEMY_PREFABS)
-            local randomEnemy = ENEMY_PREFABS[randomEnemyIndex]
-            local enemy
+    -- TODO: Change to Level based spawning
+    local randomEnemySet = math.random(1, #LEVEL_1_ENEMY_SETS)
 
-            local xPosition = startX + enemyPosition[1]
-            local yPosition = startY + enemyPosition[2]
-
-            if randomEnemy == 0 then
-                enemy = mod.EnemyGoblinChef:new(self, xPosition, yPosition)
-            elseif randomEnemy == 1 then
-                enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
-            end
-            
-            table.insert(self.enemies, enemy)
+    for i, enemyType in ipairs(LEVEL_1_ENEMY_SETS[randomEnemySet]) do
+        if i > #randomEnemySpawns then
+            break
         end
-    end
 
-    local enemyCount = #self.enemies
-    if enemyCount == 0 then
-        DCEI.LogMessage("0 enemies were spawned. Force spawning 1 enemy")
+        local xPosition = startX + randomEnemySpawns[i][1]
+        local yPosition = startY + randomEnemySpawns[i][2]
 
-        local randomPositionIndex = math.random(1, #self.enemySpawnPositions)
-        local enemyPosition = self.enemySpawnPositions[randomPositionIndex]
-        local randomEnemyIndex = math.random(1, #ENEMY_PREFABS)
-        local randomEnemy = ENEMY_PREFABS[randomEnemyIndex]
-        local enemy
-        
-        local xPosition = startX + enemyPosition[1]
-        local yPosition = startY + enemyPosition[2]
-        
-        if randomEnemy == 0 then
+        if enemyType == 0 then
             enemy = mod.EnemyGoblinChef:new(self, xPosition, yPosition)
-        elseif randomEnemy == 1 then
+        elseif enemyType == 1 then
             enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
         end
-        
+
         table.insert(self.enemies, enemy)
     end
 
@@ -1392,6 +1386,7 @@ mod.RoomGenerator = RoomGenerator
 mod.Room = Room
 
 mod.VectorDistance = nil
+mod.ShuffleTable = nil
 mod.Rect = nil
 
 mod.EnemyHobGoblin = nil
