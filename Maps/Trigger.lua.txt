@@ -388,6 +388,7 @@ function SpawnPlayerAndSetPosition()
 
     local exitRowIndex, exitColumnIndex = m_roomGenerator:GetExitRoomIndex()
     m_exitRoom = m_roomGenerator.rooms[exitRowIndex][exitColumnIndex]
+    m_exitRoomAnimPlayed = false
 
     DCEI.TriggerAddTimerEventElapsed(
         function()
