@@ -217,14 +217,14 @@
                     "_Enemy_Stunned_Effect"
                 ],
                 "hostSites": {
-                    "StunnedEffectSite": {
-                        "offset": {
-                            "up": 1
-                        }
-                    },
                     "Attack Host Site": {
                         "offset": {
                             "forward": 0.8
+                        }
+                    },
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1
                         }
                     }
                 },
@@ -410,6 +410,54 @@
                 ],
                 "hostSiteOperations": [
                     "SOp HoldPosition"
+                ]
+            }
+        },
+        "_FX_Enemy_Hobgoblin_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_smite_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
                 ]
             }
         },
@@ -1043,54 +1091,6 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
-            }
-        },
-        "_FX_Enemy_Hobgoblin_Attack": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_chosen_smite_impact_aoe"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
             }
         }
     },

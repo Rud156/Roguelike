@@ -5,6 +5,25 @@
         },
         "_Enemy_Damage_Taken": {},
         "_Enemy_Stunned": {},
+        "_PlayerCharacter_Damage_Invincible": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_invincible",
+                    "count": 1
+                }
+            ]
+        },
+        "_PlayerCharacter_Dash_Ended": {
+            "duration": 0.01
+        },
+        "_PlayerCharacter_Dash_Invincible": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_invincible",
+                    "count": 1
+                }
+            ]
+        },
         "_PlayerCharacter_Missile_Reached": {},
         "_PlayerCharacter_Movement": {},
         "_Search_Enemy_GoblinChef": {
@@ -30,25 +49,6 @@
         "_Search_PlayerCharacter_Ranged_Missile": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
-        },
-        "_PlayerCharacter_Dash_Invincible": {
-            "behaviorTagArray": [
-                {
-                    "name": "gt_invincible",
-                    "count": 1
-                }
-            ]
-        },
-        "_PlayerCharacter_Dash_Ended": {
-            "duration": 0.01
-        },
-        "_PlayerCharacter_Damage_Invincible": {
-            "behaviorTagArray": [
-                {
-                    "name": "gt_invincible",
-                    "count": 1
-                }
-            ]
         }
     }
 }

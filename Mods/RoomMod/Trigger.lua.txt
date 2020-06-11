@@ -206,7 +206,6 @@ local LEVEL_3_ENEMY_SETS = {
 -- #endregion Enemy Sets
 
 
-
 -- 0: Goblin Chef, 1: Hob Goblin
 local ENEMY_PREFABS = { 0, 1 }
 local BASE_ROOM_SIZE = 10
@@ -276,10 +275,11 @@ local Room = {
     -- Room Enemies
     enemies = {},
     totalWaveCount = 0,
-    currentWaveCount = 0
+    currentWaveCount = 0,
+    roomLevel = 0 
 }
 Room.__index = Room
-function Room:new(roomTemplate, rect, roomType)
+function Room:new(roomTemplate, rect, roomType, roomLevel)
     local room = {}
     setmetatable(room, Room)
 
@@ -317,6 +317,7 @@ function Room:new(roomTemplate, rect, roomType)
     room.enemies = {}
     room.totalWaveCount = 1 -- Kept in case waves are required to be added later on...
     room.currentWaveCount = 0
+    room.roomLevel = roomLevel
 
     room:RecalculateRoomSpaces()
 
@@ -422,10 +423,20 @@ function Room:SpawnNextWave()
     local startY = self.rect.y
     local randomEnemySpawns = mod.ShuffleTable(self.enemySpawnPositions)
 
-    -- TODO: Change to Level based spawning
-    local randomEnemySet = math.random(1, #LEVEL_1_ENEMY_SETS)
+    local enemySet
+    if self.roomLevel == 0 then
+        enemySet = LEVEL_1_ENEMY_SETS
+    elseif self.roomLevel == 1 then
+        enemySet = LEVEL_2_ENEMY_SETS
+    else 
+        enemySet = LEVEL_3_ENEMY_SETS
+    end
 
-    for i, enemyType in ipairs(LEVEL_1_ENEMY_SETS[randomEnemySet]) do
+    DCEI.LogMessage("Room Level: " .. self.roomLevel)
+
+    local randomEnemySet = math.random(1, #enemySet)
+
+    for i, enemyType in ipairs(enemySet[randomEnemySet]) do
         if i > #randomEnemySpawns then
             break
         end
@@ -664,9 +675,9 @@ end
 -- CDR: Connector Down Room
 -- CSR: Cross Section Room
 -- ER: Exit Room
-local RoomGenerator = { rooms = {}, roomMatrix = {} }
+local RoomGenerator = { rooms = {}, roomMatrix = {}, roomLevel = 0 }
 RoomGenerator.__index = RoomGenerator
-function RoomGenerator:new()
+function RoomGenerator:new(roomLevel)
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
 
@@ -680,12 +691,15 @@ function RoomGenerator:new()
         { "*", "*", "*" },
         { "*", "*", "*" }
     }
+    roomGenerator.roomLevel = roomLevel
 
-    roomGenerator:GenerateRooms()
+    roomGenerator:GenerateRooms(roomLevel)
 
     return roomGenerator
 end
-function RoomGenerator:GenerateRooms()
+function RoomGenerator:GenerateRooms(roomLevel)
+    self.roomLevel = roomLevel
+
     self:GenerateBaseRoomMatrix()
     self:GenerateActualBasicRooms()
     self:GenerateSecretRooms()
@@ -847,27 +861,27 @@ function RoomGenerator:GenerateActualBasicRooms()
             
             if roomType == PR then
                 local randomIndex = math.random(1, #PATHWAY_ROOMS)
-                local room = Room:new(PATHWAY_ROOMS[randomIndex], rect, PR)
+                local room = Room:new(PATHWAY_ROOMS[randomIndex], rect, PR, self.roomLevel)
                 self.rooms[mappedI][j] = room
             elseif roomType == CUP then
                 local randomIndex = math.random(1, #CONNECTOR_UP_ROOMS)
-                local room = Room:new(CONNECTOR_UP_ROOMS[randomIndex], rect, CUP)
+                local room = Room:new(CONNECTOR_UP_ROOMS[randomIndex], rect, CUP, self.roomLevel)
                 self.rooms[mappedI][j] = room
             elseif roomType == CDR then
                 local randomIndex = math.random(1, #CONNECTOR_DOWN_ROOMS)
-                local room = Room:new(CONNECTOR_DOWN_ROOMS[randomIndex], rect, CDR)
+                local room = Room:new(CONNECTOR_DOWN_ROOMS[randomIndex], rect, CDR, self.roomLevel)
                 self.rooms[mappedI][j] = room
             elseif roomType == CSR then
                 local randomIndex = math.random(1, #CROSS_ROAD_ROOMS)
-                local room = Room:new(CROSS_ROAD_ROOMS[randomIndex], rect, CSR)
+                local room = Room:new(CROSS_ROAD_ROOMS[randomIndex], rect, CSR, self.roomLevel)
                 self.rooms[mappedI][j] = room
             elseif roomType == ER then
                 local randomIndex = math.random(1, #EXIT_ROOMS)
-                local room = Room:new(EXIT_ROOMS[randomIndex], rect, ER)
+                local room = Room:new(EXIT_ROOMS[randomIndex], rect, ER, self.roomLevel)
                 self.rooms[mappedI][j] = room
             elseif roomType == BR then
                 local randomIndex = math.random(1, #BEGINNING_ROOMS)
-                local room = Room:new(BEGINNING_ROOMS[randomIndex], rect, BR)
+                local room = Room:new(BEGINNING_ROOMS[randomIndex], rect, BR, self.roomLevel)
                 self.rooms[mappedI][j] = room
             elseif roomType == SR then
                 DCEI.LogMessage("Generating Secret Rooms Later")
@@ -1038,19 +1052,19 @@ function RoomGenerator:GenerateRandomSecretRoom(hasLeftExit, hasRightExit, hasTo
 
     if randomValue == 1 then
         local randomRoomIndex = math.random(1, #SECRET_ROOMS_RIGHT_EXIT)
-        local room = Room:new(SECRET_ROOMS_RIGHT_EXIT[randomRoomIndex], rect, SR)
+        local room = Room:new(SECRET_ROOMS_RIGHT_EXIT[randomRoomIndex], rect, SR, self.roomLevel)
         self.rooms[rowIndex][columnIndex] = room
     elseif randomValue == 2 then
         local randomRoomIndex = math.random(1, #SECRET_ROOMS_LEFT_EXIT)
-        local room = Room:new(SECRET_ROOMS_LEFT_EXIT[randomRoomIndex], rect, SR)
+        local room = Room:new(SECRET_ROOMS_LEFT_EXIT[randomRoomIndex], rect, SR, self.roomLevel)
         self.rooms[rowIndex][columnIndex] = room
     elseif randomValue == 3 then
         local randomRoomIndex = math.random(1, #SECRET_ROOMS_BOTTOM_EXIT)
-        local room = Room:new(SECRET_ROOMS_BOTTOM_EXIT[randomRoomIndex], rect, SR)
+        local room = Room:new(SECRET_ROOMS_BOTTOM_EXIT[randomRoomIndex], rect, SR, self.roomLevel)
         self.rooms[rowIndex][columnIndex] = room
     else
         local randomRoomIndex = math.random(1, #SECRET_ROOMS_TOP_EXIT)
-        local room = Room:new(SECRET_ROOMS_TOP_EXIT[randomRoomIndex], rect, SR)
+        local room = Room:new(SECRET_ROOMS_TOP_EXIT[randomRoomIndex], rect, SR, self.roomLevel)
         self.rooms[rowIndex][columnIndex] = room
     end
 end

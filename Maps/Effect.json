@@ -6,6 +6,12 @@
                 "target": 3
             }
         },
+        "_Apply_Behaviour_PlayerCharacter_Dash_Invincibility": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Dash_Invincible",
+                "target": 3
+            }
+        },
         "_Collided_PlayerCharacter_Melee_Missile": {
             "applyBehavior": {
                 "behavior": "_PlayerCharacter_Missile_Reached",
@@ -138,6 +144,12 @@
                 "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
                 "impactLocation": 2,
                 "mover": "_PlayerCharacter_LightAttack"
+            }
+        },
+        "_Remove_Behaviour_PlayerCharacter_Dash_Invincibility": {
+            "removeBehavior": {
+                "behavior": "_PlayerCharacter_Dash_Invincible",
+                "target": 3
             }
         },
         "_Search_Enemy_GoblinChef": {
@@ -389,18 +401,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Apply_Behaviour_PlayerCharacter_Dash_Invincibility": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_Dash_Invincible",
-                "target": 3
-            }
-        },
-        "_Remove_Behaviour_PlayerCharacter_Dash_Invincibility": {
-            "removeBehavior": {
-                "behavior": "_PlayerCharacter_Dash_Invincible",
-                "target": 3
             }
         }
     }
