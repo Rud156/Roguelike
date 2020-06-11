@@ -1056,6 +1056,246 @@
                 }
             }
         },
+        "_SFX_Enemy_GoblinChef_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "beam_end_loop"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinChef_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "awaken_sucessed"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Hobgoblin_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "cannon_ball_launch_v3"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_hobgoblin_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "awaken_sucessed"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Melee_HeavyAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "hammer_smash"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Melee_LightAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "dwarf_smith_attack"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Ranged_HeavyAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_sapper_death_explosion_v3"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Ranged_LightAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "crossbow_hit_v4"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_Wall_BreakableWall": {
             "unitActor": {
                 "resource": {
@@ -1113,246 +1353,6 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
-            }
-        },
-        "_SFX_Enemy_Hobgoblin_Attack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "cannon_ball_launch_v3"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Enemy_GoblinChef_Attack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "arrow_critical_v1"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Enemy_GoblinChef_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "hunterhut_trap_spawn"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Enemy_hobgoblin_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "surfer_earthward_spawn"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_PlayerCharacter_Melee_LightAttack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "ethereal_armor_hit_v3"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_PlayerCharacter_Melee_HeavyAttack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "hammer_smash"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_PlayerCharacter_Ranged_LightAttack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "crossbow_hit_v4"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_PlayerCharacter_Ranged_HeavyAttack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "goblin_sapper_death_explosion_v3"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
             }
         }
     },

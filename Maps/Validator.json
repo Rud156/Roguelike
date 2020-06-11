@@ -1,25 +1,5 @@
 {
     "validators": {
-        "_ReachedPosition_PlayerCharacter": {
-            "expression": {
-                "compare": {
-                    "left": {
-                        "value": {
-                            "remainingPathDistance": {
-                                "unit": 1
-                            }
-                        }
-                    },
-                    "right": {
-                        "value": {
-                            "constant": {
-                                "int32Value": 0
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "_Enemy_Stunned": {
             "negate": true,
             "expression": {
@@ -36,6 +16,26 @@
                         "value": {
                             "constant": {
                                 "int32Value": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "_ReachedPosition_PlayerCharacter": {
+            "expression": {
+                "compare": {
+                    "left": {
+                        "value": {
+                            "remainingPathDistance": {
+                                "unit": 1
+                            }
+                        }
+                    },
+                    "right": {
+                        "value": {
+                            "constant": {
+                                "int32Value": 0
                             }
                         }
                     }
