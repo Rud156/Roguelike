@@ -1354,6 +1354,36 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        },
+        "_SFX_PlayerCharacter_Damage_Taken": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "barracks_troop_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -1441,6 +1471,11 @@
                                 "name": "FlashPlayerMeshOff",
                                 "duration": 0.1,
                                 "repeat": false
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_PlayerCharacter_Damage_Taken"
                             }
                         },
                         {
