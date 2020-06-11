@@ -511,6 +511,8 @@ function LaunchPlayerLightAttack()
     else
         LaunchPlayerRangedLightAttack()
     end
+
+    m_playerMoving = false
 end
 
 function LaunchPlayerHeavyAttack()
@@ -534,6 +536,8 @@ function LaunchPlayerHeavyAttack()
     else
         LaunchPlayerRangedHeavyAttack()
     end
+
+    m_playerMoving = false
 end
 
 function LaunchPlayerRangedLightAttack()
@@ -593,13 +597,24 @@ function LaunchPlayerRangedHeavyAttack()
 end
 
 function LaunchPlayerMeleeLightAttack()
-    local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+    local abilityCasted = false
     
-    local xPoint = math.sin(math.rad(yRotation)) * 0.3 + playerPosition.x
-    local yPoint = math.cos(math.rad(yRotation))  * 0.3 + playerPosition.y
-    DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
+    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
+    if enemy ~= nil then
+        local position = DCEI.GetUnitPosition2D(enemy)
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, position.x, position.y)
+        abilityCasted = true
+    end
+
+    if not abilityCasted then
+        local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+        
+        local xPoint = math.sin(math.rad(yRotation)) * playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation))  * playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
+    end
 
     m_playerCooldownTimer = PLAYER_MELEE_LIGHT_WEAPON_CD
 end
@@ -661,6 +676,7 @@ function MakePlayerDodgeAndRoll()
     end
 
     m_playerDashActive = true
+    m_playerMoving = false
 end
 
 -- #endregion Player Functions
