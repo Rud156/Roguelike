@@ -27,7 +27,7 @@
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3,
-                "period": 0.3,
+                "period": 0,
                 "range": 7,
                 "arc": 60
             },
@@ -43,7 +43,7 @@
             "stats": {
                 "prepTime": 1,
                 "finishTime": 1,
-                "period": 1
+                "period": 0
             }
         },
         "_PlayerCharacter_Melee_Dash": {

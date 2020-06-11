@@ -21,7 +21,26 @@
             }
         },
         "_Enemy_Stunned": {
-            "expression": {}
+            "negate": true,
+            "expression": {
+                "compare": {
+                    "left": {
+                        "value": {
+                            "behaviorStackCount": {
+                                "unit": 0,
+                                "behavior": "_Enemy_Stunned"
+                            }
+                        }
+                    },
+                    "right": {
+                        "value": {
+                            "constant": {
+                                "int32Value": 1
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "expressions": {
