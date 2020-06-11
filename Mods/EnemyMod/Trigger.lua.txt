@@ -71,6 +71,9 @@ function GoblinChef:Update(deltaTime, playerPosition)
 end
 function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
     if self.unit == enemyUnit then
+        local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+        DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
         self.stunTimer = GOBLIN_CHEF_STUN_TIME
         self:SetEnemyState(2)
 
@@ -196,6 +199,9 @@ function HobGoblin:Update(deltaTime, playerPosition)
 end
 function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
     if self.unit == enemyUnit then
+        local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+        DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
         self.stunTimer = GOBLIN_HOB_STUN_TIME
         self:SetEnemyState(2)
 
