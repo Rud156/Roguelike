@@ -43,7 +43,7 @@ local EXIT_DOORWAY = "_ExitDoorway"
 local ENTRY_DOORWAY_CLOSE_ANIM_DELAY = 1
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
-local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Invincible"
+local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Damage_Invincible"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
 local PLAYER_DASH_STAMINA = 1
 local PLAYER_DASH_CD = 0.3

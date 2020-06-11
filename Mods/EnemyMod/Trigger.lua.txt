@@ -245,6 +245,8 @@ function HobGoblin:UpdateEnemyStunned(deltaTime)
     self.stunTimer = self.stunTimer - deltaTime
     if self.stunTimer <= 0 then
         DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+        self.attackWaitTimer = 0
         self:SetEnemyState(0)
     end
 end

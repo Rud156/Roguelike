@@ -778,7 +778,7 @@
                     {
                         "actorTerm": {
                             "behaviorOn": {
-                                "behavior": "_PlayerCharacter_DashEnded"
+                                "behavior": "_PlayerCharacter_Dash_Ended"
                             }
                         },
                         "actions": [
@@ -796,7 +796,7 @@
                     }
                 ],
                 "eventMacros": [
-                    "_PlayerCharacter_Invincible"
+                    "_PlayerCharacter_Damage_Flash"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -926,7 +926,7 @@
                     {
                         "actorTerm": {
                             "behaviorOn": {
-                                "behavior": "_PlayerCharacter_DashEnded"
+                                "behavior": "_PlayerCharacter_Dash_Ended"
                             }
                         },
                         "actions": [
@@ -944,7 +944,7 @@
                     }
                 ],
                 "eventMacros": [
-                    "_PlayerCharacter_Invincible"
+                    "_PlayerCharacter_Damage_Flash"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -1092,12 +1092,12 @@
                 }
             ]
         },
-        "_PlayerCharacter_Invincible": {
+        "_PlayerCharacter_Damage_Flash": {
             "events": [
                 {
                     "actorTerm": {
                         "behaviorOn": {
-                            "behavior": "_PlayerCharacter_Invincible"
+                            "behavior": "_PlayerCharacter_Damage_Invincible"
                         }
                     },
                     "actions": [
@@ -1118,7 +1118,7 @@
                 {
                     "actorTerm": {
                         "behaviorOff": {
-                            "behavior": "_PlayerCharacter_Invincible"
+                            "behavior": "_PlayerCharacter_Damage_Invincible"
                         }
                     },
                     "actions": [

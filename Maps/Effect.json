@@ -2,13 +2,13 @@
     "effects": {
         "_Apply_Behaviour_PlayerCharacter_Dash_End": {
             "applyBehavior": {
-                "behavior": "_PlayerCharacter_DashEnded",
+                "behavior": "_PlayerCharacter_Dash_Ended",
                 "target": 3
             }
         },
         "_Apply_Behaviour_PlayerCharacter_Invincibility": {
             "applyBehavior": {
-                "behavior": "_PlayerCharacter_Invincible",
+                "behavior": "_PlayerCharacter_Dash_Invincible",
                 "target": 3
             }
         },
@@ -148,7 +148,7 @@
         },
         "_Remove_Behaviour_PlayerCharacter_Invincibility": {
             "removeBehavior": {
-                "behavior": "_PlayerCharacter_Invincible",
+                "behavior": "_PlayerCharacter_Dash_Invincible",
                 "target": 3
             }
         },

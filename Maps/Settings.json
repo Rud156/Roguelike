@@ -29,6 +29,9 @@
         ],
         "usedEffects": [
             "__StopMovement"
+        ],
+        "usedBehaviors": [
+            "_PlayerCharacter_Damage_Invincible"
         ]
     }
 }
