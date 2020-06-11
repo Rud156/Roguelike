@@ -219,7 +219,8 @@
                 "hostSites": {
                     "Attack Host Site": {
                         "offset": {
-                            "forward": 0.8
+                            "forward": 0.8,
+                            "up": 0.1
                         }
                     },
                     "StunnedEffectSite": {
@@ -417,7 +418,7 @@
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_chosen_smite_impact_aoe"
+                    "name": "vfx_dragoon_leap_launch"
                 },
                 "events": [
                     {
@@ -458,7 +459,11 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "hostSiteOperations": [
+                    ""
+                ],
+                "modelScale": 1
             }
         },
         "_FX_Enemy_Hobgoblin_Spawn": {

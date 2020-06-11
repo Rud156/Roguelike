@@ -172,12 +172,12 @@
         },
         "_Search_Enemy_Hobgoblin": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circleSector": {
                         "outerRadius": 0.9,
                         "innerRadius": 0.2,
-                        "angle": 45
+                        "angle": 60
                     }
                 },
                 "maxUnitCount": 10,
