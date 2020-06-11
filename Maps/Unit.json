@@ -99,7 +99,8 @@
                     "radius": 0,
                     "immortal": true,
                     "ground": true,
-                    "selectable": false
+                    "selectable": false,
+                    "ignoreCollision": true
                 },
                 "health": {
                     "maxHealth": 10
@@ -278,7 +279,7 @@
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
-                    "radius": 0.4,
+                    "radius": 0.6,
                     "immortal": true,
                     "ground": true,
                     "selectable": false

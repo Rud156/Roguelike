@@ -1070,7 +1070,8 @@
                             "up": 0.375
                         }
                     }
-                }
+                },
+                "modelScale": 1.5
             }
         },
         "_Wall_SolidWall": {
