@@ -173,6 +173,12 @@
                                 "playAnimation": {
                                     "clipId": 0
                                 }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "AttackEffectSpawn",
+                                    "duration": 1
+                                }
                             }
                         ]
                     },
@@ -189,6 +195,21 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "AttackEffectSpawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Hobgoblin_Attack",
+                                    "hostSite": "Attack Host Site"
+                                }
+                            }
+                        ]
                     }
                 ],
                 "eventMacros": [
@@ -201,7 +222,11 @@
                             "up": 1
                         }
                     },
-                    "null": {}
+                    "Attack Host Site": {
+                        "offset": {
+                            "forward": 0.8
+                        }
+                    }
                 },
                 "modelScale": 1.2
             }
@@ -1018,6 +1043,54 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
+            }
+        },
+        "_FX_Enemy_Hobgoblin_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_smite_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
             }
         }
     },
