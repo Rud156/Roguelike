@@ -795,6 +795,9 @@
                         ]
                     }
                 ],
+                "eventMacros": [
+                    "_PlayerCharacter_Invincible"
+                ],
                 "hostSites": {
                     "Melee Attack Host Site": {
                         "offset": {
@@ -940,6 +943,9 @@
                         ]
                     }
                 ],
+                "eventMacros": [
+                    "_PlayerCharacter_Invincible"
+                ],
                 "hostSites": {
                     "SiteHit": {
                         "offset": {
@@ -1080,6 +1086,100 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Enemy_Stunned"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Invincible": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_Invincible"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "createTimer": {
+                                "name": "FlashPlayerMeshOff",
+                                "duration": 0.1,
+                                "repeat": false
+                            }
+                        },
+                        {
+                            "log": {
+                                "message": "Player Invincible"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_PlayerCharacter_Invincible"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "removeTimer": {
+                                "name": "FlashPlayerMeshOff"
+                            }
+                        },
+                        {
+                            "removeTimer": {
+                                "name": "FlashPlayerMeshOn"
+                            }
+                        },
+                        {
+                            "setVisibility": {
+                                "visibility": true
+                            }
+                        },
+                        {
+                            "log": {
+                                "message": "Invincibility Removed"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "FlashPlayerMeshOff"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setVisibility": {
+                                "visibility": false
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "FlashPlayerMeshOn",
+                                "duration": 0.1
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "FlashPlayerMeshOn"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setVisibility": {
+                                "visibility": true
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "FlashPlayerMeshOff",
+                                "duration": 0.1
                             }
                         }
                     ]
