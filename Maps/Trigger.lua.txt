@@ -185,6 +185,7 @@ function Update()
             end
         end
 
+        
         MakePlayerLookTowardsNearestEnemy()
     end
 
@@ -436,7 +437,7 @@ end
 -- #region Player Functions
 
 function MakePlayerLookTowardsNearestEnemy()
-    if m_player == nil or m_playerMoving then
+    if m_player == nil or m_playerMoving or m_playerDashActive then
         return
     end
 
@@ -611,8 +612,8 @@ function LaunchPlayerMeleeLightAttack()
         local playerPosition = DCEI.GetUnitPosition2D(m_player)
         local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
         
-        local xPoint = math.sin(math.rad(yRotation)) * playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation))  * playerPosition.y
+        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
     end
 
@@ -662,12 +663,11 @@ function MakePlayerDodgeAndRoll()
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-    local xPoint = math.sin(math.rad(yRotation)) * 0.3 + playerPosition.x
-    local yPoint = math.cos(math.rad(yRotation))  * 0.3 + playerPosition.y
+    local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+    local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
 
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-
 
     if UseMeleePlayer then
         DCEI.CastAbilityAtPosition(PLAYER_MELEE_DASH_ABILITY, m_player, xPoint, yPoint)
