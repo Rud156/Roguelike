@@ -19,6 +19,9 @@
                     }
                 }
             }
+        },
+        "_Enemy_Stunned": {
+            "expression": {}
         }
     },
     "expressions": {

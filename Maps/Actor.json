@@ -124,6 +124,11 @@
                                 "create": {
                                     "actor": "_FX_Enemy_GoblinChef_Spawn"
                                 }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinChef_Spawn"
+                                }
                             }
                         ]
                     }
@@ -158,6 +163,11 @@
                             {
                                 "create": {
                                     "actor": "_FX_Enemy_Hobgoblin_Spawn"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_hobgoblin_Spawn"
                                 }
                             }
                         ]
@@ -207,6 +217,11 @@
                                 "create": {
                                     "actor": "_FX_Enemy_Hobgoblin_Attack",
                                     "hostSite": "Attack Host Site"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Hobgoblin_Attack"
                                 }
                             }
                         ]
@@ -581,19 +596,22 @@
         "_FX_Launch_Enemy_GoblinChef": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
-                "effect": "_Launch_Enemy_GoblinChef"
+                "effect": "_Launch_Enemy_GoblinChef",
+                "launchModel": "_SFX_Enemy_GoblinChef_Attack"
             }
         },
         "_FX_Launch_PlayerCharacter_Ranged_HeavyAttack": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
-                "effect": "_Launch_PlayerCharacter_Ranged_HeavyAttack"
+                "effect": "_Launch_PlayerCharacter_Ranged_HeavyAttack",
+                "launchModel": "_SFX_PlayerCharacter_Ranged_HeavyAttack"
             }
         },
         "_FX_Launch_PlayerCharacter_Ranged_LightAttack": {
             "parent": "_FX Attack SingleTarget",
             "actionActor": {
-                "effect": "_Launch_PlayerCharacter_Ranged_LightAttack"
+                "effect": "_Launch_PlayerCharacter_Ranged_LightAttack",
+                "launchModel": "_SFX_PlayerCharacter_Ranged_LightAttack"
             }
         },
         "_FX_PlayerCharacter_Melee_HeavyAttack": {
@@ -695,14 +713,8 @@
                             },
                             {
                                 "createTimer": {
-                                    "name": "DelayedAttack1Spawn",
+                                    "name": "DelayedLightAttackSpawn",
                                     "duration": 0.3
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "StopLightAttackAnim",
-                                    "duration": 0.55
                                 }
                             }
                         ]
@@ -721,22 +733,16 @@
                             },
                             {
                                 "createTimer": {
-                                    "name": "DelayedAttack2Spawn",
+                                    "name": "DelayedHeavyAttackSpawn",
                                     "duration": 0.3
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "StopHeavyAttackAnim",
-                                    "duration": 0.75
                                 }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
-                            "onTimer": {
-                                "name": "StopLightAttackAnim"
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_LightAttack"
                             }
                         },
                         "actions": [
@@ -747,8 +753,8 @@
                     },
                     {
                         "actorTerm": {
-                            "onTimer": {
-                                "name": "StopHeavyAttackTimer"
+                            "unitAbilityStop": {
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
                             }
                         },
                         "actions": [
@@ -762,7 +768,7 @@
                     {
                         "actorTerm": {
                             "onTimer": {
-                                "name": "DelayedAttack1Spawn"
+                                "name": "DelayedLightAttackSpawn"
                             }
                         },
                         "actions": [
@@ -771,13 +777,18 @@
                                     "actor": "_FX_PlayerCharacter_Melee_LightAttack",
                                     "hostSite": "Melee Attack Host Site"
                                 }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_PlayerCharacter_Melee_LightAttack"
+                                }
                             }
                         ]
                     },
                     {
                         "actorTerm": {
                             "onTimer": {
-                                "name": "DelayedAttack2Spawn"
+                                "name": "DelayedHeavyAttackSpawn"
                             }
                         },
                         "actions": [
@@ -789,6 +800,11 @@
                             {
                                 "create": {
                                     "actor": "_Camera_ShakeCameraActor"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_PlayerCharacter_Melee_HeavyAttack"
                                 }
                             }
                         ]
@@ -1097,6 +1113,246 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
+            }
+        },
+        "_SFX_Enemy_Hobgoblin_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "cannon_ball_launch_v3"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinChef_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "arrow_critical_v1"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinChef_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "hunterhut_trap_spawn"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_hobgoblin_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "surfer_earthward_spawn"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Melee_LightAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "ethereal_armor_hit_v3"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Melee_HeavyAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "hammer_smash"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Ranged_LightAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "crossbow_hit_v4"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_PlayerCharacter_Ranged_HeavyAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_sapper_death_explosion_v3"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
             }
         }
     },
