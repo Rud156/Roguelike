@@ -117,34 +117,6 @@
                     },
                     {
                         "actorTerm": {
-                            "behaviorOn": {
-                                "behavior": "_Enemy_Damage_Taken"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setMeshEffect": {
-                                    "effect": "BloodThirsty"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOff": {
-                                "behavior": "_Enemy_Damage_Taken"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setMeshEffect": {
-                                    "effect": "Normal"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
                             "unitSpawn": {}
                         },
                         "actions": [
@@ -154,41 +126,11 @@
                                 }
                             }
                         ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOn": {
-                                "behavior": "_Enemy_Stunned"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Stunned",
-                                    "hostSite": "StunnedEffectSite"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Stun_Impact"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOff": {
-                                "behavior": "_Enemy_Stunned"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {
-                                    "actor": "_FX_Enemy_Stunned"
-                                }
-                            }
-                        ]
                     }
+                ],
+                "eventMacros": [
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Stunned_Effect"
                 ],
                 "hostSites": {
                     "StunnedEffectSite": {
@@ -247,76 +189,19 @@
                                 }
                             }
                         ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOn": {
-                                "behavior": "_Enemy_Damage_Taken"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setMeshEffect": {
-                                    "effect": "BloodThirsty"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOff": {
-                                "behavior": "_Enemy_Damage_Taken"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setMeshEffect": {
-                                    "effect": "Normal"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOn": {
-                                "behavior": "_Enemy_Stunned"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Stunned",
-                                    "hostSite": "StunnedEffectSite"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Stun_Impact"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOff": {
-                                "behavior": "_Enemy_Stunned"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {
-                                    "actor": "_FX_Enemy_Stunned"
-                                }
-                            }
-                        ]
                     }
+                ],
+                "eventMacros": [
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Stunned_Effect"
                 ],
                 "hostSites": {
                     "StunnedEffectSite": {
                         "offset": {
                             "up": 1
                         }
-                    }
+                    },
+                    "null": {}
                 },
                 "modelScale": 1.2
             }
@@ -602,7 +487,8 @@
                 ],
                 "hostSiteOperations": [
                     "SOp HoldPosition"
-                ]
+                ],
+                "modelScale": 2
             }
         },
         "_FX_Enemy_Stunned": {
@@ -610,7 +496,8 @@
                 "resource": {
                     "type": "ParticleAnimation",
                     "name": "vfx_status_stun"
-                }
+                },
+                "modelScale": 2
             }
         },
         "_FX_Launch_Enemy_GoblinChef": {
@@ -1126,6 +1013,78 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        }
+    },
+    "actorEventMacros": {
+        "_Enemy_Damage_Effect": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Enemy_Damage_Taken"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "applyMeshEffect": {
+                                "effect": "BloodThirsty"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Enemy_Damage_Taken"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "removeMeshEffect": {
+                                "effect": "BloodThirsty"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Enemy_Stunned_Effect": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Enemy_Stunned"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Enemy_Stun_Impact"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_FX_Enemy_Stunned",
+                                "hostSite": "StunnedEffectSite"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Enemy_Stunned"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Enemy_Stunned"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     }
 }

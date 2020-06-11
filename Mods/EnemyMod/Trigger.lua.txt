@@ -1,4 +1,5 @@
 -- Constants
+-- TODO: Probably put common strings into a Mod and use that?
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 
 local GOBLIN_CHEF = "_Enemy_GoblinChef"
@@ -8,14 +9,14 @@ local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.25
 local GOBLIN_CHEF_SHOT_COUNT = 3
 local GOBLIN_CHEF_ATTACK_COOLDOWN = 5
 local GOBLIN_CHEF_MIN_CLOSEST_DISTANCE = 2.5
-local GOBLIN_CHEF_STUN_TIME = 1.5
+local GOBLIN_CHEF_STUN_TIME = 3.5
 
 local GOBLIN_HOB = "_Enemy_Hobgoblin"
 local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
 local GOBLIN_HOB_ATTACK_RANGE = 1
 local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
-local GOBLIN_HIOB_STUN_TIME = 1.5
+local GOBLIN_HOB_STUN_TIME = 3.5
 
 local mod = {}
 
@@ -25,7 +26,7 @@ local GoblinChef = {
     room = nil,
     unit = nil,
     
-    enemyState = 0, -- 0: Targetting Movement, 1: Attacking
+    enemyState = 0, -- 0: Targetting Movement, 1: Attacking, 2: Stunned
 
     -- Attack
     attackCooldownTimer = 0,
@@ -33,7 +34,10 @@ local GoblinChef = {
     currentShotCount = 0,
 
     -- Movement
-    isMoving = false
+    isMoving = false,
+
+    -- Stunned
+    stunTimer = 0
 }
 GoblinChef.__index = GoblinChef
 function GoblinChef:new(room, xPosition, yPosition)
@@ -52,6 +56,8 @@ function GoblinChef:new(room, xPosition, yPosition)
 
     goblinChef.isMoving = false
 
+    goblinChef.stunTimer = 0
+
     return goblinChef
 end
 function GoblinChef:Update(deltaTime, playerPosition)
@@ -59,7 +65,19 @@ function GoblinChef:Update(deltaTime, playerPosition)
         self:TargetPlayer(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
         self:AttackPlayer(deltaTime, playerPosition)
+    elseif self.enemyState == 2 then
+        self:UpdateEnemyStunned(deltaTime)
     end
+end
+function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
+    if self.unit == enemyUnit then
+        self.stunTimer = GOBLIN_CHEF_STUN_TIME
+        self:SetEnemyState(2)
+
+        return true
+    end
+
+    return false
 end
 function GoblinChef:TargetPlayer(deltaTime, playerPosition)
     self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
@@ -105,6 +123,13 @@ function GoblinChef:AttackPlayer(deltaTime, playerPosition)
         self:SetEnemyState(0)
     end
 end
+function GoblinChef:UpdateEnemyStunned(deltaTime)
+    self.stunTimer = self.stunTimer - deltaTime
+    if self.stunTimer <= 0 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+        self:SetEnemyState(0)
+    end
+end
 function GoblinChef:LookAtPlayer(playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
 
@@ -126,17 +151,20 @@ end
 
 -- #region Hob Goblin Enemy
 local HobGoblin = {
-     -- Units
-     room = nil,
-     unit = nil,
-     
-     enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting
- 
-     -- Attack
-     attackWaitTimer = 0,
+    -- Units
+    room = nil,
+    unit = nil,
+    
+    enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting, 2: Stunned
 
-     -- Movement
-     isMoving = false
+    -- Attack
+    attackWaitTimer = 0,
+
+    -- Movement
+    isMoving = false,
+
+    -- Stunned
+    stunTimer = 0
 }
 HobGoblin.__index = HobGoblin
 function HobGoblin:new(room, xPosition, yPosition)
@@ -153,6 +181,8 @@ function HobGoblin:new(room, xPosition, yPosition)
 
     hobGoblin.isMoving = false
 
+    hobGoblin.stunTimer = 0
+
     return hobGoblin
 end
 function HobGoblin:Update(deltaTime, playerPosition)
@@ -160,7 +190,19 @@ function HobGoblin:Update(deltaTime, playerPosition)
         self:TargetPlayer(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
         self:WaitAfterAttack(deltaTime, playerPosition)
+    elseif self.enemyState == 2 then
+        self:UpdateEnemyStunned(deltaTime)
     end
+end
+function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
+    if self.unit == enemyUnit then
+        self.stunTimer = GOBLIN_HOB_STUN_TIME
+        self:SetEnemyState(2)
+
+        return true
+    end
+
+    return false
 end
 function HobGoblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -198,6 +240,13 @@ function HobGoblin:AttackPlayer(deltaTime, playerPosition)
 
     self.attackWaitTimer = GOBLIN_HOB_ATTACK_WAIT_TIMER
     self:SetEnemyState(1)
+end
+function HobGoblin:UpdateEnemyStunned(deltaTime)
+    self.stunTimer = self.stunTimer - deltaTime
+    if self.stunTimer <= 0 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+        self:SetEnemyState(0)
+    end
 end
 function HobGoblin:LookAtPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)

@@ -321,6 +321,14 @@ function Room:UpdateEnemies(deltaTime, player)
         enemy:Update(deltaTime, playerPosition)
     end
 end
+function Room:UpdateEnemyStunState(enemyUnit)
+    for i, enemy in ipairs(self.enemies) do
+        local success = enemy:CheckAndActivateStunnedState(enemyUnit)
+        if success then
+            break
+        end
+    end
+end
 function Room:IsPlayerInRoom(player)
     local playerPosition = DCEI.GetUnitPosition2D(player)
     if self.rect:containsWithOffset(playerPosition.x, playerPosition.y, ROOM_ENTRY_DETECT_OFFSET) then
@@ -731,6 +739,14 @@ function RoomGenerator:GetRoomNearestEnemy(player)
     end
 
     return nil
+end
+function RoomGenerator:UpdateEnemyStunState(enemyUnit)
+    -- Just iterate through all rooms when the behaviour is activated
+    for i = 1, #self.rooms do
+        for j = 1, #self.rooms[i] do
+            self.rooms[i][j]:UpdateEnemyStunState(enemyUnit)
+        end
+    end
 end
 function RoomGenerator:RemoveDeadEnemy(enemyUnit)
     for i = 1, #self.rooms do

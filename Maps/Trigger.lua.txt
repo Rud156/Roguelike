@@ -63,6 +63,9 @@ local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
 local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 
+-- Enemy
+local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
+
 -- Collectibles
 local COLLECTIBLES = {
     { itemType = 0, itemPrefab = "_Collectible_Test1", itemImage = "icon_affinity_brown" },
@@ -246,6 +249,10 @@ function HandleBehaviourAdded()
         DCEI.Move(m_player, missilePosition.x, missilePosition.y)
 
         m_playerDashCoolDownTimer = PLAYER_DASH_CD
+
+    elseif behaviourName == ENEMY_STUNNED_BEHAVIOUR then
+        DCEI.LogMessage("Enemy Stun Behaviour Added")
+        m_roomGenerator:UpdateEnemyStunState(unit)
     end
 end
 
