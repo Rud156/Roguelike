@@ -131,6 +131,18 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinChef_Death"
+                                }
+                            }
+                        ]
                     }
                 ],
                 "eventMacros": [
@@ -167,7 +179,7 @@
                             },
                             {
                                 "create": {
-                                    "actor": "_SFX_Enemy_hobgoblin_Spawn"
+                                    "actor": "_SFX_Enemy_Hobgoblin_Spawn"
                                 }
                             }
                         ]
@@ -222,6 +234,18 @@
                             {
                                 "create": {
                                     "actor": "_SFX_Enemy_Hobgoblin_Attack"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Hobgoblin_Death"
                                 }
                             }
                         ]
@@ -1146,11 +1170,11 @@
                 ]
             }
         },
-        "_SFX_Enemy_hobgoblin_Spawn": {
+        "_SFX_PlayerCharacter_Damage_Taken": {
             "modelActor": {
                 "resource": {
                     "type": "Sound",
-                    "name": "awaken_sucessed"
+                    "name": "yeti_weapon_impact"
                 },
                 "events": [
                     {
@@ -1355,11 +1379,71 @@
                 }
             }
         },
-        "_SFX_PlayerCharacter_Damage_Taken": {
+        "_SFX_Enemy_GoblinChef_Death": {
             "modelActor": {
                 "resource": {
                     "type": "Sound",
-                    "name": "barracks_troop_die"
+                    "name": "goblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Hobgoblin_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "hobgoblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Hobgoblin_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "awaken_sucessed"
                 },
                 "events": [
                     {
