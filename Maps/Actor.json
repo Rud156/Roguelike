@@ -1110,6 +1110,36 @@
                 ]
             }
         },
+        "_SFX_Enemy_GoblinChef_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_SFX_Enemy_GoblinChef_Spawn": {
             "modelActor": {
                 "resource": {
@@ -1145,6 +1175,66 @@
                 "resource": {
                     "type": "Sound",
                     "name": "cannon_ball_launch_v3"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Hobgoblin_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "hobgoblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Hobgoblin_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "awaken_sucessed"
                 },
                 "events": [
                     {
@@ -1377,96 +1467,6 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
-            }
-        },
-        "_SFX_Enemy_GoblinChef_Death": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "goblin_die"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Enemy_Hobgoblin_Death": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "hobgoblin_die"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Enemy_Hobgoblin_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "awaken_sucessed"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
             }
         }
     },
