@@ -43,7 +43,7 @@
                     "radius": 0.25
                 },
                 "health": {
-                    "maxHealth": 30
+                    "maxHealth": 20
                 },
                 "movement": {
                     "moveSpeed": 0.8
@@ -69,7 +69,7 @@
                     "selectable": true
                 },
                 "health": {
-                    "maxHealth": 50
+                    "maxHealth": 45
                 },
                 "movement": {
                     "moveSpeed": 1

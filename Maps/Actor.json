@@ -1431,7 +1431,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "barracks_rank01"
+                    "name": "prop_rock_two"
                 },
                 "hostSites": {
                     "SiteHit": {
@@ -1441,14 +1441,14 @@
                         }
                     }
                 },
-                "modelScale": 1.5
+                "modelScale": 2
             }
         },
         "_Wall_SolidWall": {
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "forestworld_castleset_wall_tower"
+                    "name": "prop_tree_huanted01"
                 },
                 "hostSites": {
                     "SiteHit": {
@@ -1458,7 +1458,7 @@
                         }
                     }
                 },
-                "modelScale": 1.5
+                "modelScale": 1.4
             }
         },
         "__DebugMarkerUnit": {
