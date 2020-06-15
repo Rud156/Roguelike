@@ -250,7 +250,12 @@ function HandleBehaviourAdded()
         local missilePosition = DCEI.GetUnitPosition2D(unit)
 
         DCEI.SetUnitPosition2D(m_player, missilePosition.x, missilePosition.y)
-        DCEI.Move(m_player, missilePosition.x, missilePosition.y)
+
+        -- local playerRotation = DCEI.GetUnitRotationEuler(m_player)
+        -- local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+        -- local xPoint = math.sin(math.rad(yRotation)) * 1 + missilePosition.x
+        -- local yPoint = math.cos(math.rad(yRotation)) * 1 + missilePosition.y
+        -- DCEI.Move(m_player, xPoint, yPoint)
 
         m_playerDashCoolDownTimer = PLAYER_DASH_CD
 
@@ -668,7 +673,6 @@ function MakePlayerDodgeAndRoll()
     local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
     local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
 
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
     DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 
     if UseMeleePlayer then
