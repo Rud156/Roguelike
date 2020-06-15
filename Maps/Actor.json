@@ -215,6 +215,11 @@
                                 "stopAnimation": {
                                     "clipId": 0
                                 }
+                            },
+                            {
+                                "removeTimer": {
+                                    "name": "AttackEffectSpawn"
+                                }
                             }
                         ]
                     },
