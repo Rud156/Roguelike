@@ -4,7 +4,16 @@
             "duration": 0.01
         },
         "_Enemy_Damage_Taken": {},
-        "_Enemy_Stunned": {},
+        "_Enemy_Stunned": {
+            "modifiers": {
+                "flags": {
+                    "suppressMovement": true,
+                    "suppressWeapon": true,
+                    "suppressAbility": true,
+                    "suppressTurning": true
+                }
+            }
+        },
         "_PlayerCharacter_Damage_Invincible": {
             "behaviorTagArray": [
                 {
