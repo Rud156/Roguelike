@@ -836,6 +836,8 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
     if behaviour then
         DCEI.LogMessage("Applying Behaviour: " .. behaviour)
         DCEI.ApplyBehavior(m_player, behaviour)
+
+        inventorySlot:UseItem() -- TODO: Change this later on...
     end 
 
     if itemName == COLLECTIBLE_POTION then
