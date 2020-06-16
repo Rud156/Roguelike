@@ -19,13 +19,16 @@
             "_PlayerCharacter_Melee",
             "_Enemy_GoblinChef",
             "_Enemy_Hobgoblin",
-            "_Collectible_Test1",
-            "_Collectible_Test2",
             "_Wall_BreakableWall",
             "_Wall_Doorway",
             "_Wall_SolidWall",
             "_ExitDoorway",
-            "_EntryDoorway"
+            "_EntryDoorway",
+            "_Collectible_Bomb",
+            "_Collectible_Boots_Of_Speed",
+            "_Collectible_Hammer_Of_Attack",
+            "_Collectible_Helm_Of_Valor",
+            "_Collectible_Potion"
         ],
         "usedEffects": [
             "__StopMovement"

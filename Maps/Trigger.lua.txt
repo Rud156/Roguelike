@@ -9,7 +9,6 @@ local UtilClassMod = GameModules["Mods/UtilClassMod"]
 
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
-local InventoryItem = InventoryMod.InventoryItem
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
@@ -126,7 +125,7 @@ local m_mouseDown = false
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(randomSeed)
+    math.randomseed(1592341083)
 
     m_roomGenerator = RoomGenerator:new(m_currentRoomLevel)
     SpawnPlayerAndSetPosition()
@@ -150,9 +149,9 @@ function Start()
     DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
     DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
     DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
-    DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
-    DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
-    DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseDownEvent)
+    -- DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
+    -- DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
+    -- DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseDownEvent)
 
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 end
@@ -259,12 +258,16 @@ function HandleUnitSelected()
     local unit = DCEI.TriggeringUnit
     local unitName = DCEI.UnitName(unit)
 
+    DCEI.LogMessage("Selected Unit: " .. unitName)
+
     -- Add Collectibles to Inventory if successful
     -- Then destroy the unit
     if string.match(unitName, COLLECTIBLE_STRING) then
         local success = m_inventory:CheckAndAddItemToSlot(unitName)
         if success then
             DCEI.RemoveUnit(unit)
+        else
+            DCEI.LogError("Inventory is full!!!")
         end
     end
 end

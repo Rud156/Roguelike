@@ -96,6 +96,8 @@ function InventorySlot:GetInventoryItemName()
     return self.itemName
 end
 function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, itemImage, stackability, currentStack)
+    DCEI.LogMessage("Updating Inventory with new item")
+
     self.itemType = itemType
     self.itemName = itemName
     self.itemDescription = itemDescription
@@ -106,6 +108,8 @@ function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, 
     DCEI.SetBackgroundImage(self.inventoryIcon, itemImage)
 end
 function InventorySlot:StackInventoryItem()
+    DCEI.LogMessage("Stacking Inventory")
+
     if self:IsSlotStackable() then
         self.currentStack = self.currentStack + 1
     else
@@ -160,7 +164,7 @@ function Inventory:DropItemInSlot(index, xPosition, yPosition)
     inventorySlot:Clear()
 end
 function Inventory:IsFull()
-    for i, slot in self.inventorySlots do
+    for i, slot in ipairs(self.inventorySlots) do
         if slot:IsEmpty() then
             return false
         end
@@ -169,7 +173,7 @@ function Inventory:IsFull()
     return true
 end
 function Inventory:GetEmptySlotIndex()
-    for i, slot in self.inventorySlots do
+    for i, slot in ipairs(self.inventorySlots) do
         if slot:IsEmpty() then
             return i
         end
@@ -178,7 +182,7 @@ function Inventory:GetEmptySlotIndex()
     return -1
 end
 function Inventory:GetItemInInventoryIndex(itemName)
-    for i, slot in self.inventorySlots do
+    for i, slot in ipairs(self.inventorySlots) do
         local slotItemName = slot:GetInventoryItemName()
         if slotItemName == itemName then
             return i
@@ -187,39 +191,51 @@ function Inventory:GetItemInInventoryIndex(itemName)
 
     return -1
 end
+function Inventory:AddNewItemToInventory(slotIndex, collectibleItem)
+    local inventorySlot = self.inventorySlots[slotIndex]
+
+    inventorySlot:UpdateInventoryItem(
+        collectibleItem.itemName, 
+        collectibleItem.itemType,
+        collectibleItem.itemDescription,
+        collectibleItem.itemImage,
+        collectibleItem.itemStackable,
+        1
+    )
+end
 function Inventory:CheckAndAddItemToSlot(collectibleName)
     local collectibleItem = COLLECTIBLES_TABLE[collectibleName]
-    local isStackable = collectibleItem.itemStackable
+    local itemStackable = collectibleItem.itemStackable
+
+    DCEI.LogMessage("Collectible Item: " .. collectibleName)
+    DCEI.LogMessage("Item Stackable: " .. tostring(itemStackable))
     
-    if not isStackable then
+    if itemStackable == -1 then
         if self:IsFull() then
             return false
         end
 
         local emptySlotIndex = self:GetEmptySlotIndex()
-        local inventorySlot = self.inventorySlots[emptySlotIndex]
-
-        inventorySlot:UpdateInventoryItem(
-            collectibleItem.itemName, 
-            collectibleItem.itemType,
-            collectibleItem.itemDescription,
-            collectibleItem.itemImage,
-            collectibleItem.itemStackable,
-            1
-        )
+        self:AddNewItemToInventory(emptySlotIndex, collectibleItem)
+        
         return true
 
     else
-        local slotItemIndex = self:GetItemInInventoryIndex()
+        local slotItemIndex = self:GetItemInInventoryIndex(collectibleName)
         if slotItemIndex ~= -1 then
             local inventorySlot = self.inventorySlots[slotItemIndex]
             if inventorySlot:IsSlotStackable() then
                 inventorySlot:StackInventoryItem()
                 return true
-
-            else
-                return false
             end
+
+        elseif not self:IsFull() then
+            local emptySlotIndex = self:GetEmptySlotIndex()
+            self:AddNewItemToInventory(emptySlotIndex, collectibleItem)
+            return true
+
+        else
+            return false
         end
     end
 

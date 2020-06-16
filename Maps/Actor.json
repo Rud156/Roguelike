@@ -63,6 +63,81 @@
                 "modelScale": 0.1
             }
         },
+        "_Collectible_Bomb": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bomb_red_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable"
+                ]
+            }
+        },
+        "_Collectible_Boots_Of_Speed": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "chosen_priestess_pet_shield"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable"
+                ]
+            }
+        },
+        "_Collectible_Hammer_Of_Attack": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "hammer_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable"
+                ]
+            }
+        },
+        "_Collectible_Helm_Of_Valor": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "chosen_grandmaster_pet_shield"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable"
+                ]
+            }
+        },
+        "_Collectible_Potion": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "orb_mana"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable"
+                ]
+            }
+        },
         "_Enemy_GoblinChef": {
             "parent": "_StandardUnit DecayOnDeath",
             "unitActor": {
@@ -1456,76 +1531,6 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
-            }
-        },
-        "_Collectible_Boots_Of_Speed": {
-            "parent": "_StandardUnitMinimal",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "chosen_priestess_pet_shield"
-                },
-                "preserveOnUnitRemove": true,
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation"
-                ]
-            }
-        },
-        "_Collectible_Hammer_Of_Attack": {
-            "parent": "_StandardUnitMinimal",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "hammer_missile"
-                },
-                "preserveOnUnitRemove": true,
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation"
-                ]
-            }
-        },
-        "_Collectible_Helm_Of_Valor": {
-            "parent": "_StandardUnitMinimal",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "chosen_grandmaster_pet_shield"
-                },
-                "preserveOnUnitRemove": true,
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation"
-                ]
-            }
-        },
-        "_Collectible_Potion": {
-            "parent": "_StandardUnitMinimal",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "orb_mana"
-                },
-                "preserveOnUnitRemove": true,
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation"
-                ]
-            }
-        },
-        "_Collectible_Bomb": {
-            "parent": "_StandardUnitMinimal",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "bomb_red_missile"
-                },
-                "preserveOnUnitRemove": true,
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation"
-                ]
             }
         }
     },

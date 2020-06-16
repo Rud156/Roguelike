@@ -17,6 +17,161 @@
                 }
             }
         },
+        "_Collectible_Bomb": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Collectible_Boots_Of_Speed": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Collectible_Hammer_Of_Attack": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Collectible_Helm_Of_Valor": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Collectible_Potion": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
         "_Enemy_GoblinChef": {
             "baseUnit": "_CUnit",
             "components": {
@@ -238,6 +393,31 @@
                 "type": 0
             }
         },
+        "_PlayerCharater_Hammer_Of_Attack": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
         "_Wall_BreakableWall": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -304,181 +484,6 @@
                     "behaviorType": 0
                 }
             }
-        },
-        "_PlayerCharater_Hammer_Of_Attack": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "movement": {
-                    "moveSpeed": 2
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 1
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Collectible_Boots_Of_Speed": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "movement": {
-                    "moveSpeed": 0
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 0
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Unit_Invincible"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Collectible_Hammer_Of_Attack": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "movement": {
-                    "moveSpeed": 0
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 0
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Unit_Invincible"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Collectible_Helm_Of_Valor": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "movement": {
-                    "moveSpeed": 0
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 0
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Unit_Invincible"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Collectible_Potion": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "movement": {
-                    "moveSpeed": 0
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 0
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Unit_Invincible"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Collectible_Bomb": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "movement": {
-                    "moveSpeed": 0
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 0
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Unit_Invincible"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
         }
     }
 }
