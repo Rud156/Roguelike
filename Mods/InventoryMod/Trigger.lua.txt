@@ -1,8 +1,60 @@
+local mod = {}
+
+local COLLECTIBLES_TABLE = {
+    _Collectible_Boots_Of_Speed = {
+        itemName = "_Collectible_Boots_Of_Speed",
+        itemImage = "icon_enhance_frosttower_tempestaura",
+        itemStackable = -1,
+        itemType = 0,
+        itemDescription = "Increases the movement speed of the Hero by 30% when placed in inventory. Boots of Speed do not stack. Two boots of speed will make a Hero just as fast as one"           
+    },
+    _Collectible_Hammer_Of_Attack = {
+        itemName = "_Collectible_Hammer_Of_Attack",
+        itemImage = "icon_enhance_crusader_blessed_hammer",
+        itemStackable = -1,
+        itemType = 0,
+        itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage"
+    },
+    _Collectible_Helm_Of_Valor = {
+        itemName = "_Collectible_Helm_Of_Valor",
+        itemImage = "icon_enhance_lighthouse_guardian",
+        itemStackable = -1,
+        itemType = 0,
+        itemDescription = "When placed in the inventory and active, Helm of Valor will block 1 incoming attack for the Hero. After blocking the damage, Helm of Valor will become inactive, becoming active after 10 seconds"
+    },
+    _Collectible_Potion = {
+        itemName = "_Collectible_Potion",
+        itemImage = "icon_catalyst_main_item5_orange_02",
+        itemStackable = 2,
+        itemType = 1,
+        itemDescription = "Consume to instantly regenerate 50 HP"
+    },
+    _Collectible_Bomb = {
+        itemName = "_Collectible_Bomb",
+        itemImage = "icon_gear_bomb_01",
+        itemStackable = 2,
+        itemType = 1,
+        itemDescription = "Place a bomb that will explode 2 seconds after placement from where the Hero is standing. Bomb explosion will deal 30 damage in a radius of 1"
+    }
+}
+
 -- Item  Type
 -- -1: Empty
--- 0: Weapon
+-- 0: Gear
 -- 1: Consumable
-local InventorySlot = { emptyItemImage = "", itemType = 0, inventoryBackground = nil, inventoryIcon = nil }
+local InventorySlot = { 
+    emptyItemImage = "", 
+
+    itemType = 0,
+    itemName = "",
+    itemDescription = "",
+
+    stackability = -1,
+    currentStack = -1,
+    
+    inventoryBackground = nil,
+    inventoryIcon = nil 
+}
 InventorySlot.__index = InventorySlot
 function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFunction)
     local inventory = {}
@@ -24,96 +76,157 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFu
     )
 
     inventory.emptyItemImage = emptyItemImage
+    
     inventory.itemType = -1
+    inventory.itemName = itemName
+    inventory.itemDescription = ""
+
+    inventory.stackability = -1
+    inventory.currentStack = -1
+
     inventory.inventoryBackground = slotItem
     inventory.inventoryIcon = inventoryIcon
 
     return inventory
 end
-function InventorySlot:GetInventoryItem()
+function InventorySlot:GetInventoryItemType()
     return self.itemType
 end
-function InventorySlot:UpdateInventoryItem(itemImage, itemType)
+function InventorySlot:GetInventoryItemName()
+    return self.itemName
+end
+function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, itemImage, stackability, currentStack)
     self.itemType = itemType
+    self.itemName = itemName
+    self.itemDescription = itemDescription
+
+    self.stackability = stackability
+    self.currentStack = currentStack
+    
     DCEI.SetBackgroundImage(self.inventoryIcon, itemImage)
+end
+function InventorySlot:StackInventoryItem()
+    if self:IsSlotStackable() then
+        self.currentStack = self.currentStack + 1
+    else
+        DCEI.LogError("Inventory stack is full!!!")
+    end
 end
 function InventorySlot:Clear()
     DCEI.SetBackgroundImage(self.inventoryIcon, self.emptyItemImage)
+    
     self.itemType = -1
+    self.itemName = ""
+    self.itemDescription = ""
+
+    self.stackability = -1
+    self.currentStack = -1
 end
 function InventorySlot:IsEmpty()
     return self.itemType == -1
+end
+function InventorySlot:IsSlotStackable()
+    if self.stackability == -1 or self.currentStack == self.stackability then
+        return false
+    end
+
+    return true
 end
 function InventorySlot:Destroy()
     DCEI.Destroy(self.inventoryUi)
 end
 
 
--- Item  Type
--- 0: Weapon
--- 1: Consumable
-local InventoryItem = { unit = nil, itemType = 0, itemImage = ""  }
-InventoryItem.__index = InventoryItem
-function InventoryItem:new(itemPrefab, xPosition, yPosition, itemType, itemImage)
-    local inventoryItem = {}
-    setmetatable(inventoryItem, InventoryItem)
-
-    local unit = DCEI.CreateUnit(0, 0, itemPrefab, xPosition, yPosition)
-
-    inventoryItem.unit = unit
-    inventoryItem.itemType = itemType
-    inventoryItem.itemImage = itemImage
-    return inventoryItem
-end
-function InventoryItem:GetItemInfo()
-    return self.itemType, self.itemImage
-end
-function InventoryItem:CompareUnits(unit)
-    -- TODO: Check if this works...
-    if self.unit == unit then
-        return true
-    end
-
-    return false
-end
-function InventoryItem:Destroy()
-    DCEI.RemoveUnit(self.unit)
-end
-
-local Inventory = { inventorySlots = {}, totalSlotCount = 0 }
+local Inventory = { inventorySlots = {}}
 Inventory.__index = Inventory
-function Inventory:new(inventorySlots, totalSlotCount)
+function Inventory:new(inventorySlots)
     local inventory = {}
     setmetatable(inventory, Inventory)
 
     inventory.inventorySlots = inventorySlots
-    inventory.totalSlotCount = totalSlotCount
 
     return inventory
 end
-function Inventory:DropItemInSlot(index)
+function Inventory:DropItemInSlot(index, xPosition, yPosition)
     local inventorySlot = self.inventorySlots[index]
+    if inventorySlot:IsEmpty() then
+        return
+    end
+
+    -- Drop the item into the world
+    local inventoryItem = inventorySlot:GetInventoryItemName()
+    DCEI.CreateUnit(0, 0, inventoryItem, xPosition, yPosition)
+
     inventorySlot:Clear()
 end
 function Inventory:IsFull()
-    return #self.inventorySlots == totalSlotCount
-end
-function Inventory:AddItemToSlot(collectibleItem)
-    local itemAdded = false
-    for i, slot in ipairs(self.inventorySlots) do
+    for i, slot in self.inventorySlots do
         if slot:IsEmpty() then
-            slot:UpdateInventoryItem(collectibleItem.itemImage, collectibleItem.itemType)
-            itemAdded = true
-            break
+            return false
         end
     end
 
-    return itemAdded
+    return true
+end
+function Inventory:GetEmptySlotIndex()
+    for i, slot in self.inventorySlots do
+        if slot:IsEmpty() then
+            return i
+        end
+    end
+
+    return -1
+end
+function Inventory:GetItemInInventoryIndex(itemName)
+    for i, slot in self.inventorySlots do
+        local slotItemName = slot:GetInventoryItemName()
+        if slotItemName == itemName then
+            return i
+        end
+    end
+
+    return -1
+end
+function Inventory:CheckAndAddItemToSlot(collectibleName)
+    local collectibleItem = COLLECTIBLES_TABLE[collectibleName]
+    local isStackable = collectibleItem.itemStackable
+    
+    if not isStackable then
+        if self:IsFull() then
+            return false
+        end
+
+        local emptySlotIndex = self:GetEmptySlotIndex()
+        local inventorySlot = self.inventorySlots[emptySlotIndex]
+
+        inventorySlot:UpdateInventoryItem(
+            collectibleItem.itemName, 
+            collectibleItem.itemType,
+            collectibleItem.itemDescription,
+            collectibleItem.itemImage,
+            collectibleItem.itemStackable,
+            1
+        )
+        return true
+
+    else
+        local slotItemIndex = self:GetItemInInventoryIndex()
+        if slotItemIndex ~= -1 then
+            local inventorySlot = self.inventorySlots[slotItemIndex]
+            if inventorySlot:IsSlotStackable() then
+                inventorySlot:StackInventoryItem()
+                return true
+
+            else
+                return false
+            end
+        end
+    end
+
+    return false
 end
 
 
-local mod = {}
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
-mod.InventoryItem = InventoryItem
 return mod

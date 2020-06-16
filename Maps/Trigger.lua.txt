@@ -68,10 +68,7 @@ local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 
 -- Collectibles
-local COLLECTIBLES = {
-    { itemType = 0, itemPrefab = "_Collectible_Test1", itemImage = "icon_affinity_brown" },
-    { itemType = 1, itemPrefab = "_Collectible_Test2", itemImage = "icon_affinity_gold" }
-}
+local COLLECTIBLE_STRING = "_Collectible"
 
 -- Debug
 local USE_KEYBOARD = true
@@ -122,7 +119,6 @@ local m_uiMiddleLayer
 local m_uiTopLayer
 local m_inventory
 local m_damageDisplay
-local m_collectibleItems = {}
 -- Mouse Data
 local m_mouseDown = false
 
@@ -141,14 +137,8 @@ function Start()
 
     ArcadeCore.HideDefaultUi()
     CreatePlayerUIElements()
-    CreateInvertoryUI()
+    CreateInventoryUI()
     CreateDebugUI()
-
-    -- TODO: Remove this later on...
-    -- local collectible_1 = InventoryItem:new(COLLECTIBLES[1].itemPrefab, 25, 25, COLLECTIBLES[1].itemType, COLLECTIBLES[1].itemImage)
-    -- local collectible_2 = InventoryItem:new(COLLECTIBLES[2].itemPrefab, 23, 23, COLLECTIBLES[2].itemType, COLLECTIBLES[2].itemImage)
-    -- table.insert(m_collectibleItems, collectible_1)
-    -- table.insert(m_collectibleItems, collectible_2)
 
     -- Add Triggers At The End...
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
@@ -266,24 +256,16 @@ function HandleBehaviourAdded()
 end
 
 function HandleUnitSelected()
-    -- TODO: Maybe use names to specify what type of Unit was select
-    -- Like __Collectible or something...
     local unit = DCEI.TriggeringUnit
-    local index = -1
+    local unitName = DCEI.UnitName(unit)
 
-    for i, collectibleItem in ipairs(m_collectibleItems) do
-        if collectibleItem:CompareUnits(unit) then
-            if not m_inventory:IsFull() then
-                m_inventory:AddItemToSlot(collectibleItem)
-                index = i
-            end
+    -- Add Collectibles to Inventory if successful
+    -- Then destroy the unit
+    if string.match(unitName, COLLECTIBLE_STRING) then
+        local success = m_inventory:CheckAndAddItemToSlot(unitName)
+        if success then
+            DCEI.RemoveUnit(unit)
         end
-    end
-
-    if index ~= -1 then
-        local collectibleItem = m_collectibleItems[index]
-        collectibleItem:Destroy()
-        table.remove(m_collectibleItems, index)
     end
 end
 -- #endregion Unit Events
@@ -761,7 +743,7 @@ function CreatePlayerDamageDisplay()
     m_damageDisplay = damageDisplay
 end
 
-function CreateInvertoryUI()
+function CreateInventoryUI()
     local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
     DCEI.SetTopAlignmentInParent(horizontalStack)
     DCEI.SetPaddingTop(horizontalStack, 21)
@@ -773,7 +755,7 @@ function CreateInvertoryUI()
         table.insert(inventoryItems, inventoryItem)
     end
 
-    local inventory = Inventory:new(inventoryItems, 4)
+    local inventory = Inventory:new(inventoryItems)
     m_inventory = inventory
 end
 
