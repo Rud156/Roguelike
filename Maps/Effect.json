@@ -412,6 +412,36 @@
             "stop": {
                 "whichUnit": 1
             }
+        },
+        "_Damage_Collectible_Bomb_Attack": {
+            "damage": {
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Set_Collectible_Bomb_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Collectible_Bomb_Attack",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Search_Collectible_Bomb_Attack": {
+            "areaSearch": {
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "effect": "_Set_Collectible_Bomb_Attack"
+            }
         }
     }
 }

@@ -28,7 +28,8 @@
             "_Collectible_Boots_Of_Speed",
             "_Collectible_Hammer_Of_Attack",
             "_Collectible_Helm_Of_Valor",
-            "_Collectible_Potion"
+            "_Collectible_Potion",
+            "_Collectible_Bomb_Unit"
         ],
         "usedEffects": [
             "__StopMovement"

@@ -6,6 +6,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_enhance_frosttower_tempestaura",
         itemStackable = -1,
         itemType = 0,
+        itemBehaviourName = "_Collectible_Boots_Of_Speed",
         itemDescription = "Increases the movement speed of the Hero by 30% when placed in inventory. Boots of Speed do not stack. Two boots of speed will make a Hero just as fast as one"           
     },
     _Collectible_Hammer_Of_Attack = {
@@ -13,6 +14,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_enhance_crusader_blessed_hammer",
         itemStackable = -1,
         itemType = 0,
+        itemBehaviourName = "_Collectible_Hammer_Of_Attack",
         itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage"
     },
     _Collectible_Helm_Of_Valor = {
@@ -20,6 +22,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_enhance_lighthouse_guardian",
         itemStackable = -1,
         itemType = 0,
+        itemBehaviourName = "_Collectible_Helm_Of_Valor",
         itemDescription = "When placed in the inventory and active, Helm of Valor will block 1 incoming attack for the Hero. After blocking the damage, Helm of Valor will become inactive, becoming active after 10 seconds"
     },
     _Collectible_Potion = {
@@ -27,14 +30,16 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_catalyst_main_item5_orange_02",
         itemStackable = 2,
         itemType = 1,
-        itemDescription = "Consume to instantly regenerate 50 HP"
+        itemDescription = "Consume to instantly regenerate 50 HP",
+        itemPotionHealth = 50
     },
     _Collectible_Bomb = {
         itemName = "_Collectible_Bomb",
         itemImage = "icon_gear_bomb_01",
         itemStackable = 2,
         itemType = 1,
-        itemDescription = "Place a bomb that will explode 2 seconds after placement from where the Hero is standing. Bomb explosion will deal 30 damage in a radius of 1"
+        itemDescription = "Place a bomb that will explode 2 seconds after placement from where the Hero is standing. Bomb explosion will deal 30 damage in a radius of 1",
+        itemBombName = "_Collectible_Bomb_Unit"
     }
 }
 
@@ -68,13 +73,6 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFu
     DCEI.SetMinSize(inventoryIcon, 70, 70)
     DCEI.SetBackgroundImage(inventoryIcon, emptyItemImage)
     
-    DCEI.SetOnClickCallback(
-        slotItem,
-        function()
-            callbackFunction(inventory:GetInventoryItem())
-        end
-    )
-
     inventory.emptyItemImage = emptyItemImage
     
     inventory.itemType = -1
@@ -87,6 +85,13 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFu
     inventory.inventoryBackground = slotItem
     inventory.inventoryIcon = inventoryIcon
 
+    DCEI.SetOnClickCallback(
+        slotItem,
+        function()
+            callbackFunction(inventory:GetInventoryItemName(), inventory)
+        end
+    )
+
     return inventory
 end
 function InventorySlot:GetInventoryItemType()
@@ -94,6 +99,18 @@ function InventorySlot:GetInventoryItemType()
 end
 function InventorySlot:GetInventoryItemName()
     return self.itemName
+end
+function InventorySlot:UseItem()
+    if self.stackability ~= -1 then
+        self.currentStack = self.currentStack - 1
+
+        if self.currentStack <= 0 then
+            self:Clear()
+        end
+
+    else
+        self:Clear()
+    end
 end
 function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, itemImage, stackability, currentStack)
     DCEI.LogMessage("Updating Inventory with new item")
@@ -245,4 +262,5 @@ end
 
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
+mod.InventoryCollectibles = COLLECTIBLES_TABLE
 return mod

@@ -9,6 +9,7 @@ local UtilClassMod = GameModules["Mods/UtilClassMod"]
 
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
+local InventoryCollectibles = InventoryMod.InventoryCollectibles
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
@@ -68,6 +69,8 @@ local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 
 -- Collectibles
 local COLLECTIBLE_STRING = "_Collectible"
+local COLLECTIBLE_POTION = "_Collectible_Potion"
+local COLLECTIBLE_BOMB = "_Collectible_Bomb"
 
 -- Debug
 local USE_KEYBOARD = true
@@ -822,8 +825,36 @@ function UpdatePlayerDamageUI(deltaTime)
     end
 end
 
-function HandleInventorySlotClicked(itemType)
-    DCEI.LogMessage("Inventory Item: " .. itemType)
+function HandleInventorySlotClicked(itemName, inventorySlot)
+    if m_player == nil then
+        return
+    end
+
+    DCEI.LogMessage("Selected Item: " .. itemName)
+    local behaviour = InventoryCollectibles[itemName].itemBehaviourName
+
+    if behaviour then
+        DCEI.LogMessage("Applying Behaviour: " .. behaviour)
+        DCEI.ApplyBehavior(m_player, behaviour)
+    end 
+
+    if itemName == COLLECTIBLE_POTION then
+        local healthAmount = InventoryCollectibles[itemName].itemPotionHealth
+
+        DCEI.LogMessage("Adding Player Health: " .. healthAmount)
+        DCEI.AddHealth(m_player, healthAmount)
+        
+        inventorySlot:UseItem()
+        
+    elseif itemName == COLLECTIBLE_BOMB then
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local bombUnitName = InventoryCollectibles[itemName].itemBombName
+
+        DCEI.LogMessage("Deploying Bomb...")
+        DCEI.CreateUnit(0, 0, bombUnitName, playerPosition.x, playerPosition.y)
+
+        inventorySlot:UseItem()
+    end
 end
 
 function HandleCharacterSwitch()

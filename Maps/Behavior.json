@@ -82,6 +82,11 @@
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
         },
-        "_Unit_Invincible": {}
+        "_Unit_Invincible": {},
+        "_Collectible_Bomb_Attack": {
+            "duration": 2,
+            "finalEffect": "",
+            "expireEffect": "_Search_Collectible_Bomb_Attack"
+        }
     }
 }

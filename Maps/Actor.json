@@ -64,7 +64,7 @@
             }
         },
         "_Collectible_Bomb": {
-            "parent": "_StandardUnitMinimal",
+            "parent": "",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
@@ -74,12 +74,13 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit Selectable"
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
                 ]
             }
         },
         "_Collectible_Boots_Of_Speed": {
-            "parent": "_StandardUnitMinimal",
+            "parent": "",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
@@ -89,12 +90,13 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit Selectable"
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
                 ]
             }
         },
         "_Collectible_Hammer_Of_Attack": {
-            "parent": "_StandardUnitMinimal",
+            "parent": "",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
@@ -104,12 +106,13 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit Selectable"
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
                 ]
             }
         },
         "_Collectible_Helm_Of_Valor": {
-            "parent": "_StandardUnitMinimal",
+            "parent": "",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
@@ -119,12 +122,13 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit Selectable"
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
                 ]
             }
         },
         "_Collectible_Potion": {
-            "parent": "_StandardUnitMinimal",
+            "parent": "",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
@@ -134,7 +138,8 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit Selectable"
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
                 ]
             }
         },
@@ -1532,6 +1537,76 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        },
+        "_Collectible_Bomb_Unit": {
+            "parent": "",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bomb_red_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Event Destroy Immediate"
+                ]
+            }
+        },
+        "_FX_Collectible_Bomb_Attack": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "_Damage_Collectible_Bomb_Attack",
+                "launchModel": "_FX_Collectible_Bomb_Attack_Model"
+            }
+        },
+        "_FX_Collectible_Bomb_Attack_Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_shared_explosion_small"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -1699,6 +1774,20 @@
                                 "name": "FlashPlayerMeshOff",
                                 "duration": 0.1
                             }
+                        }
+                    ]
+                }
+            ]
+        },
+        "Event Destroy Immediate": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitRemove": {}
+                    },
+                    "actions": [
+                        {
+                            "destroy": {}
                         }
                     ]
                 }
