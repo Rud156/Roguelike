@@ -69,11 +69,14 @@ local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 
 -- Collectibles
 local COLLECTIBLE_STRING = "_Collectible"
+local COLLECTIBLE_BOOTS_OF_SPEED = "_Collectible_Boots_Of_Speed"
+local COLLECTIBLE_HAMMER_OF_ATTACK = "_Collectible_Hammer_Of_Attack"
+local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
 local COLLECTIBLE_POTION = "_Collectible_Potion"
 local COLLECTIBLE_BOMB = "_Collectible_Bomb"
 
 -- Debug
-local USE_KEYBOARD = true
+local USE_KEYBOARD = false
 
 -- #endregion Constants
 
@@ -272,6 +275,8 @@ function HandleUnitSelected()
         else
             DCEI.LogError("Inventory is full!!!")
         end
+
+        HandleItemAddedToInventory(unitName)
     end
 end
 -- #endregion Unit Events
@@ -749,22 +754,6 @@ function CreatePlayerDamageDisplay()
     m_damageDisplay = damageDisplay
 end
 
-function CreateInventoryUI()
-    local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
-    DCEI.SetTopAlignmentInParent(horizontalStack)
-    DCEI.SetPaddingTop(horizontalStack, 21)
-
-    local inventoryItems = {}
-    
-    for i = 0, 3 do
-        local inventoryItem = InventorySlot:new("btn_yellow_invert", "btn_grey_invert", horizontalStack, HandleInventorySlotClicked)
-        table.insert(inventoryItems, inventoryItem)
-    end
-
-    local inventory = Inventory:new(inventoryItems)
-    m_inventory = inventory
-end
-
 function CreateDebugUI()
     local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
     DCEI.SetTopAlignmentInParent(horizontalStack)
@@ -825,40 +814,6 @@ function UpdatePlayerDamageUI(deltaTime)
     end
 end
 
-function HandleInventorySlotClicked(itemName, inventorySlot)
-    if m_player == nil then
-        return
-    end
-
-    DCEI.LogMessage("Selected Item: " .. itemName)
-    local behaviour = InventoryCollectibles[itemName].itemBehaviourName
-
-    if behaviour then
-        DCEI.LogMessage("Applying Behaviour: " .. behaviour)
-        DCEI.ApplyBehavior(m_player, behaviour)
-
-        inventorySlot:UseItem() -- TODO: Change this later on...
-    end 
-
-    if itemName == COLLECTIBLE_POTION then
-        local healthAmount = InventoryCollectibles[itemName].itemPotionHealth
-
-        DCEI.LogMessage("Adding Player Health: " .. healthAmount)
-        DCEI.AddHealth(m_player, healthAmount)
-        
-        inventorySlot:UseItem()
-        
-    elseif itemName == COLLECTIBLE_BOMB then
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        local bombUnitName = InventoryCollectibles[itemName].itemBombName
-
-        DCEI.LogMessage("Deploying Bomb...")
-        DCEI.CreateUnit(0, 0, bombUnitName, playerPosition.x, playerPosition.y)
-
-        inventorySlot:UseItem()
-    end
-end
-
 function HandleCharacterSwitch()
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
 
@@ -882,6 +837,79 @@ function HandleKeyboardMouseSwitch()
 end
 
 -- #endregion
+
+-- #region Inventory Functions
+
+function CreateInventoryUI()
+    local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
+    DCEI.SetTopAlignmentInParent(horizontalStack)
+    DCEI.SetPaddingTop(horizontalStack, 21)
+
+    local inventoryItems = {}
+    
+    for i = 0, 3 do
+        local inventoryItem = InventorySlot:new("btn_yellow_invert", "btn_grey_invert", horizontalStack, HandleInventorySlotClicked)
+        table.insert(inventoryItems, inventoryItem)
+    end
+
+    local inventory = Inventory:new(inventoryItems)
+    m_inventory = inventory
+end
+
+function HandleItemAddedToInventory(itemName)
+    if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
+        DCEI.ApplyBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+    elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
+        DCEI.ApplyBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+    elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
+        -- TODO: Implement this
+    end
+end
+
+function HandleItemRemovedFromInventory(itemName)
+    if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
+        DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+    elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
+        DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+    elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
+        -- TODO: Implement this
+    end
+end
+
+function HandleInventorySlotClicked(itemName, inventorySlot)
+    if m_player == nil then
+        return
+    end
+
+    DCEI.LogMessage("Selected Item: " .. itemName)
+
+    if itemName == COLLECTIBLE_POTION then
+        local healthAmount = InventoryCollectibles[itemName].itemPotionHealth
+
+        DCEI.LogMessage("Adding Player Health: " .. healthAmount)
+        DCEI.AddHealth(m_player, healthAmount)
+        
+        inventorySlot:UseItem()
+        
+    elseif itemName == COLLECTIBLE_BOMB then
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local bombUnitName = InventoryCollectibles[itemName].itemBombName
+
+        DCEI.LogMessage("Deploying Bomb...")
+        DCEI.CreateUnit(0, 0, bombUnitName, playerPosition.x, playerPosition.y)
+
+        inventorySlot:UseItem()
+
+    else
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+
+        HandleItemRemovedFromInventory(itemName)
+        inventorySlot:Clear()
+    end
+end
+
+-- #endregion Inventory Functions
 
 -- #endregion Utility Fuctions
 
