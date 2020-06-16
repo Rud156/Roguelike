@@ -31,7 +31,10 @@
             "__StopMovement"
         ],
         "usedBehaviors": [
-            "_PlayerCharacter_Damage_Invincible"
+            "_PlayerCharacter_Damage_Invincible",
+            "_Collectible_Boots_Of_Speed",
+            "_Collectible_Hammer_Of_Attack",
+            "_Collectible_Helm_Of_Valor"
         ]
     }
 }

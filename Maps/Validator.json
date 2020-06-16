@@ -70,6 +70,33 @@
                     }
                 ]
             }
+        },
+        "_PlayerCharacter_Hammer_Of_Attack": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "unit": 0,
+                                            "tagName": "gt_lightAttackMod"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": 0.5
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     }
 }

@@ -58,6 +58,30 @@
         "_Search_PlayerCharacter_Ranged_Missile": {
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
+        },
+        "_Unit_Invincible": {},
+        "_Collectible_Hammer_Of_Attack": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_lightAttackMod",
+                    "count": 1
+                }
+            ]
+        },
+        "_Collectible_Helm_Of_Valor": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_invincible",
+                    "count": 1
+                }
+            ]
+        },
+        "_Collectible_Boots_Of_Speed": {
+            "modifiers": {
+                "moveSpeedModifier": {
+                    "scaled": 1.3
+                }
+            }
         }
     }
 }

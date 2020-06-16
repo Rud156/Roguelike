@@ -72,6 +72,11 @@
                         "namedExpression": {
                             "name": "DamageResistance"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_Hammer_Of_Attack"
+                        }
                     }
                 ]
             }
@@ -97,6 +102,11 @@
                     {
                         "namedExpression": {
                             "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_Hammer_Of_Attack"
                         }
                     }
                 ]
