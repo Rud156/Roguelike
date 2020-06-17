@@ -187,8 +187,8 @@ local BEGINNING_ROOMS = {
 -- #region Enemy Sets
 
 local LEVEL_1_ENEMY_SETS = {
-    { 0 },
-    { 0 }
+    { 0, 0 },
+    { 1, 1 }
 }
 
 local LEVEL_2_ENEMY_SETS = {
