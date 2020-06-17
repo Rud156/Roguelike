@@ -24,6 +24,18 @@
                 "target": 2
             }
         },
+        "_Damage_Collectible_Bomb_Attack": {
+            "damage": {
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
         "_Damage_Enemy_GoblinChef": {
             "damage": {
                 "whichUnit": 1,
@@ -160,6 +172,16 @@
             "removeBehavior": {
                 "behavior": "_PlayerCharacter_Dash_Invincible",
                 "target": 3
+            }
+        },
+        "_Search_Collectible_Bomb_Attack": {
+            "areaSearch": {
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "effect": "_Set_Collectible_Bomb_Attack"
             }
         },
         "_Search_Enemy_GoblinChef": {
@@ -329,6 +351,22 @@
                 "duration": 0.1
             }
         },
+        "_Set_Behaviour_PlayerCharacter_Damaged": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Damaged",
+                "target": 1
+            }
+        },
+        "_Set_Collectible_Bomb_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Collectible_Bomb_Attack",
+                    "_Set_Behaviour_PlayerCharacter_Damaged",
+                    "_Set_Behaviour_Flash_Enemy",
+                    "Remove Source"
+                ]
+            }
+        },
         "_Set_Damage_PlayerCharacter_Melee_HeavyAttack": {
             "set": {
                 "effectList": [
@@ -343,6 +381,23 @@
                 "effectList": [
                     "_Damage_PlayerCharacter_Melee_LightAttack",
                     "_Set_Behaviour_Flash_Enemy"
+                ]
+            }
+        },
+        "_Set_Enemy_GoblinChef_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinChef",
+                    "_Set_Behaviour_PlayerCharacter_Damaged",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Set_Enemy_Hobgoblin_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_Hobgoblin",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
                 ]
             }
         },
@@ -403,61 +458,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Damage_Collectible_Bomb_Attack": {
-            "damage": {
-                "damageAmount": 30,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "_Set_Collectible_Bomb_Attack": {
-            "set": {
-                "effectList": [
-                    "_Damage_Collectible_Bomb_Attack",
-                    "_Set_Behaviour_PlayerCharacter_Damaged",
-                    "_Set_Behaviour_Flash_Enemy",
-                    "Remove Source"
-                ]
-            }
-        },
-        "_Search_Collectible_Bomb_Attack": {
-            "areaSearch": {
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 1
-                    }
-                },
-                "effect": "_Set_Collectible_Bomb_Attack"
-            }
-        },
-        "_Set_Behaviour_PlayerCharacter_Damaged": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_Damaged",
-                "target": 1
-            }
-        },
-        "_Set_Enemy_Hobgoblin_Attack": {
-            "set": {
-                "effectList": [
-                    "_Damage_Enemy_Hobgoblin",
-                    "_Set_Behaviour_PlayerCharacter_Damaged"
-                ]
-            }
-        },
-        "_Set_Enemy_GoblinChef_Attack": {
-            "set": {
-                "effectList": [
-                    "_Damage_Enemy_GoblinChef",
-                    "_Set_Behaviour_PlayerCharacter_Damaged",
-                    "Remove Source"
-                ]
             }
         }
     }

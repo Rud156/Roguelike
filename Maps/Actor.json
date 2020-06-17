@@ -79,6 +79,58 @@
                 ]
             }
         },
+        "_Collectible_Bomb_Unit": {
+            "parent": "",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bomb_red_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "SpawnExplodeEffect",
+                                    "duration": 1.95
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "SpawnExplodeEffect"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Collectible_Bomb_Attack"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Event Destroy Immediate"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
+            }
+        },
         "_Collectible_Boots_Of_Speed": {
             "parent": "",
             "unitActor": {
@@ -465,6 +517,59 @@
                                 "log": {
                                     "message": "Animation Paused"
                                 }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Collectible_Bomb_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_shared_explosion_small"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Actor Created"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
                             }
                         ]
                     }
@@ -1539,114 +1644,23 @@
                     "name": "arrowtower_rank03"
                 }
             }
-        },
-        "_Collectible_Bomb_Unit": {
-            "parent": "",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "bomb_red_missile"
-                },
-                "preserveOnUnitRemove": true,
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "createTimer": {
-                                    "name": "SpawnExplodeEffect",
-                                    "duration": 1.95
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "SpawnExplodeEffect"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Collectible_Bomb_Attack"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation",
-                    "Event Destroy Immediate"
-                ],
-                "hostSites": {
-                    "SiteHit": {
-                        "offset": {
-                            "forward": 0.1,
-                            "up": 0.375
-                        }
-                    }
-                }
-            }
-        },
-        "_FX_Collectible_Bomb_Attack": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_shared_explosion_small"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Actor Created"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
         }
     },
     "actorEventMacros": {
+        "Event Destroy Immediate": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitRemove": {}
+                    },
+                    "actions": [
+                        {
+                            "destroy": {}
+                        }
+                    ]
+                }
+            ]
+        },
         "_Enemy_Damage_Effect": {
             "events": [
                 {
@@ -1811,20 +1825,6 @@
                                 "name": "FlashPlayerMeshOff",
                                 "duration": 0.1
                             }
-                        }
-                    ]
-                }
-            ]
-        },
-        "Event Destroy Immediate": {
-            "events": [
-                {
-                    "actorTerm": {
-                        "unitRemove": {}
-                    },
-                    "actions": [
-                        {
-                            "destroy": {}
                         }
                     ]
                 }
