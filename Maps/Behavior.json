@@ -10,7 +10,7 @@
             "maxStackCount": 1,
             "modifiers": {
                 "moveSpeedModifier": {
-                    "scaled": 1.3
+                    "scaled": 1.2
                 }
             }
         },

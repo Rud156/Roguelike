@@ -68,7 +68,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "bomb_red_missile"
+                    "name": "chest_golden"
                 },
                 "preserveOnUnitRemove": true,
                 "eventMacros": [
@@ -84,7 +84,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "bomb_red_missile"
+                    "name": "bomb00_missile"
                 },
                 "preserveOnUnitRemove": true,
                 "events": [
@@ -128,7 +128,8 @@
                             "up": 0.375
                         }
                     }
-                }
+                },
+                "modelScale": 2
             }
         },
         "_Collectible_Boots_Of_Speed": {
@@ -136,7 +137,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "chosen_priestess_pet_shield"
+                    "name": "chest_golden"
                 },
                 "preserveOnUnitRemove": true,
                 "eventMacros": [
@@ -152,7 +153,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "hammer_missile"
+                    "name": "chest_golden"
                 },
                 "preserveOnUnitRemove": true,
                 "eventMacros": [
@@ -168,7 +169,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "chosen_grandmaster_pet_shield"
+                    "name": "chest_golden"
                 },
                 "preserveOnUnitRemove": true,
                 "eventMacros": [
@@ -184,7 +185,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "orb_mana"
+                    "name": "chest_golden"
                 },
                 "preserveOnUnitRemove": true,
                 "eventMacros": [
