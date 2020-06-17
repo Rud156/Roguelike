@@ -177,7 +177,7 @@
                     "ally": 0,
                     "enemy": 0
                 },
-                "effect": "_Set_Enemy_GoblinChef"
+                "effect": "_Set_Enemy_GoblinChef_Attack"
             }
         },
         "_Search_Enemy_Hobgoblin": {
@@ -194,7 +194,7 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Damage_Enemy_Hobgoblin",
+                "effect": "_Set_Enemy_Hobgoblin_Attack",
                 "offset": {
                     "forward": 0.2
                 }
@@ -346,14 +346,6 @@
                 ]
             }
         },
-        "_Set_Enemy_GoblinChef": {
-            "set": {
-                "effectList": [
-                    "_Damage_Enemy_GoblinChef",
-                    "Remove Source"
-                ]
-            }
-        },
         "_Set_PlayerCharacter_Melee_Dash_Launch": {
             "set": {
                 "effectList": [
@@ -429,6 +421,8 @@
             "set": {
                 "effectList": [
                     "_Damage_Collectible_Bomb_Attack",
+                    "_Set_Behaviour_PlayerCharacter_Damaged",
+                    "_Set_Behaviour_Flash_Enemy",
                     "Remove Source"
                 ]
             }
@@ -441,6 +435,29 @@
                     }
                 },
                 "effect": "_Set_Collectible_Bomb_Attack"
+            }
+        },
+        "_Set_Behaviour_PlayerCharacter_Damaged": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Damaged",
+                "target": 1
+            }
+        },
+        "_Set_Enemy_Hobgoblin_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_Hobgoblin",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
+        "_Set_Enemy_GoblinChef_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinChef",
+                    "_Set_Behaviour_PlayerCharacter_Damaged",
+                    "Remove Source"
+                ]
             }
         }
     }

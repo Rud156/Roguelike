@@ -1,6 +1,7 @@
 {
     "behaviors": {
         "_Collectible_Boots_Of_Speed": {
+            "maxStackCount": 1,
             "modifiers": {
                 "moveSpeedModifier": {
                     "scaled": 10
@@ -8,6 +9,7 @@
             }
         },
         "_Collectible_Hammer_Of_Attack": {
+            "maxStackCount": 1,
             "behaviorTagArray": [
                 {
                     "name": "gt_lightAttackMod",
@@ -16,6 +18,7 @@
             ]
         },
         "_Collectible_Helm_Of_Valor": {
+            "maxStackCount": 1,
             "behaviorTagArray": [
                 {
                     "name": "gt_invincible",
@@ -26,8 +29,11 @@
         "_CollisionDetection_PlayerCharacter": {
             "duration": 0.01
         },
-        "_Enemy_Damage_Taken": {},
+        "_Enemy_Damage_Taken": {
+            "maxStackCount": 1
+        },
         "_Enemy_Stunned": {
+            "maxStackCount": 1,
             "modifiers": {
                 "flags": {
                     "suppressMovement": true,
@@ -38,6 +44,7 @@
             }
         },
         "_PlayerCharacter_Damage_Invincible": {
+            "maxStackCount": 1,
             "behaviorTagArray": [
                 {
                     "name": "gt_invincible",
@@ -46,9 +53,11 @@
             ]
         },
         "_PlayerCharacter_Dash_Ended": {
+            "maxStackCount": 1,
             "duration": 0.01
         },
         "_PlayerCharacter_Dash_Invincible": {
+            "maxStackCount": 1,
             "behaviorTagArray": [
                 {
                     "name": "gt_invincible",
@@ -56,37 +65,53 @@
                 }
             ]
         },
-        "_PlayerCharacter_Missile_Reached": {},
-        "_PlayerCharacter_Movement": {},
+        "_PlayerCharacter_Missile_Reached": {
+            "maxStackCount": 1
+        },
+        "_PlayerCharacter_Movement": {
+            "maxStackCount": 1
+        },
         "_Search_Enemy_GoblinChef": {
+            "maxStackCount": 1,
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_Enemy_GoblinChef"
         },
         "_Search_PlayerCharacter": {
+            "maxStackCount": 1,
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter"
         },
         "_Search_PlayerCharacter_Melee_Missile": {
+            "maxStackCount": 1,
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Melee_Missile"
         },
         "_Search_PlayerCharacter_Ranged_HeavyAttack": {
+            "maxStackCount": 1,
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_HeavyAttack"
         },
         "_Search_PlayerCharacter_Ranged_LightAttack": {
+            "maxStackCount": 1,
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_LightAttack"
         },
         "_Search_PlayerCharacter_Ranged_Missile": {
+            "maxStackCount": 1,
             "periodicInterval": 0.01,
             "periodicEffect": "_Search_PlayerCharacter_Ranged_Missile"
         },
-        "_Unit_Invincible": {},
+        "_Unit_Invincible": {
+            "maxStackCount": 1
+        },
         "_Collectible_Bomb_Attack": {
+            "maxStackCount": 1,
             "duration": 2,
             "finalEffect": "",
             "expireEffect": "_Search_Collectible_Bomb_Attack"
+        },
+        "_PlayerCharacter_Damaged": {
+            "duration": 0.01
         }
     }
 }

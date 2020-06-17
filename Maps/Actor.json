@@ -983,7 +983,8 @@
                     }
                 ],
                 "eventMacros": [
-                    "_PlayerCharacter_Damage_Flash"
+                    "_PlayerCharacter_Damage_Flash",
+                    "_PlayerCharacter_Helm_Of_Valor"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -1131,7 +1132,8 @@
                     }
                 ],
                 "eventMacros": [
-                    "_PlayerCharacter_Damage_Flash"
+                    "_PlayerCharacter_Damage_Flash",
+                    "_PlayerCharacter_Helm_Of_Valor"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -1546,21 +1548,51 @@
                     "name": "bomb_red_missile"
                 },
                 "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "SpawnExplodeEffect",
+                                    "duration": 1.95
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "SpawnExplodeEffect"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Collectible_Bomb_Attack"
+                                }
+                            }
+                        ]
+                    }
+                ],
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Event Destroy Immediate"
-                ]
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                }
             }
         },
         "_FX_Collectible_Bomb_Attack": {
-            "parent": "_FX Attack SingleTarget",
-            "actionActor": {
-                "effect": "_Damage_Collectible_Bomb_Attack",
-                "launchModel": "_FX_Collectible_Bomb_Attack_Model"
-            }
-        },
-        "_FX_Collectible_Bomb_Attack_Model": {
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
@@ -1579,6 +1611,11 @@
                                 "createTimer": {
                                     "name": "FailsafeRemove",
                                     "duration": 5
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Actor Created"
                                 }
                             }
                         ]
@@ -1788,6 +1825,38 @@
                     "actions": [
                         {
                             "destroy": {}
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Helm_Of_Valor": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Collectible_Helm_Of_Valor"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "log": {
+                                "message": "Player Helm Of Valor Active"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Collectible_Helm_Of_Valor"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "log": {
+                                "message": "Player Helm Of Valor Inactive"
+                            }
                         }
                     ]
                 }

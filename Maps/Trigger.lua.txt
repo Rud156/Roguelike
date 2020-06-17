@@ -45,6 +45,7 @@ local ENTRY_DOORWAY_CLOSE_ANIM_DELAY = 1
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Damage_Invincible"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
+local PLAYERCHARACTER_DAMAGED = "_PlayerCharacter_Damaged"
 local PLAYER_DASH_STAMINA = 1
 local PLAYER_DASH_CD = 0.3
 -- Player Ranged
@@ -71,9 +72,11 @@ local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 local COLLECTIBLE_STRING = "_Collectible"
 local COLLECTIBLE_BOOTS_OF_SPEED = "_Collectible_Boots_Of_Speed"
 local COLLECTIBLE_HAMMER_OF_ATTACK = "_Collectible_Hammer_Of_Attack"
-local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
 local COLLECTIBLE_POTION = "_Collectible_Potion"
 local COLLECTIBLE_BOMB = "_Collectible_Bomb"
+
+local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
+local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 
 -- Debug
 local USE_KEYBOARD = false
@@ -115,6 +118,10 @@ local m_playerInvincibilityTimer = 0
 local m_playerDamageUiFlashCount = 0
 local m_playerDamageUiFlashTimer = 0
 local m_playerDamageUiIsFlashOn = false
+-- Helm Of Valor
+local m_helmOfValorTimeRemaining = 0
+local m_helmOfValorActive = false
+local m_helmOfValorInInventory = false
 -- Camera
 local m_camera
 -- UI
@@ -199,6 +206,17 @@ function Update()
         LaunchPlayerLightAttack()
     end
 
+    if m_helmOfValorInInventory then
+        if not m_helmOfValorActive then
+            m_helmOfValorTimeRemaining = m_helmOfValorTimeRemaining - GAME_LOOP_RATE
+
+            if m_helmOfValorTimeRemaining <= 0 then
+                m_helmOfValorActive = true
+                DCEI.ApplyBehavior(m_player, InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
+            end
+        end
+    end
+
     -- Reset Collision. Maybe can remove it
     m_playerCollided = false
 end
@@ -257,6 +275,11 @@ function HandleBehaviourAdded()
     elseif behaviourName == ENEMY_STUNNED_BEHAVIOUR then
         DCEI.LogMessage("Enemy Stun Behaviour Added")
         m_roomGenerator:UpdateEnemyStunState(unit)
+
+    elseif behaviourName == PLAYERCHARACTER_DAMAGED then
+        DCEI.RemoveBehavior(m_player, InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
+        m_helmOfValorActive = false
+        m_helmOfValorTimeRemaining = COLLECTIBLE_HELM_OF_VALOR_TIMER
     end
 end
 
@@ -862,7 +885,9 @@ function HandleItemAddedToInventory(itemName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
         DCEI.ApplyBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
-        -- TODO: Implement this
+        m_helmOfValorInInventory = true
+        m_helmOfValorActive = false
+        m_helmOfValorTimeRemaining = 0
     end
 end
 
@@ -872,7 +897,11 @@ function HandleItemRemovedFromInventory(itemName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
         DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
-        -- TODO: Implement this
+        m_helmOfValorInInventory = false
+        m_helmOfValorActive = false
+        m_helmOfValorTimeRemaining = 0
+
+        DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
     end
 end
 
