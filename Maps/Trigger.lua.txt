@@ -138,7 +138,7 @@ local m_mouseDown = false
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(1592341083)
+    math.randomseed(1592431012) -- TODO: Change this later on...
 
     m_roomGenerator = RoomGenerator:new(m_currentRoomLevel)
     SpawnPlayerAndSetPosition()

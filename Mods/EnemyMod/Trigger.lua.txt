@@ -5,10 +5,12 @@ local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 local GOBLIN_CHEF = "_Enemy_GoblinChef"
 local GOBLIN_CHEF_ATTACK = "_Enemy_GoblinChef_Attack"
 local GOBLIN_CHEF_ATTACK_RANGE = 3
-local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.25
+local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.6
 local GOBLIN_CHEF_SHOT_COUNT = 3
 local GOBLIN_CHEF_ATTACK_COOLDOWN = 5
 local GOBLIN_CHEF_MIN_CLOSEST_DISTANCE = 2.5
+local GOBLIN_CHEF_MOVEBACK_DISTANCE = 5
+local GOBLIN_CHEF_MOVEBACK_TIMER = 3
 local GOBLIN_CHEF_STUN_TIME = 3.5
 
 local GOBLIN_HOB = "_Enemy_Hobgoblin"
@@ -26,15 +28,16 @@ local GoblinChef = {
     room = nil,
     unit = nil,
     
-    enemyState = 0, -- 0: Targetting Movement, 1: Attacking, 2: Stunned
+    enemyState = 0, -- 0: Idle, 1: Targetting Movement, 2: Move Back, 3: Attacking, 4: Stunned
+
+    -- MoveBack
+    targetMovebackPoint = nil,
+    movebackTimer = 0,
 
     -- Attack
     attackCooldownTimer = 0,
     currentTimeBetweenAttacks = 0,
     currentShotCount = 0,
-
-    -- Movement
-    isMoving = false,
 
     -- Stunned
     stunTimer = 0
@@ -50,23 +53,32 @@ function GoblinChef:new(room, xPosition, yPosition)
 
     goblinChef.enemyState = 0
 
+    goblinChef.targetMovebackPoint = nil
+
     goblinChef.attackCooldownTimer = 0
     goblinChef.currentTimeBetweenAttacks = 0
     goblinChef.currentShotCount = 0
-
-    goblinChef.isMoving = false
 
     goblinChef.stunTimer = 0
 
     return goblinChef
 end
 function GoblinChef:Update(deltaTime, playerPosition)
+    -- Idle will be the main state switcher...
     if self.enemyState == 0 then
-        self:TargetPlayer(deltaTime, playerPosition)
+        self:UpdateIdleState(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
-        self:AttackPlayer(deltaTime, playerPosition)
+        self:TargetPlayer(deltaTime, playerPosition)
     elseif self.enemyState == 2 then
+        self:UpdateMoveBackState(deltaTime)
+    elseif self.enemyState == 3 then
+        self:AttackPlayer(deltaTime, playerPosition)
+    elseif self.enemyState == 4 then
         self:UpdateEnemyStunned(deltaTime)
+    end
+
+    if self.enemyState ~= 3 then
+        self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
     end
 end
 function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
@@ -75,40 +87,77 @@ function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
         DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
         self.stunTimer = GOBLIN_CHEF_STUN_TIME
-        self:SetEnemyState(2)
+        self:SetEnemyState(4)
 
         return true
     end
 
     return false
 end
+function GoblinChef:UpdateIdleState(deltaTime, playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
+
+    if distanceFromPlayer <= GOBLIN_CHEF_ATTACK_RANGE then
+        if self.attackCooldownTimer <= 0 then
+            self.currentShotCount = GOBLIN_CHEF_SHOT_COUNT
+            self.currentTimeBetweenAttacks = 0
+            self.attackCooldownTimer = 0
+
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+            self:SetEnemyState(3)
+        else
+            local randomAwayPoint = self:FindRandomMoveBackPointAroundPlayer(playerPosition)
+            self.targetMovebackPoint = randomAwayPoint
+            self.movebackTimer = GOBLIN_CHEF_MOVEBACK_TIMER
+            self:SetEnemyState(2)    
+        end
+
+    elseif distanceFromPlayer < GOBLIN_CHEF_MIN_CLOSEST_DISTANCE then
+        local randomAwayPoint = self:FindRandomMoveBackPointAroundPlayer(playerPosition)
+        self.targetMovebackPoint = randomAwayPoint
+        self.movebackTimer = GOBLIN_CHEF_MOVEBACK_TIMER
+        self:SetEnemyState(2)
+
+    else
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+        self:SetEnemyState(1)
+    end
+end
 function GoblinChef:TargetPlayer(deltaTime, playerPosition)
-    self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
 
     if distanceFromPlayer > GOBLIN_CHEF_MIN_CLOSEST_DISTANCE then
         DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
-        self.isMoving = true
-    else
-        if self.isMoving then
-            -- Basically stop the enemy when it gets too near
-            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
-            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
-            self.isMoving = false
-        end
-        self:LookAtPlayer(playerPosition)
     end
 
     -- Switch to Attack State only when moving normally
-    if distanceFromPlayer <= GOBLIN_CHEF_ATTACK_RANGE and self.attackCooldownTimer <= 0 then
-        self.currentShotCount = GOBLIN_CHEF_SHOT_COUNT
-        self.currentTimeBetweenAttacks = 0
-        self.attackCooldownTimer = 0
+    if distanceFromPlayer <= GOBLIN_CHEF_ATTACK_RANGE then
+        if self.attackCooldownTimer <= 0 then
+            self.currentShotCount = GOBLIN_CHEF_SHOT_COUNT
+            self.currentTimeBetweenAttacks = 0
+            self.attackCooldownTimer = 0
 
-        local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
-        DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
-        self:SetEnemyState(1)
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+            self:SetEnemyState(3)
+
+        else
+            local randomAwayPoint = self:FindRandomMoveBackPointAroundPlayer(playerPosition)
+            self.targetMovebackPoint = randomAwayPoint
+            self.movebackTimer = GOBLIN_CHEF_MOVEBACK_TIMER
+            self:SetEnemyState(2)
+        end
+    end
+end
+function GoblinChef:UpdateMoveBackState(deltaTime)
+    DCEI.Move(self.unit, self.targetMovebackPoint.x, self.targetMovebackPoint.y)
+    self.movebackTimer = self.movebackTimer - deltaTime
+
+    if self.movebackTimer <= 0 then
+        self:SetEnemyState(0) -- Reset to Idle State to find a new movement
     end
 end
 function GoblinChef:AttackPlayer(deltaTime, playerPosition)
@@ -141,7 +190,26 @@ function GoblinChef:LookAtPlayer(playerPosition)
 
     DCEI.SetUnitRotationEuler(self.unit, 0, angle, 0)
 end
+function GoblinChef:FindRandomMoveBackPointAroundPlayer(playerPosition)
+    local radius = GOBLIN_CHEF_MOVEBACK_DISTANCE
+    local validPositions = {}
+
+    for i = 0, 360 do
+        local xPosition = radius * math.sin(math.rad(i)) + playerPosition.x
+        local yPosition = radius * math.cos(math.rad(i)) + playerPosition.y
+
+        if self.room.rect:contains(xPosition, yPosition) then
+            table.insert(validPositions, { x = xPosition, y = yPosition })
+        end
+    end
+
+    local randomIndex = math.random(1, #validPositions)
+    local randomPosition = validPositions[randomIndex]
+
+    return randomPosition
+end
 function GoblinChef:SetEnemyState(enemyState)
+    DCEI.LogMessage("Enemy State: " .. enemyState)
     self.enemyState = enemyState
 end
 function GoblinChef:GetMainUnit()
