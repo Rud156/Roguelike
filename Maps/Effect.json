@@ -36,6 +36,19 @@
                 ]
             }
         },
+        "_Damage_Enemy_Goblin": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 15,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
         "_Damage_Enemy_GoblinChef": {
             "damage": {
                 "whichUnit": 1,
@@ -182,6 +195,26 @@
                     }
                 },
                 "effect": "_Set_Collectible_Bomb_Attack"
+            }
+        },
+        "_Search_Enemy_Goblin": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circleSector": {
+                        "outerRadius": 0.9,
+                        "innerRadius": 0.2,
+                        "angle": 60
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Enemy_Hobgoblin_Attack",
+                "offset": {
+                    "forward": 0.2
+                }
             }
         },
         "_Search_Enemy_GoblinChef": {
@@ -393,6 +426,14 @@
                 ]
             }
         },
+        "_Set_Enemy_Goblin_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_Goblin",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
         "_Set_Enemy_Hobgoblin_Attack": {
             "set": {
                 "effectList": [
@@ -458,47 +499,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Damage_Enemy_Goblin": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 15,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "_Search_Enemy_Goblin": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circleSector": {
-                        "outerRadius": 0.9,
-                        "innerRadius": 0.2,
-                        "angle": 60
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "_Set_Enemy_Hobgoblin_Attack",
-                "offset": {
-                    "forward": 0.2
-                }
-            }
-        },
-        "_Set_Enemy_Goblin_Attack": {
-            "set": {
-                "effectList": [
-                    "_Damage_Enemy_Goblin",
-                    "_Set_Behaviour_PlayerCharacter_Damaged"
-                ]
             }
         }
     }

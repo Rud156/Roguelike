@@ -196,6 +196,151 @@
                 ]
             }
         },
+        "_Enemy_Goblin": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_green"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Hobgoblin_Spawn"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Hobgoblin_Spawn"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_Hobgoblin_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "AttackEffectSpawn",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_Hobgoblin_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "removeTimer": {
+                                    "name": "AttackEffectSpawn"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "AttackEffectSpawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Hobgoblin_Attack",
+                                    "hostSite": "Attack Host Site"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Hobgoblin_Attack"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_Goblin_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_Goblin_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Stunned_Effect"
+                ],
+                "hostSites": {
+                    "Attack Host Site": {
+                        "offset": {
+                            "forward": 0.8,
+                            "up": 0.1
+                        }
+                    },
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1
+                        }
+                    }
+                },
+                "modelScale": 1.2
+            }
+        },
         "_Enemy_GoblinChef": {
             "parent": "_StandardUnit DecayOnDeath",
             "unitActor": {
@@ -1644,151 +1789,6 @@
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
                 }
-            }
-        },
-        "_Enemy_Goblin": {
-            "parent": "_StandardUnit DecayOnDeath",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "goblin_green"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Hobgoblin_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Hobgoblin_Spawn"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Enemy_Hobgoblin_Attack"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "AttackEffectSpawn",
-                                    "duration": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Enemy_Hobgoblin_Attack"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            },
-                            {
-                                "removeTimer": {
-                                    "name": "AttackEffectSpawn"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "AttackEffectSpawn"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Hobgoblin_Attack",
-                                    "hostSite": "Attack Host Site"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Hobgoblin_Attack"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitDeath": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Enemy_Goblin_Attack"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Enemy_Goblin_Attack"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "eventMacros": [
-                    "_Enemy_Damage_Effect",
-                    "_Enemy_Stunned_Effect"
-                ],
-                "hostSites": {
-                    "Attack Host Site": {
-                        "offset": {
-                            "forward": 0.8,
-                            "up": 0.1
-                        }
-                    },
-                    "StunnedEffectSite": {
-                        "offset": {
-                            "up": 1
-                        }
-                    }
-                },
-                "modelScale": 1.2
             }
         }
     },

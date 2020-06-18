@@ -368,22 +368,22 @@ local Goblin = {
 }
 Goblin.__index = Goblin
 function Goblin:new(room, xPosition, yPosition)
-    local Goblin = {}
-    setmetatable(Goblin, Goblin)
+    local goblin = {}
+    setmetatable(goblin, Goblin)
 
     local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN, xPosition, yPosition)
-    Goblin.room = room
-    Goblin.unit = enemyUnit
+    goblin.room = room
+    goblin.unit = enemyUnit
 
-    Goblin.enemyState = 0
+    goblin.enemyState = 0
 
-    Goblin.attackWaitTimer = 0
+    goblin.attackWaitTimer = 0
 
-    Goblin.isMoving = false
+    goblin.isMoving = false
 
-    Goblin.stunTimer = 0
+    goblin.stunTimer = 0
 
-    return Goblin
+    return goblin
 end
 function Goblin:Update(deltaTime, playerPosition)
     if self.enemyState == 0 then
@@ -399,7 +399,7 @@ function Goblin:CheckAndActivateStunnedState(enemyUnit)
         local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
         DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
-        self.stunTimer = GOBLIN_HOB_STUN_TIME
+        self.stunTimer = GOBLIN_STUN_TIME
         self:SetEnemyState(2)
 
         return true
@@ -411,7 +411,7 @@ function Goblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
 
-    if distanceFromPlayer > GOBLIN_HOB_MIN_CLOSEST_DISTANCE then
+    if distanceFromPlayer > GOBLIN_MIN_CLOSEST_DISTANCE then
         DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
         self.isMoving = true
     else
@@ -424,7 +424,7 @@ function Goblin:TargetPlayer(deltaTime, playerPosition)
     end
     
     -- Switch to Attack State only when moving normally
-    if distanceFromPlayer <= GOBLIN_HOB_ATTACK_RANGE and self.attackWaitTimer <= 0 then
+    if distanceFromPlayer <= GOBLIN_ATTACK_RANGE and self.attackWaitTimer <= 0 then
         self.attackWaitTimer = 0
         self:AttackPlayer(deltaTime, playerPosition)
     end
@@ -439,9 +439,9 @@ function Goblin:AttackPlayer(deltaTime, playerPosition)
     self:LookAtPlayer(deltaTime, playerPosition) -- This is probably not required
 
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
-    DCEI.CastAbilityAtPosition(GOBLIN_HOB_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
+    DCEI.CastAbilityAtPosition(GOBLIN_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
 
-    self.attackWaitTimer = GOBLIN_HOB_ATTACK_WAIT_TIMER
+    self.attackWaitTimer = GOBLIN_ATTACK_WAIT_TIMER
     self:SetEnemyState(1)
 end
 function Goblin:UpdateEnemyStunned(deltaTime)

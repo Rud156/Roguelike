@@ -17,12 +17,14 @@ EnemyMod.LerpAngleDeg = ExtensionFunction.LerpAngleDeg
 EnemyMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
 local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
+local EnemyGoblin = EnemyMod.EnemyGoblin
 
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
 RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
 RoomMod.Rect = UtilClassMod.Rect
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
 RoomMod.EnemyGoblinChef = EnemyGoblinChef
+RoomMod.EnemyGoblin = EnemyGoblin
 local Room = RoomMod.Room
 local RoomGenerator = RoomMod.RoomGenerator
 
