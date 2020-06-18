@@ -1790,6 +1790,24 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        },
+        "_Enemy_GoblinSapper": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_sapper"
+                }
+            }
+        },
+        "_Enemy_Ooze": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ooze_biggest"
+                }
+            }
         }
     },
     "actorEventMacros": {
