@@ -516,6 +516,37 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "_Enemy_Goblin": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 8
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 5,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_Goblin_Attack"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
         }
     }
 }

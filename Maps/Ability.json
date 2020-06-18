@@ -139,6 +139,16 @@
                 "mana": 0
             },
             "canCastWhileMoving": true
+        },
+        "_Enemy_Goblin_Attack": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "_Search_Enemy_Goblin",
+            "stats": {
+                "prepTime": 1,
+                "finishTime": 1,
+                "period": 0
+            }
         }
     }
 }

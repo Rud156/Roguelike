@@ -20,6 +20,13 @@ local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
 local GOBLIN_HOB_STUN_TIME = 3.5
 
+local GOBLIN = "_Enemy_Goblin"
+local GOBLIN_ATTACK = "_Enemy_Goblin_Attack"
+local GOBLIN_ATTACK_RANGE = 1
+local GOBLIN_ATTACK_WAIT_TIMER = 1.5
+local GOBLIN_MIN_CLOSEST_DISTANCE = 1
+local GOBLIN_STUN_TIME = 3.5
+
 local mod = {}
 
 -- #region Goblin Chef Enemy
@@ -342,8 +349,132 @@ function HobGoblin:CleanupEnemyDied()
 end
 --#endregion
 
+-- #region Goblin Enemy
+local Goblin = {
+    -- Units
+    room = nil,
+    unit = nil,
+    
+    enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting, 2: Stunned
+
+    -- Attack
+    attackWaitTimer = 0,
+
+    -- Movement
+    isMoving = false,
+
+    -- Stunned
+    stunTimer = 0
+}
+Goblin.__index = Goblin
+function Goblin:new(room, xPosition, yPosition)
+    local Goblin = {}
+    setmetatable(Goblin, Goblin)
+
+    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN, xPosition, yPosition)
+    Goblin.room = room
+    Goblin.unit = enemyUnit
+
+    Goblin.enemyState = 0
+
+    Goblin.attackWaitTimer = 0
+
+    Goblin.isMoving = false
+
+    Goblin.stunTimer = 0
+
+    return Goblin
+end
+function Goblin:Update(deltaTime, playerPosition)
+    if self.enemyState == 0 then
+        self:TargetPlayer(deltaTime, playerPosition)
+    elseif self.enemyState == 1 then
+        self:WaitAfterAttack(deltaTime, playerPosition)
+    elseif self.enemyState == 2 then
+        self:UpdateEnemyStunned(deltaTime)
+    end
+end
+function Goblin:CheckAndActivateStunnedState(enemyUnit)
+    if self.unit == enemyUnit then
+        local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+        DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+        self.stunTimer = GOBLIN_HOB_STUN_TIME
+        self:SetEnemyState(2)
+
+        return true
+    end
+
+    return false
+end
+function Goblin:TargetPlayer(deltaTime, playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
+
+    if distanceFromPlayer > GOBLIN_HOB_MIN_CLOSEST_DISTANCE then
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+        self.isMoving = true
+    else
+        if self.isMoving then
+            -- Basically stop the enemy when it gets too near
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+            self.isMoving = false
+        end
+    end
+    
+    -- Switch to Attack State only when moving normally
+    if distanceFromPlayer <= GOBLIN_HOB_ATTACK_RANGE and self.attackWaitTimer <= 0 then
+        self.attackWaitTimer = 0
+        self:AttackPlayer(deltaTime, playerPosition)
+    end
+end
+function Goblin:WaitAfterAttack(deltaTime, playerPosition)
+    self.attackWaitTimer = self.attackWaitTimer - deltaTime
+    if self.attackWaitTimer <= 0 then
+        self:SetEnemyState(0)
+    end
+end
+function Goblin:AttackPlayer(deltaTime, playerPosition)
+    self:LookAtPlayer(deltaTime, playerPosition) -- This is probably not required
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.CastAbilityAtPosition(GOBLIN_HOB_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
+
+    self.attackWaitTimer = GOBLIN_HOB_ATTACK_WAIT_TIMER
+    self:SetEnemyState(1)
+end
+function Goblin:UpdateEnemyStunned(deltaTime)
+    self.stunTimer = self.stunTimer - deltaTime
+    if self.stunTimer <= 0 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+        self.attackWaitTimer = 0
+        self:SetEnemyState(0)
+    end
+end
+function Goblin:LookAtPlayer(deltaTime, playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+
+    local direction = mod.VectorSubtract(playerPosition, enemyPosition)
+    local angle = math.deg(math.atan(direction.x, direction.y))
+
+    DCEI.SetUnitRotationEuler(self.unit, 0, angle, 0)
+end
+function Goblin:SetEnemyState(enemyState)
+    self.enemyState = enemyState
+end
+function Goblin:GetMainUnit()
+    return self.unit
+end
+function Goblin:CleanupEnemyDied()
+    -- Do nothing here...
+end
+--#endregion
+
 mod.EnemyGoblinChef = GoblinChef 
 mod.EnemyHobGoblin = HobGoblin
+mod.EnemyGoblin = Goblin
 
 mod.VectorDistance = nil
 mod.VectorSubtract = nil
