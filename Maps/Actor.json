@@ -421,6 +421,45 @@
                 "modelScale": 0.8
             }
         },
+        "_Enemy_GoblinSapper": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_sapper"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinSapper_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinSapper_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_Enemy_Hobgoblin": {
             "parent": "_StandardUnit DecayOnDeath",
             "unitActor": {
@@ -536,6 +575,99 @@
                     }
                 },
                 "modelScale": 1.2
+            }
+        },
+        "_Enemy_Ooze": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ooze_biggest"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_Unit_Invincible"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "_Unit_Invincible"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_Ooze_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_Ooze_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_Ooze_Missile_Launch"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_Ooze_Missile_Launch"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         },
         "_EntryDoorway": {
@@ -1791,17 +1923,7 @@
                 }
             }
         },
-        "_Enemy_GoblinSapper": {
-            "parent": "_StandardUnit DecayOnDeath",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "goblin_sapper"
-                }
-            }
-        },
-        "_Enemy_Ooze": {
-            "parent": "_StandardUnit DecayOnDeath",
+        "_Enemy_Ooze_Missile": {
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",

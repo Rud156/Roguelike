@@ -31,6 +31,12 @@
                 "speed": 0,
                 "gravity": 12
             }
+        },
+        "_Enemy_Ooze_Missile_Mover": {
+            "ballistic": {
+                "flightTime": 0.5,
+                "gravity": 12
+            }
         }
     }
 }

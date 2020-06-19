@@ -260,6 +260,36 @@
                 ]
             }
         },
+        "_Enemy_GoblinSapper": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 5
+                },
+                "movement": {
+                    "moveSpeed": 1.5
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_GoblinSapper_Attack"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
         "_Enemy_Hobgoblin": {
             "baseUnit": "_CUnit",
             "components": {
@@ -287,6 +317,37 @@
             "references": {
                 "abilityList": [
                     "_Enemy_Hobgoblin_Attack"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Enemy_Ooze": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 5
+                },
+                "movement": {
+                    "moveSpeed": 1.5
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_Ooze_Attack",
+                    "_Enemy_Ooze_Missile_Launch"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -548,65 +609,28 @@
                 }
             }
         },
-        "_Enemy_GoblinSapper": {
+        "_Enemy_Ooze_Missile": {
             "components": {
+                "unit": {
+                    "unitType": 1
+                },
                 "unitStats": {
-                    "radius": 0.25,
+                    "radius": 0,
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 5
-                },
-                "movement": {
-                    "moveSpeed": 1.5
-                },
-                "turning": {
-                    "turningSpeed": 900
+                    "maxHealth": 999
                 },
                 "behavior": {
-                    "behaviorType": 1
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
+                    "behaviorType": 0
                 }
             },
             "references": {
-                "abilityList": [
-                    "_Enemy_GoblinSapper_Attack"
+                "behaviorList": [
+                    "_Search_Enemy_Ooze_Missile"
                 ]
             },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Enemy_Ooze": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.25,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 5
-                },
-                "movement": {
-                    "moveSpeed": 1.5
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 1
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "_Enemy_Ooze_Attack"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
+            "displayName": "data/GameData/unit/_CMissile/display_name"
         }
     }
 }
