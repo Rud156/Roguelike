@@ -94,6 +94,16 @@
                         },
                         "actions": [
                             {
+                                "create": {
+                                    "actor": "_FX_Collectible_Bomb_Place"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Collectible_Bomb_Place"
+                                }
+                            },
+                            {
                                 "createTimer": {
                                     "name": "SpawnExplodeEffect",
                                     "duration": 1.95
@@ -111,6 +121,11 @@
                             {
                                 "create": {
                                     "actor": "_FX_Collectible_Bomb_Attack"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Collectible_Bomb_Attack"
                                 }
                             }
                         ]
@@ -1975,6 +1990,114 @@
                 "resource": {
                     "type": "Sound",
                     "name": "healing_v1"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Collectible_Bomb_Place": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_surfer_eruption_hit"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_Bomb_Place": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "bfrocket_hit"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_Bomb_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "coralwarden_pufferfish_explode"
                 },
                 "events": [
                     {

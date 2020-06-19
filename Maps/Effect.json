@@ -472,7 +472,7 @@
                     "_Damage_Collectible_Bomb_Attack",
                     "_Set_Behaviour_PlayerCharacter_Damaged",
                     "_Set_Behaviour_Flash_Enemy",
-                    "Remove Source"
+                    "Remove Caster"
                 ]
             }
         },
