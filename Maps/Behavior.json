@@ -32,6 +32,9 @@
                 }
             ]
         },
+        "_Collectible_Potion": {
+            "duration": 0.1
+        },
         "_CollisionDetection_PlayerCharacter": {
             "maxStackCount": 0,
             "duration": 0.01
@@ -78,6 +81,7 @@
             ]
         },
         "_PlayerCharacter_Damaged": {
+            "maxStackCount": 1,
             "duration": 0.01
         },
         "_PlayerCharacter_Dash_Ended": {
@@ -137,9 +141,6 @@
                     "count": 1
                 }
             ]
-        },
-        "_Collectible_Potion": {
-            "duration": 0.1
         }
     }
 }

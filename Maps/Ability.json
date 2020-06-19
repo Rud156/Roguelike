@@ -20,7 +20,7 @@
             }
         },
         "_Enemy_GoblinChef_Attack": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 2,
             "effect": "_Launch_Enemy_GoblinChef",
@@ -68,7 +68,7 @@
             }
         },
         "_Enemy_Ooze_Attack": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 0,
             "effect": "_Set_Enemy_Ooze_Attack",
@@ -110,7 +110,7 @@
             "canCastWhileMoving": true
         },
         "_PlayerCharacter_Melee_LightAttack": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 2,
             "effect": "_Search_PlayerCharacter_Melee_LightAttack",
