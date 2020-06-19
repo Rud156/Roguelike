@@ -31,6 +31,12 @@ local GOBLIN_SAPPER = "_Enemy_GoblinSapper"
 local GOBLIN_SAPPER_ATTACK = "_Enemy_GoblinSapper_Attack"
 local GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE = 0.5
 
+local OOZE = "_Enemy_Ooze"
+local OOZE_ATTACK = "_Enemy_Ooze_Attack"
+local OOZE_TARGETTING_RANGE = 5
+local OOZE_ATTACK_RANGE = 0.5
+local OOZE_RANDOM_MOVEMENT_TIMER = 3
+
 local mod = {}
 
 -- #region Goblin Chef Enemy
@@ -486,16 +492,16 @@ local GoblinSapper = {
 }
 GoblinSapper.__index = GoblinSapper
 function GoblinSapper:new(room, xPosition, yPosition)
-    local goblin = {}
-    setmetatable(goblin, GoblinSapper)
+    local goblinSapper = {}
+    setmetatable(goblinSapper, GoblinSapper)
 
     local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_SAPPER, xPosition, yPosition)
-    goblin.room = room
-    goblin.unit = enemyUnit
+    goblinSapper.room = room
+    goblinSapper.unit = enemyUnit
 
-    goblin.enemyState = 0
+    goblinSapper.enemyState = 0
 
-    return goblin
+    return goblinSapper
 end
 function GoblinSapper:Update(deltaTime, playerPosition)
     if self.enemyState == 0 then
@@ -529,10 +535,104 @@ function GoblinSapper:CleanupEnemyDied()
 end
 -- #endregion
 
+-- #region Ooze Enemy
+
+local Ooze = {
+    -- Units
+    room = nil,
+    unit = nil,
+    
+    enemyState = 0, -- 0: Random Movement, 1: Targetting Movement, 2: Attack Waiting, 3: Idling
+
+    -- Random Movement
+    targetPosition = nil,
+
+    -- General
+    currentTimer = 0,
+}
+Ooze.__index = Ooze
+function Ooze:new(room, xPosition, yPosition)
+    local ooze = {}
+    setmetatable(ooze, Ooze)
+
+    local enemyUnit = DCEI.CreateUnit(-1, -1, OOZE, xPosition, yPosition)
+    ooze.room = room
+    ooze.unit = enemyUnit
+
+    ooze.enemyState = 0
+
+    return ooze
+end
+function Ooze:Update(deltaTime, playerPosition)
+    if self.enemyState == 0 then
+    elseif self.enemyState == 1 then
+    elseif self.enemyState == 2 then
+    elseif self.enemyState == 3 then
+    end
+end
+function Ooze:CheckAndActivateStunnedState(enemyUnit)
+    -- Do nothing here...
+end
+function Ooze:UpdateRandomMovement(deltaTime, playerPosition)
+    self.currentTimer = self.currentTimer - deltaTime
+
+    if self.currentTimer <= 0 then
+        self:FindRandomEmptyPlace()
+    end
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
+
+    if distanceFromPlayer <= OOZE_TARGETTING_RANGE then
+        self:SetEnemyState(1)
+    elseif distanceFromPlayer <= OOZE_ATTACK_RANGE then
+        self:AttackPlayer(playerPosition)
+        self:SetEnemyState(2)
+    end
+end
+function Ooze:TargetPlayer(deltaTime, playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
+
+    if distanceFromPlayer <= OOZE_ATTACK_RANGE then
+        self:AttackPlayer(playerPosition)
+        self:SetEnemyState(2)
+    end
+end
+function Ooze:AttackPlayer(playerPosition)
+end
+function Ooze:UpdateAttackWaitingState(deltaTime, playerPosition)
+end
+function Ooze:UpdateIdlingState(deltaTime)
+    self.currentTimer = self.currentTimer - deltaTime
+    if self.currentTimer <= 0 then
+        self:SetEnemyState(0)
+    end
+end
+function Ooze:FindRandomEmptyPlace()
+    local emptyPositions, roomRect = self.room:GetEmptyPositions()
+    local randomEmptyPosition = math.random(1, #emptyPositions)
+
+    self.targetPosition = randomEmptyPosition
+    self.currentTimer = OOZE_RANDOM_MOVEMENT_TIMER
+end
+function Ooze:SetEnemyState(enemyState)
+    self.enemyState = enemyState
+end
+function Ooze:GetMainUnit()
+    return self.unit
+end
+function Ooze:CleanupEnemyDied()
+    -- Do nothing here...
+end
+
+-- #endregion
+
 mod.EnemyGoblinChef = GoblinChef 
 mod.EnemyHobGoblin = HobGoblin
 mod.EnemyGoblin = Goblin
 mod.EnemyGoblinSapper = GoblinSapper
+mod.EnemyOoze = Ooze
 
 mod.VectorDistance = nil
 mod.VectorSubtract = nil

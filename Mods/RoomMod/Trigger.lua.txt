@@ -460,6 +460,8 @@ function Room:SpawnNextWave()
             enemy = mod.EnemyGoblin:new(self, xPosition, yPosition)
         elseif enemyType == 3 then
             enemy = mod.EnemyGoblinSapper:new(self, xPosition, yPosition)
+        elseif enemyType == 4 then
+            enemy = mod.EnemyOoze:new(self, xPosition, yPosition)
         end
 
         table.insert(self.enemies, enemy)
@@ -1419,5 +1421,6 @@ mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil
 mod.EnemyGoblin = nil
 mod.EnemyGoblinSapper = nil
+mod.EnemyOoze = nil
 
 return mod
