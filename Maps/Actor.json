@@ -206,23 +206,6 @@
                 "events": [
                     {
                         "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Spawn"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
                             "unitAbilityStart": {
                                 "ability": "_Enemy_Hobgoblin_Attack"
                             }
@@ -322,6 +305,7 @@
                     }
                 ],
                 "eventMacros": [
+                    "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect"
                 ],
@@ -349,23 +333,6 @@
                     "name": "goblinchef"
                 },
                 "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Spawn"
-                                }
-                            }
-                        ]
-                    },
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
@@ -408,6 +375,7 @@
                     }
                 ],
                 "eventMacros": [
+                    "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect"
                 ],
@@ -430,23 +398,6 @@
                 },
                 "preserveOnUnitRemove": true,
                 "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Spawn"
-                                }
-                            }
-                        ]
-                    },
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
@@ -521,7 +472,8 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit DeathAnimation Decay"
+                    "Events StandardUnit DeathAnimation Decay",
+                    "_Enemy_Spawn"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -547,23 +499,6 @@
                     "name": "hobgoblin"
                 },
                 "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Spawn"
-                                }
-                            }
-                        ]
-                    },
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
@@ -637,6 +572,7 @@
                     }
                 ],
                 "eventMacros": [
+                    "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect"
                 ],
@@ -664,23 +600,6 @@
                     "name": "ooze_biggest"
                 },
                 "events": [
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Spawn"
-                                }
-                            }
-                        ]
-                    },
                     {
                         "actorTerm": {
                             "behaviorOn": {
@@ -761,6 +680,9 @@
                             }
                         ]
                     }
+                ],
+                "eventMacros": [
+                    "_Enemy_Spawn"
                 ]
             }
         },
@@ -1012,6 +934,65 @@
                     ""
                 ],
                 "modelScale": 1
+            }
+        },
+        "_FX_Enemy_Ooze_ReSpawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_creep_death_ooze_green"
+                }
+            }
+        },
+        "_FX_Enemy_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_blindingflash_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
             }
         },
         "_FX_Enemy_Stun_Impact": {
@@ -1373,12 +1354,18 @@
                 ],
                 "eventMacros": [
                     "_PlayerCharacter_Damage_Flash",
-                    "_PlayerCharacter_Helm_Of_Valor"
+                    "_PlayerCharacter_Helm_Of_Valor",
+                    "_PlayerCharacter_Health_Potion"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
                         "offset": {
                             "forward": 0.8
+                        }
+                    },
+                    "UnitCenter": {
+                        "offset": {
+                            "up": 0.3
                         }
                     }
                 }
@@ -1522,7 +1509,8 @@
                 ],
                 "eventMacros": [
                     "_PlayerCharacter_Damage_Flash",
-                    "_PlayerCharacter_Helm_Of_Valor"
+                    "_PlayerCharacter_Helm_Of_Valor",
+                    "_PlayerCharacter_Health_Potion"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -1535,6 +1523,11 @@
                         "offset": {
                             "forward": 0.5,
                             "up": 0.5
+                        }
+                    },
+                    "UnitCenter": {
+                        "offset": {
+                            "up": 0.3
                         }
                     }
                 }
@@ -1661,6 +1654,36 @@
             }
         },
         "_SFX_Enemy_Hobgoblin_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "awaken_sucessed"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Spawn": {
             "modelActor": {
                 "resource": {
                     "type": "Sound",
@@ -1899,11 +1922,11 @@
                 }
             }
         },
-        "_FX_Enemy_Spawn": {
+        "_FX_Collectible_Potion": {
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_chosen_blindingflash_impact"
+                    "name": "vfx_tower_lighthouse_heal_impact"
                 },
                 "events": [
                     {
@@ -1944,17 +1967,14 @@
                             }
                         ]
                     }
-                ],
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
                 ]
             }
         },
-        "_SFX_Enemy_Spawn": {
+        "_SFX_Collectible_Potion": {
             "modelActor": {
                 "resource": {
                     "type": "Sound",
-                    "name": "awaken_sucessed"
+                    "name": "healing_v1"
                 },
                 "events": [
                     {
@@ -1978,14 +1998,6 @@
                         ]
                     }
                 ]
-            }
-        },
-        "_FX_Enemy_Ooze_ReSpawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_creep_death_ooze_green"
-                }
             }
         }
     },
@@ -2199,6 +2211,51 @@
                         {
                             "log": {
                                 "message": "Player Helm Of Valor Inactive"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Health_Potion": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Collectible_Potion"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Potion",
+                                "hostSite": "UnitCenter"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Collectible_Potion"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Enemy_Spawn": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitSpawn": {}
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Enemy_Spawn"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Enemy_Spawn"
                             }
                         }
                     ]

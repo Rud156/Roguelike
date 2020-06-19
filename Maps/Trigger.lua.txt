@@ -920,9 +920,11 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 
     if itemName == COLLECTIBLE_POTION then
         local healthAmount = InventoryCollectibles[itemName].itemPotionHealth
+        local potionBehaviour = InventoryCollectibles[itemName].itemBehaviourName
 
         DCEI.LogMessage("Adding Player Health: " .. healthAmount)
         DCEI.AddHealth(m_player, healthAmount)
+        DCEI.ApplyBehavior(m_player, potionBehaviour)
         
         inventorySlot:UseItem()
         

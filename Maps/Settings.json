@@ -42,7 +42,8 @@
             "_Collectible_Hammer_Of_Attack",
             "_Collectible_Helm_Of_Valor",
             "_Unit_Invincible",
-            "_Enemy_Ooze_ReSpawn"
+            "_Enemy_Ooze_ReSpawn",
+            "_Collectible_Potion"
         ]
     }
 }

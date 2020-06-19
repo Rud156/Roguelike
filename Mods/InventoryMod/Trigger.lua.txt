@@ -31,6 +31,7 @@ local COLLECTIBLES_TABLE = {
         itemStackable = 2,
         itemType = 1,
         itemDescription = "Consume to instantly regenerate 50 HP",
+        itemBehaviourName = "_Collectible_Potion",
         itemPotionHealth = 50
     },
     _Collectible_Bomb = {
