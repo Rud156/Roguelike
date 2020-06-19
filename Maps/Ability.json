@@ -40,6 +40,7 @@
             "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 0,
+            "effect": "_Search_Enemy_GoblinSapper_Bomb",
             "stats": {
                 "prepTime": 0.5,
                 "finishTime": 0.5,
@@ -72,6 +73,17 @@
             "targetRangeMode": 0,
             "effect": "_Set_Behaviour_PlayerCharacter_Slow",
             "canCastWhileMoving": true
+        },
+        "_Enemy_Ooze_Missile_Launch": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Set_Behaviour_Enemy_Ooze_Missile_Launch",
+            "stats": {
+                "finishTime": 0.5,
+                "range": 1,
+                "arc": 60
+            }
         },
         "_PlayerCharacter_Melee_Dash": {
             "abilityType": 1,
@@ -166,17 +178,6 @@
                 "mana": 0
             },
             "canCastWhileMoving": true
-        },
-        "_Enemy_Ooze_Missile_Launch": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 2,
-            "effect": "_Set_Behaviour_Enemy_Ooze_Missile_Launch",
-            "stats": {
-                "finishTime": 0.5,
-                "range": 1,
-                "arc": 60
-            }
         }
     }
 }

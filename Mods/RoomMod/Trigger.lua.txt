@@ -190,11 +190,12 @@ local BEGINNING_ROOMS = {
 local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
 
 local LEVEL_1_ENEMY_SETS = {
-    { 2, 2 },
-    { 2, 0 },
-    { 3, 3, 4 },
-    { 0, 0, 0 },
-    { 2, 4 },
+    -- { 2, 2 },
+    -- { 2, 0 },
+    -- { 3, 3, 4 },
+    -- { 0, 0, 0 },
+    -- { 2, 4 },
+    { 3 }
 }
 
 local LEVEL_2_ENEMY_SETS = {
@@ -457,6 +458,8 @@ function Room:SpawnNextWave()
             enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
         elseif enemyType == 2 then
             enemy = mod.EnemyGoblin:new(self, xPosition, yPosition)
+        elseif enemyType == 3 then
+            enemy = mod.EnemyGoblinSapper:new(self, xPosition, yPosition)
         end
 
         table.insert(self.enemies, enemy)
@@ -1415,5 +1418,6 @@ mod.Rect = nil
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil
 mod.EnemyGoblin = nil
+mod.EnemyGoblinSapper = nil
 
 return mod

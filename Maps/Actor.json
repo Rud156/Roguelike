@@ -422,12 +422,13 @@
             }
         },
         "_Enemy_GoblinSapper": {
-            "parent": "_StandardUnit DecayOnDeath",
+            "parent": "",
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "goblin_sapper"
                 },
+                "preserveOnUnitRemove": true,
                 "events": [
                     {
                         "actorTerm": {
@@ -456,8 +457,57 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": false
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "RemoveDeath",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "RemoveDeath"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
                     }
-                ]
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit DeathAnimation Decay"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1
             }
         },
         "_Enemy_Hobgoblin": {
@@ -666,8 +716,28 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
                     }
                 ]
+            }
+        },
+        "_Enemy_Ooze_Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ooze_biggest"
+                }
             }
         },
         "_EntryDoorway": {
@@ -1923,11 +1993,17 @@
                 }
             }
         },
-        "_Enemy_Ooze_Missile": {
-            "unitActor": {
+        "_FX_Enemy_GoblinSapper_Explosion_Actor": {
+            "actionActor": {
+                "effect": "_Damage_Enemy_GoblinSapper_Attack",
+                "launchModel": "_FX_Enemy_GoblinSapper_Explosion"
+            }
+        },
+        "_FX_Enemy_GoblinSapper_Explosion": {
+            "modelActor": {
                 "resource": {
-                    "type": "GpuAnimation",
-                    "name": "ooze_biggest"
+                    "type": "ParticleAnimation",
+                    "name": "vfx_shared_explosion_small"
                 }
             }
         }

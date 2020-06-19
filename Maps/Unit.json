@@ -352,6 +352,29 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_Enemy_Ooze_Missile": {
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Search_Enemy_Ooze_Missile"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
         "_EntryDoorway": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -608,29 +631,6 @@
                     "behaviorType": 0
                 }
             }
-        },
-        "_Enemy_Ooze_Missile": {
-            "components": {
-                "unit": {
-                    "unitType": 1
-                },
-                "unitStats": {
-                    "radius": 0,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 999
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Search_Enemy_Ooze_Missile"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CMissile/display_name"
         }
     }
 }

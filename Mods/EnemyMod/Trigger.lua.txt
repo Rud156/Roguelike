@@ -27,6 +27,10 @@ local GOBLIN_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_MIN_CLOSEST_DISTANCE = 1
 local GOBLIN_STUN_TIME = 3.5
 
+local GOBLIN_SAPPER = "_Enemy_GoblinSapper"
+local GOBLIN_SAPPER_ATTACK = "_Enemy_GoblinSapper_Attack"
+local GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE = 0.5
+
 local mod = {}
 
 -- #region Goblin Chef Enemy
@@ -347,7 +351,7 @@ end
 function HobGoblin:CleanupEnemyDied()
     -- Do nothing here...
 end
---#endregion
+-- #endregion
 
 -- #region Goblin Enemy
 local Goblin = {
@@ -470,11 +474,65 @@ end
 function Goblin:CleanupEnemyDied()
     -- Do nothing here...
 end
---#endregion
+-- #endregion
+
+-- #region Goblin Sapper Enemy
+local GoblinSapper = {
+    -- Units
+    room = nil,
+    unit = nil,
+    
+    enemyState = 0 -- 0: Targetting Movement, 1: Attack Waiting
+}
+GoblinSapper.__index = GoblinSapper
+function GoblinSapper:new(room, xPosition, yPosition)
+    local goblin = {}
+    setmetatable(goblin, GoblinSapper)
+
+    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_SAPPER, xPosition, yPosition)
+    goblin.room = room
+    goblin.unit = enemyUnit
+
+    goblin.enemyState = 0
+
+    return goblin
+end
+function GoblinSapper:Update(deltaTime, playerPosition)
+    if self.enemyState == 0 then
+        self:TargetPlayer(deltaTime, playerPosition)
+    elseif self.enemyState == 1 then
+        -- Do nothing here...
+    end
+end
+function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
+    -- Do nothing here...
+end
+function GoblinSapper:TargetPlayer(deltaTime, playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
+
+    if distanceFromPlayer > GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE then
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
+    else
+        DCEI.CastAbilityAtPosition(GOBLIN_SAPPER_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
+        self:SetEnemyState(1)
+    end
+end
+function GoblinSapper:SetEnemyState(enemyState)
+    self.enemyState = enemyState
+end
+function GoblinSapper:GetMainUnit()
+    return self.unit
+end
+function GoblinSapper:CleanupEnemyDied()
+    -- Do nothing here...
+end
+-- #endregion
 
 mod.EnemyGoblinChef = GoblinChef 
 mod.EnemyHobGoblin = HobGoblin
 mod.EnemyGoblin = Goblin
+mod.EnemyGoblinSapper = GoblinSapper
 
 mod.VectorDistance = nil
 mod.VectorSubtract = nil

@@ -158,6 +158,14 @@
                 "mover": "_Enemy_GoblinChef_Attack"
             }
         },
+        "_Launch_Enemy_Ooze_Missile": {
+            "launchMissile": {
+                "targetType": 2,
+                "missileUnit": "_Enemy_Ooze_Missile",
+                "effect": "_Set_Enemy_Ooze_Missile_Collided",
+                "impactLocation": 2
+            }
+        },
         "_Launch_PlayerCharacter_Melee": {
             "launchMissile": {
                 "targetType": 0,
@@ -192,6 +200,12 @@
                 "effect": "_Damage_PlayerCharacter_Ranged_LightAttack",
                 "impactLocation": 2,
                 "mover": "_PlayerCharacter_LightAttack"
+            }
+        },
+        "_Remove_Behaviour_Enemy_Invincible": {
+            "removeBehavior": {
+                "behavior": "_Unit_Invincible",
+                "target": 3
             }
         },
         "_Remove_Behaviour_PlayerCharacter_Dash_Invincibility": {
@@ -253,6 +267,7 @@
         },
         "_Search_Enemy_GoblinSapper_Bomb": {
             "areaSearch": {
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
@@ -283,6 +298,20 @@
                 "offset": {
                     "forward": 0.2
                 }
+            }
+        },
+        "_Search_Enemy_Ooze_Missile_Collided": {
+            "areaSearch": {
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Enemy_Ooze_Missile_Collided"
             }
         },
         "_Search_PlayerCharacter": {
@@ -394,6 +423,26 @@
                 "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
             }
         },
+        "_Set_Behaviour_Enemy_Invincible": {
+            "applyBehavior": {
+                "behavior": "_Unit_Invincible",
+                "target": 3
+            }
+        },
+        "_Set_Behaviour_Enemy_Ooze_Missile_Launch": {
+            "set": {
+                "effectList": [
+                    "_Launch_Enemy_Ooze_Missile",
+                    "_Set_Behaviour_Enemy_Invincible"
+                ]
+            }
+        },
+        "_Set_Behaviour_Enemy_Ooze_Missile_Reached": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Ooze_Missile_Reached",
+                "target": 2
+            }
+        },
         "_Set_Behaviour_Enemy_Stunned": {
             "applyBehavior": {
                 "behavior": "_Enemy_Stunned",
@@ -480,7 +529,7 @@
                     "_Damage_Enemy_GoblinSapper_Attack",
                     "_Set_Behaviour_PlayerCharacter_Damaged",
                     "_Set_Behaviour_Flash_Enemy",
-                    "Remove Source"
+                    "Remove Caster"
                 ]
             }
         },
@@ -497,6 +546,13 @@
                 "effectList": [
                     "_Damage_Enemy_Hobgoblin",
                     "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
+        "_Set_Enemy_Ooze_Missile_Collided": {
+            "set": {
+                "effectList": [
+                    "_Remove_Behaviour_Enemy_Invincible"
                 ]
             }
         },
@@ -557,60 +613,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Search_Enemy_Ooze_Missile_Collided": {
-            "areaSearch": {
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                }
-            }
-        },
-        "_Launch_Enemy_Ooze_Missile": {
-            "launchMissile": {
-                "targetType": 2,
-                "missileUnit": "_Enemy_Ooze_Missile",
-                "effect": "_Set_Enemy_Ooze_Missile_Collided",
-                "impactLocation": 2
-            }
-        },
-        "_Set_Enemy_Ooze_Missile_Collided": {
-            "set": {
-                "effectList": [
-                    "_Remove_Behaviour_Enemy_Invincible"
-                ]
-            }
-        },
-        "_Set_Behaviour_Enemy_Ooze_Missile_Reached": {
-            "applyBehavior": {
-                "behavior": "_Enemy_Ooze_Missile_Reached",
-                "target": 2
-            }
-        },
-        "_Set_Behaviour_Enemy_Invincible": {
-            "applyBehavior": {
-                "behavior": "_Unit_Invincible",
-                "target": 3
-            }
-        },
-        "_Remove_Behaviour_Enemy_Invincible": {
-            "removeBehavior": {
-                "behavior": "_Unit_Invincible",
-                "target": 3
-            }
-        },
-        "_Set_Behaviour_Enemy_Ooze_Missile_Launch": {
-            "set": {
-                "effectList": [
-                    "_Launch_Enemy_Ooze_Missile",
-                    "_Set_Behaviour_Enemy_Invincible"
-                ]
             }
         }
     }
