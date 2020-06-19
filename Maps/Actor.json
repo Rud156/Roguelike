@@ -447,14 +447,22 @@
                         },
                         "actions": [
                             {
-                                "setVisibility": {
-                                    "visibility": false
+                                "create": {
+                                    "actor": "_FX_Enemy_GoblinSapper_Explosion"
                                 }
                             },
                             {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinSapper_Explosion"
+                                }
+                            },
+                            {
+                                "setVisibility": {}
+                            },
+                            {
                                 "createTimer": {
-                                    "name": "RemoveDeath",
-                                    "duration": 3
+                                    "name": "DeathRemove",
+                                    "duration": 0.3
                                 }
                             }
                         ]
@@ -462,7 +470,7 @@
                     {
                         "actorTerm": {
                             "onTimer": {
-                                "name": "RemoveDeath"
+                                "name": "DeathRemove"
                             }
                         },
                         "actions": [
@@ -891,12 +899,6 @@
                     "type": "ParticleAnimation",
                     "name": "vfx_shared_explosion_small"
                 }
-            }
-        },
-        "_FX_Enemy_GoblinSapper_Explosion_Actor": {
-            "actionActor": {
-                "effect": "_Damage_Enemy_GoblinSapper_Attack",
-                "launchModel": "_FX_Enemy_GoblinSapper_Explosion"
             }
         },
         "_FX_Enemy_Hobgoblin_Attack": {
@@ -2098,6 +2100,113 @@
                 "resource": {
                     "type": "Sound",
                     "name": "coralwarden_pufferfish_explode"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Collectible_Boots_Of_Speed": {
+            "modelActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_green"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_Boots_Of_Speed": {
+            "modelActor": {
+                "resource": {
+                    "type": "None"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinSapper_Explosion": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_sapper_death_explosion_v3"
                 },
                 "events": [
                     {
