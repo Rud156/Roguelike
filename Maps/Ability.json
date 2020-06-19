@@ -36,6 +36,17 @@
                 "enemy": 0
             }
         },
+        "_Enemy_GoblinSapper_Attack": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 0,
+            "effect": "_Search_Enemy_GoblinSapper_Bomb",
+            "stats": {
+                "prepTime": 0.5,
+                "finishTime": 0.5,
+                "range": 1
+            }
+        },
         "_Enemy_Goblin_Attack": {
             "abilityType": 2,
             "castType": 1,
@@ -55,6 +66,17 @@
                 "finishTime": 1,
                 "period": 0
             }
+        },
+        "_Enemy_Ooze_Attack": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 0,
+            "effect": "_Set_Enemy_Ooze_Attack",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3
+            },
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Melee_Dash": {
             "abilityType": 1,

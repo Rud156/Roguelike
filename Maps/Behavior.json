@@ -33,10 +33,26 @@
             ]
         },
         "_CollisionDetection_PlayerCharacter": {
+            "maxStackCount": 0,
             "duration": 0.01
         },
         "_Enemy_Damage_Taken": {
             "maxStackCount": 1
+        },
+        "_Enemy_Ooze_Slow": {
+            "maxStackCount": 1,
+            "duration": 3,
+            "modifiers": {
+                "flags": {
+                    "suppressMovement": false
+                },
+                "moveSpeedModifier": {
+                    "scaled": -0.6,
+                    "unscaled": 0,
+                    "additiveFactor": 0,
+                    "multiplierFactor": 0
+                }
+            }
         },
         "_Enemy_Stunned": {
             "maxStackCount": 1,
@@ -118,6 +134,9 @@
                     "count": 1
                 }
             ]
+        },
+        "_Enemy_Ooze_ReSpawn": {
+            "duration": 0.1
         }
     }
 }

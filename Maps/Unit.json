@@ -260,6 +260,36 @@
                 ]
             }
         },
+        "_Enemy_GoblinSapper": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 5
+                },
+                "movement": {
+                    "moveSpeed": 1.5
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_GoblinSapper_Attack"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
         "_Enemy_Hobgoblin": {
             "baseUnit": "_CUnit",
             "components": {
@@ -287,6 +317,36 @@
             "references": {
                 "abilityList": [
                     "_Enemy_Hobgoblin_Attack"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Enemy_Ooze": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.25,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 5
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_Ooze_Attack"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"

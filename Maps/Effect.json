@@ -1,17 +1,5 @@
 {
     "effects": {
-        "_Apply_Behaviour_PlayerCharacter_Dash_End": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_Dash_Ended",
-                "target": 3
-            }
-        },
-        "_Apply_Behaviour_PlayerCharacter_Dash_Invincibility": {
-            "applyBehavior": {
-                "behavior": "_PlayerCharacter_Dash_Invincible",
-                "target": 3
-            }
-        },
         "_Collided_PlayerCharacter_Melee_Missile": {
             "applyBehavior": {
                 "behavior": "_PlayerCharacter_Missile_Reached",
@@ -22,6 +10,18 @@
             "applyBehavior": {
                 "behavior": "_PlayerCharacter_Missile_Reached",
                 "target": 2
+            }
+        },
+        "_Damage_Base": {
+            "damage": {
+                "whichUnit": 1,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         },
         "_Damage_Collectible_Bomb_Attack": {
@@ -53,6 +53,19 @@
             "damage": {
                 "whichUnit": 1,
                 "damageAmount": 15,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Damage_Enemy_GoblinSapper_Attack": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 50,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -181,6 +194,12 @@
                 "mover": "_PlayerCharacter_LightAttack"
             }
         },
+        "_Remove_Behaviour_Enemy_Invincible": {
+            "removeBehavior": {
+                "behavior": "_Unit_Invincible",
+                "target": 3
+            }
+        },
         "_Remove_Behaviour_PlayerCharacter_Dash_Invincibility": {
             "removeBehavior": {
                 "behavior": "_PlayerCharacter_Dash_Invincible",
@@ -193,6 +212,9 @@
                     "circle": {
                         "radius": 1
                     }
+                },
+                "filter": {
+                    "player": 2
                 },
                 "effect": "_Set_Collectible_Bomb_Attack"
             }
@@ -235,6 +257,21 @@
                 "effect": "_Set_Enemy_GoblinChef_Attack"
             }
         },
+        "_Search_Enemy_GoblinSapper_Bomb": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Enemy_GoblinSapper_Attack"
+            }
+        },
         "_Search_Enemy_Hobgoblin": {
             "areaSearch": {
                 "debugDraw": false,
@@ -253,6 +290,21 @@
                 "offset": {
                     "forward": 0.2
                 }
+            }
+        },
+        "_Search_Enemy_Ooze_Attack": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.5
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Behaviour_PlayerCharacter_Slow"
             }
         },
         "_Search_PlayerCharacter": {
@@ -364,6 +416,12 @@
                 "effect": "_Set_PlayerCharacter_Ranged_Missile_Collided"
             }
         },
+        "_Set_Behaviour_Enemy_Invincible": {
+            "applyBehavior": {
+                "behavior": "_Unit_Invincible",
+                "target": 3
+            }
+        },
         "_Set_Behaviour_Enemy_Stunned": {
             "applyBehavior": {
                 "behavior": "_Enemy_Stunned",
@@ -387,6 +445,24 @@
         "_Set_Behaviour_PlayerCharacter_Damaged": {
             "applyBehavior": {
                 "behavior": "_PlayerCharacter_Damaged",
+                "target": 1
+            }
+        },
+        "_Set_Behaviour_PlayerCharacter_Dash_End": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Dash_Ended",
+                "target": 3
+            }
+        },
+        "_Set_Behaviour_PlayerCharacter_Dash_Invincibility": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_Dash_Invincible",
+                "target": 3
+            }
+        },
+        "_Set_Behaviour_PlayerCharacter_Slow": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Ooze_Slow",
                 "target": 1
             }
         },
@@ -426,6 +502,16 @@
                 ]
             }
         },
+        "_Set_Enemy_GoblinSapper_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinSapper_Attack",
+                    "_Set_Behaviour_PlayerCharacter_Damaged",
+                    "_Set_Behaviour_Flash_Enemy",
+                    "Remove Caster"
+                ]
+            }
+        },
         "_Set_Enemy_Goblin_Attack": {
             "set": {
                 "effectList": [
@@ -442,11 +528,19 @@
                 ]
             }
         },
+        "_Set_Enemy_Ooze_Attack": {
+            "set": {
+                "effectList": [
+                    "_Search_Enemy_Ooze_Attack",
+                    "_Set_Behaviour_Enemy_Invincible"
+                ]
+            }
+        },
         "_Set_PlayerCharacter_Melee_Dash_Launch": {
             "set": {
                 "effectList": [
                     "_Launch_PlayerCharacter_Melee",
-                    "_Apply_Behaviour_PlayerCharacter_Dash_Invincibility"
+                    "_Set_Behaviour_PlayerCharacter_Dash_Invincibility"
                 ]
             }
         },
@@ -455,7 +549,7 @@
                 "targetType": 1,
                 "effectList": [
                     "_Collided_PlayerCharacter_Melee_Missile",
-                    "_Apply_Behaviour_PlayerCharacter_Dash_End",
+                    "_Set_Behaviour_PlayerCharacter_Dash_End",
                     "_Remove_Behaviour_PlayerCharacter_Dash_Invincibility"
                 ]
             }
@@ -464,7 +558,7 @@
             "set": {
                 "effectList": [
                     "_Launch_PlayerCharacter_Ranged",
-                    "_Apply_Behaviour_PlayerCharacter_Dash_Invincibility"
+                    "_Set_Behaviour_PlayerCharacter_Dash_Invincibility"
                 ]
             }
         },
@@ -491,7 +585,7 @@
                 "targetType": 1,
                 "effectList": [
                     "_Collided_PlayerCharacter_Ranged_Missile",
-                    "_Apply_Behaviour_PlayerCharacter_Dash_End",
+                    "_Set_Behaviour_PlayerCharacter_Dash_End",
                     "_Remove_Behaviour_PlayerCharacter_Dash_Invincibility"
                 ]
             }

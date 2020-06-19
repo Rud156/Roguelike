@@ -185,26 +185,32 @@ local BEGINNING_ROOMS = {
 -- #endregion Room Templates
 
 -- #region Enemy Sets
--- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin
+-- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin, 3: Goblin Sapper, 4: Slime
 
-local ENEMY_PREFABS = { 0, 1, 2 }
+local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
 
 local LEVEL_1_ENEMY_SETS = {
-    { 0, 0 },
-    { 1, 1 },
     { 2, 2 },
+    { 2, 0 },
+    { 3, 3, 4 },
+    { 0, 0, 0 },
+    { 2, 4 },
 }
 
 local LEVEL_2_ENEMY_SETS = {
-    { 1, 1, 1 },
+    { 4, 4, 3, 3 },
     { 1, 1, 0 },
-    { 1, 0, 0 }
+    { 2, 2, 1, 0 },
+    { 3, 3, 4, 4 },
+    { 2, 2, 3, 3 },
 }
 
 local LEVEL_3_ENEMY_SETS = {
-    { 1, 1, 1, 0 },
+    { 0, 0, 0, 3, 3 },
     { 1, 1, 0, 0 },
-    { 1, 0, 0, 0 }
+    { 2, 2, 1, 0, 0 },
+    { 3, 3, 1, 1, 4 },
+    { 2, 2, 1, 4, 4 },
 }
 
 -- #endregion Enemy Sets
@@ -451,6 +457,10 @@ function Room:SpawnNextWave()
             enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
         elseif enemyType == 2 then
             enemy = mod.EnemyGoblin:new(self, xPosition, yPosition)
+        elseif enemyType == 3 then
+            enemy = mod.EnemyGoblinSapper:new(self, xPosition, yPosition)
+        elseif enemyType == 4 then
+            enemy = mod.EnemyOoze:new(self, xPosition, yPosition)
         end
 
         table.insert(self.enemies, enemy)
@@ -1409,5 +1419,7 @@ mod.Rect = nil
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil
 mod.EnemyGoblin = nil
+mod.EnemyGoblinSapper = nil
+mod.EnemyOoze = nil
 
 return mod

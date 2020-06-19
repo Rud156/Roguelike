@@ -18,6 +18,8 @@ EnemyMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
 local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 local EnemyGoblin = EnemyMod.EnemyGoblin
+local EnemyGoblinSapper = EnemyMod.EnemyGoblinSapper
+local EnemyOoze = EnemyMod.EnemyOoze
 
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
 RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
@@ -25,6 +27,8 @@ RoomMod.Rect = UtilClassMod.Rect
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
 RoomMod.EnemyGoblinChef = EnemyGoblinChef
 RoomMod.EnemyGoblin = EnemyGoblin
+RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
+RoomMod.EnemyOoze = EnemyOoze
 local Room = RoomMod.Room
 local RoomGenerator = RoomMod.RoomGenerator
 

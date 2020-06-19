@@ -29,7 +29,9 @@
             "_Collectible_Hammer_Of_Attack",
             "_Collectible_Helm_Of_Valor",
             "_Collectible_Potion",
-            "_Collectible_Bomb_Unit"
+            "_Collectible_Bomb_Unit",
+            "_Enemy_GoblinSapper",
+            "_Enemy_Ooze"
         ],
         "usedEffects": [
             "__StopMovement"
@@ -38,7 +40,9 @@
             "_PlayerCharacter_Damage_Invincible",
             "_Collectible_Boots_Of_Speed",
             "_Collectible_Hammer_Of_Attack",
-            "_Collectible_Helm_Of_Valor"
+            "_Collectible_Helm_Of_Valor",
+            "_Unit_Invincible",
+            "_Enemy_Ooze_ReSpawn"
         ]
     }
 }
