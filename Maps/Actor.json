@@ -1373,7 +1373,8 @@
                     "_PlayerCharacter_Damage_Flash",
                     "_PlayerCharacter_Helm_Of_Valor",
                     "_PlayerCharacter_Health_Potion",
-                    "_PlayerCharacter_Boots_Of_Speed"
+                    "_PlayerCharacter_Boots_Of_Speed",
+                    "_PlayerCharacter_Hammer_Of_Attack"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -1529,7 +1530,8 @@
                     "_PlayerCharacter_Damage_Flash",
                     "_PlayerCharacter_Helm_Of_Valor",
                     "_PlayerCharacter_Health_Potion",
-                    "_PlayerCharacter_Boots_Of_Speed"
+                    "_PlayerCharacter_Boots_Of_Speed",
+                    "_PlayerCharacter_Hammer_Of_Attack"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -2235,6 +2237,84 @@
                     }
                 ]
             }
+        },
+        "_FX_Collectible_Hammer_Of_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_ramhammer_altar_guardian_weapon_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_Hammer_Of_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "crusader_hammerstorm"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -2516,6 +2596,30 @@
                         {
                             "create": {
                                 "actor": "_SFX_Collectible_Boots_Of_Speed"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Hammer_Of_Attack": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Collectible_Hammer_Of_Attack"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Hammer_Of_Attack",
+                                "hostSite": "UnitCenter"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Collectible_Hammer_Of_Attack"
                             }
                         }
                     ]
