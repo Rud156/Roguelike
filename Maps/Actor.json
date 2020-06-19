@@ -2315,6 +2315,56 @@
                     }
                 ]
             }
+        },
+        "_SFX_Collectible_Helm_Of_Valor": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "Holy_shield"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Collectible_Helm_Of_Valor": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_status_shield_radiant"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -2511,8 +2561,19 @@
                     },
                     "actions": [
                         {
+                            "create": {
+                                "actor": "_FX_Collectible_Helm_Of_Valor",
+                                "hostSite": ""
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Collectible_Helm_Of_Valor"
+                            }
+                        },
+                        {
                             "log": {
-                                "message": "Player Helm Of Valor Active"
+                                "message": "Helm Of Valor Active"
                             }
                         }
                     ]
@@ -2525,8 +2586,13 @@
                     },
                     "actions": [
                         {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Helm_Of_Valor"
+                            }
+                        },
+                        {
                             "log": {
-                                "message": "Player Helm Of Valor Inactive"
+                                "message": "Helm Of Valor InActive"
                             }
                         }
                     ]

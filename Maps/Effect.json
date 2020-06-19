@@ -221,7 +221,7 @@
         },
         "_Search_Enemy_Goblin": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circleSector": {
                         "outerRadius": 0.9,
@@ -241,7 +241,7 @@
         },
         "_Search_Enemy_GoblinChef": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25

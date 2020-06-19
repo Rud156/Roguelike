@@ -283,6 +283,7 @@ function HandleBehaviourAdded()
         m_roomGenerator:UpdateEnemyStunState(unit)
 
     elseif behaviourName == PLAYERCHARACTER_DAMAGED then
+        DCEI.LogMessage("Player Damaged")
         DCEI.RemoveBehavior(m_player, InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
         m_helmOfValorActive = false
         m_helmOfValorTimeRemaining = COLLECTIBLE_HELM_OF_VALOR_TIMER
