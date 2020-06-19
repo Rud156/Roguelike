@@ -40,7 +40,9 @@
             "_PlayerCharacter_Damage_Invincible",
             "_Collectible_Boots_Of_Speed",
             "_Collectible_Hammer_Of_Attack",
-            "_Collectible_Helm_Of_Valor"
+            "_Collectible_Helm_Of_Valor",
+            "_Unit_Invincible",
+            "_Enemy_Ooze_ReSpawn"
         ]
     }
 }

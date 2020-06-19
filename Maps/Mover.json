@@ -5,12 +5,6 @@
                 "speed": 3
             }
         },
-        "_Enemy_Ooze_Missile_Mover": {
-            "ballistic": {
-                "flightTime": 0.5,
-                "gravity": 12
-            }
-        },
         "_PlayerCharacter_HeavyAttack": {
             "ballistic": {
                 "speed": 7

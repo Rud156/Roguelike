@@ -158,14 +158,6 @@
                 "mover": "_Enemy_GoblinChef_Attack"
             }
         },
-        "_Launch_Enemy_Ooze_Missile": {
-            "launchMissile": {
-                "targetType": 2,
-                "missileUnit": "_Enemy_Ooze_Missile",
-                "effect": "_Set_Enemy_Ooze_Missile_Collided",
-                "impactLocation": 2
-            }
-        },
         "_Launch_PlayerCharacter_Melee": {
             "launchMissile": {
                 "targetType": 0,
@@ -300,18 +292,19 @@
                 }
             }
         },
-        "_Search_Enemy_Ooze_Missile_Collided": {
+        "_Search_Enemy_Ooze_Attack": {
             "areaSearch": {
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
-                        "radius": 0.25
+                        "radius": 0.5
                     }
                 },
                 "maxUnitCount": 10,
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Set_Enemy_Ooze_Missile_Collided"
+                "effect": "_Set_Behaviour_PlayerCharacter_Slow"
             }
         },
         "_Search_PlayerCharacter": {
@@ -429,20 +422,6 @@
                 "target": 3
             }
         },
-        "_Set_Behaviour_Enemy_Ooze_Missile_Launch": {
-            "set": {
-                "effectList": [
-                    "_Launch_Enemy_Ooze_Missile",
-                    "_Set_Behaviour_Enemy_Invincible"
-                ]
-            }
-        },
-        "_Set_Behaviour_Enemy_Ooze_Missile_Reached": {
-            "applyBehavior": {
-                "behavior": "_Enemy_Ooze_Missile_Reached",
-                "target": 2
-            }
-        },
         "_Set_Behaviour_Enemy_Stunned": {
             "applyBehavior": {
                 "behavior": "_Enemy_Stunned",
@@ -549,10 +528,11 @@
                 ]
             }
         },
-        "_Set_Enemy_Ooze_Missile_Collided": {
+        "_Set_Enemy_Ooze_Attack": {
             "set": {
                 "effectList": [
-                    "_Remove_Behaviour_Enemy_Invincible"
+                    "_Search_Enemy_Ooze_Attack",
+                    "_Set_Behaviour_Enemy_Invincible"
                 ]
             }
         },

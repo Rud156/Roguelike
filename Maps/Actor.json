@@ -211,12 +211,12 @@
                         "actions": [
                             {
                                 "create": {
-                                    "actor": "_FX_Enemy_Hobgoblin_Spawn"
+                                    "actor": "_FX_Enemy_Spawn"
                                 }
                             },
                             {
                                 "create": {
-                                    "actor": "_SFX_Enemy_Hobgoblin_Spawn"
+                                    "actor": "_SFX_Enemy_Spawn"
                                 }
                             }
                         ]
@@ -351,6 +351,23 @@
                 "events": [
                     {
                         "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Spawn"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Spawn"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
                             "unitAbilityStart": {
                                 "ability": "_Enemy_GoblinChef_Attack"
                             }
@@ -379,29 +396,12 @@
                     },
                     {
                         "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "create": {
-                                    "actor": "_FX_Enemy_GoblinChef_Spawn"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_GoblinChef_Spawn"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
                             "unitDeath": {}
                         },
                         "actions": [
                             {
-                                "create": {
-                                    "actor": "_SFX_Enemy_GoblinChef_Death"
+                                "playAnimation": {
+                                    "clipId": 1
                                 }
                             }
                         ]
@@ -430,6 +430,23 @@
                 },
                 "preserveOnUnitRemove": true,
                 "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Spawn"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Spawn"
+                                }
+                            }
+                        ]
+                    },
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
@@ -487,6 +504,18 @@
                                 "destroy": {}
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
                     }
                 ],
                 "eventMacros": [
@@ -525,12 +554,12 @@
                         "actions": [
                             {
                                 "create": {
-                                    "actor": "_FX_Enemy_Hobgoblin_Spawn"
+                                    "actor": "_FX_Enemy_Spawn"
                                 }
                             },
                             {
                                 "create": {
-                                    "actor": "_SFX_Enemy_Hobgoblin_Spawn"
+                                    "actor": "_SFX_Enemy_Spawn"
                                 }
                             }
                         ]
@@ -600,8 +629,8 @@
                         },
                         "actions": [
                             {
-                                "create": {
-                                    "actor": "_SFX_Enemy_Hobgoblin_Death"
+                                "playAnimation": {
+                                    "clipId": 1
                                 }
                             }
                         ]
@@ -637,6 +666,23 @@
                 "events": [
                     {
                         "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Spawn"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Spawn"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
                             "behaviorOn": {
                                 "behavior": "_Unit_Invincible"
                             }
@@ -663,6 +709,20 @@
                     },
                     {
                         "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_Enemy_Ooze_ReSpawn"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_Ooze_ReSpawn"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
                             "unitAbilityStart": {
                                 "ability": "_Enemy_Ooze_Attack"
                             }
@@ -685,34 +745,6 @@
                             {
                                 "stopAnimation": {
                                     "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Enemy_Ooze_Missile_Launch"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Enemy_Ooze_Missile_Launch"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 3
                                 }
                             }
                         ]
@@ -730,14 +762,6 @@
                         ]
                     }
                 ]
-            }
-        },
-        "_Enemy_Ooze_Missile": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "ooze_biggest"
-                }
             }
         },
         "_EntryDoorway": {
@@ -924,55 +948,18 @@
                 ]
             }
         },
-        "_FX_Enemy_GoblinChef_Spawn": {
+        "_FX_Enemy_GoblinSapper_Explosion": {
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_chosen_blindingflash_impact"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ],
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
-                ]
+                    "name": "vfx_shared_explosion_small"
+                }
+            }
+        },
+        "_FX_Enemy_GoblinSapper_Explosion_Actor": {
+            "actionActor": {
+                "effect": "_Damage_Enemy_GoblinSapper_Attack",
+                "launchModel": "_FX_Enemy_GoblinSapper_Explosion"
             }
         },
         "_FX_Enemy_Hobgoblin_Attack": {
@@ -1025,57 +1012,6 @@
                     ""
                 ],
                 "modelScale": 1
-            }
-        },
-        "_FX_Enemy_Hobgoblin_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_chosen_blindingflash_impact"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ],
-                "hostSiteOperations": [
-                    "SOp HoldPosition"
-                ]
             }
         },
         "_FX_Enemy_Stun_Impact": {
@@ -1664,36 +1600,6 @@
                 ]
             }
         },
-        "_SFX_Enemy_GoblinChef_Spawn": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "awaken_sucessed"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
         "_SFX_Enemy_Hobgoblin_Attack": {
             "modelActor": {
                 "resource": {
@@ -1993,17 +1899,92 @@
                 }
             }
         },
-        "_FX_Enemy_GoblinSapper_Explosion_Actor": {
-            "actionActor": {
-                "effect": "_Damage_Enemy_GoblinSapper_Attack",
-                "launchModel": "_FX_Enemy_GoblinSapper_Explosion"
-            }
-        },
-        "_FX_Enemy_GoblinSapper_Explosion": {
+        "_FX_Enemy_Spawn": {
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_shared_explosion_small"
+                    "name": "vfx_chosen_blindingflash_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp HoldPosition"
+                ]
+            }
+        },
+        "_SFX_Enemy_Spawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "awaken_sucessed"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Enemy_Ooze_ReSpawn": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_creep_death_ooze_green"
                 }
             }
         }

@@ -1,6 +1,7 @@
 -- Constants
 -- TODO: Probably put common strings into a Mod and use that?
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
+local ENEMY_INVINCIBLE = "_Unit_Invincible"
 
 local GOBLIN_CHEF = "_Enemy_GoblinChef"
 local GOBLIN_CHEF_ATTACK = "_Enemy_GoblinChef_Attack"
@@ -33,9 +34,14 @@ local GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE = 0.5
 
 local OOZE = "_Enemy_Ooze"
 local OOZE_ATTACK = "_Enemy_Ooze_Attack"
-local OOZE_TARGETTING_RANGE = 5
+local OOZE_RESPAWN = "_Enemy_Ooze_ReSpawn"
+local OOZE_ATTACK_ANIM_TIME = 1
+local OOZE_TARGETTING_RANGE = 3
 local OOZE_ATTACK_RANGE = 0.5
 local OOZE_RANDOM_MOVEMENT_TIMER = 3
+local OOZE_JUMP_RADIUS = 1
+local OOZE_IDLING_TIME = 3
+local OOZE_ATTACK_TIME = 3
 
 local mod = {}
 
@@ -536,13 +542,12 @@ end
 -- #endregion
 
 -- #region Ooze Enemy
-
 local Ooze = {
     -- Units
     room = nil,
     unit = nil,
     
-    enemyState = 0, -- 0: Random Movement, 1: Targetting Movement, 2: Attack Waiting, 3: Idling
+    enemyState = 0, -- 0: Random Movement, 1: Targetting Movement, 2: Attack Anim Timer, 3: Attack Waiting, 4: Idling
 
     -- Random Movement
     targetPosition = nil,
@@ -565,19 +570,30 @@ function Ooze:new(room, xPosition, yPosition)
 end
 function Ooze:Update(deltaTime, playerPosition)
     if self.enemyState == 0 then
+        self:UpdateRandomMovement(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
+        self:TargetPlayer(deltaTime, playerPosition)
     elseif self.enemyState == 2 then
+        self:UpdateAttackAnimTimer(deltaTime)
     elseif self.enemyState == 3 then
+        self:UpdateAttackWaitingState(deltaTime, playerPosition)
+    elseif self.enemyState == 4 then
+        self:UpdateIdlingState(deltaTime)
     end
 end
 function Ooze:CheckAndActivateStunnedState(enemyUnit)
     -- Do nothing here...
 end
 function Ooze:UpdateRandomMovement(deltaTime, playerPosition)
+    if self.targetPosition == nil then
+        self:FindAndSetRandomMovement()
+        return
+    end
+
     self.currentTimer = self.currentTimer - deltaTime
 
     if self.currentTimer <= 0 then
-        self:FindRandomEmptyPlace()
+        self:FindAndSetRandomMovement()
     end
 
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -588,6 +604,8 @@ function Ooze:UpdateRandomMovement(deltaTime, playerPosition)
     elseif distanceFromPlayer <= OOZE_ATTACK_RANGE then
         self:AttackPlayer(playerPosition)
         self:SetEnemyState(2)
+    else
+        DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
     end
 end
 function Ooze:TargetPlayer(deltaTime, playerPosition)
@@ -597,11 +615,32 @@ function Ooze:TargetPlayer(deltaTime, playerPosition)
     if distanceFromPlayer <= OOZE_ATTACK_RANGE then
         self:AttackPlayer(playerPosition)
         self:SetEnemyState(2)
+    else
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
     end
 end
-function Ooze:AttackPlayer(playerPosition)
+function Ooze:UpdateAttackAnimTimer(deltaTime)
+    self.currentTimer = self.currentTimer - deltaTime
+    if self.currentTimer <= 0 then
+        self.currentTimer = OOZE_ATTACK_TIME
+        self:SetEnemyState(3)
+    end
 end
 function Ooze:UpdateAttackWaitingState(deltaTime, playerPosition)
+    DCEI.SetUnitPosition2D(self.unit, playerPosition.x, playerPosition.y)
+    self.currentTimer = self.currentTimer - deltaTime
+
+    if self.currentTimer <= 0 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_INVINCIBLE)
+        DCEI.ApplyBehavior(self.unit, OOZE_RESPAWN)
+
+        local randomPosition = self:FindEmptyPlaceInCircle(playerPosition)
+        DCEI.SetUnitPosition2D(self.unit, randomPosition.x, randomPosition.y)
+        DCEI.Move(self.unit, randomPosition.x, randomPosition.y)
+
+        self.currentTimer = OOZE_IDLING_TIME
+        self:SetEnemyState(4)
+    end
 end
 function Ooze:UpdateIdlingState(deltaTime)
     self.currentTimer = self.currentTimer - deltaTime
@@ -609,14 +648,45 @@ function Ooze:UpdateIdlingState(deltaTime)
         self:SetEnemyState(0)
     end
 end
-function Ooze:FindRandomEmptyPlace()
+function Ooze:AttackPlayer(playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+    DCEI.CastAbilityAtPosition(OOZE_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
+    self.currentTimer = OOZE_ATTACK_ANIM_TIME
+end
+function Ooze:FindEmptyPlaceInCircle(playerPosition)
+    local radius = OOZE_JUMP_RADIUS
+    local validPositions = {}
+
+    for i = 0, 360 do
+        local xPosition = radius * math.sin(math.rad(i)) + playerPosition.x
+        local yPosition = radius * math.cos(math.rad(i)) + playerPosition.y
+
+        if self.room.rect:contains(xPosition, yPosition) then
+            table.insert(validPositions, { x = xPosition, y = yPosition })
+        end
+    end
+
+    local randomIndex = math.random(1, #validPositions)
+    local randomPosition = validPositions[randomIndex]
+
+    return randomPosition
+end
+function Ooze:FindAndSetRandomMovement()
     local emptyPositions, roomRect = self.room:GetEmptyPositions()
     local randomEmptyPosition = math.random(1, #emptyPositions)
 
-    self.targetPosition = randomEmptyPosition
+    local startX = roomRect.x
+    local startY = roomRect.y
+
+    local position = emptyPositions[randomEmptyPosition]
+
+    self.targetPosition = { x = startX + position[1], y = startY + position[2] }
     self.currentTimer = OOZE_RANDOM_MOVEMENT_TIMER
 end
 function Ooze:SetEnemyState(enemyState)
+    DCEI.LogMessage("Enemy State: " .. enemyState)
     self.enemyState = enemyState
 end
 function Ooze:GetMainUnit()
@@ -625,7 +695,6 @@ end
 function Ooze:CleanupEnemyDied()
     -- Do nothing here...
 end
-
 -- #endregion
 
 mod.EnemyGoblinChef = GoblinChef 
