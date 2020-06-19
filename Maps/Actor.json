@@ -1372,7 +1372,8 @@
                 "eventMacros": [
                     "_PlayerCharacter_Damage_Flash",
                     "_PlayerCharacter_Helm_Of_Valor",
-                    "_PlayerCharacter_Health_Potion"
+                    "_PlayerCharacter_Health_Potion",
+                    "_PlayerCharacter_Boots_Of_Speed"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -1527,7 +1528,8 @@
                 "eventMacros": [
                     "_PlayerCharacter_Damage_Flash",
                     "_PlayerCharacter_Helm_Of_Valor",
-                    "_PlayerCharacter_Health_Potion"
+                    "_PlayerCharacter_Health_Potion",
+                    "_PlayerCharacter_Boots_Of_Speed"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -2128,8 +2130,8 @@
         "_FX_Collectible_Boots_Of_Speed": {
             "modelActor": {
                 "resource": {
-                    "type": "GpuAnimation",
-                    "name": "goblin_green"
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_barracks_troop_boost"
                 },
                 "events": [
                     {
@@ -2170,13 +2172,15 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "modelScale": 1.5
             }
         },
         "_SFX_Collectible_Boots_Of_Speed": {
             "modelActor": {
                 "resource": {
-                    "type": "None"
+                    "type": "Sound",
+                    "name": "boarbarian_speed_up"
                 },
                 "events": [
                     {
@@ -2488,6 +2492,30 @@
                         {
                             "create": {
                                 "actor": "_SFX_Enemy_Spawn"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Boots_Of_Speed": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Collectible_Boots_Of_Speed"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Boots_Of_Speed",
+                                "hostSite": "UnitCenter"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Collectible_Boots_Of_Speed"
                             }
                         }
                     ]
