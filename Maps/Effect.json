@@ -211,7 +211,7 @@
         },
         "_Search_Collectible_Bomb_Attack": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
