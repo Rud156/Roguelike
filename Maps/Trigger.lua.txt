@@ -182,6 +182,7 @@ function Update()
     UpdatePlayerStaminaUI()
     UpdatePlayerHealth(GAME_LOOP_RATE)
     UpdatePlayerDamageUI(GAME_LOOP_RATE)
+    m_inventory:UpdateSlots(GAME_LOOP_RATE)
 
     if m_player ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
@@ -288,6 +289,7 @@ function HandleBehaviourAdded()
         DCEI.RemoveBehavior(m_player, InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
         m_helmOfValorActive = false
         m_helmOfValorTimeRemaining = COLLECTIBLE_HELM_OF_VALOR_TIMER
+        m_inventory:ActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName, COLLECTIBLE_HELM_OF_VALOR_TIMER)
     end
 end
 
@@ -885,7 +887,13 @@ function CreateInventoryUI()
     local inventoryItems = {}
     
     for i = 0, 3 do
-        local inventoryItem = InventorySlot:new("btn_yellow_invert", "btn_grey_invert", horizontalStack, HandleInventorySlotClicked)
+        local inventoryItem = InventorySlot:new(
+            "btn_yellow_invert", 
+            "btn_grey_invert", 
+            horizontalStack, 
+            HandleInventorySlotClicked,
+            HandleInventoryItemDropped
+        )
         table.insert(inventoryItems, inventoryItem)
     end
 
@@ -919,6 +927,19 @@ function HandleItemRemovedFromInventory(itemName)
     end
 end
 
+function HandleInventoryItemDropped(itemName, inventorySlot)
+    if itemName == "" then
+        DCEI.LogMessage("Slot Already Empty")
+        return
+    end
+
+    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+
+    HandleItemRemovedFromInventory(itemName)
+    inventorySlot:DropInventoryItem()
+end
+
 function HandleInventorySlotClicked(itemName, inventorySlot)
     if m_player == nil then
         return
@@ -950,7 +971,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
 
         HandleItemRemovedFromInventory(itemName)
-        inventorySlot:Clear()
+        inventorySlot:DropInventoryItem()
     end
 end
 

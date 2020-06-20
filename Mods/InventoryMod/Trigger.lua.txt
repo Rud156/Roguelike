@@ -59,20 +59,49 @@ local InventorySlot = {
     currentStack = -1,
     
     inventoryBackground = nil,
-    inventoryIcon = nil 
+    inventoryIcon = nil,
+    slotDropButton = nil,
+    stackCounter = nil,
+    slotRecharge = nil,
+
+    isSlotRechargeActive = false,
+    maxRechargeTime = 0,
+    currentRechargeTime = 0
 }
 InventorySlot.__index = InventorySlot
-function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFunction)
+function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, slotClickedFunction, slotDropFunction)
     local inventory = {}
     setmetatable(inventory, InventorySlot)
 
     local slotItem = DCEI.NewButton(uiParent)
     DCEI.SetMinSize(slotItem, 75, 75)
+    DCEI.SetMaxSize(slotItem, 100, 100)
     DCEI.SetBackgroundImage(slotItem, backgroundImage)
 
     local inventoryIcon = DCEI.NewFrame(slotItem)
     DCEI.SetMinSize(inventoryIcon, 70, 70)
     DCEI.SetBackgroundImage(inventoryIcon, emptyItemImage)
+
+    local slotRecharge = DCEI.NewFrame(slotItem)
+    DCEI.SetMinSize(slotRecharge, 95, 95)
+    DCEI.SetBackgroundImage(slotRecharge, "ui_squareround")
+    DCEI.SetVerticalOffsetInParent(slotRecharge, 2)
+    DCEI.SetBackgroundImageColor(slotRecharge, 0, 0, 0, 0)
+
+    local slotDropButton = DCEI.NewButton(slotItem)
+    DCEI.SetMinSize(slotDropButton, 20, 20)
+    DCEI.SetBackgroundImage(slotDropButton, "ui_cross")
+    DCEI.SetTopAlignmentInParent(slotDropButton)
+    DCEI.SetRightAlignmentInParent(slotDropButton)
+    DCEI.SetHorizontalOffsetInParent(slotDropButton, 14)
+    DCEI.SetVerticalOffsetInParent(slotDropButton, 20)
+    DCEI.SetBackgroundImageColor(slotDropButton, 0, 0, 0, 0)
+
+    local stackCounter = DCEI.NewText(slotItem)
+    DCEI.SetMinSize(stackCounter, 20, 20)
+    DCEI.SetBottomAlignmentInParent(stackCounter)
+    DCEI.SetRightAlignmentInParent(stackCounter)
+    DCEI.SetText(stackCounter, "")
     
     inventory.emptyItemImage = emptyItemImage
     
@@ -85,11 +114,21 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, callbackFu
 
     inventory.inventoryBackground = slotItem
     inventory.inventoryIcon = inventoryIcon
+    inventory.slotDropButton = slotDropButton
+    inventory.stackCounter = stackCounter
+    inventory.slotRecharge = slotRecharge
+
+    DCEI.SetOnClickCallback(
+        slotDropButton,
+        function()
+            slotDropFunction(inventory:GetInventoryItemName(), inventory)
+        end
+    )
 
     DCEI.SetOnClickCallback(
         slotItem,
         function()
-            callbackFunction(inventory:GetInventoryItemName(), inventory)
+            slotClickedFunction(inventory:GetInventoryItemName(), inventory)
         end
     )
 
@@ -104,6 +143,7 @@ end
 function InventorySlot:UseItem()
     if self.stackability ~= -1 then
         self.currentStack = self.currentStack - 1
+        DCEI.SetText(self.stackCounter, "x " .. self.currentStack)
 
         if self.currentStack <= 0 then
             self:Clear()
@@ -112,6 +152,29 @@ function InventorySlot:UseItem()
     else
         self:Clear()
     end
+end
+function InventorySlot:UpdateSlotRecharge(deltaTime)
+    if not self.isSlotRechargeActive then
+        return
+    end
+
+    self.currentRechargeTime = self.currentRechargeTime - deltaTime
+
+    if self.currentRechargeTime <= 0 then
+        self.isSlotRechargeActive = false
+        DCEI.SetBackgroundImageColor(self.slotRecharge, 0, 0, 0, 0)
+        
+    else
+        local rechargeRatio = self.currentRechargeTime / self.maxRechargeTime
+        DCEI.SetBackgroundImageFillAmount(self.slotRecharge, rechargeRatio)
+    end
+end
+function InventorySlot:ActivateInventorySlotRecharge(maxRechargeTime)
+    self.isSlotRechargeActive = true
+    self.maxRechargeTime = maxRechargeTime
+    self.currentRechargeTime = maxRechargeTime
+
+    DCEI.SetBackgroundImageColor(self.slotRecharge, 0, 0, 0, 0.5)
 end
 function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, itemImage, stackability, currentStack)
     DCEI.LogMessage("Updating Inventory with new item")
@@ -122,14 +185,22 @@ function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, 
 
     self.stackability = stackability
     self.currentStack = currentStack
+
+    if stackability ~= -1 then
+        DCEI.SetText(self.stackCounter, "x " .. currentStack)
+    else
+        DCEI.SetText(self.stackCounter, "")
+    end
     
     DCEI.SetBackgroundImage(self.inventoryIcon, itemImage)
+    DCEI.SetBackgroundImageColor(self.slotDropButton, 1, 1, 1, 1)
 end
 function InventorySlot:StackInventoryItem()
     DCEI.LogMessage("Stacking Inventory")
 
     if self:IsSlotStackable() then
         self.currentStack = self.currentStack + 1
+        DCEI.SetText(self.stackCounter, "x " .. self.currentStack)
     else
         DCEI.LogError("Inventory stack is full!!!")
     end
@@ -143,6 +214,28 @@ function InventorySlot:Clear()
 
     self.stackability = -1
     self.currentStack = -1
+
+    self.isSlotRechargeActive = false
+    self.maxRechargeTime = 0
+    self.currentRechargeTime = 0
+
+    DCEI.SetBackgroundImageColor(self.slotRecharge, 0, 0, 0, 0)
+    DCEI.SetBackgroundImageColor(self.slotDropButton, 0, 0, 0, 0)
+    DCEI.SetText(self.stackCounter, "")
+end
+function InventorySlot:DropInventoryItem()
+    if self.stackability ~= -1 then
+        if self.currentStack > 1 then
+            self.currentStack = self.currentStack - 1
+            DCEI.SetText(self.stackCounter, "x " .. self.currentStack)
+
+        else
+            self:Clear()
+        end
+
+    else
+        self:Clear()
+    end
 end
 function InventorySlot:IsEmpty()
     return self.itemType == -1
@@ -169,17 +262,18 @@ function Inventory:new(inventorySlots)
 
     return inventory
 end
-function Inventory:DropItemInSlot(index, xPosition, yPosition)
-    local inventorySlot = self.inventorySlots[index]
-    if inventorySlot:IsEmpty() then
-        return
+function Inventory:UpdateSlots(deltaTime)
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:UpdateSlotRecharge(deltaTime)
     end
-
-    -- Drop the item into the world
-    local inventoryItem = inventorySlot:GetInventoryItemName()
-    DCEI.CreateUnit(0, 0, inventoryItem, xPosition, yPosition)
-
-    inventorySlot:Clear()
+end
+function Inventory:ActivateInventorySlotRecharge(itemName, maxRechargeTime)
+    for i, slot in ipairs(self.inventorySlots) do
+        if slot:GetInventoryItemName() == itemName then
+            slot:ActivateInventorySlotRecharge(maxRechargeTime)
+            break
+        end
+    end
 end
 function Inventory:IsFull()
     for i, slot in ipairs(self.inventorySlots) do
