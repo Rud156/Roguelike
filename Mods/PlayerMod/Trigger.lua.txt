@@ -1,0 +1,50 @@
+local mod = {}
+
+-- PlayerType: 0: Melee, 1: Ranged
+local Player = {
+    playerUnit = nil,
+
+    playerCollided = false,
+    
+    playerDashActive = false,
+    playerDashCoolDownTimer = 0,
+
+    playerMoving = false,
+    playerCooldownTimer = 0,
+
+    lastFramePlayerHealth = 0,
+    playerType = 0
+}
+Player.__index = Player
+function Player:new(xPosition, yPosition, playerType)
+    local playerUnit
+
+    if playerType == 0 then
+            
+    else
+    end
+end
+function Player:Update(deltaTime)
+end
+function Player:UpdatePlayerPosition(xPosition, yPosition)
+end
+function Player:LaunchPlayerLightAttack(enemyPosition)
+end
+function Player:LaunchPlayerHeavyAttack(enemyPosition)
+end
+function Player:LaunchPlayerMeleeLightAttack(enemyPosition)
+end
+function Player:LaunchPlayerMeleeHeavyAttack(enemyPosition)
+end
+function Player:LaunchPlayerRangedLightAttack(enemyPosition)
+end
+function Player:LaunchPlayerRangedHeavyAttack(enemyPosition)
+end
+function Player:GetPlayerUnit()
+    return playerUnit
+end
+function Player:GetPlayerLastFrameHealth()
+    return lastFramePlayerHealth
+end
+
+return mod
