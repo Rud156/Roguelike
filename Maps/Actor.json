@@ -496,7 +496,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit DeathAnimation Decay",
-                    "_Enemy_Spawn"
+                    "_Enemy_Spawn",
+                    "_Enemy_Damage_Effect"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -705,7 +706,8 @@
                     }
                 ],
                 "eventMacros": [
-                    "_Enemy_Spawn"
+                    "_Enemy_Spawn",
+                    "_Enemy_Damage_Effect"
                 ]
             }
         },
@@ -2663,11 +2665,6 @@
                             "create": {
                                 "actor": "_SFX_Collectible_Helm_Of_Valor"
                             }
-                        },
-                        {
-                            "log": {
-                                "message": "Helm Of Valor Active"
-                            }
                         }
                     ]
                 },
@@ -2681,11 +2678,6 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Helm_Of_Valor"
-                            }
-                        },
-                        {
-                            "log": {
-                                "message": "Helm Of Valor InActive"
                             }
                         }
                     ]

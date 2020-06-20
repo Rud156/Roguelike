@@ -272,7 +272,8 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Set_Enemy_GoblinSapper_Attack"
+                "effect": "_Set_Enemy_GoblinSapper_Attack",
+                "missingEffect": "_Set_Enemy_GoblinSapper_Attack"
             }
         },
         "_Search_Enemy_Hobgoblin": {
