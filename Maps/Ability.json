@@ -71,7 +71,7 @@
             "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 0,
-            "effect": "_Set_Enemy_Ooze_Attack",
+            "effect": "_Search_Enemy_Ooze_Attack",
             "stats": {
                 "prepTime": 0.3,
                 "finishTime": 0.3

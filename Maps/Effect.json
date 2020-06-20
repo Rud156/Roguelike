@@ -308,10 +308,12 @@
                     }
                 },
                 "maxUnitCount": 10,
+                "caster": 2,
+                "source": 2,
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Set_Behaviour_PlayerCharacter_Slow"
+                "effect": "_Set_Enemy_Ooze_Attack"
             }
         },
         "_Search_PlayerCharacter": {
@@ -542,7 +544,7 @@
         "_Set_Enemy_Ooze_Attack": {
             "set": {
                 "effectList": [
-                    "_Search_Enemy_Ooze_Attack",
+                    "_Set_Behaviour_PlayerCharacter_Slow",
                     "_Set_Behaviour_Enemy_Invincible"
                 ]
             }

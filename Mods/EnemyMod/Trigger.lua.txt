@@ -651,8 +651,14 @@ end
 function Ooze:UpdateAttackAnimTimer(deltaTime)
     self.currentTimer = self.currentTimer - deltaTime
     if self.currentTimer <= 0 then
-        self.currentTimer = OOZE_ATTACK_TIME
-        self:SetEnemyState(3)
+        local behaviourStackCount = DCEI.UnitBehaviorStackCount(self.unit, ENEMY_INVINCIBLE)
+        if behaviourStackCount == 0 then
+            self.currentTimer = OOZE_IDLING_TIME
+            self:SetEnemyState(4)
+        else
+            self.currentTimer = OOZE_ATTACK_TIME
+            self:SetEnemyState(3)
+        end
     end
 end
 function Ooze:UpdateAttackWaitingState(deltaTime, playerPosition)
