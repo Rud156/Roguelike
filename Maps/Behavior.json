@@ -4,7 +4,10 @@
             "maxStackCount": 1,
             "duration": 2,
             "finalEffect": "",
-            "expireEffect": "_Search_Collectible_Bomb_Attack"
+            "expireEffect": "_Search_Collectible_Bomb_Attack",
+            "damageResponse": {
+                "effect": ""
+            }
         },
         "_Collectible_Boots_Of_Speed": {
             "maxStackCount": 1,

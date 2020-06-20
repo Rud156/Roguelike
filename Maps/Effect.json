@@ -211,15 +211,17 @@
         },
         "_Search_Collectible_Bomb_Attack": {
             "areaSearch": {
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
                     }
                 },
                 "filter": {
-                    "player": 2
+                    "player": 0
                 },
-                "effect": "_Set_Collectible_Bomb_Attack"
+                "effect": "_Set_Collectible_Bomb_Attack",
+                "missingEffect": "_Set_Collectible_Bomb_Attack"
             }
         },
         "_Search_Enemy_Goblin": {

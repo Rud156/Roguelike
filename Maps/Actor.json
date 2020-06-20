@@ -129,6 +129,40 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "DeathRemove",
+                                    "duration": 0.3
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Unit Remove Called"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "DeathRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            },
+                            {}
+                        ]
                     }
                 ],
                 "eventMacros": [
@@ -861,11 +895,6 @@
                                 "createTimer": {
                                     "name": "FailsafeRemove",
                                     "duration": 5
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Actor Created"
                                 }
                             }
                         ]
