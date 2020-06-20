@@ -345,15 +345,19 @@
             "areaSearch": {
                 "debugDraw": true,
                 "areaSearchType": {
-                    "circle": {
-                        "radius": 0.75
+                    "rectangle": {
+                        "width": 0.4,
+                        "length": 0.6
                     }
                 },
                 "maxUnitCount": 10,
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Set_Damage_PlayerCharacter_Melee_LightAttack"
+                "effect": "_Set_Damage_PlayerCharacter_Melee_LightAttack",
+                "offset": {
+                    "forward": -0.2
+                }
             }
         },
         "_Search_PlayerCharacter_Melee_Missile": {

@@ -195,7 +195,7 @@ local LEVEL_1_ENEMY_SETS = {
     -- { 3, 3, 4 },
     -- { 0, 0, 0 },
     -- { 2, 4 },
-    { 0 }
+    { 2 },
 }
 
 local LEVEL_2_ENEMY_SETS = {

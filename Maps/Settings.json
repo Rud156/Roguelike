@@ -31,7 +31,8 @@
             "_Collectible_Potion",
             "_Collectible_Bomb_Unit",
             "_Enemy_GoblinSapper",
-            "_Enemy_Ooze"
+            "_Enemy_Ooze",
+            "_Enemy_Goblin"
         ],
         "usedEffects": [
             "__StopMovement"

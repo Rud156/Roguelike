@@ -17,7 +17,7 @@ local GOBLIN_CHEF_STUN_TIME = 3.5
 local GOBLIN_HOB = "_Enemy_Hobgoblin"
 local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
 local GOBLIN_HOB_ATTACK_RANGE = 1
-local GOBLIN_HOB_ATTACK_WAIT_TIMER = 1.5
+local GOBLIN_HOB_ATTACK_WAIT_TIMER = 4
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
 local GOBLIN_HOB_STUN_TIME = 3.5
 
@@ -30,7 +30,7 @@ local GOBLIN_STUN_TIME = 3.5
 
 local GOBLIN_SAPPER = "_Enemy_GoblinSapper"
 local GOBLIN_SAPPER_ATTACK = "_Enemy_GoblinSapper_Attack"
-local GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE = 0.5
+local GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE = 1
 
 local OOZE = "_Enemy_Ooze"
 local OOZE_ATTACK = "_Enemy_Ooze_Attack"
@@ -326,6 +326,8 @@ function HobGoblin:WaitAfterAttack(deltaTime, playerPosition)
     self.attackWaitTimer = self.attackWaitTimer - deltaTime
     if self.attackWaitTimer <= 0 then
         self:SetEnemyState(0)
+    else
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
     end
 end
 function HobGoblin:AttackPlayer(deltaTime, playerPosition)
@@ -449,6 +451,8 @@ function Goblin:WaitAfterAttack(deltaTime, playerPosition)
     self.attackWaitTimer = self.attackWaitTimer - deltaTime
     if self.attackWaitTimer <= 0 then
         self:SetEnemyState(0)
+    else
+        DCEI.Move(self.unit, playerPosition.x, playerPosition.y)
     end
 end
 function Goblin:AttackPlayer(deltaTime, playerPosition)
