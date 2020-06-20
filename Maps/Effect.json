@@ -217,8 +217,9 @@
                         "radius": 1
                     }
                 },
+                "maxUnitCount": 10,
                 "filter": {
-                    "player": 0
+                    "player": 2
                 },
                 "effect": "_Set_Collectible_Bomb_Attack",
                 "missingEffect": "_Set_Collectible_Bomb_Attack"
