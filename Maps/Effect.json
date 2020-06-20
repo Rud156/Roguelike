@@ -244,7 +244,7 @@
         },
         "_Search_Enemy_GoblinChef": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -327,7 +327,7 @@
         },
         "_Search_PlayerCharacter_Melee_HeavyAttack": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
@@ -342,7 +342,7 @@
         },
         "_Search_PlayerCharacter_Melee_LightAttack": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.75

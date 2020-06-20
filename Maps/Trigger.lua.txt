@@ -54,6 +54,7 @@ local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
 local PLAYERCHARACTER_DAMAGED = "_PlayerCharacter_Damaged"
 local PLAYER_DASH_STAMINA = 1
 local PLAYER_DASH_CD = 0.3
+local PLAYER_DASH_RANGE = 2.5
 -- Player Ranged
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
@@ -632,8 +633,14 @@ function LaunchPlayerMeleeLightAttack()
     
     local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
     if enemy ~= nil then
-        local position = DCEI.GetUnitPosition2D(enemy)
-        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, position.x, position.y)
+        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
+        local yRotation = math.deg(math.atan(direction.x, direction.y))
+        
+        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
         abilityCasted = true
     end
 
@@ -693,8 +700,8 @@ function MakePlayerDodgeAndRoll()
     local playerRotation = DCEI.GetUnitRotationEuler(m_player)
     local playerPosition = DCEI.GetUnitPosition2D(m_player)
     local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-    local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
-    local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+    local xPoint = math.sin(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.x
+    local yPoint = math.cos(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.y
 
     DCEI.Move(m_player, playerPosition.x, playerPosition.y)
 

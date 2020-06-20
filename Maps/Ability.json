@@ -79,7 +79,7 @@
             "canCastWhileMoving": false
         },
         "_PlayerCharacter_Melee_Dash": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 2,
             "effect": "_Set_PlayerCharacter_Melee_Dash_Launch",
@@ -123,7 +123,7 @@
             "canCastWhileMoving": true
         },
         "_PlayerCharacter_Ranged_Dash": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 2,
             "effect": "_Set_PlayerCharacter_Ranged_Dash_Launch",
