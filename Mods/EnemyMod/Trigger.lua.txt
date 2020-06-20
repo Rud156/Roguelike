@@ -31,6 +31,7 @@ local GOBLIN_STUN_TIME = 3.5
 local GOBLIN_SAPPER = "_Enemy_GoblinSapper"
 local GOBLIN_SAPPER_ATTACK = "_Enemy_GoblinSapper_Attack"
 local GOBLIN_SAPPER_MIN_CLOSEST_DISTANCE = 1
+local GOBLIN_SAPPER_STUN_TIMER = 3.5
 
 local OOZE = "_Enemy_Ooze"
 local OOZE_ATTACK = "_Enemy_Ooze_Attack"
@@ -498,7 +499,9 @@ local GoblinSapper = {
     room = nil,
     unit = nil,
     
-    enemyState = 0 -- 0: Targetting Movement, 1: Attack Waiting
+    enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting, 2: Stunned
+
+    stunTimer = 0
 }
 GoblinSapper.__index = GoblinSapper
 function GoblinSapper:new(room, xPosition, yPosition)
@@ -511,6 +514,8 @@ function GoblinSapper:new(room, xPosition, yPosition)
 
     goblinSapper.enemyState = 0
 
+    goblinSapper.stunTimer = 0
+
     return goblinSapper
 end
 function GoblinSapper:Update(deltaTime, playerPosition)
@@ -518,10 +523,22 @@ function GoblinSapper:Update(deltaTime, playerPosition)
         self:TargetPlayer(deltaTime, playerPosition)
     elseif self.enemyState == 1 then
         -- Do nothing here...
+    elseif self.enemyState == 2 then
+        self:UpdateEnemyStunned(deltaTime)
     end
 end
 function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
-    -- Do nothing here...
+    if self.unit == enemyUnit then
+        local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+        DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+        self.stunTimer = GOBLIN_SAPPER_STUN_TIMER
+        self:SetEnemyState(2)
+
+        return true
+    end
+
+    return false
 end
 function GoblinSapper:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -532,6 +549,14 @@ function GoblinSapper:TargetPlayer(deltaTime, playerPosition)
     else
         DCEI.CastAbilityAtPosition(GOBLIN_SAPPER_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
         self:SetEnemyState(1)
+    end
+end
+function GoblinSapper:UpdateEnemyStunned(deltaTime)
+    self.stunTimer = self.stunTimer - deltaTime
+    if self.stunTimer <= 0 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+        self:SetEnemyState(0)
     end
 end
 function GoblinSapper:SetEnemyState(enemyState)

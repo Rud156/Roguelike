@@ -143,11 +143,6 @@
                                     "name": "DeathRemove",
                                     "duration": 0.3
                                 }
-                            },
-                            {
-                                "log": {
-                                    "message": "Unit Remove Called"
-                                }
                             }
                         ]
                     },
@@ -160,8 +155,7 @@
                         "actions": [
                             {
                                 "destroy": {}
-                            },
-                            {}
+                            }
                         ]
                     }
                 ],
@@ -481,16 +475,6 @@
                         },
                         "actions": [
                             {
-                                "create": {
-                                    "actor": "_FX_Enemy_GoblinSapper_Explosion"
-                                }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_GoblinSapper_Explosion"
-                                }
-                            },
-                            {
                                 "setVisibility": {}
                             },
                             {
@@ -531,7 +515,8 @@
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit DeathAnimation Decay",
                     "_Enemy_Spawn",
-                    "_Enemy_Damage_Effect"
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Stunned_Effect"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -929,103 +914,6 @@
                 "resource": {
                     "type": "ParticleAnimation",
                     "name": "vfx_surfer_eruption_hit"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_FX_Collectible_Boots_Of_Speed": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_tower_barracks_troop_boost"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ],
-                "modelScale": 1.5
-            }
-        },
-        "_FX_Collectible_Hammer_Of_Attack": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_ramhammer_altar_guardian_weapon_impact"
                 },
                 "events": [
                     {
@@ -1858,66 +1746,6 @@
                 ]
             }
         },
-        "_SFX_Collectible_Boots_Of_Speed": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "boarbarian_speed_up"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Collectible_Hammer_Of_Attack": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "crusader_hammerstorm"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
         "_SFX_Collectible_Helm_Of_Valor": {
             "modelActor": {
                 "resource": {
@@ -2396,6 +2224,188 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        },
+        "_FX_Collectible_Boots_Of_Speed_Equip": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_barracks_troop_boost"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.5
+            }
+        },
+        "_FX_Collectible_Hammer_Of_Attack_Equip": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_ramhammer_altar_guardian_weapon_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_Boots_Of_Speed_Equip": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "boarbarian_speed_up"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_Hammer_Of_Attack_Equip": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "crusader_hammerstorm"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Collectible_Boots_Of_Speed": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_boarbarian_runner_speedaura"
+                }
+            }
+        },
+        "_FX_Collectible_Hammer_Of_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_drow_mage_damage_aura_buff"
+                }
+            }
+        },
+        "_FX_Enemy_GoblinSapper_Explosion_Actor": {
+            "actionActor": {
+                "effect": "_Search_Enemy_GoblinSapper_Bomb",
+                "launchModel": "_SFX_Enemy_GoblinSapper_Explosion",
+                "impactModel": "_FX_Enemy_GoblinSapper_Explosion",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
         }
     },
     "actorEventMacros": {
@@ -2515,13 +2525,32 @@
                     "actions": [
                         {
                             "create": {
-                                "actor": "_FX_Collectible_Boots_Of_Speed",
+                                "actor": "_FX_Collectible_Boots_Of_Speed_Equip",
                                 "hostSite": "UnitCenter"
                             }
                         },
                         {
                             "create": {
-                                "actor": "_SFX_Collectible_Boots_Of_Speed"
+                                "actor": "_SFX_Collectible_Boots_Of_Speed_Equip"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Boots_Of_Speed"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Collectible_Boots_Of_Speed"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Boots_Of_Speed"
                             }
                         }
                     ]
@@ -2638,13 +2667,32 @@
                     "actions": [
                         {
                             "create": {
-                                "actor": "_FX_Collectible_Hammer_Of_Attack",
+                                "actor": "_FX_Collectible_Hammer_Of_Attack_Equip",
                                 "hostSite": "UnitCenter"
                             }
                         },
                         {
                             "create": {
-                                "actor": "_SFX_Collectible_Hammer_Of_Attack"
+                                "actor": "_SFX_Collectible_Hammer_Of_Attack_Equip"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Hammer_Of_Attack"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Collectible_Hammer_Of_Attack"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Hammer_Of_Attack"
                             }
                         }
                     ]

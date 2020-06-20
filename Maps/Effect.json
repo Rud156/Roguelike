@@ -265,7 +265,7 @@
         },
         "_Search_Enemy_GoblinSapper_Bomb": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
