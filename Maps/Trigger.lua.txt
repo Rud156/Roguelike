@@ -6,6 +6,7 @@ local EnemyMod = GameModules["Mods/EnemyMod"]
 local RoomMod = GameModules["Mods/RoomMod"]
 local CameraMod = GameModules["Mods/CameraMod"]
 local UtilClassMod = GameModules["Mods/UtilClassMod"]
+local PlayerMod = GameModules["Mods/PlayerMod"]
 
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
@@ -34,6 +35,10 @@ local RoomGenerator = RoomMod.RoomGenerator
 
 local Camera = CameraMod.Camera
 
+PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
+PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
+local Player = PlayerMod.Player
+
 local Rect = UtilClassMod.Rect
 -- #endregion Mods and Includes
 
@@ -52,25 +57,8 @@ local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Damage_Invincible"
 local PLAYERCHARACTER_MISSILE_REACHED = "_PlayerCharacter_Missile_Reached"
 local PLAYERCHARACTER_DAMAGED = "_PlayerCharacter_Damaged"
-local PLAYER_DASH_STAMINA = 1
-local PLAYER_DASH_CD = 0.3
-local PLAYER_DASH_RANGE = 2.5
--- Player Ranged
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
-local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
-local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
-local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
-local PLAYER_RANGED_HEAVY_ATTACK_STAMINA = 3
-local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
-local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
--- Player Melee
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
-local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
-local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
-local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
-local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
-local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
-local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 
 -- Enemy
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
@@ -85,41 +73,22 @@ local COLLECTIBLE_BOMB = "_Collectible_Bomb"
 local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
 local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 
--- Debug
-local USE_KEYBOARD = false
-
 -- #endregion Constants
 
 -- Public Variables
 -- Player
-local PlayerMaxStamina = 5
-local PlayerStaminaRegenRate = 1
-local PlayerStaminaRegenDelay = 2
 local PlayerInvincibleTimer = 3
 local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
-local UseMeleePlayer = true
--- Mouse
-local SingleClickTriggerTime = 0.3
-
+local UseMeleePlayer = false
 -- Private Variables
 -- Rooms
 local m_roomGenerator
 local m_exitRoom
 local m_exitRoomAnimPlayed = false
 local m_currentRoomLevel = 0 -- TODO: All of this will be replaced by a progression system
--- Player Movement
+-- Player
 local m_player
-local m_playerCollided = false
-local m_playerDashActive = false
-local m_playerDashCoolDownTimer = 0
-local m_playerMoving = false
-local m_lastFramePlayerHealth = 0
-local m_playerCooldownTimer = 0
--- Player Stamina
-local m_playerStaminaList = {}
-local m_playerStaminaAmount = 0
-local m_playerStaminaRegenTimer = 0
 -- Player Health and Damage
 local m_playerInvincibilityTimer = 0
 local m_playerDamageUiFlashCount = 0
@@ -138,8 +107,6 @@ local m_uiMiddleLayer
 local m_uiTopLayer
 local m_inventory
 local m_damageDisplay
--- Mouse Data
-local m_mouseDown = false
 
 -- #region LifeCycle Functions
 function Start()
@@ -148,70 +115,97 @@ function Start()
     math.randomseed(1592431012) -- TODO: Change this later on...
 
     m_roomGenerator = RoomGenerator:new(m_currentRoomLevel)
-    SpawnPlayerAndSetPosition()
+    
     CreateBaseUIElements()
     CreatePlayerDamageDisplay()
-
-    m_camera = Camera:new(m_player)
-
     ArcadeCore.HideDefaultUi()
-    CreatePlayerUIElements()
     CreateInventoryUI()
     CreateDebugUI()
 
+    SpawnPlayerAndSetPosition()
+    m_camera = Camera:new(m_player:GetPlayerUnit())
+    m_player:SetPlayerCamera(m_camera)
+    
     -- Add Triggers At The End...
+    DCEI.TriggerAddJoystickEvent(
+        function()
+            local axes = DCEI.TriggeringJoystickAxes
+            if m_player ~= nil then
+                m_player:HandleJoystickMoved(axes)
+            end
+        end
+    )
+    DCEI.TriggerAddJoystickReleaseEvent(
+        function()
+            if m_player ~= nil then
+                m_player:HandleJoystickReleased()
+            end
+        end
+    )
+    DCEI.TriggerAddJoystickButtonEvent(0, 
+        function()
+            local buttonId = DCEI.TriggeringJoystickButtonId
+            local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+            
+            if m_player ~= nil then
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+            end
+        end, 
+        { icon = "icon_enhance_crusader_zeal" }
+    )
+    DCEI.TriggerAddJoystickButtonEvent(1, 
+        function()
+            local buttonId = DCEI.TriggeringJoystickButtonId
+            local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+            
+            if m_player ~= nil then
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+            end
+        end, 
+        { icon = "icon_enhance_stoneguard_bash" }
+    )
+    DCEI.TriggerAddJoystickButtonEvent(2, 
+        function()
+            local buttonId = DCEI.TriggeringJoystickButtonId
+            local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+
+            if m_player ~= nil then
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+            end
+        end, 
+        { icon = "icon_spell_angelic_host" }
+    )
+
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
-    
-    DCEI.TriggerAddJoystickEvent(HandleJoystickMoved)
-    DCEI.TriggerAddJoystickReleaseEvent(HandleJoystickReleased)
-    DCEI.TriggerAddJoystickButtonEvent(0, HandleJoystickButtonClicked, { icon = "icon_enhance_crusader_zeal" })
-    DCEI.TriggerAddJoystickButtonEvent(1, HandleJoystickButtonClicked, { icon = "icon_enhance_stoneguard_bash" })
-    DCEI.TriggerAddJoystickButtonEvent(2, HandleJoystickButtonClicked, { icon = "icon_spell_angelic_host" })
-    -- DCEI.TriggerAddMouseDownEvent(0, HandleLeftMouseDownEvent)
-    -- DCEI.TriggerAddMouseUpEvent(0, HandleLeftMouseUpEvent)
-    -- DCEI.TriggerAddMouseDownEvent(1, HandleRightMouseDownEvent)
 
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 end
 
 function Update()
-    -- Update Player Stamina
-    UpdatePlayerStamina(GAME_LOOP_RATE)
-    UpdatePlayerStaminaUI()
-    UpdatePlayerHealth(GAME_LOOP_RATE)
+    UpdatePlayerHealth(GAME_LOOP_RATE) -- Update Health first otherwise the Player will have current health as LastFramePlayerHealth
+    
+    if m_player ~= nil then
+        m_player:Update(GAME_LOOP_RATE)
+    end
+
     UpdatePlayerDamageUI(GAME_LOOP_RATE)
     m_inventory:UpdateSlots(GAME_LOOP_RATE)
 
-    if m_player ~= nil then
+    if m_player ~= nil and m_player:GetPlayerUnit() ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
-        m_roomGenerator:UpdateRooms(GAME_LOOP_RATE, m_player)
+        m_roomGenerator:UpdateRooms(GAME_LOOP_RATE, m_player:GetPlayerUnit())
 
         if m_exitRoom ~= nil then
-            if not m_exitRoomAnimPlayed and m_exitRoom:IsPlayerInRoom(m_player) then
+            if not m_exitRoomAnimPlayed and m_exitRoom:IsPlayerInRoom(m_player:GetPlayerUnit()) then
                 m_exitRoomAnimPlayed = true
                 m_exitRoom:PlayExitDoorOpenAnimation()
             end
         end
 
-        
-        MakePlayerLookTowardsNearestEnemy()
-    end
-
-    if m_playerDashCoolDownTimer > 0 then
-        m_playerDashCoolDownTimer = m_playerDashCoolDownTimer - GAME_LOOP_RATE
-    end
-
-    if m_playerCooldownTimer > 0 then
-        m_playerCooldownTimer = m_playerCooldownTimer - GAME_LOOP_RATE
-        
-        if m_playerCooldownTimer <= 0 then
-            m_playerDashCoolDownTimer = PLAYER_DASH_CD
-        end
-    end
-    if m_mouseDown and m_playerCooldownTimer <= 0 then
-        LaunchPlayerLightAttack()
+        local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player:GetPlayerUnit())
+        m_player:LookTowardsEnemy(enemy)
     end
 
     if m_helmOfValorInInventory then
@@ -220,13 +214,10 @@ function Update()
 
             if m_helmOfValorTimeRemaining <= 0 then
                 m_helmOfValorActive = true
-                DCEI.ApplyBehavior(m_player, InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
+                DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
             end
         end
     end
-
-    -- Reset Collision. Maybe can remove it
-    m_playerCollided = false
 end
 
 -- #endregion LifeCycle Functions
@@ -243,7 +234,9 @@ function HandleUnitDied()
 
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE then
+        m_player:Destroy()
         m_player = nil
+
         m_currentRoomLevel = 0
         DisplayGameOverSequence()
     end
@@ -252,44 +245,35 @@ end
 function HandleBehaviourAdded()
     local behaviourName = DCEI.TriggeringBehaviorName
     local unit = DCEI.TriggeringUnit
+    local unitName = DCEI.UnitName(unit)
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
-        m_playerCollided = true
-
-        local unitName = DCEI.UnitName(unit)
         if unitName == EXIT_DOORWAY then
-            DCEI.RemoveUnit(m_player)
-            m_player = nil
-
             m_currentRoomLevel = m_currentRoomLevel + 1
             DisplayGameOverSequence()
         end
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
         DCEI.LogMessage("Missile Reached Position")
-        m_playerDashActive = false
         local missilePosition = DCEI.GetUnitPosition2D(unit)
 
-        DCEI.SetUnitPosition2D(m_player, missilePosition.x, missilePosition.y)
-
-        -- local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-        -- local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-        -- local xPoint = math.sin(math.rad(yRotation)) * 1 + missilePosition.x
-        -- local yPoint = math.cos(math.rad(yRotation)) * 1 + missilePosition.y
-        -- DCEI.Move(m_player, xPoint, yPoint)
-
-        m_playerDashCoolDownTimer = PLAYER_DASH_CD
+        m_player:SetPlayerPosition(missilePosition.x, missilePosition.y)
+        m_player:SetDashInActive()
 
     elseif behaviourName == ENEMY_STUNNED_BEHAVIOUR then
         DCEI.LogMessage("Enemy Stun Behaviour Added")
         m_roomGenerator:UpdateEnemyStunState(unit)
 
     elseif behaviourName == PLAYERCHARACTER_DAMAGED then
-        DCEI.LogMessage("Player Damaged")
-        DCEI.RemoveBehavior(m_player, InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
-        m_helmOfValorActive = false
-        m_helmOfValorTimeRemaining = COLLECTIBLE_HELM_OF_VALOR_TIMER
-        m_inventory:ActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName, COLLECTIBLE_HELM_OF_VALOR_TIMER)
+        if unitName == PLAYER_NAME_MELEE or unitName == PLAYER_NAME_RANGED then
+            if m_helmOfValorActive and m_helmOfValorInInventory then
+                DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
+                m_helmOfValorActive = false
+                m_helmOfValorTimeRemaining = COLLECTIBLE_HELM_OF_VALOR_TIMER
+            
+                m_inventory:ActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName, COLLECTIBLE_HELM_OF_VALOR_TIMER)
+            end
+        end
     end
 end
 
@@ -314,85 +298,6 @@ function HandleUnitSelected()
 end
 -- #endregion Unit Events
 
--- #region Joystick Events
-function HandleJoystickMoved()
-    -- When Dashing the Player cannot move normally
-    if m_player == nil or m_playerDashActive then
-        return
-    end
-
-    if m_playerCooldownTimer > 0 then
-        return
-    end
-
-    local axes = DCEI.TriggeringJoystickAxes
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    m_playerMoving = true
-
-    DCEI.Move(m_player, playerPosition.x + axes.x, playerPosition.y + axes.y)
-end
-
-function HandleJoystickReleased()
-    -- When Dashing the Player cannot move normally
-    if m_player == nil or m_playerDashActive then
-        return
-    end
-
-    m_playerMoving = false
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-end
-
-function HandleJoystickButtonClicked()
-    local buttonId = DCEI.TriggeringJoystickButtonId
-    local buttonEvent = DCEI.TriggeringJoystickButtonEventType
-
-    if buttonEvent ~= 1 then
-        return
-    end
-    
-    if not USE_KEYBOARD then
-        if buttonId == 0 then
-            LaunchPlayerLightAttack()
-        elseif buttonId == 1 then
-            LaunchPlayerHeavyAttack()
-        elseif buttonId == 2 then
-            MakePlayerDodgeAndRoll()
-        end
-    else
-        if buttonId == 0 then
-            MakePlayerDodgeAndRoll()
-        end
-    end
-end
--- #endregion Joystick Events
-
--- #region Mouse Events
-function HandleLeftMouseDownEvent()
-    if m_player == nil or not USE_KEYBOARD then
-        return
-    end
-
-    m_mouseDown = true
-end
-
-function HandleLeftMouseUpEvent()
-    if m_player == nil or not USE_KEYBOARD then
-        return
-    end
-
-    m_mouseDown = false
-end
-
-function HandleRightMouseDownEvent()
-    if m_player == nil or not USE_KEYBOARD then
-        return
-    end
-
-    LaunchPlayerHeavyAttack()
-end
--- #endregion Mouse Events
-
 -- #endregion Event Functions
 
 -- #region Utility Fuctions
@@ -400,25 +305,21 @@ end
 -- #region Common Game Spawn
 
 function SpawnPlayerAndSetPosition()
-    if UseMeleePlayer then
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, 0, 0)
-    else
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, 0, 0)
-    end
-
-    local playerHealth = DCEI.GetHealthValue(m_player)
-    m_lastFramePlayerHealth = playerHealth
-    m_playerStaminaAmount = PlayerMaxStamina
-    m_playerStaminaRegenTimer = 0
-
     local i, j = m_roomGenerator:GetBeginningRoomIndex()
     local rect = m_roomGenerator:GetRoomRect(i, j)
     local entryPositon = m_roomGenerator:GetBeginningRoomEntryPosition()
 
     local xPosition = rect.x + entryPositon[1] + 1
     local yPosition = rect.y + entryPositon[2]
-    DCEI.SetUnitPosition2D(m_player, xPosition, yPosition)
-    DCEI.Move(m_player, xPosition, yPosition)
+    
+    local playerType
+    if UseMeleePlayer then
+        playerType = 0
+    else
+        playerType = 1
+    end
+    m_player = Player:new(xPosition, yPosition, playerType, m_uiRoot)
+    UpdateInventoryItemLevelStart()
 
     local exitRowIndex, exitColumnIndex = m_roomGenerator:GetExitRoomIndex()
     m_exitRoom = m_roomGenerator.rooms[exitRowIndex][exitColumnIndex]
@@ -438,7 +339,10 @@ end
 -- #region GameOver State
 
 function DisplayGameOverSequence()
-    m_playerStaminaList = {}
+    UpdateInventoryItemLevelEnd()
+
+    m_player:Destroy()
+    m_player = nil
     m_camera:UpdateTarget(nil)
 
     local maskOptions = {
@@ -461,260 +365,41 @@ function ResetGameState()
     m_roomGenerator:GenerateRooms(m_currentRoomLevel)
     SpawnPlayerAndSetPosition()
 
-    m_camera:UpdateTarget(m_player)
-    CreatePlayerUIElements()
+    m_camera:UpdateTarget(m_player:GetPlayerUnit())
 end
 
 -- #endregion GameOver State
 
 -- #region Player Functions
 
-function MakePlayerLookTowardsNearestEnemy()
-    if m_player == nil or m_playerMoving or m_playerDashActive then
-        return
-    end
-
-    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
-    if enemy ~= nil then
-        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-
-        local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
-        local angle = math.deg(math.atan(direction.x, direction.y))
-
-        DCEI.SetUnitRotationEuler(m_player, 0, angle, 0)
-    end
-end
-
 function UpdatePlayerHealth(deltaTime)
     if m_player == nil then
         return
     end
 
-    local playerHealth = DCEI.GetHealthValue(m_player)
-    if m_lastFramePlayerHealth > playerHealth then
+    if m_player:GetPlayerUnit() == nil then
+        return
+    end
+
+    local playerHealth = DCEI.GetHealthValue(m_player:GetPlayerUnit())
+    local lastFramePlayerHealth = m_player:GetPlayerLastFrameHealth()
+
+    if lastFramePlayerHealth > playerHealth then
         m_camera:StartShakeWithUnit(1, 0)
-        DCEI.ApplyBehavior(m_player, PLAYER_INVINCIBLE_BEHAVIOUR)
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
 
         m_playerInvincibilityTimer = PlayerInvincibleTimer
         m_playerDamageUiFlashCount = PlayerDamageFlashCount
         m_playerDamageUiIsFlashOn = false
     end
-    m_lastFramePlayerHealth = playerHealth
 
     if m_playerInvincibilityTimer > 0 then
         m_playerInvincibilityTimer = m_playerInvincibilityTimer - deltaTime
 
         if m_playerInvincibilityTimer <= 0 then
-            DCEI.RemoveBehavior(m_player, PLAYER_INVINCIBLE_BEHAVIOUR)
+            DCEI.RemoveBehavior(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
         end
     end
-end
-
-function UpdatePlayerStamina(deltaTime)
-    if m_playerStaminaRegenTimer <= 0 and m_playerStaminaAmount < PlayerMaxStamina then
-        m_playerStaminaAmount = m_playerStaminaAmount + deltaTime * PlayerStaminaRegenRate
-
-        if m_playerStaminaAmount > PlayerMaxStamina then
-            m_playerStaminaAmount = PlayerMaxStamina
-        end
-    end
-    if m_playerStaminaRegenTimer > 0 then
-        m_playerStaminaRegenTimer = m_playerStaminaRegenTimer - deltaTime
-    end
-end
-
-function LaunchPlayerLightAttack()
-    if m_player == nil then
-        DCEI.LogMessage("Player Died")
-        return
-    end
-
-    if m_playerCooldownTimer > 0 then
-        DCEI.LogMessage("Player Attack On Cooldown")
-        return
-    end
-
-    DCEI.LogMessage("Launching Light Attack: " .. m_playerCooldownTimer)
-
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-
-    if UseMeleePlayer then
-        LaunchPlayerMeleeLightAttack()
-    else
-        LaunchPlayerRangedLightAttack()
-    end
-
-    m_playerMoving = false
-end
-
-function LaunchPlayerHeavyAttack()
-    if m_player == nil then
-        DCEI.LogMessage("Player Died")
-        return
-    end
-
-    if m_playerCooldownTimer > 0 then
-        DCEI.LogMessage("Player Attack On Cooldown")
-        return
-    end
-
-    DCEI.LogMessage("Launching Heavy Attack: " .. m_playerCooldownTimer)
-
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-
-    if UseMeleePlayer then
-        LaunchPlayerMeleeHeavyAttack()
-    else
-        LaunchPlayerRangedHeavyAttack()
-    end
-
-    m_playerMoving = false
-end
-
-function LaunchPlayerRangedLightAttack()
-    local abilityCasted = false
-
-    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
-    if enemy ~= nil then
-        local position = DCEI.GetUnitPosition2D(enemy)
-        DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, position.x, position.y)
-        abilityCasted = true
-    end
-
-    if not abilityCasted then
-        local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-        
-        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
-        DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, m_player, xPoint, yPoint)
-    end
-
-    DCEI.LogMessage("Launching Light Attack")
-    m_playerCooldownTimer = PLAYER_RANGED_LIGHT_WEAPON_CD
-end
-
-function LaunchPlayerRangedHeavyAttack()
-    if m_playerStaminaAmount < PLAYER_RANGED_HEAVY_ATTACK_STAMINA then
-        DCEI.LogMessage("Not enough stamina for Ranged Heavy Attack")
-        return
-    end
-
-    m_playerStaminaAmount = m_playerStaminaAmount - PLAYER_RANGED_HEAVY_ATTACK_STAMINA
-    m_playerStaminaRegenTimer = PlayerStaminaRegenDelay
-
-    local abilityCasted = false
-
-    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
-    if enemy ~= nil then
-        local position = DCEI.GetUnitPosition2D(enemy)
-        DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, m_player, position.x, position.y)
-        abilityCasted = true
-    end
-
-    if not abilityCasted then
-        local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-        
-        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
-        DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, m_player, xPoint, yPoint)
-    end
-
-    m_playerCooldownTimer = PLAYER_RANGED_HEAVY_WEAPON_CD
-    m_camera:StartShake(1, 0)
-end
-
-function LaunchPlayerMeleeLightAttack()
-    local abilityCasted = false
-    
-    local enemy = m_roomGenerator:GetRoomNearestEnemy(m_player)
-    if enemy ~= nil then
-        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        local direction = ExtensionFunction.VectorSubtract(enemyPosition, playerPosition)
-        local yRotation = math.deg(math.atan(direction.x, direction.y))
-        
-        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
-        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
-        abilityCasted = true
-    end
-
-    if not abilityCasted then
-        local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
-        local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-        
-        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
-        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, m_player, xPoint, yPoint)
-    end
-
-    m_playerCooldownTimer = PLAYER_MELEE_LIGHT_WEAPON_CD
-end
-
-function LaunchPlayerMeleeHeavyAttack()
-    if m_playerStaminaAmount < PLAYER_MELEE_HEAVY_ATTACK_STAMINA then
-        DCEI.LogMessage("Not enough stamina for Melee Heavy Attack")
-        return
-    end
-
-    m_playerStaminaAmount = m_playerStaminaAmount - PLAYER_MELEE_HEAVY_ATTACK_STAMINA
-    m_playerStaminaRegenTimer = PlayerStaminaRegenDelay
-
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, m_player, playerPosition.x, playerPosition.y)
-
-    m_playerCooldownTimer = PLAYER_MELEE_HEAVY_WEAPON_CD
-    m_camera:StartShake(1, 0.3)
-end
-
-function MakePlayerDodgeAndRoll()
-    if m_player == nil or m_playerDashCoolDownTimer > 0 or m_playerCooldownTimer > 0 then
-        DCEI.LogMessage("Player Died/Dash/Attack on CoolDown")
-        return
-    end
-
-    if m_playerDashActive then
-        DCEI.LogMessage("Dash Already Active")
-        return
-    end
-
-    local playerStamina = m_playerStaminaAmount
-    if playerStamina < PLAYER_DASH_STAMINA then
-        DCEI.LogMessage("Not enough stamina for dash")
-        return
-    end
-
-    DCEI.LogMessage("Making Player Dash: " .. m_playerDashCoolDownTimer)
-    DCEI.LogMessage("Attack Cooldown Timer: " .. m_playerCooldownTimer)
-
-    local updatedStamina = playerStamina - PLAYER_DASH_STAMINA
-    m_playerStaminaAmount = updatedStamina
-    m_playerStaminaRegenTimer = PlayerStaminaRegenDelay
-
-    local playerRotation = DCEI.GetUnitRotationEuler(m_player)
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
-    local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
-    local xPoint = math.sin(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.x
-    local yPoint = math.cos(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.y
-
-    DCEI.Move(m_player, playerPosition.x, playerPosition.y)
-
-    if UseMeleePlayer then
-        DCEI.CastAbilityAtPosition(PLAYER_MELEE_DASH_ABILITY, m_player, xPoint, yPoint)
-    else
-        DCEI.CastAbilityAtPosition(PLAYER_RANGED_DASH_ABILITY, m_player, xPoint, yPoint)
-    end
-
-    m_playerDashActive = true
-    m_playerMoving = false
 end
 
 -- #endregion Player Functions
@@ -735,53 +420,6 @@ function CreateBaseUIElements()
     m_uiBottomLayer = bottomFrame
     m_uiMiddleLayer = middleFrame
     m_uiTopLayer = topFrame
-end
-
-function CreatePlayerUIElements()
-    -- Health Bar
-    local healthBarBackground = DCEI.NewFrame(m_uiRoot)
-    local healthBar = DCEI.NewFrame(healthBarBackground)
-
-    DCEI.SetBackgroundImage(healthBarBackground, "bar_progression00_empty")
-    DCEI.SetBackgroundImage(healthBar, "bar_exp00_fill")
-    DCEI.SetBackgroundImageColor(healthBar, 0, 1, 0, 1)
-
-    DCEI.SetMinSize(healthBarBackground, 67, 10)
-    DCEI.SetMinSize(healthBar, 65, 7)
-
-    DCEI.SetBackgroundImageFillAmountExpression(healthBar, "MainCharacter.Health.Fraction")
-    DCEI.BindUnit("MainCharacter", m_player)
-    DCEI.AttachToUnit(healthBarBackground, m_player, { offset = { up = 0.8 } })
-
-    -- Stamina Bar
-    m_playerStaminaList = {}
-
-    local staminaBarHolder = DCEI.NewHStack(m_uiRoot)
-    DCEI.SetSpacing(staminaBarHolder, 3)
-    for i = 1, PlayerMaxStamina do
-        local staminaItem = DCEI.NewFrame(staminaBarHolder)
-        DCEI.SetMinSize(staminaItem, 11, 11)
-        table.insert(m_playerStaminaList, staminaItem)
-
-        DCEI.SetBackgroundImage(staminaItem, "bar_reward00_pin")
-    end
-    DCEI.AttachToUnit(staminaBarHolder, m_player, { offset = { up = 0.6 } })
-    
-    -- Destroy UI when player dies
-    DCEI.TriggerAddUnitDiedEvent(
-        m_player, 
-        function()
-            DCEI.Destroy(healthBarBackground)
-            DCEI.Destroy(staminaBarHolder)
-        end
-    )
-    DCEI.TriggerAddUnitRemovedEvent(
-        m_player,
-        function()
-            DCEI.Destroy(healthBarBackground)
-            DCEI.Destroy(staminaBarHolder)
-        end
-    )
 end
 
 function CreatePlayerDamageDisplay()
@@ -805,31 +443,6 @@ function CreateDebugUI()
     DCEI.SetMinSize(characterButton, 50, 50)
     DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
     DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
-    
-    local keyboardButton = DCEI.NewButton(horizontalStack)
-    DCEI.SetMinSize(keyboardButton, 50, 50)
-    DCEI.SetBackgroundImage(keyboardButton, "pointy_finger")
-    DCEI.SetOnClickCallback(keyboardButton, HandleKeyboardMouseSwitch)
-end
-
-function UpdatePlayerStaminaUI()
-    if m_player == nil then
-        return
-    end
-
-    local currentStamina = m_playerStaminaAmount
-    if currentStamina > PlayerMaxStamina then
-        DCEI.LogError("Invalid Stamina Amount")
-        return
-    end
-    
-    for i = 1, #m_playerStaminaList do
-        if i <= currentStamina then
-            DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 1)
-        else
-            DCEI.SetBackgroundImageColor(m_playerStaminaList[i], 1, 1, 1, 0)
-        end
-    end
 end
 
 function UpdatePlayerDamageUI(deltaTime)
@@ -854,25 +467,23 @@ function UpdatePlayerDamageUI(deltaTime)
 end
 
 function HandleCharacterSwitch()
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+    UpdateInventoryItemLevelEnd()
 
-    if m_player ~= nil then
-        DCEI.RemoveUnit(m_player)
-    end
+    m_player:Destroy()
+    m_player = nil
 
+    local playerType
     if UseMeleePlayer then
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, playerPosition.x, playerPosition.y)
+        playerType = 0
     else
-        m_player = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, playerPosition.x, playerPosition.y)
+        playerType = 1
     end
+    m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot)
+    UpdateInventoryItemLevelStart()
 
     UseMeleePlayer = not UseMeleePlayer
-    m_camera:UpdateTarget(m_player)
-    CreatePlayerUIElements()
-end
-
-function HandleKeyboardMouseSwitch()
-    USE_KEYBOARD = not USE_KEYBOARD
+    m_camera:UpdateTarget(m_player:GetPlayerUnit())
 end
 
 -- #endregion
@@ -901,11 +512,27 @@ function CreateInventoryUI()
     m_inventory = inventory
 end
 
+function UpdateInventoryItemLevelStart()
+    local slots = m_inventory:GetInventorySlots()
+    for i, slot in ipairs(slots) do
+        local itemName = slot:GetInventoryItemName()
+        HandleItemAddedToInventory(itemName)
+    end
+end
+
+function UpdateInventoryItemLevelEnd()
+    local slots = m_inventory:GetInventorySlots()
+    for i, slot in ipairs(slots) do
+        local itemName = slot:GetInventoryItemName()
+        HandleItemRemovedFromInventory(itemName)
+    end
+end
+
 function HandleItemAddedToInventory(itemName)
     if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
-        DCEI.ApplyBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
-        DCEI.ApplyBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
         m_helmOfValorInInventory = true
         m_helmOfValorActive = false
@@ -915,15 +542,15 @@ end
 
 function HandleItemRemovedFromInventory(itemName)
     if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
-        DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+        DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
-        DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+        DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
         m_helmOfValorInInventory = false
         m_helmOfValorActive = false
         m_helmOfValorTimeRemaining = 0
 
-        DCEI.RemoveBehavior(m_player, InventoryCollectibles[itemName].itemBehaviourName)
+        DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     end
 end
 
@@ -933,7 +560,7 @@ function HandleInventoryItemDropped(itemName, inventorySlot)
         return
     end
 
-    local playerPosition = DCEI.GetUnitPosition2D(m_player)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
     DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
 
     HandleItemRemovedFromInventory(itemName)
@@ -952,13 +579,13 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         local potionBehaviour = InventoryCollectibles[itemName].itemBehaviourName
 
         DCEI.LogMessage("Adding Player Health: " .. healthAmount)
-        DCEI.AddHealth(m_player, healthAmount)
-        DCEI.ApplyBehavior(m_player, potionBehaviour)
+        DCEI.AddHealth(m_player:GetPlayerUnit(), healthAmount)
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), potionBehaviour)
         
         inventorySlot:UseItem()
         
     elseif itemName == COLLECTIBLE_BOMB then
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         local bombUnitName = InventoryCollectibles[itemName].itemBombName
 
         DCEI.LogMessage("Deploying Bomb...")
@@ -967,7 +594,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         inventorySlot:UseItem()
 
     else
-        local playerPosition = DCEI.GetUnitPosition2D(m_player)
+        local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
 
         HandleItemRemovedFromInventory(itemName)

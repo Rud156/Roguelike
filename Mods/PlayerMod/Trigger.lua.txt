@@ -1,11 +1,37 @@
 local mod = {}
 
--- PlayerType: 0: Melee, 1: Ranged
+local PLAYER_DASH_STAMINA = 1
+local PLAYER_DASH_CD = 0.3
+local PLAYER_DASH_RANGE = 2.5
+-- Player Ranged
+local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
+local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
+local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
+local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
+local PLAYER_RANGED_HEAVY_ATTACK_STAMINA = 3
+local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
+local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
+local PLAYER_RANGED_LIGHT_WEAPON_RANGE = 7
+local PLAYER_RANGED_HEAVY_WEAPON_RANGE = 7
+-- Player Melee
+local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
+local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
+local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
+local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
+local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
+local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
+local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
+
+local PLAYER_MAX_STAMINA = 5
+local PLAYER_STAMINA_REGEN_RATE = 1
+local PLAYER_STAMINA_REGEN_DELAY = 2
+
 local Player = {
     playerUnit = nil,
+    camera = nil,
 
-    playerCollided = false,
-    
+    playerType = 0, -- PlayerType: 0: Melee, 1: Ranged
+
     playerDashActive = false,
     playerDashCoolDownTimer = 0,
 
@@ -13,38 +39,404 @@ local Player = {
     playerCooldownTimer = 0,
 
     lastFramePlayerHealth = 0,
-    playerType = 0
+    
+    playerStaminaList = {},
+    playerStaminaAmount = 0,
+    playerStaminaRegenTimer = 0,
 }
 Player.__index = Player
-function Player:new(xPosition, yPosition, playerType)
+function Player:new(xPosition, yPosition, playerType, uiRoot)
+    local player = {}
+    setmetatable(player, Player)
+
     local playerUnit
 
     if playerType == 0 then
-            
+        playerUnit = DCEI.CreateUnit(1, 1, PLAYER_NAME_MELEE, xPosition, yPosition)
     else
+        playerUnit = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, xPosition, yPosition)
     end
+
+    player.playerUnit = playerUnit
+    player.camera = nil
+
+    player.playerType = playerType
+
+    player.playerDashActive = false
+    player.playerDashCoolDownTimer = 0
+
+    player.playerMoving = false
+    player.playerCooldownTimer = 0
+
+    player.lastFramePlayerHealth = DCEI.GetHealthValue(playerUnit)
+
+    player.playerStaminaList = {}
+    player.playerStaminaAmount = PLAYER_MAX_STAMINA
+    player.playerStaminaRegenTimer = 0
+
+    player:CreatePlayerUI(uiRoot)
+
+    return player
+end
+function Player:CreatePlayerUI(uiRoot)
+    -- Health Bar
+    local healthBarBackground = DCEI.NewFrame(uiRoot)
+    local healthBar = DCEI.NewFrame(healthBarBackground)
+
+    DCEI.SetBackgroundImage(healthBarBackground, "bar_progression00_empty")
+    DCEI.SetBackgroundImage(healthBar, "bar_exp00_fill")
+    DCEI.SetBackgroundImageColor(healthBar, 0, 1, 0, 1)
+
+    DCEI.SetMinSize(healthBarBackground, 67, 10)
+    DCEI.SetMinSize(healthBar, 65, 7)
+
+    DCEI.SetBackgroundImageFillAmountExpression(healthBar, "MainCharacter.Health.Fraction")
+    DCEI.BindUnit("MainCharacter", self.playerUnit)
+    DCEI.AttachToUnit(healthBarBackground, self.playerUnit, { offset = { up = 0.8 } })
+
+    -- Stamina Bar
+    self.playerStaminaList = {}
+
+    local staminaBarHolder = DCEI.NewHStack(uiRoot)
+    DCEI.SetSpacing(staminaBarHolder, 3)
+    for i = 1, PLAYER_MAX_STAMINA do
+        local staminaItem = DCEI.NewFrame(staminaBarHolder)
+        DCEI.SetMinSize(staminaItem, 11, 11)
+        table.insert(self.playerStaminaList, staminaItem)
+
+        DCEI.SetBackgroundImage(staminaItem, "bar_reward00_pin")
+    end
+    DCEI.AttachToUnit(staminaBarHolder, self.playerUnit, { offset = { up = 0.6 } })
+    
+    -- Destroy UI when player dies
+    DCEI.TriggerAddUnitDiedEvent(
+        self.playerUnit, 
+        function()
+            DCEI.Destroy(healthBarBackground)
+            DCEI.Destroy(staminaBarHolder)
+        end
+    )
+    DCEI.TriggerAddUnitRemovedEvent(
+        self.playerUnit,
+        function()
+            DCEI.Destroy(healthBarBackground)
+            DCEI.Destroy(staminaBarHolder)
+        end
+    )
 end
 function Player:Update(deltaTime)
+    self:UpdatePlayerStamina(deltaTime)
+    self:UpdatePlayerStaminaUI()
+
+    if self.playerDashCoolDownTimer > 0 then
+        self.playerDashCoolDownTimer = self.playerDashCoolDownTimer - deltaTime
+    end
+
+    if self.playerCooldownTimer > 0 then
+        self.playerCooldownTimer = self.playerCooldownTimer - deltaTime
+        
+        if self.playerCooldownTimer <= 0 then
+            self.playerDashCoolDownTimer = PLAYER_DASH_CD
+        end
+    end
+
+    self.lastFramePlayerHealth = DCEI.GetHealthValue(self.playerUnit)
 end
-function Player:UpdatePlayerPosition(xPosition, yPosition)
+function Player:UpdatePlayerStamina(deltaTime)
+    if self.playerStaminaRegenTimer <= 0 and self.playerStaminaAmount < PLAYER_MAX_STAMINA then
+        self.playerStaminaAmount = self.playerStaminaAmount + deltaTime * PLAYER_STAMINA_REGEN_RATE
+
+        if self.playerStaminaAmount > PLAYER_MAX_STAMINA then
+            self.playerStaminaAmount = PLAYER_MAX_STAMINA
+        end
+    end
+    if self.playerStaminaRegenTimer > 0 then
+        self.playerStaminaRegenTimer = self.playerStaminaRegenTimer - deltaTime
+    end
 end
-function Player:LaunchPlayerLightAttack(enemyPosition)
+function Player:UpdatePlayerStaminaUI()
+    if self.playerUnit == nil then
+        return
+    end
+
+    local currentStamina = self.playerStaminaAmount
+    if currentStamina > PLAYER_MAX_STAMINA then
+        DCEI.LogError("Invalid Stamina Amount")
+        return
+    end
+    
+    for i = 1, #self.playerStaminaList do
+        if i <= currentStamina then
+            DCEI.SetBackgroundImageColor(self.playerStaminaList[i], 1, 1, 1, 1)
+        else
+            DCEI.SetBackgroundImageColor(self.playerStaminaList[i], 1, 1, 1, 0)
+        end
+    end
 end
-function Player:LaunchPlayerHeavyAttack(enemyPosition)
+function Player:LookTowardsEnemy(enemy)
+    if self.playerUnit == nil or self.playerMoving or self.playerDashActive then
+        return
+    end
+
+    if enemy ~= nil then
+        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+
+        local direction = mod.VectorSubtract(enemyPosition, playerPosition)
+        local angle = math.deg(math.atan(direction.x, direction.y))
+
+        DCEI.SetUnitRotationEuler(self.playerUnit, 0, angle, 0)
+    end
 end
-function Player:LaunchPlayerMeleeLightAttack(enemyPosition)
+function Player:HandleJoystickMoved(axes)
+    if self.playerUnit == nil or self.playerDashActive then
+        return
+    end
+
+    if self.playerCooldownTimer > 0 then
+        return
+    end
+
+    local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+    self.playerMoving = true
+
+    DCEI.Move(self.playerUnit, playerPosition.x + axes.x, playerPosition.y + axes.y)
 end
-function Player:LaunchPlayerMeleeHeavyAttack(enemyPosition)
+function Player:HandleJoystickReleased()
+    if self.playerUnit == nil or self.playerDashActive then
+        return
+    end
+
+    local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+    self.playerMoving = false
+
+    DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
 end
-function Player:LaunchPlayerRangedLightAttack(enemyPosition)
+function Player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+    if buttonEvent ~= 1 then
+        return
+    end
+    
+    if buttonId == 0 then
+        self:LaunchPlayerLightAttack()
+    elseif buttonId == 1 then
+        self:LaunchPlayerHeavyAttack()
+    elseif buttonId == 2 then
+        self:MakePlayerDash()
+    end
 end
-function Player:LaunchPlayerRangedHeavyAttack(enemyPosition)
+function Player:LaunchPlayerLightAttack(enemy)
+    if self.playerUnit == nil then
+        DCEI.LogMessage("Player Died")
+        return
+    end
+
+    if self.playerCooldownTimer > 0 then
+        DCEI.LogMessage("Player Attack on Cooldown")
+        return
+    end
+
+    DCEI.LogMessage("Launching Light Attack: " .. self.playerCooldownTimer)
+
+    local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+    DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
+
+    if self.playerType == 0 then
+        self:LaunchPlayerMeleeLightAttack(enemy)
+    else
+        self:LaunchPlayerRangedLightAttack(enemy)
+    end
+
+    self.playerMoving = false
+end
+function Player:LaunchPlayerHeavyAttack(enemy)
+    if self.playerUnit == nil then
+        DCEI.LogMessage("Player Died")
+        return
+    end
+
+    if self.playerCooldownTimer > 0 then
+        DCEI.LogMessage("Player Attack on Cooldown")
+        return
+    end
+
+    DCEI.LogMessage("Launching Heavy Attack: " .. self.playerCooldownTimer)
+
+    local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+    DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
+
+    if self.playerType == 0 then
+        self:LaunchPlayerMeleeHeavyAttack(enemy)
+    else
+        self:LaunchPlayerRangedHeavyAttack(enemy)
+    end
+
+    self.playerMoving = false
+end
+function Player:LaunchPlayerMeleeLightAttack(enemy)
+    if enemy ~= nil then
+        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+        local direction = mod.VectorSubtract(enemyPosition, playerPosition)
+        local yRotation = math.deg(math.atan(direction.x, direction.y))
+        
+        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
+       
+    else
+        local playerRotation = DCEI.GetUnitRotationEuler(self.playerUnit)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+        local yRotation = mod.NormalizeUnitRotation(playerRotation)
+        
+        local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
+    end
+
+    self.playerCooldownTimer = PLAYER_MELEE_LIGHT_WEAPON_CD
+end
+function Player:LaunchPlayerMeleeHeavyAttack(enemy)
+    if self.playerStaminaAmount < PLAYER_MELEE_HEAVY_ATTACK_STAMINA then
+        DCEI.LogMessage("Not enough stamina for Melee Heavy Attack")
+        return
+    end
+
+    self.playerStaminaAmount = self.playerStaminaAmount - PLAYER_MELEE_HEAVY_ATTACK_STAMINA
+    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+
+    local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+    DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, self.playerUnit, playerPosition.x, playerPosition.y)
+
+    self.playerCooldownTimer = PLAYER_MELEE_HEAVY_WEAPON_CD
+    self.camera:StartShake(1, 0.3)
+end
+function Player:LaunchPlayerRangedLightAttack(enemy)
+    if enemy ~= nil then
+        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+        local direction = mod.VectorSubtract(enemyPosition, playerPosition)
+        local yRotation = math.deg(math.atan(direction.x, direction.y))
+        
+        local xPoint = math.sin(math.rad(yRotation))* PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation))* PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
+
+    else
+        local playerRotation = DCEI.GetUnitRotationEuler(self.playerUnit)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+        local yRotation = mod.NormalizeUnitRotation(playerRotation)
+        
+        local xPoint = math.sin(math.rad(yRotation)) * PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) * PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
+    end
+
+    DCEI.LogMessage("Launching Light Attack")
+    self.playerCooldownTimer = PLAYER_RANGED_LIGHT_WEAPON_CD
+end
+function Player:LaunchPlayerRangedHeavyAttack(enemy)
+    if self.playerStaminaAmount < PLAYER_RANGED_HEAVY_ATTACK_STAMINA then
+        DCEI.LogMessage("Not enough stamina for Ranged Heavy Attack")
+        return
+    end
+
+    self.playerStaminaAmount = self.playerStaminaAmount - PLAYER_RANGED_HEAVY_ATTACK_STAMINA
+    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+
+    if enemy ~= nil then
+        local enemyPosition = DCEI.GetUnitPosition2D(enemy)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+        local direction = mod.VectorSubtract(enemyPosition, playerPosition)
+        local yRotation = math.deg(math.atan(direction.x, direction.y))
+        
+        local xPoint = math.sin(math.rad(yRotation))* PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation))* PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, self.playerUnit, xPoint, yPoint)
+        
+    else
+        local playerRotation = DCEI.GetUnitRotationEuler(self.playerUnit)
+        local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+        local yRotation = mod.NormalizeUnitRotation(playerRotation)
+        
+        local xPoint = math.sin(math.rad(yRotation)) * PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) * PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.y
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, self.playerUnit, xPoint, yPoint)
+    end
+
+    self.playerCooldownTimer = PLAYER_RANGED_HEAVY_WEAPON_CD
+    self.camera:StartShake(1, 0)
+end
+function Player:MakePlayerDash()
+    if self.playerUnit == nil or self.playerDashCoolDownTimer > 0 or self.playerCooldownTimer > 0 then
+        DCEI.LogMessage("Player Died/Dash/Attack on CoolDown")
+        return
+    end
+
+    if self.playerDashActive then
+        DCEI.LogMessage("Dash Already Active")
+        return
+    end
+
+    local playerStamina = self.playerStaminaAmount
+    if playerStamina < PLAYER_DASH_STAMINA then
+        DCEI.LogMessage("Not enough stamina for dash")
+        return
+    end
+
+    DCEI.LogMessage("Making Player Dash: " .. self.playerDashCoolDownTimer)
+    DCEI.LogMessage("Attack Cooldown Timer: " .. self.playerCooldownTimer)
+
+    local updatedStamina = playerStamina - PLAYER_DASH_STAMINA
+    self.playerStaminaAmount = updatedStamina
+    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+
+    local playerRotation = DCEI.GetUnitRotationEuler(self.playerUnit)
+    local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
+    local yRotation = mod.NormalizeUnitRotation(playerRotation)
+    local xPoint = math.sin(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.x
+    local yPoint = math.cos(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.y
+
+    DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
+
+    if self.playerType == 0 then
+        DCEI.CastAbilityAtPosition(PLAYER_MELEE_DASH_ABILITY, self.playerUnit, xPoint, yPoint)
+    else
+        DCEI.CastAbilityAtPosition(PLAYER_RANGED_DASH_ABILITY, self.playerUnit, xPoint, yPoint)
+    end
+
+    self.playerDashActive = true
+    self.playerMoving = false
+end
+function Player:Destroy()
+    DCEI.RemoveUnit(self.playerUnit)
+end
+function Player:SetPlayerPosition(xPosition, yPosition)
+    DCEI.SetUnitPosition2D(self.playerUnit, xPosition, yPosition)
+    DCEI.Move(self.playerUnit, xPosition, yPosition)
+end
+function Player:SetPlayerCamera(camera)
+    self.camera = camera
+end
+function Player:SetDashCooldown()
+    self.playerDashCoolDownTimer = PLAYER_DASH_CD
+end
+function Player:SetDashInActive()
+    self.playerDashActive = false
 end
 function Player:GetPlayerUnit()
-    return playerUnit
+    return self.playerUnit
 end
 function Player:GetPlayerLastFrameHealth()
-    return lastFramePlayerHealth
+    return self.lastFramePlayerHealth
+end
+function Player:GetPlayerStamina()
+    return self.playerStaminaAmount
 end
 
+
+mod.Player = Player
+
+mod.NormalizeUnitRotation = nil
+mod.VectorSubtract = nil
 return mod
