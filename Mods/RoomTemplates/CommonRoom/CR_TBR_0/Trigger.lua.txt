@@ -1,0 +1,11 @@
+
+-- VARIABLES
+local core = GameModules["Arcade/Core"]
+
+-- TRIGGERS
+function OnMapStart()
+    core.HideDefaultUi()
+end
+
+-- INITIALIZE
+DCEI.TriggerAddTimerEventElapsed(OnMapStart, 0)

@@ -1,0 +1,7 @@
+{
+    "settings": {
+        "dependencies": [
+            "Arcade/Core"
+        ]
+    }
+}

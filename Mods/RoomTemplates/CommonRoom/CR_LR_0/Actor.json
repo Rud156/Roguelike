@@ -1,0 +1,12 @@
+{
+    "actors": {
+        "RoomDoor": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "forestworld_castle_door"
+                }
+            }
+        }
+    }
+}
