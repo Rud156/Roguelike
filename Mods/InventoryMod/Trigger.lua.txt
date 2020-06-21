@@ -176,6 +176,10 @@ function InventorySlot:ActivateInventorySlotRecharge(maxRechargeTime)
 
     DCEI.SetBackgroundImageColor(self.slotRecharge, 0, 0, 0, 0.5)
 end
+function InventorySlot:DeActivateInventorySlotRecharge()
+    self.isSlotRechargeActive = false
+    DCEI.SetBackgroundImageColor(self.slotRecharge, 0, 0, 0, 0)
+end
 function InventorySlot:UpdateInventoryItem(itemName, itemType, itemDescription, itemImage, stackability, currentStack)
     DCEI.LogMessage("Updating Inventory with new item")
 
@@ -271,6 +275,14 @@ function Inventory:ActivateInventorySlotRecharge(itemName, maxRechargeTime)
     for i, slot in ipairs(self.inventorySlots) do
         if slot:GetInventoryItemName() == itemName then
             slot:ActivateInventorySlotRecharge(maxRechargeTime)
+            break
+        end
+    end
+end
+function Inventory:DeActivateInventorySlotRecharge(itemName)
+    for i, slot in ipairs(self.inventorySlots) do
+        if slot:GetInventoryItemName() == itemName then
+            slot:DeActivateInventorySlotRecharge()
             break
         end
     end

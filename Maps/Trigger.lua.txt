@@ -340,6 +340,7 @@ end
 
 function DisplayGameOverSequence()
     UpdateInventoryItemLevelEnd()
+    m_inventory:DeActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName)
 
     m_player:Destroy()
     m_player = nil
@@ -366,6 +367,7 @@ function ResetGameState()
     SpawnPlayerAndSetPosition()
 
     m_camera:UpdateTarget(m_player:GetPlayerUnit())
+    m_player:SetPlayerCamera(m_camera)
 end
 
 -- #endregion GameOver State
@@ -484,6 +486,7 @@ function HandleCharacterSwitch()
 
     UseMeleePlayer = not UseMeleePlayer
     m_camera:UpdateTarget(m_player:GetPlayerUnit())
+    m_player:SetPlayerCamera(m_camera)
 end
 
 -- #endregion
