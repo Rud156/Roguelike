@@ -8,7 +8,8 @@
             "Mods/EnemyMod",
             "Mods/RoomMod",
             "Mods/CameraMod",
-            "Mods/UtilClassMod"
+            "Mods/UtilClassMod",
+            "Mods/PlayerMod"
         ]
     },
     "triggerSettings": {

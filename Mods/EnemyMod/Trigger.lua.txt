@@ -9,6 +9,7 @@ local GOBLIN_CHEF_ATTACK_RANGE = 3
 local GOBLIN_CHEF_TIME_BETWEEN_ATTACKS = 0.7
 local GOBLIN_CHEF_SHOT_COUNT = 3
 local GOBLIN_CHEF_ATTACK_COOLDOWN = 5
+local GOBLIN_CHEF_ATTACK_RANGE = 7
 local GOBLIN_CHEF_MIN_CLOSEST_DISTANCE = 2.5
 local GOBLIN_CHEF_MOVEBACK_DISTANCE = 5
 local GOBLIN_CHEF_MOVEBACK_TIMER = 3
@@ -189,7 +190,7 @@ function GoblinChef:AttackPlayer(deltaTime, playerPosition)
 
     self.currentTimeBetweenAttacks = self.currentTimeBetweenAttacks - deltaTime
     if self.currentTimeBetweenAttacks <= 0 then
-        DCEI.CastAbilityAtPosition(GOBLIN_CHEF_ATTACK, self.unit, playerPosition.x, playerPosition.y)
+        self:LaunchEnemyAttack(playerPosition)
         self.currentShotCount = self.currentShotCount - 1
         self.currentTimeBetweenAttacks = GOBLIN_CHEF_TIME_BETWEEN_ATTACKS
     end
@@ -198,6 +199,15 @@ function GoblinChef:AttackPlayer(deltaTime, playerPosition)
         self.attackCooldownTimer = GOBLIN_CHEF_ATTACK_COOLDOWN
         self:SetEnemyState(0)
     end
+end
+function GoblinChef:LaunchEnemyAttack(playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local direction = mod.VectorSubtract(playerPosition, enemyPosition)
+    local yRotation = math.deg(math.atan(direction.x, direction.y))
+    
+    local xPoint = math.sin(math.rad(yRotation)) * GOBLIN_CHEF_ATTACK_RANGE + enemyPosition.x
+    local yPoint = math.cos(math.rad(yRotation)) * GOBLIN_CHEF_ATTACK_RANGE + enemyPosition.y
+    DCEI.CastAbilityAtPosition(GOBLIN_CHEF_ATTACK, self.unit, xPoint, yPoint)
 end
 function GoblinChef:UpdateEnemyStunned(deltaTime)
     self.stunTimer = self.stunTimer - deltaTime

@@ -353,6 +353,9 @@ function Inventory:CheckAndAddItemToSlot(collectibleName)
 
     return false
 end
+function Inventory:GetInventorySlots()
+    return self.inventorySlots
+end
 
 
 mod.Inventory = Inventory

@@ -139,7 +139,7 @@
             "canCastWhileMoving": true
         },
         "_PlayerCharacter_Ranged_HeavyAttack": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 2,
             "effect": "_Launch_PlayerCharacter_Ranged_HeavyAttack",
@@ -156,7 +156,7 @@
             "canCastWhileMoving": true
         },
         "_PlayerCharacter_Ranged_LightAttack": {
-            "abilityType": 1,
+            "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 2,
             "effect": "_Launch_PlayerCharacter_Ranged_LightAttack",
