@@ -112,7 +112,7 @@ local m_damageDisplay
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(1592431012) -- TODO: Change this later on...
+    math.randomseed(randomSeed) -- TODO: Change this later on...
 
     m_roomGenerator = RoomGenerator:new(m_currentRoomLevel)
     
@@ -339,11 +339,14 @@ end
 -- #region GameOver State
 
 function DisplayGameOverSequence()
-    UpdateInventoryItemLevelEnd()
     m_inventory:DeActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName)
 
-    m_player:Destroy()
-    m_player = nil
+    if m_player ~= nil then
+        UpdateInventoryItemLevelEnd()
+        
+        m_player:Destroy()
+        m_player = nil
+    end
     m_camera:UpdateTarget(nil)
 
     local maskOptions = {

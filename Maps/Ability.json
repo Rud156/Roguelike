@@ -31,7 +31,7 @@
                 "range": 7,
                 "arc": 60
             },
-            "canCastWhileMoving": true,
+            "canCastWhileMoving": false,
             "targetFilter": {
                 "enemy": 0
             }
@@ -93,7 +93,7 @@
             "cost": {
                 "mana": 0
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Melee_HeavyAttack": {
             "abilityType": 2,
@@ -107,7 +107,7 @@
             "cost": {
                 "mana": 3
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Melee_LightAttack": {
             "abilityType": 2,
@@ -120,7 +120,7 @@
                 "period": 0,
                 "range": 0
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Ranged_Dash": {
             "abilityType": 2,
@@ -136,7 +136,7 @@
             "cost": {
                 "mana": 0
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Ranged_HeavyAttack": {
             "abilityType": 2,
@@ -153,7 +153,7 @@
             "cost": {
                 "mana": 0
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         },
         "_PlayerCharacter_Ranged_LightAttack": {
             "abilityType": 2,
@@ -170,7 +170,7 @@
             "cost": {
                 "mana": 0
             },
-            "canCastWhileMoving": true
+            "canCastWhileMoving": false
         }
     }
 }
