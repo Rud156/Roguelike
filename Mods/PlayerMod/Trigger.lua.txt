@@ -212,15 +212,17 @@ function Player:HandleJoystickReleased()
 
     DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
 end
-function Player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomGenerator)
     if buttonEvent ~= 1 then
         return
     end
+
+    local enemy = roomGenerator:GetRoomNearestEnemy(self.playerUnit)
     
     if buttonId == 0 then
-        self:LaunchPlayerLightAttack()
+        self:LaunchPlayerLightAttack(enemy)
     elseif buttonId == 1 then
-        self:LaunchPlayerHeavyAttack()
+        self:LaunchPlayerHeavyAttack(enemy)
     elseif buttonId == 2 then
         self:MakePlayerDash()
     end
@@ -291,6 +293,7 @@ function Player:LaunchPlayerMeleeLightAttack(enemy)
         
         local xPoint = math.sin(math.rad(yRotation)) + playerPosition.x
         local yPoint = math.cos(math.rad(yRotation)) + playerPosition.y
+
         DCEI.CastAbilityAtPosition(PLAYER_MELEE_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
     end
 

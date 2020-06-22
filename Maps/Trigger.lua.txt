@@ -80,7 +80,7 @@ local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 local PlayerInvincibleTimer = 3
 local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
-local UseMeleePlayer = false
+local UseMeleePlayer = true
 -- Private Variables
 -- Rooms
 local m_roomGenerator
@@ -148,7 +148,7 @@ function Start()
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
             if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomGenerator)
             end
         end, 
         { icon = "icon_enhance_crusader_zeal" }
@@ -159,7 +159,7 @@ function Start()
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
             if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomGenerator)
             end
         end, 
         { icon = "icon_enhance_stoneguard_bash" }
@@ -170,7 +170,7 @@ function Start()
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
 
             if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent)
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomGenerator)
             end
         end, 
         { icon = "icon_spell_angelic_host" }
