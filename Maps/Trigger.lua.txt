@@ -112,7 +112,7 @@ local m_damageDisplay
 function Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(1592794308) -- TODO: Change this later on...
+    math.randomseed(randomSeed) -- TODO: Change this later on...
 
     m_roomGenerator = RoomGenerator:new(m_currentRoomLevel)
     
