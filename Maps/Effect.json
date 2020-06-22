@@ -273,7 +273,7 @@
                 },
                 "maxUnitCount": 10,
                 "filter": {
-                    "player": 2
+                    "player": 0
                 },
                 "effect": "_Set_Enemy_GoblinSapper_Attack",
                 "missingEffect": "_Set_Enemy_GoblinSapper_Attack"

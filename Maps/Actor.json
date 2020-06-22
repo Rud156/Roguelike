@@ -2658,6 +2658,32 @@
                 }
             ]
         },
+        "_PlayerCharacter_DeadEffect": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitRemove": {}
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Hammer_Of_Attack"
+                            }
+                        },
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Helm_Of_Valor"
+                            }
+                        },
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Boots_Of_Speed"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         "_PlayerCharacter_Hammer_Of_Attack": {
             "events": [
                 {
@@ -2757,32 +2783,6 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Helm_Of_Valor"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        "_PlayerCharacter_DeadEffect": {
-            "events": [
-                {
-                    "actorTerm": {
-                        "unitRemove": {}
-                    },
-                    "actions": [
-                        {
-                            "destroy": {
-                                "actor": "_FX_Collectible_Hammer_Of_Attack"
-                            }
-                        },
-                        {
-                            "destroy": {
-                                "actor": "_FX_Collectible_Helm_Of_Valor"
-                            }
-                        },
-                        {
-                            "destroy": {
-                                "actor": "_FX_Collectible_Boots_Of_Speed"
                             }
                         }
                     ]
