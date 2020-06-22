@@ -181,6 +181,13 @@ function Start()
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
 
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
+
+    -- DCEI.TriggerAddTimerEventElapsed(
+    --     function()
+    --         DCEI.PlayLevel("Mods/RoomTemplates/CommonRoom/CR_BL_0", "Common Room")
+    --     end,
+    --     10
+    -- )
 end
 
 function Update()

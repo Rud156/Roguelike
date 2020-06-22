@@ -1,6 +1,7 @@
 {
     "settings": {
         "version": "0.0.5",
+        "type": 1,
         "dependencies": [
             "Arcade/Core",
             "Mods/ExtensionFunctionMod",
@@ -10,6 +11,27 @@
             "Mods/CameraMod",
             "Mods/UtilClassMod",
             "Mods/PlayerMod"
+        ],
+        "transitionMaps": [
+            "Mods/RoomTemplates/CommonRoom/CR_BL_0",
+            "Mods/RoomTemplates/CommonRoom/CR_BLR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_BR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_LR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TB_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TBL_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TBLR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TBR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TL_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TLR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_TR_0",
+            "Mods/RoomTemplates/MerchantRoom/MR_B_0",
+            "Mods/RoomTemplates/MerchantRoom/MR_L_0",
+            "Mods/RoomTemplates/MerchantRoom/MR_R_0",
+            "Mods/RoomTemplates/MerchantRoom/MR_T_0",
+            "Mods/RoomTemplates/SecretRoom/SR_B_0",
+            "Mods/RoomTemplates/SecretRoom/SR_L_0",
+            "Mods/RoomTemplates/SecretRoom/SR_R_0",
+            "Mods/RoomTemplates/SecretRoom/SR_T_0"
         ]
     },
     "triggerSettings": {
