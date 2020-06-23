@@ -42,6 +42,8 @@ local Player = PlayerMod.Player
 local Rect = UtilClassMod.Rect
 -- #endregion Mods and Includes
 
+local mod = {}
+
 
 -- #region Constants
 local WORLD_WIDTH = 30
@@ -109,7 +111,7 @@ local m_inventory
 local m_damageDisplay
 
 -- #region LifeCycle Functions
-function Start()
+function mod.Start()
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
     math.randomseed(randomSeed) -- TODO: Change this later on...
@@ -182,12 +184,12 @@ function Start()
 
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
 
-    -- DCEI.TriggerAddTimerEventElapsed(
-    --     function()
-    --         DCEI.PlayLevel("Mods/RoomTemplates/CommonRoom/CR_BL_0", "Common Room")
-    --     end,
-    --     10
-    -- )
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            DCEI.PlayLevel("Mods/RoomTemplates/CommonRoom/CR_BLR_0", "Common Room")
+        end,
+        10
+    )
 end
 
 function Update()
@@ -620,4 +622,6 @@ end
 -- #endregion Utility Fuctions
 
 -- Initialization
-Start()
+-- Start()
+
+return mod
