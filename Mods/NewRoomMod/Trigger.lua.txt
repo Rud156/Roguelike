@@ -35,9 +35,18 @@ local RIGHT = "R"
 local TOP = "T"
 local BOTTOM = "B"
 
+local EXIT_ROOM_PATH_LENGTH = 4
+
 local RoomGenerator  = {
     roomMatrix = {},
+    roomMatrixCounter = {},
     roomAdjacencyList = {},
+
+    spawnRoomRow = 100,
+    spawnRoomColumn = 100,
+
+    exitRoomRow = 100,
+    exitRoomColumn = 100,
 
     minRow = 999,
     maxRow = -1,
@@ -50,7 +59,14 @@ function RoomGenerator:new()
     setmetatable(roomGenerator, RoomGenerator)
 
     roomGenerator.roomMatrix = {}
+    roomGenerator.roomMatrixCounter = {}
     roomGenerator.roomAdjacencyList = {}
+
+    roomGenerator.spawnRoomRow = -1
+    roomGenerator.spawnRoomColumn = -1
+
+    roomGenerator.exitRoomRow = -1
+    roomGenerator.exitRoomColumn = -1
 
     roomGenerator.minRow = 999
     roomGenerator.maxRow = -1
@@ -59,12 +75,17 @@ function RoomGenerator:new()
     
     roomGenerator:GenerateRoomBase()
     roomGenerator:PrintRooms()
+    roomGenerator:PrintRoomCounters()
+    roomGenerator:PrintRoomAdjacenyList()
 
     return roomGenerator
 end
 function RoomGenerator:GenerateRoomBase()
     local spawnRoomRow = 100
     local spawnRoomColumn = 100
+
+    self.spawnRoomRow = spawnRoomRow
+    self.spawnRoomColumn = spawnRoomColumn
 
     local i = spawnRoomRow -- Row
     local j = spawnRoomColumn -- Column
@@ -185,6 +206,14 @@ function RoomGenerator:GenerateRoomBase()
             DCEI.LogMessage("I: " .. i .. ", J: " .. j .. " " ..  self.roomMatrix[i][j] .. "\n")
         end
 
+        self:UpdateRoomMatrixCounter()
+        self:UpdateRoomAdajcencyList()
+        
+        local breakLoop = self:CheckBFSForExitRoom()
+        if breakLoop then
+            break
+        end
+        
         maxIterationCount = maxIterationCount - 1
         if maxIterationCount <= 0 then
             break
@@ -294,6 +323,135 @@ function RoomGenerator:PlaceSecretRooms()
     DCEI.LogMessage("Min Column: " .. minColumn)
     DCEI.LogMessage("Max Column: " .. maxColumn)
 end
+function RoomGenerator:UpdateRoomMatrixCounter()
+    local staicCounter = 0
+
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] then
+                if self.roomMatrixCounter[i] == nil then
+                    self.roomMatrixCounter[i] = {}
+                end
+
+                self.roomMatrixCounter[i][j] = staicCounter
+                staicCounter = staicCounter + 1
+            end
+        end
+    end
+end
+function RoomGenerator:UpdateRoomAdajcencyList()
+    self.roomAdjacencyList = {}
+
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] ~= nil then
+                local adjacentRooms = {}
+                local roomNumber = self.roomMatrixCounter[i][j]
+
+                local hasLeftExit = false
+                local hasRightExit = false
+                local hasTopExit = false
+                local hasBottomExit = false
+
+                if mod.RoomHasLeftExit(self.roomMatrix[i][j]) then
+                    hasLeftExit = true
+                end
+                if mod.RoomHasRightExit(self.roomMatrix[i][j]) then
+                    hasRightExit = true
+                end
+                if mod.RoomHasTopExit(self.roomMatrix[i][j]) then
+                    hasTopExit = true
+                end
+                if mod.RoomHasBottomExit(self.roomMatrix[i][j]) then
+                    hasBottomExit = true
+                end
+
+                local leftSide = j - 1
+                local rightSide = j + 1
+                local topSide = i - 1
+                local bottomSide = i + 1
+
+                if hasLeftExit then
+                    if self.roomMatrix[i][leftSide] ~= nil and mod.RoomHasRightExit(self.roomMatrix[i][leftSide]) then
+                        table.insert(adjacentRooms, self.roomMatrixCounter[i][leftSide])
+                    end
+                end
+
+                if hasRightExit then
+                    if self.roomMatrix[i][rightSide] ~= nil and mod.RoomHasLeftExit(self.roomMatrix[i][rightSide]) then
+                        table.insert(adjacentRooms, self.roomMatrixCounter[i][rightSide])
+                    end
+                end
+
+                if hasTopExit and self.roomMatrix[topSide] ~= nil then
+                    if self.roomMatrix[topSide][j] ~= nil and mod.RoomHasBottomExit(self.roomMatrix[topSide][j]) then
+                        table.insert(adjacentRooms, self.roomMatrixCounter[topSide][j])
+                    end
+                end
+
+                if hasBottomExit and self.roomMatrix[bottomSide] ~= nil then
+                    if self.roomMatrix[bottomSide][j] ~= nil and mod.RoomHasTopExit(self.roomMatrix[bottomSide][j]) then
+                        table.insert(adjacentRooms, self.roomMatrixCounter[bottomSide][j])
+                    end
+                end
+
+                self.roomAdjacencyList[roomNumber] = adjacentRooms
+            end
+        end
+    end
+end
+function RoomGenerator:CheckBFSForExitRoom()
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if i == self.spawnRoomRow and j == self.spawnRoomColumn then
+                -- Do nothing here...
+            elseif self.roomMatrix[i][j] ~= nil then
+                local roomNumber = self.roomMatrixCounter[i][j]
+                local spawnRoomNumber = self.roomMatrixCounter[self.spawnRoomRow][self.spawnRoomColumn]
+                local pathLength = self:FindPathToSpawnRoom(spawnRoomNumber, roomNumber)
+
+                if pathLength == EXIT_ROOM_PATH_LENGTH then
+                    self.exitRoomRow = i
+                    self.exitRoomColumn = j
+
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
+end
+function RoomGenerator:FindPathToSpawnRoom(spawnRoomNumber, startRoomNumber)
+    local explored = {}
+    local queue = { startRoomNumber }
+    local pathLength = 0
+
+    if spawnRoomNumber == startRoomNumber then
+        return 0
+    end
+
+    while #queue ~= 0 do
+        local node = table.remove(queue, 1)
+        
+        if not mod.ArrayHasValue(explored, node) then
+            local adjacentRooms = self.roomAdjacencyList[node]
+            for i, room in ipairs(adjacentRooms) do
+                table.insert(queue, room)
+
+                if room == spawnRoomNumber then
+                    return pathLength
+                end
+            end
+
+            pathLength = pathLength + 1
+            table.insert(explored, node)
+        end
+    end
+
+    DCEI.LogError("Can't reach Spawn Room!!!")
+    return -1
+end
 function RoomGenerator:GetRoomWithLeftExit(rooms)
     local validRooms = {}
 
@@ -343,16 +501,48 @@ function RoomGenerator:GetRoomWithBottomExit(rooms)
     return validRooms[randomIndex]
 end
 function RoomGenerator:PrintRooms()
-    DCEI.LogMessage("DCEI.LogMessage Rooms")
+    DCEI.LogMessage("Printing Rooms")
 
     for i = self.minRow, self.maxRow do
         local stringValue = ""
+        
         for j = self.minColumn, self.maxColumn do
-            if self.roomMatrix[i][j] then
+            if self.roomMatrix[i][j] ~= nil then
                 stringValue = stringValue .. self.roomMatrix[i][j] .. " "
             else
                 stringValue = stringValue .. "*** "
             end
+        end
+
+        DCEI.LogMessage(stringValue)
+    end
+end
+function RoomGenerator:PrintRoomCounters()
+    DCEI.LogMessage("Printing Room Counters")
+
+    for i = self.minRow, self.maxRow do
+        local stringValue = ""
+
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrixCounter[i] ~= nil then
+                if self.roomMatrixCounter[i][j] ~= nil then
+                    stringValue = stringValue .. self.roomMatrixCounter[i][j] .. " "
+                else
+                    stringValue = stringValue .. "*** "
+                end
+            end
+        end
+
+        DCEI.LogMessage(stringValue)
+    end
+end
+function RoomGenerator:PrintRoomAdjacenyList()
+    DCEI.LogMessage("Prining Room Adjaceny List")
+
+    for key, value in pairs(self.roomAdjacencyList) do
+        local stringValue = key .. ": "
+        for i, room in ipairs(value) do
+            stringValue = stringValue .. room .. " "
         end
 
         DCEI.LogMessage(stringValue)
@@ -414,6 +604,16 @@ end
 
 function mod.RoomHasBottomExit(value)
     return string.find(value, "_.*B.*_")
+end
+
+function mod.ArrayHasValue(array, value)
+    for i, data in ipairs(array) do
+        if data == value then
+            return true
+        end
+    end
+
+    return false
 end
 
 return mod
