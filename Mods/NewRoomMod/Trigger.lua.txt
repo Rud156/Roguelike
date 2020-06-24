@@ -58,7 +58,7 @@ function RoomGenerator:new()
     roomGenerator.maxColumn = -1
     
     roomGenerator:GenerateRoomBase()
-    roomGenerator:DCEI.LogMessageRooms()
+    roomGenerator:PrintRooms()
 
     return roomGenerator
 end
@@ -342,7 +342,7 @@ function RoomGenerator:GetRoomWithBottomExit(rooms)
     local randomIndex = math.random(1, #validRooms)
     return validRooms[randomIndex]
 end
-function RoomGenerator:DCEI.LogMessageRooms()
+function RoomGenerator:PrintRooms()
     DCEI.LogMessage("DCEI.LogMessage Rooms")
 
     for i = self.minRow, self.maxRow do
