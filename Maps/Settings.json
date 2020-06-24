@@ -10,7 +10,8 @@
             "Mods/RoomMod",
             "Mods/CameraMod",
             "Mods/UtilClassMod",
-            "Mods/PlayerMod"
+            "Mods/PlayerMod",
+            "Mods/NewRoomMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",
@@ -31,7 +32,8 @@
             "Mods/RoomTemplates/SecretRoom/SR_B_0",
             "Mods/RoomTemplates/SecretRoom/SR_L_0",
             "Mods/RoomTemplates/SecretRoom/SR_R_0",
-            "Mods/RoomTemplates/SecretRoom/SR_T_0"
+            "Mods/RoomTemplates/SecretRoom/SR_T_0",
+            "Mods/StartingBase"
         ]
     },
     "triggerSettings": {

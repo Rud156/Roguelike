@@ -1,0 +1,419 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+
+local mod = {}
+
+local COMMON_ROOMS = {
+    "CR_BL_0",
+    "CR_BLR_0",
+    "CR_BR_0",
+    "CR_LR_0",
+    "CR_TB_0",
+    "CR_TBL_0",
+    "CR_TBLR_0",
+    "CR_TBR_0",
+    "CR_TL_0",
+    "CR_TLR_0",
+    "CR_TR_0"
+}
+
+local MERCHANT_ROOMS = {
+    "MR_B_0",
+    "MR_L_0",
+    "MR_R_0", 
+    "MR_T_0"
+}
+
+local SECRET_ROOMS = {
+    "SR_B_0",
+    "SR_L_0",
+    "SR_R_0",
+    "SR_T_0"
+}
+
+local LEFT = "L"
+local RIGHT = "R"
+local TOP = "T"
+local BOTTOM = "B"
+
+local RoomGenerator  = {
+    roomMatrix = {},
+    roomAdjacencyList = {},
+
+    minRow = 999,
+    maxRow = -1,
+    minColumn = 999,
+    maxColumn = -1
+}
+RoomGenerator.__index = RoomGenerator
+function RoomGenerator:new()
+    local roomGenerator = {}
+    setmetatable(roomGenerator, RoomGenerator)
+
+    roomGenerator.roomMatrix = {}
+    roomGenerator.roomAdjacencyList = {}
+
+    roomGenerator.minRow = 999
+    roomGenerator.maxRow = -1
+    roomGenerator.minColumn = 999
+    roomGenerator.maxColumn = -1
+    
+    roomGenerator:GenerateRoomBase()
+    roomGenerator:DCEI.LogMessageRooms()
+
+    return roomGenerator
+end
+function RoomGenerator:GenerateRoomBase()
+    local spawnRoomRow = 100
+    local spawnRoomColumn = 100
+
+    local i = spawnRoomRow -- Row
+    local j = spawnRoomColumn -- Column
+
+    local randomCommonRoom = math.random(1, #COMMON_ROOMS)
+    self.roomMatrix[i] = {}
+    self.roomMatrix[i][j] = COMMON_ROOMS[randomCommonRoom]
+
+    local maxIterationCount = 30
+
+    if self.minRow > i then
+        self.minRow = i
+    end
+    if self.maxRow < i then
+        self.maxRow = i
+    end
+    if self.minColumn > j then
+        self.minColumn = j
+    end
+    if self.maxColumn < j then
+        self.maxColumn = j
+    end
+
+    while true do
+        local randomSide = self:SelectRandomExit(self.roomMatrix[i][j])
+        DCEI.LogMessage("Random Side: " .. randomSide)
+        local exitOnSide
+
+        if randomSide == LEFT then
+            j = j - 1
+            exitOnSide = RIGHT
+        elseif randomSide == RIGHT then
+            j = j + 1
+            exitOnSide = LEFT
+        elseif randomSide == TOP then
+            i = i - 1
+            exitOnSide = BOTTOM
+        else
+            i = i + 1
+            exitOnSide = TOP
+        end
+
+        if self.minRow > i then
+            self.minRow = i
+        end
+        if self.maxRow < i then
+            self.maxRow = i
+        end
+        if self.minColumn > j then
+            self.minColumn = j
+        end
+        if self.maxColumn < j then
+            self.maxColumn = j
+        end
+
+        if self.roomMatrix[i] == nil then
+            self.roomMatrix[i] = {}
+        end
+
+        if self.roomMatrix[i][j] == nil then
+            local leftSide = j - 1
+            local rightSide = j + 1
+            local topSide = i - 1
+            local bottomSide = i + 1
+            local room
+
+            if leftSide == spawnRoomColumn and i == spawnRoomRow then
+                room = self:GetRoomWithLeftExit(COMMON_ROOMS)
+            elseif rightSide == spawnRoomColumn and i == spawnRoomRow then
+                room = self:GetRoomWithRightExit(COMMON_ROOMS)
+            elseif j == spawnRoomColumn and topSide == spawnRoomRow then
+                room = self:GetRoomWithTopExit(COMMON_ROOMS)
+            elseif j == spawnRoomColumn and bottomSide == spawnRoomRow then
+                room = self:GetRoomWithBottomExit(COMMON_ROOMS)
+            else
+                if exitOnSide == LEFT then
+                    room = self:GetRoomWithLeftExit(COMMON_ROOMS)
+                elseif exitOnSide == RIGHT then
+                    room = self:GetRoomWithRightExit(COMMON_ROOMS)
+                elseif exitOnSide == TOP then
+                    room = self:GetRoomWithTopExit(COMMON_ROOMS)
+                else
+                    room = self:GetRoomWithBottomExit(COMMON_ROOMS)
+                end
+            end
+
+            self.roomMatrix[i][j] = room
+            DCEI.LogMessage("I: " .. i .. ", J: " .. j .. " " .. self.roomMatrix[i][j] .. "\n")
+
+        else
+            local leftSide = j - 1
+            local rightSide = j + 1
+            local topSide = i - 1
+            local bottomSide = i + 1
+            local room = self.roomMatrix[i][j]
+
+            if leftSide == spawnRoomColumn and i == spawnRoomRow then
+                if not mod.RoomHasLeftExit(self.roomMatrix[i][j]) then
+                    room = self:GetRoomWithLeftExit(COMMON_ROOMS)
+                end
+            elseif rightSide == spawnRoomColumn and i == spawnRoomRow then
+                if not mod.RoomHasRightExit(self.roomMatrix[i][j]) then
+                    room = self:GetRoomWithRightExit(COMMON_ROOMS)
+                end
+            elseif j == spawnRoomColumn and topSide == spawnRoomRow then
+                if not mod.RoomHasTopExit(self.roomMatrix[i][j]) then
+                    room = self:GetRoomWithTopExit(COMMON_ROOMS)
+                end
+            elseif j == spawnRoomColumn and bottomSide == spawnRoomRow then
+                if not mod.RoomHasBottomExit(self.roomMatrix[i][j]) then
+                    room = self:GetRoomWithBottomExit(COMMON_ROOMS)
+                end
+            else
+                -- Do nothing here just continue
+            end
+
+            self.roomMatrix[i][j] = room
+            DCEI.LogMessage("I: " .. i .. ", J: " .. j .. " " ..  self.roomMatrix[i][j] .. "\n")
+        end
+
+        maxIterationCount = maxIterationCount - 1
+        if maxIterationCount <= 0 then
+            break
+        end
+    end
+
+    DCEI.LogMessage("\n")
+    DCEI.LogMessage("Min Row: " .. self.minRow)
+    DCEI.LogMessage("Max Row: " .. self.maxRow)
+    DCEI.LogMessage("Min Column: " .. self.minColumn)
+    DCEI.LogMessage("Max Column: " .. self.maxColumn)
+    DCEI.LogMessage("\n")
+
+    self:PlaceSecretRooms()
+end
+function RoomGenerator:PlaceSecretRooms()
+    local minRow = self.minRow
+    local maxRow = self.maxRow
+    local minColumn = self.minColumn
+    local maxColumn = self.maxColumn
+
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+        DCEI.LogMessage("I: " .. i .. ", J: " .. j)
+
+            if self.roomMatrix[i][j] then
+                DCEI.LogMessage("Room: " .. self.roomMatrix[i][j])
+                
+                local leftSide = j - 1
+                local rightSide = j + 1
+                local topSide = i - 1
+                local bottomSide = i + 1
+
+                if self.roomMatrix[i][leftSide] == nil and mod.RoomHasLeftExit(self.roomMatrix[i][j]) then
+                    DCEI.LogMessage("Left Added")
+                    local room = self:GetRoomWithRightExit(SECRET_ROOMS)
+                    self.roomMatrix[i][leftSide] = room
+
+                    if minColumn > leftSide then
+                        minColumn = leftSide
+                    end
+                end
+
+                if self.roomMatrix[i][rightSide] == nil and mod.RoomHasRightExit(self.roomMatrix[i][j]) then
+                    DCEI.LogMessage("Right Added")
+                    local room = self:GetRoomWithLeftExit(SECRET_ROOMS)
+                    self.roomMatrix[i][rightSide] = room
+
+                    if maxColumn < rightSide then
+                        maxColumn = rightSide
+                    end
+                end
+
+                if mod.RoomHasTopExit(self.roomMatrix[i][j]) then
+                    if self.roomMatrix[topSide] == nil then
+                        DCEI.LogMessage("Top Added 0")
+                        local room = self:GetRoomWithBottomExit(SECRET_ROOMS)
+
+                        self.roomMatrix[topSide] = {}
+                        self.roomMatrix[topSide][j] = room
+
+                    elseif self.roomMatrix[topSide][j] == nil then
+                        DCEI.LogMessage("Top Added 1")
+                        local room = self:GetRoomWithBottomExit(SECRET_ROOMS)
+                        self.roomMatrix[topSide][j] = room
+                    end
+
+                    if minRow > topSide then
+                        minRow = topSide
+                    end
+                end
+
+                if mod.RoomHasBottomExit(self.roomMatrix[i][j]) then
+                    if self.roomMatrix[bottomSide] == nil then
+                        DCEI.LogMessage("Bottom Added 0")
+                        local room = self:GetRoomWithTopExit(SECRET_ROOMS)
+
+                        self.roomMatrix[bottomSide] = {}
+                        self.roomMatrix[bottomSide][j] = room
+
+                    elseif self.roomMatrix[bottomSide][j] == nil then
+                        DCEI.LogMessage("Bottom Added 1")
+                        local room = self:GetRoomWithTopExit(SECRET_ROOMS)
+                        self.roomMatrix[bottomSide][j] = room
+                    end
+
+                    if maxRow < bottomSide then
+                        maxRow = bottomSide
+                    end
+                end
+
+            else
+                -- Do nothing. Just ignore the index...
+            end
+
+            DCEI.LogMessage("\n")
+        end
+    end
+
+    self.minRow = minRow
+    self.maxRow = maxRow
+    self.minColumn = minColumn
+    self.maxColumn = maxColumn
+
+    DCEI.LogMessage("Min Row: " .. minRow)
+    DCEI.LogMessage("Max Row: " .. maxRow)
+    DCEI.LogMessage("Min Column: " .. minColumn)
+    DCEI.LogMessage("Max Column: " .. maxColumn)
+end
+function RoomGenerator:GetRoomWithLeftExit(rooms)
+    local validRooms = {}
+
+    for i, room in ipairs(rooms) do
+        if mod.RoomHasLeftExit(room) then
+            table.insert(validRooms, room)
+        end
+    end
+
+    local randomIndex = math.random(1, #validRooms)
+    return validRooms[randomIndex]
+end
+function RoomGenerator:GetRoomWithRightExit(rooms)
+    local validRooms = {}
+
+    for i, room in ipairs(rooms) do
+        if mod.RoomHasRightExit(room) then
+            table.insert(validRooms, room)
+        end
+    end
+
+    local randomIndex = math.random(1, #validRooms)
+    return validRooms[randomIndex]
+end
+function RoomGenerator:GetRoomWithTopExit(rooms)
+    local validRooms = {}
+
+    for i, room in ipairs(rooms) do
+        if mod.RoomHasTopExit(room) then
+            table.insert(validRooms, room)
+        end
+    end
+
+    local randomIndex = math.random(1, #validRooms)
+    return validRooms[randomIndex]
+end
+function RoomGenerator:GetRoomWithBottomExit(rooms)
+    local validRooms = {}
+
+    for i, room in ipairs(rooms) do
+        if mod.RoomHasBottomExit(room) then
+            table.insert(validRooms, room)
+        end
+    end
+
+    local randomIndex = math.random(1, #validRooms)
+    return validRooms[randomIndex]
+end
+function RoomGenerator:DCEI.LogMessageRooms()
+    DCEI.LogMessage("DCEI.LogMessage Rooms")
+
+    for i = self.minRow, self.maxRow do
+        local stringValue = ""
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] then
+                stringValue = stringValue .. self.roomMatrix[i][j] .. " "
+            else
+                stringValue = stringValue .. "*** "
+            end
+        end
+
+        DCEI.LogMessage(stringValue)
+    end
+end
+function RoomGenerator:SelectRandomExit(roomName)
+    local randomArray = { 0, 0, 0, 0 }
+    
+    if mod.RoomHasLeftExit(roomName) then
+        randomArray[1] = 1
+    end
+    if mod.RoomHasRightExit(roomName) then
+        randomArray[2] = 1
+    end
+    if mod.RoomHasTopExit(roomName) then
+        randomArray[3] = 1
+    end
+    if mod.RoomHasBottomExit(roomName) then
+        randomArray[4] = 1
+    end
+
+    local validIndexes = {}
+    for i = 1, #randomArray do
+        if randomArray[i] == 1 then
+            table.insert(validIndexes, i)
+        end
+    end
+
+    if #validIndexes == 0 then
+        DCEI.LogError("Room has no exit?... Exiting")
+        return
+    end
+
+    local randomIndex = math.random(1, #validIndexes)
+    local randomSide = validIndexes[randomIndex]
+
+    if randomSide == 1 then
+        return LEFT
+    elseif randomSide == 2 then
+        return RIGHT
+    elseif randomSide == 3 then
+        return TOP
+    else
+        return BOTTOM
+    end
+end
+
+function mod.RoomHasLeftExit(value)
+    return string.find(value, "_.*L.*_")
+end
+  
+function mod.RoomHasRightExit(value)
+    return string.find(value, "_.*R.*_")
+end
+  
+function mod.RoomHasTopExit(value)
+    return string.find(value, "_.*T.*_")
+end
+
+function mod.RoomHasBottomExit(value)
+    return string.find(value, "_.*B.*_")
+end
+
+return mod
