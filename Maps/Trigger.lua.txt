@@ -362,7 +362,7 @@ function DisplayGameOverSequence(playerWon)
 
     if playerWon then
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
-        local roomPath = RoomGenerator.GetRoomPath(roomName)
+        local roomPath = RoomMod.GetRoomPath(roomName)
 
         DCEI.Save.Set(ROOM_NAME, roomName)
         DCEI.PlayLevel(roomPath, roomName)

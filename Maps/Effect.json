@@ -318,15 +318,16 @@
         },
         "_Search_PlayerCharacter": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.27
                     }
                 },
                 "maxUnitCount": 1,
+                "caster": 2,
                 "filter": {
-                    "player": 2
+                    "player": 0
                 },
                 "effect": "_Set_Behaviour_PlayerCharacter_Collision"
             }
