@@ -1,1 +1,1 @@
-{ }
+{ "GameEntityList": [ { "UnitName": "RoomDoor", "Position": [ 10.54, 0, 19.81 ], "Rotation": [ 0, 0.71, 0, 0.71 ], "Player": 1 }, { "UnitName": "RoomDoor", "Position": [ 10.45, 0, 21.38 ], "Rotation": [ 0, 0.71, 0, 0.71 ], "Player": 1 }, { "UnitName": "RoomDoor", "Position": [ 10.55, 0, 18.16 ], "Rotation": [ 0, 0.71, 0, 0.71 ], "Player": 1 }, { "UnitName": "RoomDoor", "Position": [ 10.48, 0, 16.33 ], "Rotation": [ 0, 0.71, 0, 0.71 ], "Player": 1 } ] }

@@ -22,15 +22,11 @@ local EnemyGoblin = EnemyMod.EnemyGoblin
 local EnemyGoblinSapper = EnemyMod.EnemyGoblinSapper
 local EnemyOoze = EnemyMod.EnemyOoze
 
-RoomMod.VectorDistance = ExtensionFunction.VectorDistance
-RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
-RoomMod.Rect = UtilClassMod.Rect
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
 RoomMod.EnemyGoblinChef = EnemyGoblinChef
 RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
-local Room = RoomMod.Room
 local RoomGenerator = RoomMod.RoomGenerator
 
 local Camera = CameraMod.Camera
@@ -75,6 +71,12 @@ local COLLECTIBLE_BOMB = "_Collectible_Bomb"
 local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
 local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 
+-- Rooms
+local BEGINNING_ROOM_NAME = "StartingBase"
+local BEGINNING_ROOM_PATH = "Mods/StartingBase"
+local ROOM_EXIT_DOOR = "RoomDoor"
+local ROOM_NAME = "RoomName"
+
 -- #endregion Constants
 
 -- Public Variables
@@ -86,11 +88,10 @@ local UseMeleePlayer = true
 -- Private Variables
 -- Rooms
 local m_roomGenerator
-local m_exitRoom
-local m_exitRoomAnimPlayed = false
-local m_currentRoomLevel = 0 -- TODO: All of this will be replaced by a progression system
+local m_isBeginningRoom = false
 -- Player
 local m_player
+local m_playerSpawnPosition
 -- Player Health and Damage
 local m_playerInvincibilityTimer = 0
 local m_playerDamageUiFlashCount = 0
@@ -111,10 +112,12 @@ local m_inventory
 local m_damageDisplay
 
 -- #region LifeCycle Functions
-function mod.Start()
+function mod.Start(spawnPosition)
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
-    math.randomseed(randomSeed) -- TODO: Change this later on...
+    math.randomseed(randomSeed)
+
+    m_playerSpawnPosition = spawnPosition
     
     CreateBaseUIElements()
     CreatePlayerDamageDisplay()
@@ -195,13 +198,6 @@ function Update()
 
     if m_player ~= nil and m_player:GetPlayerUnit() ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
-
-        if m_exitRoom ~= nil then
-            if not m_exitRoomAnimPlayed and m_exitRoom:IsPlayerInRoom(m_player:GetPlayerUnit()) then
-                m_exitRoomAnimPlayed = true
-                m_exitRoom:PlayExitDoorOpenAnimation()
-            end
-        end
     end
 
     if m_helmOfValorInInventory then
@@ -232,8 +228,7 @@ function HandleUnitDied()
         m_player:Destroy()
         m_player = nil
 
-        m_currentRoomLevel = 0
-        DisplayGameOverSequence()
+        DisplayGameOverSequence(false)
     end
 end
 
@@ -243,9 +238,9 @@ function HandleBehaviourAdded()
     local unitName = DCEI.UnitName(unit)
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
-        if unitName == EXIT_DOORWAY then
-            m_currentRoomLevel = m_currentRoomLevel + 1
-            DisplayGameOverSequence()
+        if unitName == ROOM_EXIT_DOOR then
+            SaveNextRoomData()
+            DisplayGameOverSequence(true)
         end
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
@@ -299,13 +294,22 @@ end
 -- #region Common Game Spawn
 
 function SpawnPlayerAndSetPosition()
+    local roomType = DCEI.Save.Get(ROOM_NAME)
+    if roomType == nil then -- This should be the beginning room
+        m_roomGenerator = RoomGenerator:new()
+        m_isBeginningRoom = true
+    else
+        m_roomGenerator = RoomGenerator:LoadRoomStructure()
+        m_isBeginningRoom = false
+    end
+
     local playerType
     if UseMeleePlayer then
         playerType = 0
     else
         playerType = 1
     end
-    m_player = Player:new(xPosition, yPosition, playerType, m_uiRoot)
+    m_player = Player:new(m_playerSpawnPosition.x, m_playerSpawnPosition.y, playerType, m_uiRoot)
     UpdateInventoryItemLevelStart()
 end
 
@@ -313,7 +317,29 @@ end
 
 -- #region GameOver State
 
-function DisplayGameOverSequence()
+function SaveNextRoomData()
+    -- TODO: Change this to proper door logic
+
+    if not m_isBeginningRoom then
+        local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+        
+        if playerPosition.x < 5 then
+            m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn - 1
+        elseif playerPosition.x > 15 then
+            m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn + 1
+        elseif playerPosition.y < 5 then
+            m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow + 1
+        elseif playerPosition.y > 15 then
+            m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow - 1
+        else
+            DCEI.LogError("Invalid Bounds?!!")
+        end
+
+        m_roomGenerator:SaveRoomStructure()
+    end
+end
+
+function DisplayGameOverSequence(playerWon)
     m_inventory:DeActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName)
 
     if m_player ~= nil then
@@ -333,6 +359,17 @@ function DisplayGameOverSequence()
     DCEI.Wait(maskOptions.duration)
 
     ResetGameState()
+
+    if playerWon then
+        local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
+        local roomPath = RoomGenerator.GetRoomPath(roomName)
+
+        DCEI.Save.Set(ROOM_NAME, roomName)
+        DCEI.PlayLevel(roomPath, roomName)
+    else
+        DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
+        DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
+    end
 
     DCEI.ShowScreenMaskWithAlpha(0, maskOptions)
     DCEI.Wait(maskOptions.duration)
@@ -584,8 +621,5 @@ end
 -- #endregion Inventory Functions
 
 -- #endregion Utility Fuctions
-
--- Initialization
--- Start()
 
 return mod

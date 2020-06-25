@@ -2,6 +2,11 @@ local ArcadeCore = GameModules["Arcade/Core"]
 
 local mod = {}
 
+local BASE_ROOM_PATH = "Mods/RoomTemplates"
+local COMMON_ROOM_PATH = BASE_ROOM_PATH .. "/CommonRoom"
+local MERCHANT_ROOM_PATH = BASE_ROOM_PATH .. "/MerchantRoom"
+local SECRET_ROOM_PATH = BASE_ROOM_PATH .. "/SecretRoom"
+
 local COMMON_ROOMS = {
     "CR_BL_0",
     "CR_BLR_0",
@@ -35,7 +40,8 @@ local RIGHT = "R"
 local TOP = "T"
 local BOTTOM = "B"
 
-local EXIT_ROOM_PATH_LENGTH = 4
+local EXIT_ROOM_PATH_LENGTH = 3
+local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 
 local RoomGenerator  = {
     roomMatrix = {},
@@ -51,7 +57,10 @@ local RoomGenerator  = {
     minRow = 999,
     maxRow = -1,
     minColumn = 999,
-    maxColumn = -1
+    maxColumn = -1,
+
+    currentPlayerRow = -1,
+    currentPlayerColumn = -1
 }
 RoomGenerator.__index = RoomGenerator
 function RoomGenerator:new()
@@ -72,6 +81,9 @@ function RoomGenerator:new()
     roomGenerator.maxRow = -1
     roomGenerator.minColumn = 999
     roomGenerator.maxColumn = -1
+
+    roomGenerator.currentPlayerRow = -1
+    roomGenerator.currentPlayerColumn = -1
     
     roomGenerator:GenerateRoomBase()
     roomGenerator:PrintRooms()
@@ -81,12 +93,61 @@ function RoomGenerator:new()
 
     return roomGenerator
 end
+function RoomGenerator:SaveRoomStructure()
+    DCEI.Save.Set("RoomMatrix", json.encode(self.roomMatrix))
+    DCEI.Save.set("RoomMatrixCounter", json.encode(self.roomMatrixCounter))
+    DCEI.Save.Set("RoomAdjacencyList", json.encode(self.roomAdjacencyList))
+
+    DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
+    DCEI.Save.Set("SpawnRoomColumn", self.spawnRoomColumn)
+    
+    DCEI.Save.Set("ExitRoowRow", self.exitRoomRow)
+    DCEI.Save.Set("ExitRoomColumn", self.exitRoomColumn)
+    
+    DCEI.Save.Set("MinRow", self.minRow)
+    DCEI.Save.Set("MaxRow", self.maxRow)
+    DCEI.Save.Set("MinColumn", self.minColumn)
+    DCEI.Save.Set("MaxColumn", self.maxColumn)
+
+    DCEI.Save.Set("PlayerRow", self.currentPlayerRow)
+    DCEI.Save.Set("PlayerColumn", self.currentPlayerColumn)
+end
+function RoomGenerator:LoadRoomStructure()
+    local roomGenerator = {}
+    setmetatable(roomGenerator, RoomGenerator)
+        
+    roomGenerator.roomMatrix = json.decode(DCEI.Save.Get("RoomMatrix"))
+    roomGenerator.roomMatrixCounter = json.decode(DCEI.Save.Get("RoomMatrixCounter"))
+    roomGenerator.roomAdjacencyList = json.decode(DCEI.Save.Get("RoomAdjacencyList"))
+
+    roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
+    roomGenerator.spawnRoomColumn = DCEI.Save.Get("SpawnRoomColumn")
+
+    roomGenerator.exitRoomRow = DCEI.Save.Get("ExitRoomRow")
+    roomGenerator.exitRoomColumn = DCEI.Save.Get("ExitRoomColumn")
+
+    roomGenerator.minRow = DCEI.Save.Get("MinRow")
+    roomGenerator.maxRow = DCEI.Save.Get("MaxRow")
+    roomGenerator.minColumn = DCEI.Save.Get("MinColumn")
+    roomGenerator.maxColumn = DCEI.Save.Get("MaxColumn")
+
+    roomGenerator.currentPlayerRow = DCEI.Save.Get("PlayerRow")
+    roomGenerator.currentPlayerColumn = DCEI.Save.Get("PlayerColumn")
+
+    return roomGenerator
+end
+function RoomGenerator:GetRoomFromPlayerPosition()
+    return self.roomMatrix[self.currentPlayerRow][self.currentPlayerColumn]
+end
 function RoomGenerator:GenerateRoomBase()
     local spawnRoomRow = 100
     local spawnRoomColumn = 100
 
     self.spawnRoomRow = spawnRoomRow
     self.spawnRoomColumn = spawnRoomColumn
+
+    self.currentPlayerRow = spawnRoomRow
+    self.currentPlayerColumn = spawnRoomColumn
 
     local i = spawnRoomRow -- Row
     local j = spawnRoomColumn -- Column
@@ -235,7 +296,7 @@ function RoomGenerator:PlaceSecretRooms()
                 -- Do nothing. Just ignore the index...
             end
 
-            DCEI.LogMessage("\n")
+            DCEI.LogMessage("")
         end
     end
 
@@ -350,7 +411,7 @@ function RoomGenerator:CheckBFSForExitRoom()
                 local spawnRoomNumber = self.roomMatrixCounter[self.spawnRoomRow][self.spawnRoomColumn]
                 local pathLength = self:FindPathToSpawnRoom(spawnRoomNumber, roomNumber)
 
-                if pathLength >= EXIT_ROOM_PATH_LENGTH then
+                if pathLength == EXIT_ROOM_PATH_LENGTH then
                     self.exitRoomRow = i
                     self.exitRoomColumn = j
 
@@ -364,17 +425,20 @@ function RoomGenerator:CheckBFSForExitRoom()
 end
 function RoomGenerator:FindPathToSpawnRoom(spawnRoomNumber, startRoomNumber)
     local explored = {}
-    local queue = { startRoomNumber }
+    local queue = { startRoomNumber, ARRAY_NIL }
     local pathLength = 0
 
     if spawnRoomNumber == startRoomNumber then
         return 0
     end
 
-    while #queue ~= 0 do
+    while #queue > 1 do
         local node = table.remove(queue, 1)
         
-        if not mod.ArrayHasValue(explored, node) then
+        if node == ARRAY_NIL then
+            pathLength = pathLength + 1
+            table.insert(queue, ARRAY_NIL)
+        elseif not mod.ArrayHasValue(explored, node) then
             local adjacentRooms = self.roomAdjacencyList[node]
             for i, room in ipairs(adjacentRooms) do
                 table.insert(queue, room)
@@ -384,7 +448,6 @@ function RoomGenerator:FindPathToSpawnRoom(spawnRoomNumber, startRoomNumber)
                 end
             end
 
-            pathLength = pathLength + 1
             table.insert(explored, node)
         end
     end
@@ -518,7 +581,7 @@ function RoomGenerator:PrintRooms()
         
         for j = self.minColumn, self.maxColumn do
             if self.roomMatrix[i][j] ~= nil then
-                stringValue = stringValue .. self.roomMatrix[i][j] .. "," .. i .. "," .. j .. " "
+                stringValue = stringValue .. self.roomMatrix[i][j] .. " "
             else
                 stringValue = stringValue .. "*** "
             end
@@ -536,7 +599,7 @@ function RoomGenerator:PrintRoomCounters()
         for j = self.minColumn, self.maxColumn do
             if self.roomMatrixCounter[i] ~= nil then
                 if self.roomMatrixCounter[i][j] ~= nil then
-                    stringValue = stringValue .. self.roomMatrixCounter[i][j] .. "," .. i .. "," .. j .. " "
+                    stringValue = stringValue .. self.roomMatrixCounter[i][j] .. " "
                 else
                     stringValue = stringValue .. "*** "
                 end
@@ -616,6 +679,30 @@ function mod.RoomHasBottomExit(value)
     return string.find(value, "_.*B.*_")
 end
 
+function mod.GetRoomPath(roomName)
+    if mod.IsCommonRoom(roomName) then
+        return COMMON_ROOM_PATH .. "/" .. roomName
+    elseif mod.IsMerchantRoom(roomName) then
+        return MERCHANT_ROOM_PATH .. "/" .. roomName
+    elseif mod.IsSecretRoom(roomName) then
+        return SECRET_ROOM_PATH .. "/" .. roomName
+    else
+        DCEI.LogError("Invalid Room Name!!!")
+    end
+end
+
+function mod.IsCommonRoom(value)
+    return string.find(value, "CR")
+end
+
+function mod.IsMerchantRoom(value)
+    return string.find(value, "MR")
+end
+
+function mod.IsSecretRoom(value)
+    return string.find(value, "SR")
+end
+
 function mod.ArrayHasValue(array, value)
     for i, data in ipairs(array) do
         if data == value then
@@ -625,5 +712,13 @@ function mod.ArrayHasValue(array, value)
 
     return false
 end
+
+mod.RoomGenerator = RoomGenerator
+
+mod.EnemyHobGoblin = nil
+mod.EnemyGoblinChef = nil
+mod.EnemyGoblin = nil
+mod.EnemyGoblinSapper = nil
+mod.EnemyOoze = nil
 
 return mod
