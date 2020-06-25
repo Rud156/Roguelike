@@ -86,17 +86,20 @@ function RoomGenerator:new()
     roomGenerator.currentPlayerColumn = -1
     
     roomGenerator:GenerateRoomBase()
-    roomGenerator:PrintRooms()
-    roomGenerator:PrintRoomCounters()
-    roomGenerator:PrintRoomAdjacenyList()
-    roomGenerator:PrintSpawnAndExit()
+    -- roomGenerator:PrintRooms()
+    -- roomGenerator:PrintRoomCounters()
+    -- roomGenerator:PrintRoomAdjacenyList()
+    -- roomGenerator:PrintSpawnAndExit()
+    roomGenerator:SaveRoomStructure()
 
     return roomGenerator
 end
 function RoomGenerator:SaveRoomStructure()
-    DCEI.Save.Set("RoomMatrix", json.encode(self.roomMatrix))
-    DCEI.Save.set("RoomMatrixCounter", json.encode(self.roomMatrixCounter))
-    DCEI.Save.Set("RoomAdjacencyList", json.encode(self.roomAdjacencyList))
+    DCEI.LogMessage("Saving Room Structure")
+
+    DCEI.Save.Set("RoomMatrix", mod.Convert2DMatrixToString(self.roomMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
+    DCEI.Save.Set("RoomMatrixCounter", mod.Convert2DMatrixToString(self.roomMatrixCounter, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
+    DCEI.Save.Set("RoomAdjacencyList", mod.ConvertAdjacencyListToString(self.roomAdjacencyList))
 
     DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
     DCEI.Save.Set("SpawnRoomColumn", self.spawnRoomColumn)
@@ -111,14 +114,17 @@ function RoomGenerator:SaveRoomStructure()
 
     DCEI.Save.Set("PlayerRow", self.currentPlayerRow)
     DCEI.Save.Set("PlayerColumn", self.currentPlayerColumn)
+    DCEI.Save.Commit()
 end
 function RoomGenerator:LoadRoomStructure()
+    DCEI.LogMessage("Loading Room Structure")
+
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
         
-    roomGenerator.roomMatrix = json.decode(DCEI.Save.Get("RoomMatrix"))
-    roomGenerator.roomMatrixCounter = json.decode(DCEI.Save.Get("RoomMatrixCounter"))
-    roomGenerator.roomAdjacencyList = json.decode(DCEI.Save.Get("RoomAdjacencyList"))
+    roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrix"))
+    roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrixCounter"))
+    roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(DCEI.Save.Get("RoomAdjacencyList"))
 
     roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
     roomGenerator.spawnRoomColumn = DCEI.Save.Get("SpawnRoomColumn")
@@ -679,6 +685,84 @@ function mod.RoomHasBottomExit(value)
     return string.find(value, "_.*B.*_")
 end
 
+function mod.Convert2DMatrixToString(matrix, minRow, maxRow, minColumn, maxColumn)
+    local stringValue = ""
+
+    for i = minRow, maxRow do    
+        for j = minColumn, maxColumn do
+            if matrix[i] ~= nil then
+                if matrix[i][j] ~= nil then
+                    stringValue = stringValue .. matrix[i][j] .. "," .. i .. "," .. j .. ":"
+                end
+            end
+        end
+        stringValue = stringValue .. "|"
+    end
+
+    return stringValue
+end
+
+function mod.ConvertStringTo2DMatrix(stringValue)
+    local matrix = {}
+    local rows = mod.split(stringValue, "|")
+
+    for _, value in pairs(rows) do
+        local columns = mod.split(value, ":")
+
+        for _, colValue in pairs(columns) do
+            local data = mod.split(colValue, ",")
+            local i = tonumber(data[2])
+            local j = tonumber(data[3])
+
+            if matrix[i] == nil then
+                matrix[i] = {}
+            end
+
+            matrix[i][j] = data[1]
+        end
+    end
+
+    return matrix
+end
+
+function mod.ConvertAdjacencyListToString(adjacencyList)
+    local stringValue = ""
+
+    for key, value in pairs(adjacencyList) do
+        stringValue = stringValue .. key .. ":"
+        for i, room in ipairs(value) do
+            stringValue = stringValue .. room .. ","
+        end
+
+        stringValue = stringValue .. "|"
+    end
+
+    return stringValue
+end
+
+function mod.ConvertStringToAdjacencyList(stringValue)
+    local listArray = mod.split(stringValue, "|")
+    local adjacencyList = {}
+
+    for _, value in pairs(listArray) do
+        local data = mod.split(value, ":")
+
+        local key = data[1]
+        local roomStrings = mod.split(data[2], ",")
+        
+        local adjacentRooms = {}
+
+        for _, room in pairs(roomStrings) do
+            local roomNumber = tonumber(room)
+            table.insert(adjacentRooms, roomNumber)
+        end
+
+        adjacencyList[key] = adjacentRooms
+    end
+
+    return adjacencyList
+end
+
 function mod.GetRoomPath(roomName)
     if mod.IsCommonRoom(roomName) then
         return COMMON_ROOM_PATH .. "/" .. roomName
@@ -720,5 +804,7 @@ mod.EnemyGoblinChef = nil
 mod.EnemyGoblin = nil
 mod.EnemyGoblinSapper = nil
 mod.EnemyOoze = nil
+
+mod.split = nil
 
 return mod

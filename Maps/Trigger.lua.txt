@@ -27,6 +27,7 @@ RoomMod.EnemyGoblinChef = EnemyGoblinChef
 RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
+RoomMod.split = ExtensionFunction.split
 local RoomGenerator = RoomMod.RoomGenerator
 
 local Camera = CameraMod.Camera
@@ -295,10 +296,13 @@ end
 
 function SpawnPlayerAndSetPosition()
     local roomType = DCEI.Save.Get(ROOM_NAME)
+
     if roomType == nil then -- This should be the beginning room
+        DCEI.LogMessage("Beginning Room. Generating Rooms")
         m_roomGenerator = RoomGenerator:new()
         m_isBeginningRoom = true
     else
+        DCEI.LogMessage("Loading Old Room Data")
         m_roomGenerator = RoomGenerator:LoadRoomStructure()
         m_isBeginningRoom = false
     end
@@ -321,6 +325,8 @@ function SaveNextRoomData()
     -- TODO: Change this to proper door logic
 
     if not m_isBeginningRoom then
+        DCEI.LogMessage("Saving Next Room Data")
+
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         
         if playerPosition.x < 5 then
@@ -365,15 +371,15 @@ function DisplayGameOverSequence(playerWon)
         local roomPath = RoomMod.GetRoomPath(roomName)
 
         DCEI.Save.Set(ROOM_NAME, roomName)
+        DCEI.Save.Commit()
+        DCEI.Wait(1)
         DCEI.PlayLevel(roomPath, roomName)
     else
         DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
+        DCEI.Save.Commit()
+        DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
     end
-
-    DCEI.ShowScreenMaskWithAlpha(0, maskOptions)
-    DCEI.Wait(maskOptions.duration)
-    DCEI.HideScreenMask()
 end
 
 function ResetGameState()

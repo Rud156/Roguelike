@@ -217,13 +217,13 @@ function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomGenerator
         return
     end
 
-    local enemy
+    local enemy = nil
     
-    if roomGenerator then
-        enemy = roomGenerator:GetRoomNearestEnemy(self.playerUnit)
-    else
-        enemy = nil
-    end
+    -- if roomGenerator then
+    --     enemy = roomGenerator:GetRoomNearestEnemy(self.playerUnit)
+    -- else
+    --     enemy = nil
+    -- end
     
     if buttonId == 0 then
         self:LaunchPlayerLightAttack(enemy)
