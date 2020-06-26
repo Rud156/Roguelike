@@ -4,5 +4,10 @@
         "panAreaCenterY": 16,
         "panAreaLengthX": 40,
         "skipIntroSequence": true
+    },
+    "weatherSettings": {
+        "hasRain": false,
+        "time": 0,
+        "weather": 0
     }
 }

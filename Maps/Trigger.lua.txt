@@ -75,7 +75,8 @@ local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 -- Rooms
 local BEGINNING_ROOM_NAME = "StartingBase"
 local BEGINNING_ROOM_PATH = "Mods/StartingBase"
-local ROOM_EXIT_DOOR = "RoomDoor"
+local ROOM_EXIT_DOOR_NEW = "_Room_Exit"
+local ROOM_EXIT_DOOR_OLD = "RoomDoor"
 local ROOM_NAME = "RoomName"
 
 -- #endregion Constants
@@ -239,7 +240,7 @@ function HandleBehaviourAdded()
     local unitName = DCEI.UnitName(unit)
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
-        if unitName == ROOM_EXIT_DOOR then
+        if unitName == ROOM_EXIT_DOOR_NEW or unitName == ROOM_EXIT_DOOR_OLD then
             SaveNextRoomData()
             DisplayGameOverSequence(true)
         end
