@@ -22,7 +22,8 @@
                 "flightTimeRange": 0,
                 "speed": 0,
                 "gravity": 12
-            }
+            },
+            "stayOnNavMesh": true
         },
         "_PlayerCharacter_Ranged": {
             "ballistic": {
@@ -30,7 +31,8 @@
                 "flightTimeRange": 0,
                 "speed": 0,
                 "gravity": 12
-            }
+            },
+            "stayOnNavMesh": true
         }
     }
 }
