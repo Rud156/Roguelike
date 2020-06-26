@@ -607,6 +607,25 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "_Room_Exit": {
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
         }
     }
 }

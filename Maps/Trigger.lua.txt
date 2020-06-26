@@ -364,8 +364,6 @@ function DisplayGameOverSequence(playerWon)
     DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
     DCEI.Wait(maskOptions.duration)
 
-    ResetGameState()
-
     if playerWon then
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)
@@ -380,13 +378,6 @@ function DisplayGameOverSequence(playerWon)
         DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
     end
-end
-
-function ResetGameState()
-    SpawnPlayerAndSetPosition()
-
-    m_camera:UpdateTarget(m_player:GetPlayerUnit())
-    m_player:SetPlayerCamera(m_camera)
 end
 
 -- #endregion GameOver State
