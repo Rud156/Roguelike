@@ -215,12 +215,8 @@ function RoomGenerator:GenerateRoomBase()
         end
     end
 
-    DCEI.LogMessage("Min Row: " .. self.minRow)
-    DCEI.LogMessage("Max Row: " .. self.maxRow)
-    DCEI.LogMessage("Min Column: " .. self.minColumn)
-    DCEI.LogMessage("Max Column: " .. self.maxColumn)
-
     self:PlaceSecretRooms()
+    self:MergeCommonSecretRooms()
 end
 function RoomGenerator:PlaceSecretRooms()
     local minRow = self.minRow
@@ -315,6 +311,34 @@ function RoomGenerator:PlaceSecretRooms()
     DCEI.LogMessage("Max Row: " .. maxRow)
     DCEI.LogMessage("Min Column: " .. minColumn)
     DCEI.LogMessage("Max Column: " .. maxColumn)
+end
+function RoomGenerator:MergeCommonSecretRooms()
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] ~= nil and mod.IsSecretRoom(self.roomMatrix[i][j]) then
+                local exitLeft, exitRight, exitTop, exitBottom = self:GetAdjacentRoomExits(i, j)
+                local totalExits = 0
+                
+                if exitLeft then
+                    totalExits = totalExits + 1
+                end
+                if exitRight then
+                    totalExits = totalExits + 1
+                end
+                if exitTop then
+                    totalExits = totalExits + 1
+                end
+                if exitBottom then
+                    totalExits = totalExits + 1
+                end
+
+                if totalExits >= 1 then
+                    local room = self:GetRoomWithExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, exitBottom)
+                    self.roomMatrix[i][j] = room
+                end
+            end
+        end
+    end
 end
 function RoomGenerator:UpdateMinMaxRowColumn(i, j)
     if self.minRow > i then
