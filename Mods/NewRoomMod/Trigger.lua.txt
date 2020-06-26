@@ -332,8 +332,8 @@ function RoomGenerator:MergeCommonSecretRooms()
                     totalExits = totalExits + 1
                 end
 
-                if totalExits >= 1 then
-                    local room = self:GetRoomWithExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, exitBottom)
+                if totalExits > 1 then
+                    local room = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, exitBottom)
                     self.roomMatrix[i][j] = room
                 end
             end
@@ -526,7 +526,7 @@ function RoomGenerator:GetAdjacentRoomExits(row, column)
 
     return exitLeft, exitRight, exitTop, exitBottom
 end
-function RoomGenerator:GetRoomWithExits(rooms, hasLeft, hasRight, hasTop, hasBottom)
+function RoomGenerator:GetAllRoomsWithExits(rooms, hasLeft, hasRight, hasTop, hasBottom)
     local validRooms = rooms
 
     if hasLeft then
@@ -545,8 +545,43 @@ function RoomGenerator:GetRoomWithExits(rooms, hasLeft, hasRight, hasTop, hasBot
         validRooms = self:GetRoomsWithBottomExit(validRooms)
     end
 
+    return validRooms
+end
+function RoomGenerator:GetRoomWithExits(rooms, hasLeft, hasRight, hasTop, hasBottom)
+    local validRooms = self:GetAllRoomsWithExits(rooms, hasLeft, hasRight, hasTop, hasBottom)
     local randomIndex = math.random(1, #validRooms)
     return validRooms[randomIndex]
+end
+function RoomGenerator:GetRoomWithSpecificExits(rooms, hasLeft, hasRight, hasTop, hasBottom)
+    local validRooms = self:GetAllRoomsWithExits(rooms, hasLeft, hasRight, hasTop, hasBottom)
+    local actualValidRooms = {}
+
+    for i = 1, #validRooms do
+        local roomMarkedForRemoval = false
+
+        if not hasLeft and mod.RoomHasLeftExit(validRooms[i]) then
+            roomMarkedForRemoval = true    
+        end
+
+        if not hasRight and mod.RoomHasRightExit(validRooms[i]) then
+            roomMarkedForRemoval = true
+        end
+
+        if not hasTop and mod.RoomHasTopExit(validRooms[i]) then
+            roomMarkedForRemoval = true
+        end
+
+        if not hasBottom and mod.RoomHasBottomExit(validRooms[i]) then
+            roomMarkedForRemoval = true
+        end
+
+        if not roomMarkedForRemoval then
+            table.insert(actualValidRooms, validRooms[i])
+        end
+    end
+
+    local randomIndex = math.random(1, #actualValidRooms)
+    return actualValidRooms[randomIndex]
 end
 function RoomGenerator:GetRoomsWithLeftExit(rooms)
     local validRooms = {}
@@ -771,7 +806,7 @@ function mod.ConvertStringToAdjacencyList(stringValue)
     for _, value in pairs(listArray) do
         local data = mod.split(value, ":")
 
-        local key = data[1]
+        local key = tonumber(data[1])
         local roomStrings = mod.split(data[2], ",")
         
         local adjacentRooms = {}
