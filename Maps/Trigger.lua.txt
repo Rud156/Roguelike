@@ -48,6 +48,12 @@ local WORLD_HEIGHT = 30
 local MAX_ROOM_COLUMNS = 3
 local GAME_LOOP_RATE = 0.0625
 
+local LEFT = "L"
+local RIGHT = "R"
+local TOP = "T"
+local BOTTOM = "B"
+local LAST_DIRECTION = "LastDirection"
+
 local DEBUG_UNIT = "__DebugMarkerUnit"
 local EXIT_DOORWAY = "_ExitDoorway"
 local ENTRY_DOORWAY_CLOSE_ANIM_DELAY = 1
@@ -93,7 +99,10 @@ local m_roomGenerator
 local m_isBeginningRoom = false
 -- Player
 local m_player
-local m_playerSpawnPosition
+local m_leftSpawn
+local m_rightSpawn
+local m_topSpawn
+local m_bottomSpawn
 -- Player Health and Damage
 local m_playerInvincibilityTimer = 0
 local m_playerDamageUiFlashCount = 0
@@ -114,12 +123,15 @@ local m_inventory
 local m_damageDisplay
 
 -- #region LifeCycle Functions
-function mod.Start(spawnPosition)
+function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
     math.randomseed(randomSeed)
 
-    m_playerSpawnPosition = spawnPosition
+    m_leftSpawn = spawnPositionLeft
+    m_rightSpawn = spawnPositionRight
+    m_topSpawn = spawnPositionTop
+    m_bottomSpawn = spawnPositionBottom
     
     CreateBaseUIElements()
     CreatePlayerDamageDisplay()
@@ -314,7 +326,31 @@ function SpawnPlayerAndSetPosition()
     else
         playerType = 1
     end
-    m_player = Player:new(m_playerSpawnPosition.x, m_playerSpawnPosition.y, playerType, m_uiRoot)
+
+    local spawnPosition
+    local spawnDirection = DCEI.Save.Get(LAST_DIRECTION)
+
+    if spawnDirection == LEFT then
+        spawnPosition = m_leftSpawn
+    elseif spawnDirection == RIGHT then
+        spawnPosition = m_rightSpawn
+    elseif spawnDirection == TOP then
+        spawnPosition = m_topSpawn
+    elseif spawnDirection == BOTTOM then
+        spawnPosition = m_bottomSpawn
+    else
+        if m_leftSpawn ~= nil then
+            spawnPosition = m_leftSpawn
+        elseif m_rightSpawn ~= nil then
+            spawnPosition = m_rightSpawn
+        elseif m_topSpawn ~= nil then
+            spawnPosition = m_topSpawn
+        else
+            spawnPosition = m_bottomSpawn
+        end
+    end
+
+    m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
     UpdateInventoryItemLevelStart()
 end
 
@@ -329,20 +365,31 @@ function SaveNextRoomData()
         DCEI.LogMessage("Saving Next Room Data")
 
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+        local direction = ""
         
         if playerPosition.x < 5 then
             m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn - 1
+            direction = RIGHT
         elseif playerPosition.x > 15 then
             m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn + 1
+            direction = LEFT
         elseif playerPosition.y < 5 then
             m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow + 1
+            direction = TOP
         elseif playerPosition.y > 15 then
             m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow - 1
+            direction = BOTTOM
         else
             DCEI.LogError("Invalid Bounds?!!")
         end
 
+        DCEI.Save.Set(LAST_DIRECTION, direction)
+        DCEI.Save.Commit()
+
         m_roomGenerator:SaveRoomStructure()
+    else
+        DCEI.Save.Set(LAST_DIRECTION, nil)
+        DCEI.Save.Commit()
     end
 end
 

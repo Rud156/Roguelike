@@ -5,4 +5,4 @@ local SPAWN_POINT_TOP = { x = 9.5, y = 16.41 }
 local SPAWN_POINT_BOTTOM = { x = 9.5, y = 2 }
 local SPAWN_POINT_RIGHT = { x = 15.94, y = 9 }
 
-MainMap.Start(SPAWN_POINT)
+MainMap.Start(nil, SPAWN_POINT_RIGHT, SPAWN_POINT_TOP, SPAWN_POINT_BOTTOM)
