@@ -541,6 +541,26 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_Room_Exit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.6,
+                    "immortal": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
         "_Wall_BreakableWall": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -607,25 +627,6 @@
                     "behaviorType": 0
                 }
             }
-        },
-        "_Room_Exit": {
-            "components": {
-                "unit": {
-                    "unitType": 2
-                },
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "displayName": "data/GameData/unit/_CBuilding/display_name"
         }
     }
 }

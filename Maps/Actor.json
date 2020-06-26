@@ -1810,6 +1810,15 @@
                 }
             }
         },
+        "_Room_Exit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "forestworld_castle_door"
+                },
+                "modelScale": 2
+            }
+        },
         "_SFX_Collectible_Bomb_Attack": {
             "modelActor": {
                 "resource": {
@@ -2406,14 +2415,6 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
-                }
-            }
-        },
-        "_Room_Exit": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "forestworld_castle_door"
                 }
             }
         }
