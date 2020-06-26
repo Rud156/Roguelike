@@ -4,4 +4,4 @@ local MainMap = GameModules["Maps"]
 local SPAWN_POINT_TOP = { x = 9.5, y = 16.41 }
 local SPAWN_POINT_LEFT = { x = 2.7, y = 9.45 }
 
-MainMap.Start(SPAWN_POINT)
+MainMap.Start(SPAWN_POINT_LEFT, nil, SPAWN_POINT_TOP, nil)
