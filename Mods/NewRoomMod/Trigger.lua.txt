@@ -923,7 +923,7 @@ function RoomEnemies:GetEmptyPositions()
 
     return validPositions
 end
-function RoomEnemies:GetNearestEnemy(player)
+function RoomEnemies:GetRoomNearestEnemy(player)
     local playerPosition = DCEI.GetUnitPosition2D(player)
     local lastNearestEnemy = nil
     local lastEnemyDistance = 100

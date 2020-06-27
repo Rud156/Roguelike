@@ -216,6 +216,9 @@ function Update()
 
     if m_roomEnemies ~= nil and m_player ~= nil then
         m_roomEnemies:UpdateEnemies(GAME_LOOP_RATE, m_player:GetPlayerUnit())
+        
+        local enemy = m_roomEnemies:GetRoomNearestEnemy(m_player:GetPlayerUnit())
+        m_player:LookTowardsEnemy(enemy)
     end
 
     UpdatePlayerDamageUI(GAME_LOOP_RATE)
@@ -446,6 +449,7 @@ function DisplayGameOverSequence(playerWon)
         DCEI.Wait(1)
         DCEI.PlayLevel(roomPath, roomName)
     else
+        m_roomGenerator:ClearSaveData()
         DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
         DCEI.Save.Commit()
         DCEI.Wait(1)
