@@ -142,6 +142,28 @@ function RoomGenerator:LoadRoomStructure()
 
     return roomGenerator
 end
+function RoomGenerator:ClearSaveData()
+   DCEI.LogMessage("Deleting Save Room Data") 
+
+   DCEI.Save.Set("RoomMatrix", nil)
+    DCEI.Save.Set("RoomMatrixCounter", nil)
+    DCEI.Save.Set("RoomAdjacencyList", nil)
+
+    DCEI.Save.Set("SpawnRoomRow", nil)
+    DCEI.Save.Set("SpawnRoomColumn", nil)
+    
+    DCEI.Save.Set("ExitRoowRow", nil)
+    DCEI.Save.Set("ExitRoomColumn", nil)
+    
+    DCEI.Save.Set("MinRow", nil)
+    DCEI.Save.Set("MaxRow", nil)
+    DCEI.Save.Set("MinColumn", nil)
+    DCEI.Save.Set("MaxColumn", nil)
+
+    DCEI.Save.Set("PlayerRow", nil)
+    DCEI.Save.Set("PlayerColumn", nil)
+    DCEI.Save.Commit()
+end
 function RoomGenerator:GetRoomFromPlayerPosition()
     return self.roomMatrix[self.currentPlayerRow][self.currentPlayerColumn]
 end
