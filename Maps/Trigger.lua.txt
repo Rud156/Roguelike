@@ -214,7 +214,7 @@ function Update()
         m_player:Update(GAME_LOOP_RATE)
     end
 
-    if m_roomEnemies ~= nil then
+    if m_roomEnemies ~= nil and m_player ~= nil then
         m_roomEnemies:UpdateEnemies(GAME_LOOP_RATE, m_player:GetPlayerUnit())
     end
 
