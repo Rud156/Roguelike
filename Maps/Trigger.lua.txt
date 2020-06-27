@@ -149,6 +149,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
+    LoadInventoryFromSave()
     
     -- Add Triggers At The End...
     DCEI.TriggerAddJoystickEvent(
@@ -602,6 +603,11 @@ function CreateInventoryUI()
     m_inventory = inventory
 end
 
+function LoadInventoryFromSave()
+    m_inventory:LoadInventory()
+    UpdateInventoryItemLevelStart()
+end
+
 function UpdateInventoryItemLevelStart()
     local slots = m_inventory:GetInventorySlots()
     for i, slot in ipairs(slots) do
@@ -655,6 +661,7 @@ function HandleInventoryItemDropped(itemName, inventorySlot)
 
     HandleItemRemovedFromInventory(itemName)
     inventorySlot:DropInventoryItem()
+    m_inventory:SaveInventory()
 end
 
 function HandleInventorySlotClicked(itemName, inventorySlot)
@@ -690,6 +697,8 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         HandleItemRemovedFromInventory(itemName)
         inventorySlot:DropInventoryItem()
     end
+
+    m_inventory:SaveInventory()
 end
 
 -- #endregion Inventory Functions
