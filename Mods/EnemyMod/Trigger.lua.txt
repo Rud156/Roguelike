@@ -232,7 +232,7 @@ function GoblinChef:FindRandomMoveBackPointAroundPlayer(playerPosition)
         local xPosition = radius * math.sin(math.rad(i)) + playerPosition.x
         local yPosition = radius * math.cos(math.rad(i)) + playerPosition.y
 
-        if self.room.rect:contains(xPosition, yPosition) then
+        if DCEI.IsPointOnNavMesh(xPosition, yPosition) then
             table.insert(validPositions, { x = xPosition, y = yPosition })
         end
     end
@@ -708,7 +708,7 @@ function Ooze:FindEmptyPlaceInCircle(playerPosition)
         local xPosition = radius * math.sin(math.rad(i)) + playerPosition.x
         local yPosition = radius * math.cos(math.rad(i)) + playerPosition.y
 
-        if self.room.rect:contains(xPosition, yPosition) then
+        if DCEI.IsPointOnNavMesh(xPosition, yPosition) then
             table.insert(validPositions, { x = xPosition, y = yPosition })
         end
     end
@@ -719,15 +719,12 @@ function Ooze:FindEmptyPlaceInCircle(playerPosition)
     return randomPosition
 end
 function Ooze:FindAndSetRandomMovement()
-    local emptyPositions, roomRect = self.room:GetEmptyPositions()
+    local emptyPositions = self.room:GetEmptyPositions()
     local randomEmptyPosition = math.random(1, #emptyPositions)
-
-    local startX = roomRect.x
-    local startY = roomRect.y
 
     local position = emptyPositions[randomEmptyPosition]
 
-    self.targetPosition = { x = startX + position[1], y = startY + position[2] }
+    self.targetPosition = { x = position.x, y = position.y }
     self.currentTimer = OOZE_RANDOM_MOVEMENT_TIMER
 end
 function Ooze:SetEnemyState(enemyState)

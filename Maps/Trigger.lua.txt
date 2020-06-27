@@ -28,7 +28,10 @@ RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
 RoomMod.split = ExtensionFunction.split
+RoomMod.VectorDistance = ExtensionFunction.VectorDistance
+RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
 local RoomGenerator = RoomMod.RoomGenerator
+local RoomEnemies = RoomMod.RoomEnemies
 
 local Camera = CameraMod.Camera
 
@@ -96,6 +99,7 @@ local UseMeleePlayer = true
 -- Private Variables
 -- Rooms
 local m_roomGenerator
+local m_roomEnemies
 local m_isBeginningRoom = false
 -- Player
 local m_player
@@ -121,12 +125,15 @@ local m_uiMiddleLayer
 local m_uiTopLayer
 local m_inventory
 local m_damageDisplay
+-- Random
+local m_randomSeed
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
     local randomSeed = os.time()
     DCEI.LogMessage("Random Seed: " .. randomSeed)
     math.randomseed(randomSeed)
+    m_randomSeed = randomSeed
 
     m_leftSpawn = spawnPositionLeft
     m_rightSpawn = spawnPositionRight
@@ -207,6 +214,10 @@ function Update()
         m_player:Update(GAME_LOOP_RATE)
     end
 
+    if m_roomEnemies ~= nil then
+        m_roomEnemies:UpdateEnemies(GAME_LOOP_RATE, m_player:GetPlayerUnit())
+    end
+
     UpdatePlayerDamageUI(GAME_LOOP_RATE)
     m_inventory:UpdateSlots(GAME_LOOP_RATE)
 
@@ -266,6 +277,9 @@ function HandleBehaviourAdded()
 
     elseif behaviourName == ENEMY_STUNNED_BEHAVIOUR then
         DCEI.LogMessage("Enemy Stun Behaviour Added")
+        if m_roomEnemies ~= nil then
+            m_roomEnemies:UpdateEnemyStunState(unit)
+        end
 
     elseif behaviourName == PLAYERCHARACTER_DAMAGED then
         if unitName == PLAYER_NAME_MELEE or unitName == PLAYER_NAME_RANGED then
@@ -307,16 +321,19 @@ end
 
 -- #region Common Game Spawn
 
+-- FixMe: Clean this up. It is horrible...
 function SpawnPlayerAndSetPosition()
     local roomType = DCEI.Save.Get(ROOM_NAME)
 
     if roomType == nil then -- This should be the beginning room
         DCEI.LogMessage("Beginning Room. Generating Rooms")
-        m_roomGenerator = RoomGenerator:new()
+        m_roomGenerator = RoomGenerator:new(m_randomSeed)
         m_isBeginningRoom = true
     else
         DCEI.LogMessage("Loading Old Room Data")
         m_roomGenerator = RoomGenerator:LoadRoomStructure()
+        m_randomSeed = m_roomGenerator:GetRandomSeed()
+        math.randomseed(m_randomSeed)
         m_isBeginningRoom = false
     end
 
@@ -351,6 +368,10 @@ function SpawnPlayerAndSetPosition()
     end
 
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
+
+    if roomType ~= nil then
+        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit())
+    end
     UpdateInventoryItemLevelStart()
 end
 

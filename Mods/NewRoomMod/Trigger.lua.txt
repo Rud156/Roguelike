@@ -40,8 +40,42 @@ local RIGHT = "R"
 local TOP = "T"
 local BOTTOM = "B"
 
+local MIN_DIRECTION_POSITION = 5
+local MAX_DIRECTION_POSITION = 14
+
 local EXIT_ROOM_PATH_LENGTH = 3
 local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
+
+local ROOM_SIZE = 30
+local MAX_ENEMIES = 10
+
+local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
+
+local LEVEL_1_ENEMY_SETS = {
+    { 2, 2 },
+    { 2, 0 },
+    { 3, 3, 4 },
+    { 0, 0, 0 },
+    { 2, 4 },    
+}
+
+local LEVEL_2_ENEMY_SETS = {
+    { 4, 4, 3, 3 },
+    { 1, 1, 0 },
+    { 2, 2, 1, 0 },
+    { 3, 3, 4, 4 },
+    { 2, 2, 3, 3 },
+}
+
+local LEVEL_3_ENEMY_SETS = {
+    { 0, 0, 0, 3, 3 },
+    { 1, 1, 0, 0 },
+    { 2, 2, 1, 0, 0 },
+    { 3, 3, 1, 1, 4 },
+    { 2, 2, 1, 4, 4 },
+}
+
+-- #region Room Generator
 
 local RoomGenerator  = {
     roomMatrix = {},
@@ -60,10 +94,12 @@ local RoomGenerator  = {
     maxColumn = -1,
 
     currentPlayerRow = -1,
-    currentPlayerColumn = -1
+    currentPlayerColumn = -1,
+
+    randomSeed = -1
 }
 RoomGenerator.__index = RoomGenerator
-function RoomGenerator:new()
+function RoomGenerator:new(randomSeed)
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
 
@@ -84,12 +120,10 @@ function RoomGenerator:new()
 
     roomGenerator.currentPlayerRow = -1
     roomGenerator.currentPlayerColumn = -1
+
+    roomGenerator.randomSeed = randomSeed
     
     roomGenerator:GenerateRoomBase()
-    -- roomGenerator:PrintRooms()
-    -- roomGenerator:PrintRoomCounters()
-    -- roomGenerator:PrintRoomAdjacenyList()
-    -- roomGenerator:PrintSpawnAndExit()
     roomGenerator:SaveRoomStructure()
 
     return roomGenerator
@@ -114,6 +148,9 @@ function RoomGenerator:SaveRoomStructure()
 
     DCEI.Save.Set("PlayerRow", self.currentPlayerRow)
     DCEI.Save.Set("PlayerColumn", self.currentPlayerColumn)
+
+    DCEI.Save.Set("RandomSeed", self.randomSeed)
+
     DCEI.Save.Commit()
 end
 function RoomGenerator:LoadRoomStructure()
@@ -140,6 +177,8 @@ function RoomGenerator:LoadRoomStructure()
     roomGenerator.currentPlayerRow = DCEI.Save.Get("PlayerRow")
     roomGenerator.currentPlayerColumn = DCEI.Save.Get("PlayerColumn")
 
+    roomGenerator.randomSeed = DCEI.Save.Get("RandomSeed")
+
     return roomGenerator
 end
 function RoomGenerator:ClearSaveData()
@@ -162,6 +201,9 @@ function RoomGenerator:ClearSaveData()
 
     DCEI.Save.Set("PlayerRow", nil)
     DCEI.Save.Set("PlayerColumn", nil)
+
+    DCEI.Save.Set("RandomSeed", nil)
+
     DCEI.Save.Commit()
 end
 function RoomGenerator:GetRoomFromPlayerPosition()
@@ -649,6 +691,9 @@ function RoomGenerator:GetRoomsWithBottomExit(rooms)
 
     return validRooms
 end
+function RoomGenerator:GetRandomSeed()
+    return self.randomSeed
+end
 function RoomGenerator:PrintSpawnAndExit()
     local spawnRow = self.spawnRoomRow
     local spawnColumn = self.spawnRoomColumn
@@ -749,6 +794,173 @@ function RoomGenerator:SelectRandomExit(roomName)
         return BOTTOM
     end
 end
+
+-- #endregion Room Generator
+
+-- #region Room Enemies
+
+local RoomEnemies = {
+    enemies = {},
+    direction = nil
+}
+RoomEnemies.__index = RoomEnemies
+function RoomEnemies:new(player)
+    local roomEnemies = {}
+    setmetatable(roomEnemies, RoomEnemies)
+
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    local direction
+
+    if playerPosition.x < MIN_DIRECTION_POSITION then
+        direction = LEFT
+    elseif playerPosition.x > MAX_DIRECTION_POSITION then
+        direction = RIGHT
+    elseif playerPosition.y < MIN_DIRECTION_POSITION then
+        direction = BOTTOM
+    else
+        direction = TOP
+    end
+
+    roomEnemies.enemies = {}
+    roomEnemies.direction = direction
+
+    roomEnemies:SpawnEnemies(player)
+
+    return roomEnemies
+end
+function RoomEnemies:SpawnEnemies(player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    local enemySet = LEVEL_1_ENEMY_SETS
+    local randomEnemySet = math.random(1, #enemySet)
+
+    for i, enemyType in ipairs(enemySet[randomEnemySet]) do
+        local position = self:GetRandomValidPointInRoom()
+        local xPosition = position.x
+        local yPosition = position.y
+
+        if enemyType == 0 then
+            enemy = mod.EnemyGoblinChef:new(self, xPosition, yPosition)
+        elseif enemyType == 1 then
+            enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
+        elseif enemyType == 2 then
+            enemy = mod.EnemyGoblin:new(self, xPosition, yPosition)
+        elseif enemyType == 3 then
+            enemy = mod.EnemyGoblinSapper:new(self, xPosition, yPosition)
+        elseif enemyType == 4 then
+            enemy = mod.EnemyOoze:new(self, xPosition, yPosition)
+        end
+
+        table.insert(self.enemies, enemy)
+    end
+end
+function RoomEnemies:UpdateEnemies(deltaTime, player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    for i, enemy in ipairs(self.enemies) do
+
+        -- This is a fallback check in case a dead enemy still remains in queue
+        local mainUnit = enemy:GetMainUnit()
+        if not ArcadeCore.UnitIsAlive(mainUnit) then
+            self:ForceRemoveUnitAtIndex(i)
+            break
+        end
+
+        enemy:Update(deltaTime, playerPosition)
+    end
+end
+function RoomEnemies:UpdateEnemyStunState(enemyUnit)
+    for i, enemy in ipairs(self.enemies) do
+        local success = enemy:CheckAndActivateStunnedState(enemyUnit)
+        if success then
+            break
+        end
+    end
+end
+function RoomEnemies:GetRandomValidPointInRoom()
+    local validPositions = {}
+
+    for i = 1, ROOM_SIZE do
+        for j = 1, ROOM_SIZE do
+            if DCEI.IsPointOnNavMesh(i, j) then
+                
+                if self.direction == LEFT then
+                    if j > MIN_DIRECTION_POSITION then
+                        table.insert(validPositions, { x = i, y = j })
+                    end
+
+                elseif self.direction == RIGHT then
+                    if j < MAX_DIRECTION_POSITION then
+                        table.insert(validPositions, { x = i, y = j })
+                    end 
+                
+                elseif self.direction == TOP then
+                    if i < MAX_DIRECTION_POSITION then
+                        table.insert(validPositions, { x = i, y = j })
+                    end
+
+                else
+                    if i > MIN_DIRECTION_POSITION then
+                        table.insert(validPositions, { x = i, y = j })
+                    end
+
+                end
+            end
+        end
+    end
+
+    local randomPosition = math.random(1, #validPositions)
+    return validPositions[randomPosition]
+end
+function RoomEnemies:GetEmptyPositions()
+    local validPositions = {}
+
+    for i = 1, ROOM_SIZE do
+        for j = 1, ROOM_SIZE do
+            if DCEI.IsPointOnNavMesh(i, j) then
+                table.insert(validPositions, { x = i, y = j })
+            end
+        end
+    end
+
+    return validPositions
+end
+function RoomEnemies:GetNearestEnemy(player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    local lastNearestEnemy = nil
+    local lastEnemyDistance = 100
+
+    for i, enemyUnit in ipairs(self.enemies) do
+        local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
+        local distance = mod.VectorDistance(playerPosition, enemyPosition)
+        
+        if distance < lastEnemyDistance then
+            lastNearestEnemy = enemyUnit:GetMainUnit()
+            lastEnemyDistance = distance
+        end
+    end
+
+    return lastNearestEnemy
+end
+function RoomEnemies:ForceRemoveUnitAtIndex(index)
+    if index == -1 then
+        return
+    end
+
+    table.remove(self.enemies, index)
+end
+function RoomEnemies:IsRoomClear()
+    return #self.enemies == 0
+end
+function RoomEnemies:ClearEnemies()
+    for i, enemy in ipairs(self.enemies) do
+        local mainUnit = enemy:GetMainUnit()
+        DCEI.RemoveUnit(mainUnit)
+        enemy:CleanupEnemyDied()
+    end
+
+    self.enemies = {}
+end
+
+-- #endregion Room Enemies
 
 function mod.RoomHasLeftExit(value)
     return string.find(value, "_.*L.*_")
@@ -879,6 +1091,7 @@ function mod.ArrayHasValue(array, value)
 end
 
 mod.RoomGenerator = RoomGenerator
+mod.RoomEnemies = RoomEnemies
 
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil
@@ -887,5 +1100,7 @@ mod.EnemyGoblinSapper = nil
 mod.EnemyOoze = nil
 
 mod.split = nil
+mod.VectorDistance = nil
+mod.ShuffleTable = nil
 
 return mod

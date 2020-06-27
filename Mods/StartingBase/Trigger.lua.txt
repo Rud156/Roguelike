@@ -5,7 +5,7 @@ local RoomMod = GameModules["Mods/NewRoomMod"]
 local RoomGenerator = RoomMod.RoomGenerator
 
 local ROOM_NAME = "RoomName"
-local SPAWN_POINT = { x = 10, y = 18 }
+local SPAWN_POINT = { x = 23.62, y = 14 }
 
 function ValidateAndLoadSaveData()
     -- This will probably be done in a different scene
