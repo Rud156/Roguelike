@@ -420,6 +420,8 @@ function SaveNextRoomData()
         DCEI.Save.Set(LAST_DIRECTION, nil)
         DCEI.Save.Commit()
     end
+
+    m_inventory:SaveInventory()
 end
 
 function DisplayGameOverSequence(playerWon)
@@ -613,6 +615,10 @@ function UpdateInventoryItemLevelStart()
     for i, slot in ipairs(slots) do
         local itemName = slot:GetInventoryItemName()
         HandleItemAddedToInventory(itemName)
+        
+        if itemName == COLLECTIBLE_HELM_OF_VALOR then
+            m_helmOfValorTimeRemaining = slot.currentRechargeTime    
+        end
     end
 end
 
