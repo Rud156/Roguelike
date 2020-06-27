@@ -172,7 +172,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
             if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomGenerator)
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
             end
         end, 
         { icon = "icon_enhance_crusader_zeal" }
@@ -183,7 +183,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
             if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomGenerator)
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
             end
         end, 
         { icon = "icon_enhance_stoneguard_bash" }
@@ -194,7 +194,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
 
             if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomGenerator)
+                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
             end
         end, 
         { icon = "icon_spell_angelic_host" }
@@ -264,6 +264,10 @@ function HandleBehaviourAdded()
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
         if unitName == ROOM_EXIT_DOOR_NEW or unitName == ROOM_EXIT_DOOR_OLD then
+            if m_roomEnemies ~= nil and not m_roomEnemies:IsRoomClear()then
+                return
+            end
+
             SaveNextRoomData()
             DisplayGameOverSequence(true)
         end

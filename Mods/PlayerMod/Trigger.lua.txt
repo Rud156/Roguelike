@@ -212,18 +212,18 @@ function Player:HandleJoystickReleased()
 
     DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
 end
-function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomGenerator)
+function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomEnemies)
     if buttonEvent ~= 1 then
         return
     end
 
     local enemy = nil
     
-    -- if roomGenerator then
-    --     enemy = roomGenerator:GetRoomNearestEnemy(self.playerUnit)
-    -- else
-    --     enemy = nil
-    -- end
+    if roomEnemies ~= nil then
+        enemy = roomEnemies:GetRoomNearestEnemy(self.playerUnit)
+    else
+        enemy = nil
+    end
     
     if buttonId == 0 then
         self:LaunchPlayerLightAttack(enemy)
