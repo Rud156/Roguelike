@@ -327,8 +327,8 @@ function Player:LaunchPlayerRangedLightAttack(enemy)
         local direction = mod.VectorSubtract(enemyPosition, playerPosition)
         local yRotation = math.deg(math.atan(direction.x, direction.y))
         
-        local xPoint = math.sin(math.rad(yRotation))* PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation))* PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.y
+        local xPoint = math.sin(math.rad(yRotation)) * PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) * PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
 
     else
@@ -359,8 +359,8 @@ function Player:LaunchPlayerRangedHeavyAttack(enemy)
         local direction = mod.VectorSubtract(enemyPosition, playerPosition)
         local yRotation = math.deg(math.atan(direction.x, direction.y))
         
-        local xPoint = math.sin(math.rad(yRotation))* PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation))* PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.y
+        local xPoint = math.sin(math.rad(yRotation)) * PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) * PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, self.playerUnit, xPoint, yPoint)
         
     else

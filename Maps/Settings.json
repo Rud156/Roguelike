@@ -57,7 +57,8 @@
             "_Collectible_Bomb_Unit",
             "_Enemy_GoblinSapper",
             "_Enemy_Ooze",
-            "_Enemy_Goblin"
+            "_Enemy_Goblin",
+            "__SpawnMarkerUnit"
         ],
         "usedEffects": [
             "__StopMovement"

@@ -627,6 +627,18 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "__SpawnMarkerUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
         }
     }
 }

@@ -134,6 +134,44 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, slotClicke
 
     return inventory
 end
+function InventorySlot:SaveSlot(index)
+    DCEI.Save.Set("Slot_" .. index .. "_Name", self.itemName)
+    DCEI.Save.Set("Slot_" .. index .. "_Stack", self.currentStack)
+    DCEI.Save.Set("Slot_" .. index .. "_RechargeActive", self.isSlotRechargeActive)
+    DCEI.Save.Set("Slot_" .. index .. "_Recharge", self.slotRecharge)
+    DCEI.Save.Commit()
+end
+function InventorySlot:LoadSlot(index)
+    local itemName = DCEI.Save.Get("Slot_" .. index .. "_Name")
+    local currentStack = DCEI.Save.Get("Slot_" .. index .. "_Stack")
+    local isSlotRechargeActive = DCEI.Save.Get("Slot_" .. index .. "_RechargeActive")
+    local slotRecharge = DCEI.Save.Get("Slot_" .. index .. "_Recharge")
+
+    if itemName ~= nil and currentStack ~= nil and isSlotRechargeActive ~= nil and slotRecharge ~= nil then
+        local collectibleItem = COLLECTIBLES_TABLE[itemName]
+        
+        self:UpdateInventoryItem(
+            itemName,
+            collectibleItem.itemType,
+            collectibleItem.itemDescription,
+            
+            collectibleItem.itemImage,
+            
+            collectibleItem.itemStackable,
+            currentStack
+        )
+
+        self.isSlotRechargeActive = isSlotRechargeActive
+        self.slotRecharge = slotRecharge
+    end
+end
+function InventorySlot:ClearSlot(index)
+    DCEI.Save.Set("Slot_" .. index .. "_Name", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_Stack", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_RechargeActive", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_Recharge", nil)
+    DCEI.Save.Commit()
+end
 function InventorySlot:GetInventoryItemType()
     return self.itemType
 end
@@ -256,7 +294,7 @@ function InventorySlot:Destroy()
 end
 
 
-local Inventory = { inventorySlots = {}}
+local Inventory = { inventorySlots = {} }
 Inventory.__index = Inventory
 function Inventory:new(inventorySlots)
     local inventory = {}
@@ -265,6 +303,21 @@ function Inventory:new(inventorySlots)
     inventory.inventorySlots = inventorySlots
 
     return inventory
+end
+function Inventory:SaveInventory()
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:SaveSlot(i)
+    end
+end
+function Inventory:LoadInventory()
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:LoadSlot(i)
+    end
+end
+function Inventory:ClearInventorySave()
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:ClearSlot(i)
+    end
 end
 function Inventory:UpdateSlots(deltaTime)
     for i, slot in ipairs(self.inventorySlots) do
@@ -326,6 +379,8 @@ function Inventory:AddNewItemToInventory(slotIndex, collectibleItem)
         collectibleItem.itemStackable,
         1
     )
+
+    self:SaveInventory()
 end
 function Inventory:CheckAndAddItemToSlot(collectibleName)
     local collectibleItem = COLLECTIBLES_TABLE[collectibleName]
@@ -350,6 +405,7 @@ function Inventory:CheckAndAddItemToSlot(collectibleName)
             local inventorySlot = self.inventorySlots[slotItemIndex]
             if inventorySlot:IsSlotStackable() then
                 inventorySlot:StackInventoryItem()
+                self:SaveInventory()
                 return true
             end
 

@@ -884,22 +884,22 @@ function RoomEnemies:GetRandomValidPointInRoom()
                 
                 if self.direction == LEFT then
                     if j > MIN_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = i, y = j })
+                        table.insert(validPositions, { x = j, y = i })
                     end
 
                 elseif self.direction == RIGHT then
                     if j < MAX_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = i, y = j })
+                        table.insert(validPositions, { x = j, y = i })
                     end 
                 
                 elseif self.direction == TOP then
                     if i < MAX_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = i, y = j })
+                        table.insert(validPositions, { x = j, y = i })
                     end
 
                 else
                     if i > MIN_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = i, y = j })
+                        table.insert(validPositions, { x = j, y = i })
                     end
 
                 end

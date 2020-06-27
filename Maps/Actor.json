@@ -2417,6 +2417,14 @@
                     "name": "arrowtower_rank03"
                 }
             }
+        },
+        "__SpawnMarkerUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_rank03"
+                }
+            }
         }
     },
     "actorEventMacros": {
