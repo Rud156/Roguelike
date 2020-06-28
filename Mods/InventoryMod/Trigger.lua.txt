@@ -150,7 +150,7 @@ function InventorySlot:LoadSlot(index)
     local currentRechargeTime = DCEI.Save.Get("Slot_" .. index .. "_CurrentRechargeTime")
 
 
-    if itemName ~= nil and currentStack ~= nil and isSlotRechargeActive ~= nil and maxRechargeTime ~= nil and currentRechargeTime ~= nil then
+    if itemName ~= nil and itemName ~= "" and currentStack ~= -1 and currentStack ~= nil then
         local collectibleItem = COLLECTIBLES_TABLE[itemName]
         
         self:UpdateInventoryItem(
