@@ -135,7 +135,6 @@ local m_randomSeed
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
     local randomSeed = os.time()
-    randomSeed = 1593374559
     DCEI.LogMessage("Random Seed: " .. randomSeed)
     math.randomseed(randomSeed)
     m_randomSeed = randomSeed
