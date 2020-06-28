@@ -501,6 +501,7 @@ function DisplayGameOverSequence(playerWon)
         m_inventory:ClearInventorySave()
 
         DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
+        DCEI.Save.Set(LAST_DIRECTION, nil)
         DCEI.Save.Commit()
         DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
