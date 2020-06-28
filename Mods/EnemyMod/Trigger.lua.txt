@@ -251,6 +251,9 @@ end
 function GoblinChef:CleanupEnemyDied()
     -- Do nothing here...
 end
+function GoblinChef:IsActive()
+    return true
+end
 -- #endregion
 
 -- #region Hob Goblin Enemy
@@ -375,6 +378,9 @@ function HobGoblin:GetMainUnit()
 end
 function HobGoblin:CleanupEnemyDied()
     -- Do nothing here...
+end
+function HobGoblin:IsActive()
+    return true
 end
 -- #endregion
 
@@ -501,6 +507,9 @@ end
 function Goblin:CleanupEnemyDied()
     -- Do nothing here...
 end
+function Goblin:IsActive()
+    return true
+end
 -- #endregion
 
 -- #region Goblin Sapper Enemy
@@ -577,6 +586,9 @@ function GoblinSapper:GetMainUnit()
 end
 function GoblinSapper:CleanupEnemyDied()
     -- Do nothing here...
+end
+function GoblinSapper:IsActive()
+    return true
 end
 -- #endregion
 
@@ -736,6 +748,9 @@ function Ooze:GetMainUnit()
 end
 function Ooze:CleanupEnemyDied()
     -- Do nothing here...
+end
+function Ooze:IsActive()
+    return self.enemyState ~= 3
 end
 -- #endregion
 

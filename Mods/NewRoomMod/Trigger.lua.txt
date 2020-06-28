@@ -930,13 +930,32 @@ function RoomEnemies:GetRoomNearestEnemy(player)
     local lastNearestEnemy = nil
     local lastEnemyDistance = 100
 
-    for i, enemyUnit in ipairs(self.enemies) do
+    for _, enemyUnit in ipairs(self.enemies) do
         local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
         local distance = mod.VectorDistance(playerPosition, enemyPosition)
         
         if distance < lastEnemyDistance then
             lastNearestEnemy = enemyUnit:GetMainUnit()
             lastEnemyDistance = distance
+        end
+    end
+
+    return lastNearestEnemy
+end
+function RoomEnemies:GetActiveNearestEnemy(player)
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+    local lastNearestEnemy = nil
+    local lastEnemyDistance = 100
+
+    for _, enemyUnit in ipairs(self.enemies) do
+        if enemyUnit:IsActive() then
+            local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
+            local distance = mod.VectorDistance(playerPosition, enemyPosition)
+            
+            if distance < lastEnemyDistance then
+                lastNearestEnemy = enemyUnit:GetMainUnit()
+                lastEnemyDistance = distance
+            end
         end
     end
 
