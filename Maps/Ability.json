@@ -172,7 +172,7 @@
             },
             "canCastWhileMoving": false
         },
-        "_Room_Exit_Open": {
+        "_Room_Exit_Close": {
             "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 0,
@@ -182,7 +182,7 @@
                 "finishTime": 0.3
             }
         },
-        "_Room_Exit_Close": {
+        "_Room_Exit_Open": {
             "abilityType": 2,
             "castType": 1,
             "targetRangeMode": 0,

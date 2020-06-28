@@ -84,8 +84,9 @@ local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 -- Rooms
 local BEGINNING_ROOM_NAME = "StartingBase"
 local BEGINNING_ROOM_PATH = "Mods/StartingBase"
-local ROOM_EXIT_DOOR_NEW = "_Room_Exit"
-local ROOM_EXIT_DOOR_OLD = "RoomDoor"
+local DOOR_OPEN_ANIM = "_Room_Exit_Open"
+local DOOR_CLOSE_ANIM = "_Room_Exit_Close"
+local ROOM_EXIT_DOOR = "_Room_Exit"
 local ROOM_NAME = "RoomName"
 
 -- #endregion Constants
@@ -102,6 +103,8 @@ local m_roomGenerator
 local m_roomEnemies
 local m_isBeginningRoom = false
 local m_nextRoomTransitionActive = false
+local m_doorOpenAnimPlayed = false
+local m_roomEnemiesCleared = false
 -- Player
 local m_player
 local m_leftSpawn
@@ -132,6 +135,7 @@ local m_randomSeed
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
     local randomSeed = os.time()
+    randomSeed = 1593374559
     DCEI.LogMessage("Random Seed: " .. randomSeed)
     math.randomseed(randomSeed)
     m_randomSeed = randomSeed
@@ -240,6 +244,16 @@ function Update()
             end
         end
     end
+
+    if m_isBeginningRoom then
+        m_roomEnemiesCleared = true
+    end
+
+    if not m_doorOpenAnimPlayed and m_roomEnemies ~= nil and m_roomEnemies:IsRoomClear() then
+        m_doorOpenAnimPlayed = true
+        m_roomEnemiesCleared = true
+        ActivateDoorOpenAnimations()
+    end
 end
 
 -- #endregion LifeCycle Functions
@@ -269,12 +283,8 @@ function HandleBehaviourAdded()
     local unitName = DCEI.UnitName(unit)
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
-        if unitName == ROOM_EXIT_DOOR_NEW or unitName == ROOM_EXIT_DOOR_OLD then
-            if m_roomEnemies ~= nil and not m_roomEnemies:IsRoomClear() then
-                return
-            end
-
-            if m_nextRoomTransitionActive then
+        if unitName == ROOM_EXIT_DOOR then
+            if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
                 return
             end
 
@@ -390,11 +400,37 @@ function SpawnPlayerAndSetPosition()
     -- Spawn Player
 
     -- If not the Beginning Room spawn enemies
-    if roomType ~= nil then
+    -- TODO: Add no enemies in Exit Room and Start Room
+    if not m_isBeginningRoom then
         m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit())
+        ActivateDoorCloseAnimations()
     end
 
     ApplyInventoryBehaviours()
+end
+
+function ActivateDoorCloseAnimations()
+    DCEI.LogMessage("Playing Close Door Animations")
+
+    local roomDoors = DCEI.FindUnits(ROOM_EXIT_DOOR)
+    DCEI.LogMessage("Totol Doors: " .. #roomDoors)
+
+    for _, door in ipairs(roomDoors) do
+        local doorPosition = DCEI.GetUnitPosition2D(door)
+        DCEI.CastAbilityAtPosition(DOOR_CLOSE_ANIM, door, doorPosition.x, doorPosition.y)
+    end
+end
+
+function ActivateDoorOpenAnimations()
+    DCEI.LogMessage("Playing Open Door Animations")
+
+    local roomDoors = DCEI.FindUnits(ROOM_EXIT_DOOR)
+    DCEI.LogMessage("Totoal Doors: " .. #roomDoors)
+
+    for _, door in ipairs(roomDoors) do
+        local doorPosition = DCEI.GetUnitPosition2D(door)
+        DCEI.CastAbilityAtPosition(DOOR_OPEN_ANIM, door, doorPosition.x, doorPosition.y)
+    end
 end
 
 -- #endregion Common Game Spawn

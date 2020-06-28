@@ -1816,6 +1816,94 @@
                     "type": "GpuAnimation",
                     "name": "forestworld_castle_door"
                 },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Room_Exit_Open"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Room_Exit_Close"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseCloseAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseOpenAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 8
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseCloseAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    }
+                ],
                 "modelScale": 2
             }
         },
