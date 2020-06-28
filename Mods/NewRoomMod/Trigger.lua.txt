@@ -125,6 +125,8 @@ function RoomGenerator:new(randomSeed)
     
     roomGenerator:GenerateRoomBase()
     roomGenerator:SaveRoomStructure()
+    roomGenerator:PrintRooms()
+    roomGenerator:PrintSpawnAndExit()
 
     return roomGenerator
 end
@@ -831,7 +833,7 @@ end
 function RoomEnemies:SpawnEnemies(player)
     local playerPosition = DCEI.GetUnitPosition2D(player)
     local enemySet = LEVEL_1_ENEMY_SETS
-    local randomEnemySet = math.random(1, #enemySet)
+    local randomEnemySet = math.random(1, #enemySet) -- TODO: Change it to a random seed
 
     for i, enemyType in ipairs(enemySet[randomEnemySet]) do
         local position = self:GetRandomValidPointInRoom()
@@ -1057,6 +1059,9 @@ function mod.ConvertStringToAdjacencyList(stringValue)
 end
 
 function mod.GetRoomPath(roomName)
+    DCEI.LogMessage("Room Name")
+    DCEI.LogMessage(roomName)
+
     if mod.IsCommonRoom(roomName) then
         return COMMON_ROOM_PATH .. "/" .. roomName
     elseif mod.IsMerchantRoom(roomName) then
@@ -1092,6 +1097,9 @@ end
 
 mod.RoomGenerator = RoomGenerator
 mod.RoomEnemies = RoomEnemies
+
+mod.MinDirectionPosition = MIN_DIRECTION_POSITION
+mod.MaxDirectionPosition = MAX_DIRECTION_POSITION
 
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil

@@ -559,6 +559,12 @@
                     "behaviorType": 0
                 }
             },
+            "references": {
+                "abilityList": [
+                    "_Room_Exit_Open",
+                    "_Room_Exit_Close"
+                ]
+            },
             "displayName": "data/GameData/unit/_CBuilding/display_name"
         },
         "_Wall_BreakableWall": {

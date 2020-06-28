@@ -392,8 +392,6 @@ function Inventory:AddNewItemToInventory(slotIndex, collectibleItem)
         collectibleItem.itemStackable,
         1
     )
-
-    self:SaveInventory()
 end
 function Inventory:CheckAndAddItemToSlot(collectibleName)
     local collectibleItem = COLLECTIBLES_TABLE[collectibleName]
@@ -418,7 +416,6 @@ function Inventory:CheckAndAddItemToSlot(collectibleName)
             local inventorySlot = self.inventorySlots[slotItemIndex]
             if inventorySlot:IsSlotStackable() then
                 inventorySlot:StackInventoryItem()
-                self:SaveInventory()
                 return true
             end
 

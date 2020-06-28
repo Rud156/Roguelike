@@ -101,6 +101,7 @@ local UseMeleePlayer = true
 local m_roomGenerator
 local m_roomEnemies
 local m_isBeginningRoom = false
+local m_nextRoomTransitionActive = false
 -- Player
 local m_player
 local m_leftSpawn
@@ -149,7 +150,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
-    LoadInventoryFromSave()
+    LoadInventoryFromSave() -- Load Inventory later as Player is required to apply effects
     
     -- Add Triggers At The End...
     DCEI.TriggerAddJoystickEvent(
@@ -253,10 +254,11 @@ function HandleUnitDied()
     -- The correct one will automatically trigger
 
     local unitName = DCEI.UnitName(unit)
-    if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE then
+    if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE and not m_nextRoomTransitionActive then
         m_player:Destroy()
         m_player = nil
 
+        m_nextRoomTransitionActive = true
         DisplayGameOverSequence(false)
     end
 end
@@ -268,10 +270,15 @@ function HandleBehaviourAdded()
 
     if behaviourName == PLAYER_COLLISION_BEHAVIOUR then
         if unitName == ROOM_EXIT_DOOR_NEW or unitName == ROOM_EXIT_DOOR_OLD then
-            if m_roomEnemies ~= nil and not m_roomEnemies:IsRoomClear()then
+            if m_roomEnemies ~= nil and not m_roomEnemies:IsRoomClear() then
                 return
             end
 
+            if m_nextRoomTransitionActive then
+                return
+            end
+
+            m_nextRoomTransitionActive = true
             SaveNextRoomData()
             DisplayGameOverSequence(true)
         end
@@ -318,7 +325,7 @@ function HandleUnitSelected()
             DCEI.LogError("Inventory is full!!!")
         end
 
-        HandleItemAddedToInventory(unitName)
+        ApplyInventoryItemBehaviour(unitName)
     end
 end
 -- #endregion Unit Events
@@ -329,22 +336,26 @@ end
 
 -- #region Common Game Spawn
 
--- FixMe: Clean this up. It is horrible...
 function SpawnPlayerAndSetPosition()
+    -- Load/Generate Room Data
     local roomType = DCEI.Save.Get(ROOM_NAME)
-
     if roomType == nil then -- This should be the beginning room
         DCEI.LogMessage("Beginning Room. Generating Rooms")
+
         m_roomGenerator = RoomGenerator:new(m_randomSeed)
         m_isBeginningRoom = true
     else
         DCEI.LogMessage("Loading Old Room Data")
+
         m_roomGenerator = RoomGenerator:LoadRoomStructure()
         m_randomSeed = m_roomGenerator:GetRandomSeed()
+
         math.randomseed(m_randomSeed)
         m_isBeginningRoom = false
     end
+    -- Load/Generate Room Data
 
+    -- Spawn Player
     local playerType
     if UseMeleePlayer then
         playerType = 0
@@ -376,11 +387,14 @@ function SpawnPlayerAndSetPosition()
     end
 
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
+    -- Spawn Player
 
+    -- If not the Beginning Room spawn enemies
     if roomType ~= nil then
         m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit())
     end
-    UpdateInventoryItemLevelStart()
+
+    ApplyInventoryBehaviours()
 end
 
 -- #endregion Common Game Spawn
@@ -388,24 +402,22 @@ end
 -- #region GameOver State
 
 function SaveNextRoomData()
-    -- TODO: Change this to proper door logic
-
     if not m_isBeginningRoom then
         DCEI.LogMessage("Saving Next Room Data")
 
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         local direction = ""
         
-        if playerPosition.x < 5 then
+        if playerPosition.x < RoomMod.MinDirectionPosition then
             m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn - 1
             direction = RIGHT
-        elseif playerPosition.x > 15 then
+        elseif playerPosition.x > RoomMod.MaxDirectionPosition then
             m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn + 1
             direction = LEFT
-        elseif playerPosition.y < 5 then
+        elseif playerPosition.y < RoomMod.MinDirectionPosition then
             m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow + 1
             direction = TOP
-        elseif playerPosition.y > 15 then
+        elseif playerPosition.y > RoomMod.MaxDirectionPosition then
             m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow - 1
             direction = BOTTOM
         else
@@ -421,20 +433,10 @@ function SaveNextRoomData()
         DCEI.Save.Commit()
     end
 
-    m_inventory:SaveInventory()
+    m_inventory:SaveInventory() -- Only Save Inventory when going into the next room
 end
 
 function DisplayGameOverSequence(playerWon)
-    m_inventory:DeActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName)
-
-    if m_player ~= nil then
-        UpdateInventoryItemLevelEnd()
-        
-        m_player:Destroy()
-        m_player = nil
-    end
-    m_camera:UpdateTarget(nil)
-
     local maskOptions = {
         color = { r = 0, g = 0, b = 0 },
         duration = 1
@@ -443,7 +445,14 @@ function DisplayGameOverSequence(playerWon)
     DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
     DCEI.Wait(maskOptions.duration)
 
+    if m_player ~= nil then
+        m_player:Destroy()
+        m_player = nil
+    end
+    m_camera:UpdateTarget(nil)
+
     if playerWon then
+        DCEI.LogMessage("X: " .. m_roomGenerator.currentPlayerColumn .. ", Y: " .. m_roomGenerator.currentPlayerRow)
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)
 
@@ -453,6 +462,8 @@ function DisplayGameOverSequence(playerWon)
         DCEI.PlayLevel(roomPath, roomName)
     else
         m_roomGenerator:ClearSaveData()
+        m_inventory:ClearInventorySave()
+
         DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
         DCEI.Save.Commit()
         DCEI.Wait(1)
@@ -560,7 +571,7 @@ end
 
 function HandleCharacterSwitch()
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-    UpdateInventoryItemLevelEnd()
+    RemoveInventoryBehaviours()
 
     m_player:Destroy()
     m_player = nil
@@ -572,9 +583,10 @@ function HandleCharacterSwitch()
         playerType = 1
     end
     m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot)
-    UpdateInventoryItemLevelStart()
-
     UseMeleePlayer = not UseMeleePlayer
+
+    ApplyInventoryBehaviours()
+
     m_camera:UpdateTarget(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
 end
@@ -606,15 +618,16 @@ function CreateInventoryUI()
 end
 
 function LoadInventoryFromSave()
+    -- This must be done after the player is created as the behaviours will be added to the player
     m_inventory:LoadInventory()
-    UpdateInventoryItemLevelStart()
+    ApplyInventoryBehaviours()
 end
 
-function UpdateInventoryItemLevelStart()
+function ApplyInventoryBehaviours()
     local slots = m_inventory:GetInventorySlots()
     for i, slot in ipairs(slots) do
         local itemName = slot:GetInventoryItemName()
-        HandleItemAddedToInventory(itemName)
+        ApplyInventoryItemBehaviour(itemName)
         
         if itemName == COLLECTIBLE_HELM_OF_VALOR then
             m_helmOfValorTimeRemaining = slot.currentRechargeTime    
@@ -622,15 +635,15 @@ function UpdateInventoryItemLevelStart()
     end
 end
 
-function UpdateInventoryItemLevelEnd()
+function RemoveInventoryBehaviours()
     local slots = m_inventory:GetInventorySlots()
     for i, slot in ipairs(slots) do
         local itemName = slot:GetInventoryItemName()
-        HandleItemRemovedFromInventory(itemName)
+        RemoveInventoryItemBehaviour(itemName)
     end
 end
 
-function HandleItemAddedToInventory(itemName)
+function ApplyInventoryItemBehaviour(itemName)
     if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
         DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
@@ -642,7 +655,7 @@ function HandleItemAddedToInventory(itemName)
     end
 end
 
-function HandleItemRemovedFromInventory(itemName)
+function RemoveInventoryItemBehaviour(itemName)
     if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
         DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
@@ -665,9 +678,8 @@ function HandleInventoryItemDropped(itemName, inventorySlot)
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
     DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
 
-    HandleItemRemovedFromInventory(itemName)
+    RemoveInventoryItemBehaviour(itemName)
     inventorySlot:DropInventoryItem()
-    m_inventory:SaveInventory()
 end
 
 function HandleInventorySlotClicked(itemName, inventorySlot)
@@ -700,11 +712,9 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
 
-        HandleItemRemovedFromInventory(itemName)
+        RemoveInventoryItemBehaviour(itemName)
         inventorySlot:DropInventoryItem()
     end
-
-    m_inventory:SaveInventory()
 end
 
 -- #endregion Inventory Functions
