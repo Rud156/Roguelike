@@ -802,11 +802,13 @@ end
 -- #region Room Enemies
 
 local RoomEnemies = {
+    roomGenerator = nil,
+
     enemies = {},
     direction = nil
 }
 RoomEnemies.__index = RoomEnemies
-function RoomEnemies:new(player)
+function RoomEnemies:new(player, roomGenerator)
     local roomEnemies = {}
     setmetatable(roomEnemies, RoomEnemies)
 
@@ -823,6 +825,7 @@ function RoomEnemies:new(player)
         direction = TOP
     end
 
+    roomEnemies.roomGenerator = roomGenerator
     roomEnemies.enemies = {}
     roomEnemies.direction = direction
 
@@ -831,6 +834,9 @@ function RoomEnemies:new(player)
     return roomEnemies
 end
 function RoomEnemies:SpawnEnemies(player)
+    local lastActiveSeed = self.roomGenerator:GetRandomSeed()
+    math.randomseed(os.time())
+
     local playerPosition = DCEI.GetUnitPosition2D(player)
     local enemySet = LEVEL_1_ENEMY_SETS
     local randomEnemySet = math.random(1, #enemySet) -- TODO: Change it to a random seed
@@ -854,6 +860,8 @@ function RoomEnemies:SpawnEnemies(player)
 
         table.insert(self.enemies, enemy)
     end
+
+    math.randomseed(lastActiveSeed)
 end
 function RoomEnemies:UpdateEnemies(deltaTime, player)
     local playerPosition = DCEI.GetUnitPosition2D(player)

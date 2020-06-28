@@ -220,7 +220,7 @@ function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomEnemies)
     local enemy = nil
     
     if roomEnemies ~= nil then
-        enemy = roomEnemies:GetRoomNearestEnemy(self.playerUnit)
+        enemy = roomEnemies:GetActiveNearestEnemy(self.playerUnit)
     else
         enemy = nil
     end
