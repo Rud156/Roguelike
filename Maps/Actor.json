@@ -2510,7 +2510,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "arrowtower_rank03"
+                    "name": "towerslot_mineworld"
                 }
             }
         }
