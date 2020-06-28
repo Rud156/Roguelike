@@ -222,7 +222,7 @@ function Update()
     if m_roomEnemies ~= nil and m_player ~= nil then
         m_roomEnemies:UpdateEnemies(GAME_LOOP_RATE, m_player:GetPlayerUnit())
         
-        local enemy = m_roomEnemies:GetRoomNearestEnemy(m_player:GetPlayerUnit())
+        local enemy = m_roomEnemies:GetActiveNearestEnemy(m_player:GetPlayerUnit())
         m_player:LookTowardsEnemy(enemy)
     end
 
@@ -401,7 +401,7 @@ function SpawnPlayerAndSetPosition()
     -- If not the Beginning Room spawn enemies
     -- TODO: Add no enemies in Exit Room and Start Room
     if not m_isBeginningRoom then
-        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit())
+        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator)
         ActivateDoorCloseAnimations()
     end
 
