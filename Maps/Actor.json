@@ -1852,6 +1852,11 @@
                                     "name": "PauseOpenAnim",
                                     "duration": 0.55
                                 }
+                            },
+                            {
+                                "log": {
+                                    "message": "Door Opening"
+                                }
                             }
                         ]
                     },
@@ -1871,6 +1876,11 @@
                                 "createTimer": {
                                     "name": "PauseCloseAnim",
                                     "duration": 0.55
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Door Closing"
                                 }
                             }
                         ]

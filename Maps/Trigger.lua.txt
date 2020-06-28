@@ -244,14 +244,18 @@ function Update()
         end
     end
 
-    if m_isBeginningRoom then
-        m_roomEnemiesCleared = true
-    end
-
-    if not m_doorOpenAnimPlayed and m_roomEnemies ~= nil and m_roomEnemies:IsRoomClear() then
-        m_doorOpenAnimPlayed = true
-        m_roomEnemiesCleared = true
-        ActivateDoorOpenAnimations()
+    if not m_doorOpenAnimPlayed then
+        if m_roomEnemies ~= nil then
+            if m_roomEnemies:IsRoomClear() then
+                m_doorOpenAnimPlayed = true
+                m_roomEnemiesCleared = true
+                ActivateDoorOpenAnimations()
+            end
+        else
+            m_doorOpenAnimPlayed = true
+            m_roomEnemiesCleared = true
+            ActivateDoorOpenAnimations()
+        end
     end
 end
 
@@ -398,9 +402,29 @@ function SpawnPlayerAndSetPosition()
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
     -- Spawn Player
 
+    local playerSpawnRow = m_roomGenerator.currentPlayerRow
+    local playerSpawnColumn = m_roomGenerator.currentPlayerColumn
+
+    local spawnRoomRow = m_roomGenerator.spawnRoomRow
+    local spawnRoomColumn = m_roomGenerator.spawnRoomColumn
+    
+    local exitRoomRow = m_roomGenerator.exitRoomRow
+    local exitRoomColumn = m_roomGenerator.exitRoomColumn
+
+    local spawnEnemies = true
+
+    if m_isBeginningRoom then
+        spawnEnemies = false
+    end
+    if playerSpawnRow == spawnRoomRow and playerSpawnColumn == spawnRoomColumn then
+        spawnEnemies = false
+    end
+    if playerSpawnRow == exitRoomRow and playerSpawnColumn == exitRoomColumn then
+        spawnEnemies = false
+    end
+
     -- If not the Beginning Room spawn enemies
-    -- TODO: Add no enemies in Exit Room and Start Room
-    if not m_isBeginningRoom then
+    if spawnEnemies then
         m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator)
         ActivateDoorCloseAnimations()
     end
