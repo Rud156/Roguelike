@@ -482,6 +482,9 @@ function Player:UseGold(goldAmount)
 
     return false
 end
+function Player:GetPlayerGold()
+    return self.playerGoldAmount
+end
 function Player:Destroy()
     DCEI.RemoveUnit(self.playerUnit)
 end

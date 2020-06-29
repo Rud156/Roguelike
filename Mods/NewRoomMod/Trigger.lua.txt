@@ -1006,6 +1006,27 @@ function RoomEnemies:GetActiveNearestEnemy(player)
 
     return lastNearestEnemy
 end
+function RoomEnemies:RemoveDeadEnemy(enemyUnit)
+    local index = -1
+    for i, enemy in ipairs(self.enemies) do
+        if enemy:GetMainUnit() == enemyUnit then
+            index = i
+            break
+        end
+    end
+
+    if index ~= -1 then
+        local enemyClassInstance = self.enemies[index]
+        local enemyGold = enemyClassInstance:GetEnemyGold()
+
+        enemyClassInstance:CleanupEnemyDied()
+        table.remove(self.enemies, index)
+
+        return enemyGold
+    end
+
+    return -1
+end
 function RoomEnemies:ForceRemoveUnitAtIndex(index)
     if index == -1 then
         return

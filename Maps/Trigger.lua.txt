@@ -135,6 +135,7 @@ local m_uiMiddleLayer
 local m_uiTopLayer
 local m_inventory
 local m_damageDisplay
+local m_playerGoldDisplay
 -- Random
 local m_randomSeed
 
@@ -152,6 +153,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     
     CreateBaseUIElements()
     CreatePlayerDamageDisplay()
+    CreatePlayerGoldDisplay()
     ArcadeCore.HideDefaultUi()
     CreateInventoryUI()
     CreateDebugUI()
@@ -226,6 +228,8 @@ function Update()
     
     if m_player ~= nil then
         m_player:Update(GAME_LOOP_RATE)
+        local playerGoldAmount = m_player:GetPlayerGold()
+        DCEI.SetText(m_playerGoldDisplay, "+ " .. playerGoldAmount)
     end
 
     if m_roomEnemies ~= nil and m_player ~= nil then
@@ -291,6 +295,12 @@ function HandleUnitDied()
 
         m_nextRoomTransitionActive = true
         DisplayGameOverSequence(false)
+
+    elseif m_roomEnemies ~= nil then
+        local goldAmount = m_roomEnemies:RemoveDeadEnemy(unit)
+        if goldAmount ~= -1 then
+            m_player:AddGold(goldAmount)
+        end
     end
 end
 
@@ -726,6 +736,23 @@ function CreatePlayerDamageDisplay()
     DCEI.SetBackgroundImageColor(damageDisplay, 1, 1, 1, 0)
 
     m_damageDisplay = damageDisplay
+end
+
+function CreatePlayerGoldDisplay()
+    local playerGoldStack = DCEI.NewHStack(m_uiMiddleLayer)
+    DCEI.SetTopAlignmentInParent(playerGoldStack)
+    DCEI.SetLeftAlignmentInParent(playerGoldStack)
+    DCEI.SetPaddingTop(playerGoldStack, 21)
+    DCEI.SetPaddingLeft(playerGoldStack, 140)
+    DCEI.SetSpacing(playerGoldStack, 14)
+    
+    local playerGoldImage = DCEI.NewFrame(playerGoldStack)
+    DCEI.SetMinSize(playerGoldImage, 50, 50)
+    DCEI.SetBackgroundImage(playerGoldImage, "icon_affinity_gold")
+
+    local playerGoldText = DCEI.NewText(playerGoldStack)
+    DCEI.SetTextFontSize(playerGoldText, 30)
+    m_playerGoldDisplay = playerGoldText
 end
 
 function CreateDebugUI()
