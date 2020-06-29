@@ -211,14 +211,6 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
 
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
-
-    DCEI.TriggerAddMouseDownEvent(
-        0,
-        function(mousePosition)
-            local textureId = DCEI.GetTerrainTypeAtPoint(mousePosition.x, mousePosition.y)
-            DCEI.LogMessage(textureId)
-        end
-    )
 end
 
 function Update()
