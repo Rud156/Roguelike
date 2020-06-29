@@ -504,8 +504,6 @@ function CheckAndSpawnExitDoor()
     local randomPosition = math.random(1, #validPositions)
     local doorSpawnPoint = validPositions[randomPosition]
 
-    DCEI.LogMessage("X: " .. doorSpawnPoint.x .. ", Y: " .. doorSpawnPoint.y)
-
     m_exitDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
 end
 
@@ -519,6 +517,8 @@ function UpdateCollisionWithExitDoor()
     DCEI.Wait(maskOptions.duration)
 
     m_roomGenerator:ClearSaveData()
+    m_inventory:SaveInventory()
+    m_player:SaveData()
 
     DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
     DCEI.Save.Set(LAST_DIRECTION, nil)
