@@ -1742,6 +1742,11 @@
                                 }
                             },
                             {
+                                "removeTimer": {
+                                    "name": "PauseOpenAnim"
+                                }
+                            },
+                            {
                                 "playAnimation": {
                                     "clipId": 7
                                 }
