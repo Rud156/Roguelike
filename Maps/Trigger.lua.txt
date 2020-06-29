@@ -474,9 +474,10 @@ function ActivateDoorCloseAnimations()
     DCEI.LogMessage("Playing Close Door Animations")
 
     local roomDoors = DCEI.FindUnits(ROOM_EXIT_DOOR)
-    DCEI.LogMessage("Totol Doors: " .. #roomDoors)
+    DCEI.LogMessage("Total Doors: " .. #roomDoors)
 
     for _, door in ipairs(roomDoors) do
+        DCEI.LogMessage("Casting Close Ability")
         local doorPosition = DCEI.GetUnitPosition2D(door)
         DCEI.CastAbilityAtPosition(DOOR_CLOSE_ANIM, door, doorPosition.x, doorPosition.y)
     end
@@ -491,9 +492,10 @@ function ActivateDoorOpenAnimations()
     DCEI.LogMessage("Playing Open Door Animations")
 
     local roomDoors = DCEI.FindUnits(ROOM_EXIT_DOOR)
-    DCEI.LogMessage("Totoal Doors: " .. #roomDoors)
+    DCEI.LogMessage("Total Doors: " .. #roomDoors)
 
     for _, door in ipairs(roomDoors) do
+        DCEI.LogMessage("Casting Open Ability")
         local doorPosition = DCEI.GetUnitPosition2D(door)
         DCEI.CastAbilityAtPosition(DOOR_OPEN_ANIM, door, doorPosition.x, doorPosition.y)
     end

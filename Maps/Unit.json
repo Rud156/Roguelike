@@ -515,6 +515,32 @@
             },
             "displayName": "data/GameData/unit/_CBuilding/display_name"
         },
+        "_TrapDoorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_DoorwayOpen",
+                    "_DoorwayClose"
+                ]
+            },
+            "healthBar": {
+                "type": 0
+            }
+        },
         "_Wall_BreakableWall": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -592,32 +618,6 @@
                 "behavior": {
                     "behaviorType": 0
                 }
-            }
-        },
-        "_TrapDoorway": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "_DoorwayOpen",
-                    "_DoorwayClose"
-                ]
-            },
-            "healthBar": {
-                "type": 0
             }
         }
     }
