@@ -60,7 +60,7 @@ local LAST_DIRECTION = "LastDirection"
 
 local DEBUG_UNIT = "__DebugMarkerUnit"
 local EXIT_DOORWAY = "_ExitDoorway"
-local ENTRY_DOORWAY_CLOSE_ANIM_DELAY = 1
+local EXIT_DOORWAY_OPEN = "_DoorwayOpen"
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Damage_Invincible"
@@ -106,6 +106,7 @@ local m_isBeginningRoom = false
 local m_nextRoomTransitionActive = false
 local m_doorOpenAnimPlayed = false
 local m_roomEnemiesCleared = false
+local m_exitDoor
 -- Player
 local m_player
 local m_leftSpawn
@@ -155,6 +156,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     m_camera = Camera:new(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
     LoadInventoryFromSave() -- Load Inventory later as Player is required to apply effects
+    CheckAndSpawnExitDoor()
     
     -- Add Triggers At The End...
     DCEI.TriggerAddJoystickEvent(
@@ -296,6 +298,14 @@ function HandleBehaviourAdded()
             m_nextRoomTransitionActive = true
             SaveNextRoomData()
             DisplayGameOverSequence(true)
+
+        elseif unitName == EXIT_DOORWAY then
+            if m_nextRoomTransitionActive then
+                return
+            end
+
+            m_nextRoomTransitionActive = true
+            UpdateCollisionWithExitDoor()
         end
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
@@ -456,9 +466,71 @@ function ActivateDoorOpenAnimations()
         local doorPosition = DCEI.GetUnitPosition2D(door)
         DCEI.CastAbilityAtPosition(DOOR_OPEN_ANIM, door, doorPosition.x, doorPosition.y)
     end
+
+    if m_exitDoor ~= nil then
+        local doorPosition = DCEI.GetUnitPosition2D(m_exitDoor)
+        DCEI.CastAbilityAtPosition(EXIT_DOORWAY_OPEN, m_exitDoor, doorPosition.x, doorPosition.y)
+    end
 end
 
 -- #endregion Common Game Spawn
+
+-- #region Exit Doorway
+
+function CheckAndSpawnExitDoor()
+    if m_isBeginningRoom then
+        return
+    end
+
+    local playerSpawnRow = m_roomGenerator.currentPlayerRow
+    local playerSpawnColumn = m_roomGenerator.currentPlayerColumn
+
+    local spawnRoomRow = m_roomGenerator.spawnRoomRow
+    local spawnRoomColumn = m_roomGenerator.spawnRoomColumn
+    
+    local exitRoomRow = m_roomGenerator.exitRoomRow
+    local exitRoomColumn = m_roomGenerator.exitRoomColumn
+
+    if playerSpawnRow ~= spawnRoomRow and playerSpawnColumn ~= spawnRoomColumn then
+        return
+    end
+
+    local validPositions = {}
+    for i = 1, RoomMod.RoomSize do
+        for j = 1, RoomMod.RoomSize do
+            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId then
+                table.insert(validPositions, { x = i, y = j })
+            end
+        end
+    end
+
+    local randomPosition = math.random(1, #validPositions)
+    local doorSpawnPoint = validPositions[randomPosition]
+
+    DCEI.LogMessage("X: " .. doorSpawnPoint.x .. ", Y: " .. doorSpawnPoint.y)
+
+    m_exitDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
+end
+
+function UpdateCollisionWithExitDoor()
+    local maskOptions = {
+        color = { r = 0, g = 0, b = 0 },
+        duration = 1
+    }
+
+    DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
+    DCEI.Wait(maskOptions.duration)
+
+    m_roomGenerator:ClearSaveData()
+
+    DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
+    DCEI.Save.Set(LAST_DIRECTION, nil)
+    DCEI.Save.Commit()
+    DCEI.Wait(1)
+    DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
+end
+
+-- #endregion Exit Doorway
 
 -- #region GameOver State
 

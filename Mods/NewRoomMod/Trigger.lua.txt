@@ -1128,6 +1128,7 @@ mod.RoomEnemies = RoomEnemies
 
 mod.MinDirectionPosition = MIN_DIRECTION_POSITION
 mod.MaxDirectionPosition = MAX_DIRECTION_POSITION
+mod.RoomSize = ROOM_SIZE
 
 mod.WalkableTextureId = WALKABLE_TEXTURE_ID
 
