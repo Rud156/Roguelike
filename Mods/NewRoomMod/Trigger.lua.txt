@@ -81,6 +81,7 @@ local LEVEL_3_ENEMY_SETS = {
 local RoomGenerator  = {
     roomMatrix = {},
     roomMatrixCounter = {},
+    roomClearMatrix = {},
     roomAdjacencyList = {},
 
     spawnRoomRow = 100,
@@ -106,6 +107,7 @@ function RoomGenerator:new(randomSeed)
 
     roomGenerator.roomMatrix = {}
     roomGenerator.roomMatrixCounter = {}
+    roomGenerator.roomClearMatrix = {}
     roomGenerator.roomAdjacencyList = {}
 
     roomGenerator.spawnRoomRow = -1
@@ -136,12 +138,13 @@ function RoomGenerator:SaveRoomStructure()
 
     DCEI.Save.Set("RoomMatrix", mod.Convert2DMatrixToString(self.roomMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomMatrixCounter", mod.Convert2DMatrixToString(self.roomMatrixCounter, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
+    DCEI.Save.Set("RoomClearMatrix", mod.Convert2DMatrixToString(self.roomClearMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomAdjacencyList", mod.ConvertAdjacencyListToString(self.roomAdjacencyList))
 
     DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
     DCEI.Save.Set("SpawnRoomColumn", self.spawnRoomColumn)
     
-    DCEI.Save.Set("ExitRoowRow", self.exitRoomRow)
+    DCEI.Save.Set("ExitRoomRow", self.exitRoomRow)
     DCEI.Save.Set("ExitRoomColumn", self.exitRoomColumn)
     
     DCEI.Save.Set("MinRow", self.minRow)
@@ -162,8 +165,9 @@ function RoomGenerator:LoadRoomStructure()
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
         
-    roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrix"))
-    roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrixCounter"))
+    roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrix"), 0)
+    roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrixCounter"), 1)
+    roomGenerator.roomClearMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomClearMatrix"), 2)
     roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(DCEI.Save.Get("RoomAdjacencyList"))
 
     roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
@@ -181,20 +185,24 @@ function RoomGenerator:LoadRoomStructure()
     roomGenerator.currentPlayerColumn = DCEI.Save.Get("PlayerColumn")
 
     roomGenerator.randomSeed = DCEI.Save.Get("RandomSeed")
+    
+    roomGenerator:PrintRooms()
+    roomGenerator:PrintSpawnAndExit()
 
     return roomGenerator
 end
 function RoomGenerator:ClearSaveData()
    DCEI.LogMessage("Deleting Save Room Data") 
 
-   DCEI.Save.Set("RoomMatrix", nil)
+    DCEI.Save.Set("RoomMatrix", nil)
     DCEI.Save.Set("RoomMatrixCounter", nil)
+    DCEI.Save.Set("RoomClearMatrix", nil)
     DCEI.Save.Set("RoomAdjacencyList", nil)
 
     DCEI.Save.Set("SpawnRoomRow", nil)
     DCEI.Save.Set("SpawnRoomColumn", nil)
     
-    DCEI.Save.Set("ExitRoowRow", nil)
+    DCEI.Save.Set("ExitRoomRow", nil)
     DCEI.Save.Set("ExitRoomColumn", nil)
     
     DCEI.Save.Set("MinRow", nil)
@@ -208,6 +216,12 @@ function RoomGenerator:ClearSaveData()
     DCEI.Save.Set("RandomSeed", nil)
 
     DCEI.Save.Commit()
+end
+function RoomGenerator:IsPlayerRoomCleared()
+    return self.roomClearMatrix[self.currentPlayerRow][self.currentPlayerColumn]
+end
+function RoomGenerator:MarkRoomAtPlayerPositionClear()
+    self.roomClearMatrix[self.currentPlayerRow][self.currentPlayerColumn] = true
 end
 function RoomGenerator:GetRoomFromPlayerPosition()
     return self.roomMatrix[self.currentPlayerRow][self.currentPlayerColumn]
@@ -284,6 +298,7 @@ function RoomGenerator:GenerateRoomBase()
 
     self:PlaceSecretRooms()
     self:MergeCommonSecretRooms()
+    self:SetupClearMatrix()
 end
 function RoomGenerator:PlaceSecretRooms()
     local minRow = self.minRow
@@ -407,6 +422,27 @@ function RoomGenerator:MergeCommonSecretRooms()
         end
     end
 end
+function RoomGenerator:SetupClearMatrix()
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] ~= nil then
+                local spawnRow = self.spawnRoomRow
+                local spawnColumn = self.spawnRoomColumn
+
+                local roomClear = false
+                if i == spawnRow and j == spawnColumn then
+                    roomClear = true
+                end
+
+                if self.roomClearMatrix[i] == nil then
+                    self.roomClearMatrix[i] = {}
+                end
+
+                self.roomClearMatrix[i][j] = roomClear
+            end
+        end
+    end
+end
 function RoomGenerator:UpdateMinMaxRowColumn(i, j)
     if self.minRow > i then
         self.minRow = i
@@ -422,7 +458,7 @@ function RoomGenerator:UpdateMinMaxRowColumn(i, j)
     end
 end
 function RoomGenerator:UpdateRoomMatrixCounter()
-    local staicCounter = 0
+    local staticCounter = 0
 
     for i = self.minRow, self.maxRow do
         for j = self.minColumn, self.maxColumn do
@@ -431,8 +467,8 @@ function RoomGenerator:UpdateRoomMatrixCounter()
                     self.roomMatrixCounter[i] = {}
                 end
 
-                self.roomMatrixCounter[i][j] = staicCounter
-                staicCounter = staicCounter + 1
+                self.roomMatrixCounter[i][j] = staticCounter
+                staticCounter = staticCounter + 1
             end
         end
     end
@@ -1015,7 +1051,7 @@ function mod.Convert2DMatrixToString(matrix, minRow, maxRow, minColumn, maxColum
         for j = minColumn, maxColumn do
             if matrix[i] ~= nil then
                 if matrix[i][j] ~= nil then
-                    stringValue = stringValue .. matrix[i][j] .. "," .. i .. "," .. j .. ":"
+                    stringValue = stringValue .. tostring(matrix[i][j]) .. "," .. i .. "," .. j .. ":"
                 end
             end
         end
@@ -1025,7 +1061,8 @@ function mod.Convert2DMatrixToString(matrix, minRow, maxRow, minColumn, maxColum
     return stringValue
 end
 
-function mod.ConvertStringTo2DMatrix(stringValue)
+-- 0: String, 1: Number, 2: Boolean
+function mod.ConvertStringTo2DMatrix(stringValue, type)
     local matrix = {}
     local rows = mod.split(stringValue, "|")
 
@@ -1034,6 +1071,16 @@ function mod.ConvertStringTo2DMatrix(stringValue)
 
         for _, colValue in pairs(columns) do
             local data = mod.split(colValue, ",")
+            local leftVal = data[1]
+
+            if type == 0 then
+                leftVal = data[1]
+            elseif type == 1 then
+                leftVal = tonumber(data[1])
+            elseif type == 2 then
+                leftVal = mod.ToBoolean(data[1])
+            end
+
             local i = tonumber(data[2])
             local j = tonumber(data[3])
 
@@ -1041,7 +1088,7 @@ function mod.ConvertStringTo2DMatrix(stringValue)
                 matrix[i] = {}
             end
 
-            matrix[i][j] = data[1]
+            matrix[i][j] = leftVal
         end
     end
 
@@ -1113,15 +1160,6 @@ function mod.IsSecretRoom(value)
     return string.find(value, "SR")
 end
 
-function mod.ArrayHasValue(array, value)
-    for i, data in ipairs(array) do
-        if data == value then
-            return true
-        end
-    end
-
-    return false
-end
 
 mod.RoomGenerator = RoomGenerator
 mod.RoomEnemies = RoomEnemies
@@ -1139,6 +1177,8 @@ mod.EnemyGoblinSapper = nil
 mod.EnemyOoze = nil
 
 mod.split = nil
+mod.ArrayHasValue = nil
+mod.ToBoolean = nil
 mod.VectorDistance = nil
 mod.ShuffleTable = nil
 
