@@ -1712,6 +1712,11 @@
                         },
                         "actions": [
                             {
+                                "log": {
+                                    "message": "Door Opening"
+                                }
+                            },
+                            {
                                 "playAnimation": {
                                     "clipId": 8
                                 }
@@ -1720,11 +1725,6 @@
                                 "createTimer": {
                                     "name": "PauseOpenAnim",
                                     "duration": 0.55
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Door Opening"
                                 }
                             }
                         ]
@@ -1737,19 +1737,13 @@
                         },
                         "actions": [
                             {
-                                "playAnimation": {
-                                    "clipId": 7
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "PauseCloseAnim",
-                                    "duration": 0.55
-                                }
-                            },
-                            {
                                 "log": {
                                     "message": "Door Closing"
+                                }
+                            },
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
                                 }
                             }
                         ]
