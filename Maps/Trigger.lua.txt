@@ -478,13 +478,11 @@ function ActivateDoorCloseAnimations()
 
     for _, door in ipairs(roomDoors) do
         DCEI.LogMessage("Casting Close Ability")
-        local doorPosition = DCEI.GetUnitPosition2D(door)
-        DCEI.CastAbilityAtPosition(DOOR_CLOSE_ANIM, door, doorPosition.x, doorPosition.y)
+        DCEI.CastAbility(DOOR_CLOSE_ANIM, door, door)
     end
 
     if m_exitDoor ~= nil then
-        local doorPosition = DCEI.GetUnitPosition2D(m_exitDoor)
-        DCEI.CastAbilityAtPosition(EXIT_DOORWAY_CLOSE, m_exitDoor, doorPosition.x, doorPosition.y)
+        DCEI.CastAbility(EXIT_DOORWAY_CLOSE, m_exitDoor, m_exitDoor)
     end
 end
 
@@ -496,14 +494,12 @@ function ActivateDoorOpenAnimations()
 
     for _, door in ipairs(roomDoors) do
         DCEI.LogMessage("Casting Open Ability")
-        local doorPosition = DCEI.GetUnitPosition2D(door)
-        DCEI.CastAbilityAtPosition(DOOR_OPEN_ANIM, door, doorPosition.x, doorPosition.y)
+        DCEI.CastAbility(DOOR_OPEN_ANIM, door, door)
     end
 
     if m_exitDoor ~= nil then
         DCEI.LogMessage("Playing Exit Door Animation")
-        local doorPosition = DCEI.GetUnitPosition2D(m_exitDoor)
-        DCEI.CastAbilityAtPosition(EXIT_DOORWAY_OPEN, m_exitDoor, doorPosition.x, doorPosition.y)
+        DCEI.CastAbility(EXIT_DOORWAY_OPEN, m_exitDoor, m_exitDoor)
     end
 end
 
