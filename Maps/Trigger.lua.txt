@@ -316,6 +316,15 @@ function HandleBehaviourAdded()
 
             m_nextRoomTransitionActive = true
             UpdateCollisionWithExitDoor()
+
+        elseif unitName == EXIT_DOORWAY and m_isBeginningRoom then
+            if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
+                return
+            end
+
+            m_nextRoomTransitionActive = true
+            SaveNextRoomData()
+            DisplayGameOverSequence(true)
         end
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
@@ -424,6 +433,17 @@ function SpawnPlayerAndSetPosition()
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
     -- Spawn Player
 
+    if m_isBeginningRoom then
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                local trapDoor = DCEI.FindUnit(EXIT_DOORWAY)
+                local doorPosition = DCEI.GetUnitPosition2D(trapDoor)
+                DCEI.CastAbilityAtPosition(EXIT_DOORWAY_OPEN, trapDoor, doorPosition.x, doorPosition.y)
+            end,
+            1
+        )
+    end
+
     ApplyInventoryBehaviours()
 end
 
@@ -503,8 +523,12 @@ function CheckAndSpawnEntryDoor()
     local doorSpawnPoint = validPositions[randomPosition]
 
     m_entryDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
-    DCEI.SetUnitPosition2D(m_player:GetPlayerUnit(), doorSpawnPoint.x, doorSpawnPoint.y)
-    DCEI.Move(m_player:GetPlayerUnit(), doorSpawnPoint.x, doorSpawnPoint.y)
+
+    local spawnDirection = DCEI.Save.Get(LAST_DIRECTION)
+    if spawnDirection == nil then
+        DCEI.SetUnitPosition2D(m_player:GetPlayerUnit(), doorSpawnPoint.x, doorSpawnPoint.y)
+        DCEI.Move(m_player:GetPlayerUnit(), doorSpawnPoint.x, doorSpawnPoint.y)
+    end
 
     DCEI.TriggerAddTimerEventElapsed(
         function()
