@@ -300,7 +300,7 @@ function HandleBehaviourAdded()
             DisplayGameOverSequence(true)
 
         elseif unitName == EXIT_DOORWAY then
-            if m_nextRoomTransitionActive then
+            if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
                 return
             end
 
@@ -484,14 +484,11 @@ function CheckAndSpawnExitDoor()
 
     local playerSpawnRow = m_roomGenerator.currentPlayerRow
     local playerSpawnColumn = m_roomGenerator.currentPlayerColumn
-
-    local spawnRoomRow = m_roomGenerator.spawnRoomRow
-    local spawnRoomColumn = m_roomGenerator.spawnRoomColumn
     
     local exitRoomRow = m_roomGenerator.exitRoomRow
     local exitRoomColumn = m_roomGenerator.exitRoomColumn
 
-    if playerSpawnRow ~= spawnRoomRow and playerSpawnColumn ~= spawnRoomColumn then
+    if playerSpawnRow ~= exitRoomRow and playerSpawnColumn ~= exitRoomColumn then
         return
     end
 
