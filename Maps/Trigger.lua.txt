@@ -16,6 +16,7 @@ EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
 EnemyMod.LerpAngleDeg = ExtensionFunction.LerpAngleDeg
 EnemyMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
+EnemyMod.WalkableTextureId = RoomMod.WalkableTextureId
 local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 local EnemyGoblin = EnemyMod.EnemyGoblin
@@ -210,6 +211,14 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     DCEI.TriggerAddUnitSelectedEvent(DCEI.UnitAny, HandleUnitSelected)
 
     DCEI.TriggerAddTimerEventPeriodicIndefinite(Update, GAME_LOOP_RATE)
+
+    DCEI.TriggerAddMouseDownEvent(
+        0,
+        function(mousePosition)
+            local textureId = DCEI.GetTerrainTypeAtPoint(mousePosition.x, mousePosition.y)
+            DCEI.LogMessage(textureId)
+        end
+    )
 end
 
 function Update()
@@ -272,6 +281,7 @@ function HandleUnitDied()
 
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE and not m_nextRoomTransitionActive then
+        m_player:ClearData()
         m_player:Destroy()
         m_player = nil
 
@@ -492,7 +502,9 @@ function SaveNextRoomData()
         DCEI.Save.Commit()
     end
 
-    m_inventory:SaveInventory() -- Only Save Inventory when going into the next room
+    -- Only Save when going into the new room
+    m_inventory:SaveInventory() 
+    m_player:SaveData() -- Ideally in this case, the player will not be destroyed
 end
 
 function DisplayGameOverSequence(playerWon)
@@ -642,7 +654,9 @@ function HandleCharacterSwitch()
     else
         playerType = 1
     end
+    
     m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot)
+
     UseMeleePlayer = not UseMeleePlayer
 
     ApplyInventoryBehaviours()

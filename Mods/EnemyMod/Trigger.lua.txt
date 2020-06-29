@@ -764,4 +764,7 @@ mod.VectorDistance = nil
 mod.VectorSubtract = nil
 mod.LerpAngleDeg = nil
 mod.NormalizeUnitRotation = nil
+
+mod.WalkableTextureId = nil
+
 return mod

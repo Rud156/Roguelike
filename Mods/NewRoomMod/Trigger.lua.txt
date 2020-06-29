@@ -43,6 +43,7 @@ local BOTTOM = "B"
 local MIN_DIRECTION_POSITION = 5
 local MAX_DIRECTION_POSITION = 14
 
+local WALKABLE_TEXTURE_ID = 4
 local EXIT_ROOM_PATH_LENGTH = 3
 local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 
@@ -890,7 +891,7 @@ function RoomEnemies:GetRandomValidPointInRoom()
 
     for i = 1, ROOM_SIZE do
         for j = 1, ROOM_SIZE do
-            if DCEI.IsPointOnNavMesh(i, j) then
+            if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID then
                 
                 if self.direction == LEFT then
                     if j > MIN_DIRECTION_POSITION then
@@ -925,7 +926,7 @@ function RoomEnemies:GetEmptyPositions()
 
     for i = 1, ROOM_SIZE do
         for j = 1, ROOM_SIZE do
-            if DCEI.IsPointOnNavMesh(i, j) then
+            if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID then
                 table.insert(validPositions, { x = i, y = j })
             end
         end
@@ -956,7 +957,7 @@ function RoomEnemies:GetActiveNearestEnemy(player)
     local lastEnemyDistance = 100
 
     for _, enemyUnit in ipairs(self.enemies) do
-        if enemyUnit:IsActive() then
+        if enemyUnit:IsActive() and enemyUnit:GetMainUnit() ~= nil then
             local enemyPosition = DCEI.GetUnitPosition2D(enemyUnit:GetMainUnit())
             local distance = mod.VectorDistance(playerPosition, enemyPosition)
             
@@ -1127,6 +1128,8 @@ mod.RoomEnemies = RoomEnemies
 
 mod.MinDirectionPosition = MIN_DIRECTION_POSITION
 mod.MaxDirectionPosition = MAX_DIRECTION_POSITION
+
+mod.WalkableTextureId = WALKABLE_TEXTURE_ID
 
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil
