@@ -1748,25 +1748,6 @@
                                 }
                             }
                         ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "PauseCloseAnim"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "pauseAnimation": {
-                                    "clipId": 7
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Pausing Close Animation"
-                                }
-                            }
-                        ]
                     }
                 ],
                 "modelScale": 2
