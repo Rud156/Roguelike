@@ -35,6 +35,7 @@ RoomMod.VectorDistance = ExtensionFunction.VectorDistance
 RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
 local RoomGenerator = RoomMod.RoomGenerator
 local RoomEnemies = RoomMod.RoomEnemies
+local MiniMap = RoomMod.MiniMap
 
 local Camera = CameraMod.Camera
 
@@ -136,6 +137,7 @@ local m_uiTopLayer
 local m_inventory
 local m_damageDisplay
 local m_playerGoldDisplay
+local m_miniMap
 -- Random
 local m_randomSeed
 
@@ -165,6 +167,13 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CheckAndSpawnEntryDoor() -- This should be done later as the Player is required to be moved on the doorway
     CheckAndSpawnExitDoor()
     SpawnEnemiesAndCloseDoors()
+
+    m_miniMap = MiniMap:new(m_uiMiddleLayer, m_roomGenerator)
+    if m_isBeginningRoom then
+        m_miniMap:DisableMiniMap()
+    else
+        m_miniMap:UpdateMiniMap()
+    end
     
     -- Add Triggers At The End...
     DCEI.TriggerAddJoystickEvent(
@@ -229,7 +238,7 @@ function Update()
     if m_player ~= nil then
         m_player:Update(GAME_LOOP_RATE)
         local playerGoldAmount = m_player:GetPlayerGold()
-        DCEI.SetText(m_playerGoldDisplay, "+ " .. playerGoldAmount)
+        DCEI.SetText(m_playerGoldDisplay,  tostring(playerGoldAmount))
     end
 
     if m_roomEnemies ~= nil and m_player ~= nil then
@@ -745,7 +754,7 @@ function CreatePlayerGoldDisplay()
     DCEI.SetSpacing(playerGoldStack, 14)
     
     local playerGoldImage = DCEI.NewFrame(playerGoldStack)
-    DCEI.SetMinSize(playerGoldImage, 50, 50)
+    DCEI.SetMinSize(playerGoldImage, 50, 54)
     DCEI.SetBackgroundImage(playerGoldImage, "icon_affinity_gold")
 
     local playerGoldText = DCEI.NewText(playerGoldStack)

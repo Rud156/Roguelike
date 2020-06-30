@@ -76,6 +76,12 @@ local LEVEL_3_ENEMY_SETS = {
     { 2, 2, 1, 4, 4 },
 }
 
+local MAP_SQUARE_SIZE = 30
+local MAP_CONNECTOR_WIDTH = 10
+local MAP_CONNECTOR_HEIGHT = 7
+local MAP_SIZE = 3
+local MAP_DEFAULT_OFFSET = 40
+
 -- #region Room Generator
 
 local RoomGenerator  = {
@@ -1049,6 +1055,201 @@ end
 
 -- #endregion Room Enemies
 
+-- #region Mini-Map Square
+
+local MiniMapSquare = {
+    centerSquare = nil,
+
+    leftSquare = nil,
+    rightSquare = nil,
+    topSquare = nil,
+    bottomSquare = nil
+}
+MiniMapSquare.__index = MiniMapSquare
+function MiniMapSquare:new(uiLayer, hOffset, vOffset)
+    local miniMapSquare = {}
+    setmetatable(miniMapSquare, MiniMapSquare)
+
+    local centerSquare = DCEI.NewFrame(uiLayer)
+    DCEI.SetMinSize(centerSquare, MAP_SQUARE_SIZE, MAP_SQUARE_SIZE)
+    DCEI.SetMaxSize(centerSquare, MAP_SQUARE_SIZE, MAP_SQUARE_SIZE)
+    DCEI.SetBackgroundImage(centerSquare, "shape_square_sharp_32x32")
+    DCEI.SetHorizontalOffsetInParent(centerSquare, hOffset)
+    DCEI.SetVerticalOffsetInParent(centerSquare, vOffset)
+
+    local leftSquare = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(leftSquare, MAP_CONNECTOR_WIDTH, MAP_CONNECTOR_HEIGHT)
+    DCEI.SetBackgroundImage(leftSquare, "shape_square_sharp_32x32")
+    DCEI.SetHorizontalOffsetInParent(leftSquare, -MAP_SQUARE_SIZE / 2)
+
+    local rightSquare = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(rightSquare, MAP_CONNECTOR_WIDTH, MAP_CONNECTOR_HEIGHT)
+    DCEI.SetBackgroundImage(rightSquare, "shape_square_sharp_32x32")
+    DCEI.SetHorizontalOffsetInParent(rightSquare, MAP_SQUARE_SIZE / 2)
+
+    local topSquare = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(topSquare, MAP_CONNECTOR_HEIGHT, MAP_CONNECTOR_WIDTH)
+    DCEI.SetBackgroundImage(topSquare, "shape_square_sharp_32x32")
+    DCEI.SetVerticalOffsetInParent(topSquare, MAP_SQUARE_SIZE / 2)
+
+    local bottomSquare = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(bottomSquare, MAP_CONNECTOR_HEIGHT, MAP_CONNECTOR_WIDTH)
+    DCEI.SetBackgroundImage(bottomSquare, "shape_square_sharp_32x32")
+    DCEI.SetVerticalOffsetInParent(bottomSquare, -MAP_SQUARE_SIZE / 2)
+
+    miniMapSquare.centerSquare = centerSquare
+    miniMapSquare.leftSquare = leftSquare
+    miniMapSquare.rightSquare = rightSquare
+    miniMapSquare.topSquare = topSquare
+    miniMapSquare.bottomSquare = bottomSquare
+
+    return miniMapSquare
+end
+function MiniMapSquare:UpdateSquareDisplay(isActive, hasLeft, hasRight, hasTop, hasBottom)
+    if isActive then
+        DCEI.SetActive(self.centerSquare, true)
+        DCEI.SetActive(self.leftSquare, true)
+        DCEI.SetActive(self.rightSquare, true)
+        DCEI.SetActive(self.topSquare, true)
+        DCEI.SetActive(self.bottomSquare, true)
+
+        if not hasLeft then
+            DCEI.SetActive(self.leftSquare, false)
+        end
+        if not hasRight then
+            DCEI.SetActive(self.rightSquare, false)
+        end
+        if not hasTop then
+            DCEI.SetActive(self.topSquare, false)
+        end
+        if not hasBottom then
+            DCEI.SetActive(self.bottomSquare, false)
+        end
+    else
+        DCEI.SetActive(self.centerSquare, false)
+        DCEI.SetActive(self.leftSquare, false)
+        DCEI.SetActive(self.rightSquare, false)
+        DCEI.SetActive(self.topSquare, false)
+        DCEI.SetActive(self.bottomSquare, false)
+    end
+end
+function MiniMapSquare:FadeOutSquare()
+    DCEI.SetBackgroundImageColor(self.centerSquare, 0.7, 0.7, 0.7, 1)
+    DCEI.SetBackgroundImageColor(self.leftSquare, 0.7, 0.7, 0.7, 1)
+    DCEI.SetBackgroundImageColor(self.rightSquare, 0.7, 0.7, 0.7, 1)
+    DCEI.SetBackgroundImageColor(self.topSquare, 0.7, 0.7, 0.7, 1)
+    DCEI.SetBackgroundImageColor(self.bottomSquare, 0.7, 0.7, 0.7, 1)
+end
+function MiniMapSquare:FadeInSquare()
+    DCEI.SetBackgroundImageColor(self.centerSquare, 1, 1, 1, 1)
+    DCEI.SetBackgroundImageColor(self.leftSquare, 1, 1, 1, 1)
+    DCEI.SetBackgroundImageColor(self.rightSquare, 1, 1, 1, 1)
+    DCEI.SetBackgroundImageColor(self.topSquare, 1, 1, 1, 1)
+    DCEI.SetBackgroundImageColor(self.bottomSquare, 1, 1, 1, 1)
+end
+
+-- #endregion Mini-Map Square
+
+-- #region Mini-Map
+
+local MiniMap = { 
+    miniMapRooms = {},
+    miniMapFrame = nil,
+
+    roomGenerator = nil
+}
+MiniMap.__index = MiniMap
+function MiniMap:new(uiLayer, roomGenerator)
+    local miniMap = {}
+    setmetatable(miniMap, MiniMap)
+
+    local mapFrame = DCEI.NewFrame(uiLayer)
+    DCEI.SetTopAlignmentInParent(mapFrame)
+    DCEI.SetLeftAlignmentInParent(mapFrame)
+    DCEI.SetHorizontalOffsetInParent(mapFrame, 21)
+    DCEI.SetVerticalOffsetInParent(mapFrame, -100)
+
+    miniMap.miniMapRooms = {}
+    miniMap.miniMapFrame = mapFrame
+    miniMap.roomGenerator = roomGenerator
+
+    miniMap:GenerateMiniMap()
+
+    return miniMap
+end
+function MiniMap:GenerateMiniMap()
+    for i = 1, MAP_SIZE do
+        if self.miniMapRooms[i] == nil then
+            self.miniMapRooms[i] = {}
+        end
+
+        for j = 1, MAP_SIZE do
+            local vOffset = (i - 1) * -MAP_DEFAULT_OFFSET
+            local hOffset = (j - 1) * MAP_DEFAULT_OFFSET
+            
+            local miniMapSquare = MiniMapSquare:new(self.miniMapFrame, hOffset, vOffset)
+            self.miniMapRooms[i][j] = miniMapSquare
+        end
+    end
+end
+function MiniMap:DisableMiniMap()
+    DCEI.SetActive(self.miniMapFrame, false)
+end
+function MiniMap:ActivateMiniMap()
+    DCEI.SetActive(self.miniMapFrame, true)
+end
+function MiniMap:UpdateMiniMap()
+    local playerRow = self.roomGenerator.currentPlayerRow
+    local playerColumn = self.roomGenerator.currentPlayerColumn
+
+    local startX = playerColumn - 1
+    local endX = playerColumn + 1
+    local startY = playerRow - 1
+    local endY = playerRow + 1
+
+    local miniMapRow = 1
+
+    for i = startY, endY do
+        local miniMapColumn = 1
+
+        if self.roomGenerator.roomMatrix[i] == nil then
+            for j = 1, MAP_SIZE do
+                self.miniMapRooms[miniMapRow][j]:UpdateSquareDisplay(false, false, false, false, false)
+            end
+
+        else
+            for j = startX, endX do
+                if self.roomGenerator.roomMatrix[i][j] == nil then
+                    self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateSquareDisplay(false, false, false, false, false)
+                else
+                    local roomType = self.roomGenerator.roomMatrix[i][j]
+                    DCEI.LogMessage("Room Type: " .. roomType)
+                    DCEI.LogMessage("Row: " .. miniMapRow .. ", Column: " .. miniMapColumn)
+
+                    local hasLeftExit = mod.RoomHasLeftExit(roomType)
+                    local hasRightExit = mod.RoomHasRightExit(roomType)
+                    local hasTopExit = mod.RoomHasTopExit(roomType)
+                    local hasBottomExit = mod.RoomHasBottomExit(roomType)
+
+                    self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateSquareDisplay(true, hasLeftExit, hasRightExit, hasTopExit, hasBottomExit)
+                    
+                    if i == playerRow and j == playerColumn then
+                        self.miniMapRooms[miniMapRow][miniMapColumn]:FadeInSquare()
+                    else
+                        self.miniMapRooms[miniMapRow][miniMapColumn]:FadeOutSquare()
+                    end
+                end
+
+                miniMapColumn = miniMapColumn + 1
+            end
+        end
+
+        miniMapRow = miniMapRow + 1
+    end
+end
+
+-- #endregion Mini-Map
+
 function mod.RoomHasLeftExit(value)
     return string.find(value, "_.*L.*_")
 end
@@ -1184,6 +1385,7 @@ end
 
 mod.RoomGenerator = RoomGenerator
 mod.RoomEnemies = RoomEnemies
+mod.MiniMap = MiniMap
 
 mod.MinDirectionPosition = MIN_DIRECTION_POSITION
 mod.MaxDirectionPosition = MAX_DIRECTION_POSITION
