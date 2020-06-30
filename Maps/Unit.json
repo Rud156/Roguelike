@@ -511,6 +511,9 @@
                 "abilityList": [
                     "_Room_Exit_Open",
                     "_Room_Exit_Close"
+                ],
+                "behaviorList": [
+                    "_Unit_Invincible"
                 ]
             },
             "displayName": "data/GameData/unit/_CBuilding/display_name"
@@ -535,6 +538,9 @@
                 "abilityList": [
                     "_DoorwayOpen",
                     "_DoorwayClose"
+                ],
+                "behaviorList": [
+                    "_Unit_Invincible"
                 ]
             },
             "healthBar": {
