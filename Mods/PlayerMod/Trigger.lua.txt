@@ -43,6 +43,8 @@ local Player = {
     playerStaminaList = {},
     playerStaminaAmount = 0,
     playerStaminaRegenTimer = 0,
+
+    playerGoldAmount = 0
 }
 Player.__index = Player
 function Player:new(xPosition, yPosition, playerType, uiRoot)
@@ -74,9 +76,58 @@ function Player:new(xPosition, yPosition, playerType, uiRoot)
     player.playerStaminaAmount = PLAYER_MAX_STAMINA
     player.playerStaminaRegenTimer = 0
 
+    player.playerGoldAmount = 0
+
     player:CreatePlayerUI(uiRoot)
+    player:LoadData()
 
     return player
+end
+function Player:SaveData()
+    DCEI.LogMessage("Saving Player Data")
+
+    local playerHealth = DCEI.GetHealthValue(self.playerUnit)
+    DCEI.Save.Set("PlayerHealth", playerHealth)
+
+    DCEI.Save.Set("PlayerStaminaAmount", self.playerStaminaAmount)
+    DCEI.Save.Set("PlayerStaminaTimer", self.playerStaminaRegenTimer)
+
+    DCEI.Save.Set("PlayerGold", self.playerGoldAmount)
+
+    DCEI.Save.Commit()
+end
+function Player:LoadData()
+    DCEI.LogMessage("Getting Player Data")
+
+    local playerHealth = DCEI.Save.Get("PlayerHealth", playerHealth)
+    local playerStaminaAmount = DCEI.Save.Get("PlayerStaminaAmount", self.playerStaminaAmount)
+    local playerStaminaRegenTimer = DCEI.Save.Get("PlayerStaminaTimer", self.playerStaminaRegenTimer)
+    local playerGoldAmount = DCEI.Save.Get("PlayerGold")
+
+    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil then
+        return
+    end
+
+    DCEI.LogMessage("Loading Player Data")
+
+    DCEI.SetHealthValue(self.playerUnit, playerHealth)
+    self.lastFramePlayerHealth = playerHealth
+
+    self.playerStaminaAmount = playerStaminaAmount
+    self.playerStaminaRegenTimer = playerStaminaRegenTimer
+
+    self.playerGoldAmount = playerGoldAmount
+end
+function Player:ClearData()
+    DCEI.LogMessage("Clearing Player Data")
+
+    DCEI.Save.Set("PlayerHealth", nil)
+    DCEI.Save.Set("PlayerStaminaAmount", nil)
+    DCEI.Save.Set("PlayerStaminaTimer", nil)
+
+    DCEI.Save.Set("PlayerGold", nil)
+
+    DCEI.Save.Commit()
 end
 function Player:CreatePlayerUI(uiRoot)
     -- Health Bar
@@ -212,12 +263,18 @@ function Player:HandleJoystickReleased()
 
     DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
 end
-function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomGenerator)
+function Player:HandleJoystickButtonClicked(buttonId, buttonEvent, roomEnemies)
     if buttonEvent ~= 1 then
         return
     end
 
-    local enemy = roomGenerator:GetRoomNearestEnemy(self.playerUnit)
+    local enemy = nil
+    
+    if roomEnemies ~= nil then
+        enemy = roomEnemies:GetActiveNearestEnemy(self.playerUnit)
+    else
+        enemy = nil
+    end
     
     if buttonId == 0 then
         self:LaunchPlayerLightAttack(enemy)
@@ -321,8 +378,8 @@ function Player:LaunchPlayerRangedLightAttack(enemy)
         local direction = mod.VectorSubtract(enemyPosition, playerPosition)
         local yRotation = math.deg(math.atan(direction.x, direction.y))
         
-        local xPoint = math.sin(math.rad(yRotation))* PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation))* PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.y
+        local xPoint = math.sin(math.rad(yRotation)) * PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) * PLAYER_RANGED_LIGHT_WEAPON_RANGE + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_RANGED_LIGHT_WEAPON, self.playerUnit, xPoint, yPoint)
 
     else
@@ -353,8 +410,8 @@ function Player:LaunchPlayerRangedHeavyAttack(enemy)
         local direction = mod.VectorSubtract(enemyPosition, playerPosition)
         local yRotation = math.deg(math.atan(direction.x, direction.y))
         
-        local xPoint = math.sin(math.rad(yRotation))* PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.x
-        local yPoint = math.cos(math.rad(yRotation))* PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.y
+        local xPoint = math.sin(math.rad(yRotation)) * PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.x
+        local yPoint = math.cos(math.rad(yRotation)) * PLAYER_RANGED_HEAVY_WEAPON_RANGE + playerPosition.y
         DCEI.CastAbilityAtPosition(PLAYER_RANGED_HEAVY_WEAPON, self.playerUnit, xPoint, yPoint)
         
     else
@@ -410,6 +467,23 @@ function Player:MakePlayerDash()
 
     self.playerDashActive = true
     self.playerMoving = false
+end
+function Player:AddGold(goldAmount)
+    self.playerGoldAmount = self.playerGoldAmount + goldAmount
+end
+function Player:HasGold(goldAmount)
+    return self.playerGoldAmount >= goldAmount
+end
+function Player:UseGold(goldAmount)
+    if self:HasGold(goldAmount) then
+        self.playerGoldAmount = self.playerGoldAmount - goldAmount
+        return true
+    end
+
+    return false
+end
+function Player:GetPlayerGold()
+    return self.playerGoldAmount
 end
 function Player:Destroy()
     DCEI.RemoveUnit(self.playerUnit)

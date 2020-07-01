@@ -134,6 +134,53 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, slotClicke
 
     return inventory
 end
+function InventorySlot:SaveSlot(index)
+    DCEI.Save.Set("Slot_" .. index .. "_Name", self.itemName)
+    DCEI.Save.Set("Slot_" .. index .. "_Stack", self.currentStack)
+    DCEI.Save.Set("Slot_" .. index .. "_RechargeActive", self.isSlotRechargeActive)
+    DCEI.Save.Set("Slot_" .. index .. "_MaxRechargeTime", self.maxRechargeTime)
+    DCEI.Save.Set("Slot_" .. index .. "_CurrentRechargeTime", self.currentRechargeTime)
+    DCEI.Save.Commit()
+end
+function InventorySlot:LoadSlot(index)
+    local itemName = DCEI.Save.Get("Slot_" .. index .. "_Name")
+    local currentStack = DCEI.Save.Get("Slot_" .. index .. "_Stack")
+    local isSlotRechargeActive = DCEI.Save.Get("Slot_" .. index .. "_RechargeActive")
+    local maxRechargeTime = DCEI.Save.Get("Slot_" .. index .. "_MaxRechargeTime")
+    local currentRechargeTime = DCEI.Save.Get("Slot_" .. index .. "_CurrentRechargeTime")
+
+
+    if itemName ~= nil and itemName ~= "" and currentStack ~= -1 and currentStack ~= nil then
+        local collectibleItem = COLLECTIBLES_TABLE[itemName]
+        
+        self:UpdateInventoryItem(
+            itemName,
+            collectibleItem.itemType,
+            collectibleItem.itemDescription,
+            
+            collectibleItem.itemImage,
+            
+            collectibleItem.itemStackable,
+            currentStack
+        )
+
+        self.isSlotRechargeActive = isSlotRechargeActive
+        self.maxRechargeTime = maxRechargeTime
+        self.currentRechargeTime = currentRechargeTime
+
+        if isSlotRechargeActive then
+            DCEI.SetBackgroundImageColor(self.slotRecharge, 0, 0, 0, 0.5)
+        end
+    end
+end
+function InventorySlot:ClearSlot(index)
+    DCEI.Save.Set("Slot_" .. index .. "_Name", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_Stack", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_RechargeActive", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_MaxRechargeTime", nil)
+    DCEI.Save.Set("Slot_" .. index .. "_CurrentRechargeTime", nil)
+    DCEI.Save.Commit()
+end
 function InventorySlot:GetInventoryItemType()
     return self.itemType
 end
@@ -256,7 +303,7 @@ function InventorySlot:Destroy()
 end
 
 
-local Inventory = { inventorySlots = {}}
+local Inventory = { inventorySlots = {} }
 Inventory.__index = Inventory
 function Inventory:new(inventorySlots)
     local inventory = {}
@@ -265,6 +312,21 @@ function Inventory:new(inventorySlots)
     inventory.inventorySlots = inventorySlots
 
     return inventory
+end
+function Inventory:SaveInventory()
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:SaveSlot(i)
+    end
+end
+function Inventory:LoadInventory()
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:LoadSlot(i)
+    end
+end
+function Inventory:ClearInventorySave()
+    for i, slot in ipairs(self.inventorySlots) do
+        slot:ClearSlot(i)
+    end
 end
 function Inventory:UpdateSlots(deltaTime)
     for i, slot in ipairs(self.inventorySlots) do
@@ -304,6 +366,10 @@ function Inventory:GetEmptySlotIndex()
     end
 
     return -1
+end
+function Inventory:GetInventorySlotByName(itemName)
+    local index = self:GetItemInInventoryIndex(itemName)
+    return self.inventorySlots[index]
 end
 function Inventory:GetItemInInventoryIndex(itemName)
     for i, slot in ipairs(self.inventorySlots) do

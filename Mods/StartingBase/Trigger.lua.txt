@@ -1,11 +1,42 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+local MainMap = GameModules["Maps"]
+local BaseRoomMod = GameModules["Mods/NewRoomMod"]
 
--- VARIABLES
-local core = GameModules["Arcade/Core"]
+local BaseRoomGenerator = BaseRoomMod.RoomGenerator
 
--- TRIGGERS
-function OnMapStart()
-    core.HideDefaultUi()
+local BASE_ROOM_NAME = "RoomName"
+local SPAWN_POINT = { x = 23.62, y = 14 }
+
+function ValidateAndLoadSaveData()
+    local maskOptionsStart = {
+        color = { r = 0, g = 0, b = 0 },
+        duration = 1
+    }
+    local maskOptionsEnd = {
+        color = { r = 0, g = 0, b = 0 },
+        duration = 1
+    }
+
+    DCEI.ShowScreenMaskWithAlpha(1, maskOptionsStart)
+    DCEI.Wait(maskOptionsStart.duration)
+
+    local savedRoomType = DCEI.Save.Get(BASE_ROOM_NAME)
+    if savedRoomType ~= nil then
+        local roomPath = BaseRoomMod.GetRoomPath(savedRoomType)
+        DCEI.PlayLevel(roomPath, savedRoomType)
+    else
+        BaseRoomGenerator:ClearSaveData() -- If nothing exits reload a fresh game
+    end
+
+    DCEI.ShowScreenMaskWithAlpha(0, maskOptionsEnd)
+    DCEI.Wait(maskOptionsEnd.duration)
+    DCEI.HideScreenMask()
 end
 
--- INITIALIZE
-DCEI.TriggerAddTimerEventElapsed(OnMapStart, 0)
+DCEI.TriggerAddTimerEventElapsed(
+    function()
+        ValidateAndLoadSaveData()
+        MainMap.Start(SPAWN_POINT, nil, nil, nil)
+    end,
+    0
+)

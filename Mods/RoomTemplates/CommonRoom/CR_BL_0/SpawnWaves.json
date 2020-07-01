@@ -1,1 +1,8 @@
-{}
+{
+    "cameraSettings": {
+        "allowZoom": false,
+        "panAreaCenterY": 16,
+        "panAreaLengthX": 40,
+        "skipIntroSequence": true
+    }
+}

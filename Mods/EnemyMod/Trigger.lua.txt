@@ -14,6 +14,7 @@ local GOBLIN_CHEF_MIN_CLOSEST_DISTANCE = 2.5
 local GOBLIN_CHEF_MOVEBACK_DISTANCE = 5
 local GOBLIN_CHEF_MOVEBACK_TIMER = 3
 local GOBLIN_CHEF_STUN_TIME = 3.5
+local GOBLIN_CHEF_GOLD = { MinGold = 3, MaxGold = 5 }
 
 local GOBLIN_HOB = "_Enemy_Hobgoblin"
 local GOBLIN_HOB_ATTACK = "_Enemy_Hobgoblin_Attack"
@@ -21,6 +22,7 @@ local GOBLIN_HOB_ATTACK_RANGE = 1
 local GOBLIN_HOB_ATTACK_WAIT_TIMER = 4
 local GOBLIN_HOB_MIN_CLOSEST_DISTANCE = 1
 local GOBLIN_HOB_STUN_TIME = 3.5
+local GOBLIN_HOB_GOLD = { MinGold = 5, MaxGold = 8 }
 
 local GOBLIN = "_Enemy_Goblin"
 local GOBLIN_ATTACK = "_Enemy_Goblin_Attack"
@@ -28,6 +30,7 @@ local GOBLIN_ATTACK_RANGE = 1
 local GOBLIN_ATTACK_WAIT_TIMER = 1.5
 local GOBLIN_MIN_CLOSEST_DISTANCE = 1
 local GOBLIN_STUN_TIME = 3.5
+local GOBLIN_GOLD = { MinGold = 3, MaxGold = 5 }
 
 local GOBLIN_SAPPER = "_Enemy_GoblinSapper"
 local GOBLIN_SAPPER_ATTACK = "_Enemy_GoblinSapper_Attack"
@@ -44,6 +47,7 @@ local OOZE_RANDOM_MOVEMENT_TIMER = 3
 local OOZE_JUMP_RADIUS = 1
 local OOZE_IDLING_TIME = 3
 local OOZE_ATTACK_TIME = 3
+local OOZE_GOLD = 1
 
 local mod = {}
 
@@ -232,7 +236,7 @@ function GoblinChef:FindRandomMoveBackPointAroundPlayer(playerPosition)
         local xPosition = radius * math.sin(math.rad(i)) + playerPosition.x
         local yPosition = radius * math.cos(math.rad(i)) + playerPosition.y
 
-        if self.room.rect:contains(xPosition, yPosition) then
+        if DCEI.IsPointOnNavMesh(xPosition, yPosition) then
             table.insert(validPositions, { x = xPosition, y = yPosition })
         end
     end
@@ -245,11 +249,17 @@ end
 function GoblinChef:SetEnemyState(enemyState)
     self.enemyState = enemyState
 end
+function GoblinChef:GetEnemyGold()
+    return math.random(GOBLIN_CHEF_GOLD.MinGold, GOBLIN_CHEF_GOLD.MaxGold)
+end
 function GoblinChef:GetMainUnit()
     return self.unit
 end
 function GoblinChef:CleanupEnemyDied()
     -- Do nothing here...
+end
+function GoblinChef:IsActive()
+    return true
 end
 -- #endregion
 
@@ -370,11 +380,17 @@ end
 function HobGoblin:SetEnemyState(enemyState)
     self.enemyState = enemyState
 end
+function HobGoblin:GetEnemyGold()
+    return math.random(GOBLIN_HOB_GOLD.MinGold, GOBLIN_HOB_GOLD.MaxGold)
+end
 function HobGoblin:GetMainUnit()
     return self.unit
 end
 function HobGoblin:CleanupEnemyDied()
     -- Do nothing here...
+end
+function HobGoblin:IsActive()
+    return true
 end
 -- #endregion
 
@@ -495,11 +511,17 @@ end
 function Goblin:SetEnemyState(enemyState)
     self.enemyState = enemyState
 end
+function Goblin:GetEnemyGold()
+    return math.random(GOBLIN_GOLD.MinGold, GOBLIN_GOLD.MaxGold)
+end
 function Goblin:GetMainUnit()
     return self.unit
 end
 function Goblin:CleanupEnemyDied()
     -- Do nothing here...
+end
+function Goblin:IsActive()
+    return true
 end
 -- #endregion
 
@@ -572,11 +594,17 @@ end
 function GoblinSapper:SetEnemyState(enemyState)
     self.enemyState = enemyState
 end
+function GoblinSapper:GetEnemyGold()
+    return 0
+end
 function GoblinSapper:GetMainUnit()
     return self.unit
 end
 function GoblinSapper:CleanupEnemyDied()
     -- Do nothing here...
+end
+function GoblinSapper:IsActive()
+    return true
 end
 -- #endregion
 
@@ -708,7 +736,7 @@ function Ooze:FindEmptyPlaceInCircle(playerPosition)
         local xPosition = radius * math.sin(math.rad(i)) + playerPosition.x
         local yPosition = radius * math.cos(math.rad(i)) + playerPosition.y
 
-        if self.room.rect:contains(xPosition, yPosition) then
+        if DCEI.IsPointOnNavMesh(xPosition, yPosition) then
             table.insert(validPositions, { x = xPosition, y = yPosition })
         end
     end
@@ -719,26 +747,29 @@ function Ooze:FindEmptyPlaceInCircle(playerPosition)
     return randomPosition
 end
 function Ooze:FindAndSetRandomMovement()
-    local emptyPositions, roomRect = self.room:GetEmptyPositions()
+    local emptyPositions = self.room:GetEmptyPositions()
     local randomEmptyPosition = math.random(1, #emptyPositions)
-
-    local startX = roomRect.x
-    local startY = roomRect.y
 
     local position = emptyPositions[randomEmptyPosition]
 
-    self.targetPosition = { x = startX + position[1], y = startY + position[2] }
+    self.targetPosition = { x = position.x, y = position.y }
     self.currentTimer = OOZE_RANDOM_MOVEMENT_TIMER
 end
 function Ooze:SetEnemyState(enemyState)
     DCEI.LogMessage("Enemy State: " .. enemyState)
     self.enemyState = enemyState
 end
+function Ooze:GetEnemyGold()
+    return 1
+end
 function Ooze:GetMainUnit()
     return self.unit
 end
 function Ooze:CleanupEnemyDied()
     -- Do nothing here...
+end
+function Ooze:IsActive()
+    return self.enemyState ~= 3
 end
 -- #endregion
 
@@ -752,4 +783,7 @@ mod.VectorDistance = nil
 mod.VectorSubtract = nil
 mod.LerpAngleDeg = nil
 mod.NormalizeUnitRotation = nil
+
+mod.WalkableTextureId = nil
+
 return mod

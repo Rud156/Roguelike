@@ -1,7 +1,9 @@
 {
     "settings": {
         "dependencies": [
-            "Arcade/Core"
+            "Arcade/Core",
+            "Maps",
+            "Mods/NewRoomMod"
         ]
     }
 }

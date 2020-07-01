@@ -109,7 +109,7 @@
         "_Search_Enemy_GoblinChef": {
             "maxStackCount": 1,
             "periodicInterval": 0.01,
-            "periodicEffect": "_Search_Enemy_GoblinChef"
+            "periodicEffect": "_Set_Periodic_GoblinChef_Attack"
         },
         "_Search_PlayerCharacter": {
             "maxStackCount": 1,
@@ -124,12 +124,18 @@
         "_Search_PlayerCharacter_Ranged_HeavyAttack": {
             "maxStackCount": 1,
             "periodicInterval": 0.01,
-            "periodicEffect": "_Search_PlayerCharacter_Ranged_HeavyAttack"
+            "periodicEffect": "_Set_Periodic_PlayerCharacter_Ranged_HeavyAttack",
+            "damageResponse": {
+                "effect": ""
+            }
         },
         "_Search_PlayerCharacter_Ranged_LightAttack": {
             "maxStackCount": 1,
             "periodicInterval": 0.01,
-            "periodicEffect": "_Search_PlayerCharacter_Ranged_LightAttack"
+            "periodicEffect": "_Set_Periodic_PlayerCharacter_Ranged_LightAttack",
+            "damageResponse": {
+                "effect": ""
+            }
         },
         "_Search_PlayerCharacter_Ranged_Missile": {
             "maxStackCount": 1,

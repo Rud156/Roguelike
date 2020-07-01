@@ -730,137 +730,6 @@
                 ]
             }
         },
-        "_EntryDoorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_trapdoor"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_DoorwayClose"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 7
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "PauseCloseAnim",
-                                    "duration": 0.55
-                                }
-                            },
-                            {
-                                "removeTimer": {
-                                    "name": "PlayIdleAnim"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "PauseCloseAnim"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "pauseAnimation": {
-                                    "clipId": 7
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitSpawn": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 4
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "PlayIdleAnim",
-                                    "duration": 0.1,
-                                    "repeat": true
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "PlayIdleAnim"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 4
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_ExitDoorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_trapdoor"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_DoorwayOpen"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 8
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "PauseOpenAnim",
-                                    "duration": 0.55
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "PauseOpenAnim"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "pauseAnimation": {
-                                    "clipId": 8
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Animation Paused"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
         "_FX_Collectible_Bomb_Attack": {
             "modelActor": {
                 "resource": {
@@ -1810,6 +1679,123 @@
                 }
             }
         },
+        "_Room_Exit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "forestworld_castle_door"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Room_Exit_Open"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "log": {
+                                    "message": "Door Opening"
+                                }
+                            },
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Room_Exit_Close"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "log": {
+                                    "message": "Door Closing"
+                                }
+                            },
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseCloseAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseOpenAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Pausing Open Animation"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseCloseAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Pauing Close Animation"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
         "_SFX_Collectible_Bomb_Attack": {
             "modelActor": {
                 "resource": {
@@ -2350,6 +2336,112 @@
                 ]
             }
         },
+        "_TrapDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_trapdoor"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayOpen"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_DoorwayClose"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseCloseAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseCloseAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 7
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Trap Door Close Animation Paused"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseOpenAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 8
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Trap Door Open Animation Paused"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_Wall_BreakableWall": {
             "unitActor": {
                 "resource": {
@@ -2406,6 +2498,14 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "arrowtower_rank03"
+                }
+            }
+        },
+        "__SpawnMarkerUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "towerslot_mineworld"
                 }
             }
         }

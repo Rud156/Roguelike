@@ -42,6 +42,27 @@ function mod.NormalizeUnitRotation(unitRotation)
     return yRotation
 end
 
+function mod.ToBoolean(stringValue)
+    if stringValue == "true" then
+        return true
+    elseif stringValue == "false" then
+        return false
+    else
+        DCIE.LogError("Invalid String Value")
+        return false
+    end
+end
+
+function mod.ArrayHasValue(array, value)
+    for i, data in ipairs(array) do
+        if data == value then
+            return true
+        end
+    end
+
+    return false
+end
+
 function mod.CompareUnits(unit1, unit2)
     local unit1ID = tostring(unit1)
     local unit2ID = tostring(unit2)
@@ -59,6 +80,16 @@ function mod.ShuffleTable(tInput)
     end
 
     return tReturn
+end
+
+function mod.split(s, sep)
+    local fields = {}
+
+    local sep = sep or " "
+    local pattern = string.format("([^%s]+)", sep)
+    string.gsub(s, pattern, function(c) fields[#fields + 1] = c end)
+
+    return fields
 end
 
 return mod

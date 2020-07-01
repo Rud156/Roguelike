@@ -351,58 +351,6 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
-        "_EntryDoorway": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false,
-                    "ignoreCollision": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "_DoorwayClose"
-                ],
-                "onStartAbility": ""
-            },
-            "healthBar": {
-                "type": 0
-            }
-        },
-        "_ExitDoorway": {
-            "baseUnit": "_CBuilding",
-            "components": {
-                "unitStats": {
-                    "radius": 0.3,
-                    "immortal": true,
-                    "ground": true,
-                    "selectable": false
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 0
-                }
-            },
-            "references": {
-                "abilityList": [
-                    "_DoorwayOpen"
-                ]
-            },
-            "healthBar": {
-                "type": 0
-            }
-        },
         "_Missile_Enemy_GoblinChef": {
             "baseUnit": "_CMissile",
             "references": {
@@ -541,6 +489,64 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_Room_Exit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.6,
+                    "immortal": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Room_Exit_Open",
+                    "_Room_Exit_Close"
+                ],
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "_TrapDoorway": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "immortal": true,
+                    "ground": true,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_DoorwayOpen",
+                    "_DoorwayClose"
+                ],
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "healthBar": {
+                "type": 0
+            }
+        },
         "_Wall_BreakableWall": {
             "baseUnit": "_CBuilding",
             "components": {
@@ -597,6 +603,18 @@
             }
         },
         "__DebugMarkerUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "__SpawnMarkerUnit": {
             "baseUnit": "_CBuilding",
             "components": {
                 "unitStats": {
