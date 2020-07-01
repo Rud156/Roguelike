@@ -87,6 +87,7 @@ local RoomGenerator  = {
     roomMatrix = {},
     roomMatrixCounter = {},
     roomClearMatrix = {},
+    roomVisitedMatrix = {},
     roomAdjacencyList = {},
 
     spawnRoomRow = 100,
@@ -113,6 +114,7 @@ function RoomGenerator:new(randomSeed)
     roomGenerator.roomMatrix = {}
     roomGenerator.roomMatrixCounter = {}
     roomGenerator.roomClearMatrix = {}
+    roomGenerator.roomVisitedMatrix = {}
     roomGenerator.roomAdjacencyList = {}
 
     roomGenerator.spawnRoomRow = -1
@@ -144,6 +146,7 @@ function RoomGenerator:SaveRoomStructure()
     DCEI.Save.Set("RoomMatrix", mod.Convert2DMatrixToString(self.roomMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomMatrixCounter", mod.Convert2DMatrixToString(self.roomMatrixCounter, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomClearMatrix", mod.Convert2DMatrixToString(self.roomClearMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
+    -- DCEI.Save.Set("RoomVisitedMatrix", mod.Convert2DMatrixToString(self.roomVisitedMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomAdjacencyList", mod.ConvertAdjacencyListToString(self.roomAdjacencyList))
 
     DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
@@ -173,6 +176,7 @@ function RoomGenerator:LoadRoomStructure()
     roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrix"), 0)
     roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrixCounter"), 1)
     roomGenerator.roomClearMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomClearMatrix"), 2)
+    -- roomGenerator.roomVisitedMatrix = mod.Convert2DMatrixToString(DCEI.Save.Get("RoomVisitedMatrix"), 2)
     roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(DCEI.Save.Get("RoomAdjacencyList"))
 
     roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
@@ -202,6 +206,7 @@ function RoomGenerator:ClearSaveData()
     DCEI.Save.Set("RoomMatrix", nil)
     DCEI.Save.Set("RoomMatrixCounter", nil)
     DCEI.Save.Set("RoomClearMatrix", nil)
+    -- DCEI.Save.Set("RoomVisitedMatrix", nil)
     DCEI.Save.Set("RoomAdjacencyList", nil)
 
     DCEI.Save.Set("SpawnRoomRow", nil)
@@ -227,6 +232,7 @@ function RoomGenerator:IsPlayerRoomCleared()
 end
 function RoomGenerator:MarkRoomAtPlayerPositionClear()
     self.roomClearMatrix[self.currentPlayerRow][self.currentPlayerColumn] = true
+    self.roomVisitedMatrix[self.currentPlayerRow][self.currentPlayerColumn] = true
 end
 function RoomGenerator:GetRoomFromPlayerPosition()
     return self.roomMatrix[self.currentPlayerRow][self.currentPlayerColumn]
@@ -276,15 +282,16 @@ function RoomGenerator:GenerateRoomBase()
         local rightSide = j + 1
         local topSide = i - 1
         local bottomSide = i + 1
+        local spawnRoom = self.roomMatrix[spawnRoomRow][spawnRoomColumn]
         local room
 
-        if leftSide == spawnRoomColumn and i == spawnRoomRow then
+        if leftSide == spawnRoomColumn and i == spawnRoomRow and mod.RoomHasRightExit(spawnRoom) then
             room = self:GetRoomWithExits(COMMON_ROOMS, 1, exitRight, exitTop, exitBottom)
-        elseif rightSide == spawnRoomColumn and i == spawnRoomRow then
+        elseif rightSide == spawnRoomColumn and i == spawnRoomRow and mod.RoomHasLeftExit(spawnRoom) then
             room = self:GetRoomWithExits(COMMON_ROOMS, exitLeft, 1, exitTop, exitBottom)
-        elseif j == spawnRoomColumn and topSide == spawnRoomRow then
+        elseif j == spawnRoomColumn and topSide == spawnRoomRow and mod.RoomHasBottomExit(spawnRoom) then
             room = self:GetRoomWithExits(COMMON_ROOMS, exitLeft, exitRight, 1, exitBottom)
-        elseif j == spawnRoomColumn and bottomSide == spawnRoomRow then
+        elseif j == spawnRoomColumn and bottomSide == spawnRoomRow and mod.RoomHasTopExit(spawnRoom) then
             room = self:GetRoomWithExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, 1)
         else
             room = self:GetRoomWithExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, exitBottom)
