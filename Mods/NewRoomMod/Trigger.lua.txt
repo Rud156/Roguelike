@@ -76,10 +76,10 @@ local LEVEL_3_ENEMY_SETS = {
     { 2, 2, 1, 4, 4 },
 }
 
-local MAP_SQUARE_SIZE = 10
-local MAP_CONNECTOR_WIDTH = 5
-local MAP_CONNECTOR_HEIGHT = 1
-local MAP_DEFAULT_OFFSET = 15
+local MAP_SQUARE_SIZE = 20
+local MAP_CONNECTOR_WIDTH = 10
+local MAP_CONNECTOR_HEIGHT = 6
+local MAP_DEFAULT_OFFSET = 30
 
 -- #region Room Generator
 
@@ -146,7 +146,7 @@ function RoomGenerator:SaveRoomStructure()
     DCEI.Save.Set("RoomMatrix", mod.Convert2DMatrixToString(self.roomMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomMatrixCounter", mod.Convert2DMatrixToString(self.roomMatrixCounter, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomClearMatrix", mod.Convert2DMatrixToString(self.roomClearMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
-    -- DCEI.Save.Set("RoomVisitedMatrix", mod.Convert2DMatrixToString(self.roomVisitedMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
+    DCEI.Save.Set("RoomVisitedMatrix", mod.Convert2DMatrixToString(self.roomVisitedMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomAdjacencyList", mod.ConvertAdjacencyListToString(self.roomAdjacencyList))
 
     DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
@@ -176,7 +176,7 @@ function RoomGenerator:LoadRoomStructure()
     roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrix"), 0)
     roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrixCounter"), 1)
     roomGenerator.roomClearMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomClearMatrix"), 2)
-    -- roomGenerator.roomVisitedMatrix = mod.Convert2DMatrixToString(DCEI.Save.Get("RoomVisitedMatrix"), 2)
+    roomGenerator.roomVisitedMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomVisitedMatrix"), 2)
     roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(DCEI.Save.Get("RoomAdjacencyList"))
 
     roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
@@ -206,7 +206,7 @@ function RoomGenerator:ClearSaveData()
     DCEI.Save.Set("RoomMatrix", nil)
     DCEI.Save.Set("RoomMatrixCounter", nil)
     DCEI.Save.Set("RoomClearMatrix", nil)
-    -- DCEI.Save.Set("RoomVisitedMatrix", nil)
+    DCEI.Save.Set("RoomVisitedMatrix", nil)
     DCEI.Save.Set("RoomAdjacencyList", nil)
 
     DCEI.Save.Set("SpawnRoomRow", nil)
@@ -232,6 +232,9 @@ function RoomGenerator:IsPlayerRoomCleared()
 end
 function RoomGenerator:MarkRoomAtPlayerPositionClear()
     self.roomClearMatrix[self.currentPlayerRow][self.currentPlayerColumn] = true
+    self.roomVisitedMatrix[self.currentPlayerRow][self.currentPlayerColumn] = true
+end
+function RoomGenerator:MarkRoomAtPlayerPositionVisited()
     self.roomVisitedMatrix[self.currentPlayerRow][self.currentPlayerColumn] = true
 end
 function RoomGenerator:GetRoomFromPlayerPosition()
@@ -452,13 +455,20 @@ function RoomGenerator:SetupClearMatrix()
                 local spawnRow = self.spawnRoomRow
                 local spawnColumn = self.spawnRoomColumn
 
-                local roomClear = false
-                if i == spawnRow and j == spawnColumn then
-                    roomClear = true
-                end
-
                 if self.roomClearMatrix[i] == nil then
                     self.roomClearMatrix[i] = {}
+                end
+
+                if self.roomVisitedMatrix[i] == nil then
+                    self.roomVisitedMatrix[i] = {}
+                end
+
+                local roomClear = false
+                if i == spawnRow and j == spawnColumn then
+                    self.roomVisitedMatrix[i][j] = true
+                    roomClear = true
+                else
+                    self.roomVisitedMatrix[i][j] = false
                 end
 
                 self.roomClearMatrix[i][j] = roomClear
@@ -1331,7 +1341,12 @@ function MiniMap:UpdateMiniMap()
                     if i == playerRow and j == playerColumn then
                         self.miniMapRooms[miniMapRow][miniMapColumn]:FadeInSquare()
                     else
-                        self.miniMapRooms[miniMapRow][miniMapColumn]:FadeOutSquare()
+                        local isRoomVisited = self.roomGenerator.roomVisitedMatrix[i][j]
+                        if isRoomVisited then
+                            self.miniMapRooms[miniMapRow][miniMapColumn]:FadeOutSquare()
+                        else
+                            self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateSquareDisplay(false, false, false, false, false)
+                        end
                     end
                 end
 
