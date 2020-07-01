@@ -76,11 +76,10 @@ local LEVEL_3_ENEMY_SETS = {
     { 2, 2, 1, 4, 4 },
 }
 
-local MAP_SQUARE_SIZE = 30
-local MAP_CONNECTOR_WIDTH = 10
-local MAP_CONNECTOR_HEIGHT = 7
-local MAP_SIZE = 3
-local MAP_DEFAULT_OFFSET = 40
+local MAP_SQUARE_SIZE = 10
+local MAP_CONNECTOR_WIDTH = 5
+local MAP_CONNECTOR_HEIGHT = 1
+local MAP_DEFAULT_OFFSET = 15
 
 -- #region Room Generator
 
@@ -1264,12 +1263,15 @@ function MiniMap:new(uiLayer, roomGenerator)
     return miniMap
 end
 function MiniMap:GenerateMiniMap()
-    for i = 1, MAP_SIZE do
+    local rows = self.roomGenerator.maxRow - self.roomGenerator.minRow + 1
+    local columns = self.roomGenerator.maxColumn - self.roomGenerator.minColumn + 1
+
+    for i = 1, rows do
         if self.miniMapRooms[i] == nil then
             self.miniMapRooms[i] = {}
         end
 
-        for j = 1, MAP_SIZE do
+        for j = 1, columns do
             local vOffset = (i - 1) * -MAP_DEFAULT_OFFSET
             local hOffset = (j - 1) * MAP_DEFAULT_OFFSET
             
@@ -1288,14 +1290,14 @@ function MiniMap:UpdateMiniMap()
     local playerRow = self.roomGenerator.currentPlayerRow
     local playerColumn = self.roomGenerator.currentPlayerColumn
 
-    local startX = playerColumn - 1
-    local endX = playerColumn + 1
-    local startY = playerRow - 1
-    local endY = playerRow + 1
+    local minRow = self.roomGenerator.minRow
+    local maxRow = self.roomGenerator.maxRow
+    local minColumn = self.roomGenerator.minColumn
+    local maxColumn = self.roomGenerator.maxColumn
 
     local miniMapRow = 1
 
-    for i = startY, endY do
+    for i = minRow, maxRow do
         local miniMapColumn = 1
 
         if self.roomGenerator.roomMatrix[i] == nil then
@@ -1304,7 +1306,7 @@ function MiniMap:UpdateMiniMap()
             end
 
         else
-            for j = startX, endX do
+            for j = minColumn, maxColumn do
                 if self.roomGenerator.roomMatrix[i][j] == nil then
                     self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateSquareDisplay(false, false, false, false, false)
                 else
