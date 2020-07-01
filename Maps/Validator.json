@@ -22,6 +22,12 @@
                 }
             }
         },
+        "_Projectile_NotOnNavMesh": {
+            "negate": true,
+            "pointOnNavmesh": {
+                "target": 3
+            }
+        },
         "_ReachedPosition_PlayerCharacter": {
             "expression": {
                 "compare": {

@@ -295,6 +295,8 @@ function RoomGenerator:GenerateRoomBase()
 
         self:UpdateRoomMatrixCounter()
         self:UpdateRoomAdajcencyList()
+
+        self:PrintRooms()
         
         local breakLoop = self:CheckBFSForExitRoom()
         if breakLoop then
