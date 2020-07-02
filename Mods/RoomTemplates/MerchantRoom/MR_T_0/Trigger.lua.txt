@@ -1,11 +1,6 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+local MainMap = GameModules["Maps"]
 
--- VARIABLES
-local core = GameModules["Arcade/Core"]
+local SPAWN_POINT_TOP = { x = 10, y = 16 }
 
--- TRIGGERS
-function OnMapStart()
-    core.HideDefaultUi()
-end
-
--- INITIALIZE
-DCEI.TriggerAddTimerEventElapsed(OnMapStart, 0)
+MainMap.Start(nil, nil, SPAWN_POINT_TOP, nil)

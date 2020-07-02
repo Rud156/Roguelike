@@ -2506,7 +2506,35 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "towerslot_mineworld"
-                }
+                },
+                "modelScale": 0.8
+            }
+        },
+        "__SpawnMerchantCargoshipUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "airship_cargo"
+                },
+                "modelScale": 2.5
+            }
+        },
+        "__SpawnMerchantFemaleUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "village_female_01"
+                },
+                "modelScale": 1
+            }
+        },
+        "__SpawnMerchantMaleUnit": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "villager_male_01"
+                },
+                "modelScale": 1
             }
         }
     },

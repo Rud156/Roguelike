@@ -197,6 +197,17 @@
                 "mover": "_PlayerCharacter_LightAttack"
             }
         },
+        "_Periodic_Remove_Projectile_NotOnNavMesh": {
+            "persistent": {
+                "periodicCount": 1,
+                "periodicEffects": [
+                    "Remove Source"
+                ],
+                "periodicValidators": [
+                    "_Projectile_NotOnNavMesh"
+                ]
+            }
+        },
         "_Remove_Behaviour_Enemy_Invincible": {
             "removeBehavior": {
                 "behavior": "_Unit_Invincible",
@@ -550,6 +561,14 @@
                 ]
             }
         },
+        "_Set_Periodic_GoblinChef_Attack": {
+            "set": {
+                "effectList": [
+                    "_Search_Enemy_GoblinChef",
+                    "_Periodic_Remove_Projectile_NotOnNavMesh"
+                ]
+            }
+        },
         "_Set_Periodic_PlayerCharacter_Ranged_HeavyAttack": {
             "set": {
                 "effectList": [
@@ -623,25 +642,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Periodic_Remove_Projectile_NotOnNavMesh": {
-            "persistent": {
-                "periodicCount": 1,
-                "periodicEffects": [
-                    "Remove Source"
-                ],
-                "periodicValidators": [
-                    "_Projectile_NotOnNavMesh"
-                ]
-            }
-        },
-        "_Set_Periodic_GoblinChef_Attack": {
-            "set": {
-                "effectList": [
-                    "_Search_Enemy_GoblinChef",
-                    "_Periodic_Remove_Projectile_NotOnNavMesh"
-                ]
             }
         }
     }

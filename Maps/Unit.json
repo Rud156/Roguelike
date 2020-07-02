@@ -625,6 +625,42 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "__SpawnMerchantCargoshipUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "__SpawnMerchantFemaleUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
+        },
+        "__SpawnMerchantMaleUnit": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            }
         }
     }
 }
