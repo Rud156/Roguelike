@@ -70,6 +70,9 @@
             "_Unit_Invincible",
             "_Enemy_Ooze_ReSpawn",
             "_Collectible_Potion"
+        ],
+        "usedAtlasAssets": [
+            "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"
         ]
     }
 }

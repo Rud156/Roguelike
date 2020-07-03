@@ -419,7 +419,7 @@ function SpawnPlayerAndSetPosition()
     if roomType == nil then -- This should be the beginning room
         DCEI.LogMessage("Beginning Room. Generating Rooms")
 
-        m_roomGenerator = RoomGenerator:new(m_randomSeed)
+        m_roomGenerator = RoomGenerator:new(m_randomSeed, m_roomLevel)
         m_isBeginningRoom = true
     else
         DCEI.LogMessage("Loading Old Room Data")
@@ -629,7 +629,7 @@ function UpdateCollisionWithExitDoor()
         math.randomseed(randomSeed)
         m_randomSeed = randomSeed
         
-        m_roomGenerator = RoomGenerator:new(randomSeed)
+        m_roomGenerator = RoomGenerator:new(randomSeed, m_roomLevel)
         
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)

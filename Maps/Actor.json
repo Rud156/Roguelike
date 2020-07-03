@@ -1028,6 +1028,54 @@
                 "targetSite": "SiteHit"
             }
         },
+        "_FX_Enemy_Gold_Drop": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_dwarfsmith_towersmith_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_FX_Enemy_Hobgoblin_Attack": {
             "modelActor": {
                 "resource": {
@@ -2540,54 +2588,6 @@
                 },
                 "modelScale": 1
             }
-        },
-        "_FX_Enemy_Gold_Drop": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_spell_greedcannon_impact_aoe"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
         }
     },
     "actorEventMacros": {
@@ -2652,6 +2652,22 @@
                         {
                             "create": {
                                 "actor": "_SFX_Enemy_Spawn"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Enemy_Spawn_Gold": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitDeath": {}
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Enemy_Gold_Drop"
                             }
                         }
                     ]
@@ -2963,22 +2979,6 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Helm_Of_Valor"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        "_Enemy_Spawn_Gold": {
-            "events": [
-                {
-                    "actorTerm": {
-                        "unitDeath": {}
-                    },
-                    "actions": [
-                        {
-                            "create": {
-                                "actor": "_FX_Enemy_Gold_Drop"
                             }
                         }
                     ]

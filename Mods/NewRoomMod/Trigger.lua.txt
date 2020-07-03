@@ -6,6 +6,7 @@ local BASE_ROOM_PATH = "Mods/RoomTemplates"
 local COMMON_ROOM_PATH = BASE_ROOM_PATH .. "/CommonRoom"
 local MERCHANT_ROOM_PATH = BASE_ROOM_PATH .. "/MerchantRoom"
 local SECRET_ROOM_PATH = BASE_ROOM_PATH .. "/SecretRoom"
+local GOBLIN_FOREST_BOSS_ROOM_PATH = BASE_ROOM_PATH .. "/GoblinForest_BossRoom"
 
 local COMMON_ROOMS = {
     "CR_BL_0",
@@ -107,7 +108,7 @@ local RoomGenerator  = {
     randomSeed = -1
 }
 RoomGenerator.__index = RoomGenerator
-function RoomGenerator:new(randomSeed)
+function RoomGenerator:new(randomSeed, roomLevel)
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
 
@@ -133,7 +134,7 @@ function RoomGenerator:new(randomSeed)
 
     roomGenerator.randomSeed = randomSeed
     
-    roomGenerator:GenerateRoomBase()
+    roomGenerator:GenerateRoomBase(roomLevel)
     roomGenerator:SaveRoomStructure()
     roomGenerator:PrintRooms()
     roomGenerator:PrintSpawnAndExit()
@@ -240,7 +241,7 @@ end
 function RoomGenerator:GetRoomFromPlayerPosition()
     return self.roomMatrix[self.currentPlayerRow][self.currentPlayerColumn]
 end
-function RoomGenerator:GenerateRoomBase()
+function RoomGenerator:GenerateRoomBase(roomLevel)
     local spawnRoomRow = 100
     local spawnRoomColumn = 100
 
@@ -319,6 +320,7 @@ function RoomGenerator:GenerateRoomBase()
     self:MergeCommonSecretRooms()
     self:SpawnMerchantRooms()
     self:SetupClearMatrix()
+    self:CheckAndEnableBossRoom(roomLevel)
 end
 function RoomGenerator:PlaceSecretRooms()
     DCEI.LogMessage("Placing Secret Rooms")
@@ -462,7 +464,7 @@ function RoomGenerator:SpawnMerchantRooms()
                     local position = secretRoomGroup[randomIndex]
                     local secretRoom = self.roomMatrix[position.x][position.y]
 
-                    self.roomMatrix[position.x][position.y] = mod.ConvertSecretRoomToMerchantRoom(secretRoom)
+                    self.roomMatrix[position.x][position.y] = mod.ConvertRoomToRoom(secretRoom, "SR", "MR")
                     secretRoomGroup = {}
                 end
             end
@@ -501,6 +503,17 @@ function RoomGenerator:SetupClearMatrix()
             end
         end
     end
+end
+function RoomGenerator:CheckAndEnableBossRoom(roomLevel)
+    if roomLevel < 3 then
+        return
+    end
+
+    local exitRow = self.exitRoomRow
+    local exitColumn = self.exitRoomColumn
+    local exitRoom = self.roomMatrix[exitRow][exitColumn]
+
+    self.roomMatrix[exitRow][exitColumn] = mod.ConvertRoomToRoom(exitRoom, "CR", "GFBR")
 end
 function RoomGenerator:UpdateMinMaxRowColumn(i, j)
     if self.minRow > i then
@@ -1430,8 +1443,8 @@ function mod.RoomHasBottomExit(value)
     return string.find(value, "_.*B.*_")
 end
 
-function mod.ConvertSecretRoomToMerchantRoom(secretRoom)
-    return string.gsub(secretRoom, "SR", "MR") -- Maybe make this more complicated later if required...
+function mod.ConvertRoomToRoom(initialRoom, fromInitials, toInitials)
+    return string.gsub(initialRoom, fromInitials, toInitials) -- Maybe make this more complicated later if required...
 end
 
 function mod.Convert2DMatrixToString(matrix, minRow, maxRow, minColumn, maxColumn)
@@ -1533,6 +1546,8 @@ function mod.GetRoomPath(roomName)
         return MERCHANT_ROOM_PATH .. "/" .. roomName
     elseif mod.IsSecretRoom(roomName) then
         return SECRET_ROOM_PATH .. "/" .. roomName
+    elseif mod.IsGoblinForestBossRoom(roomName) then
+        return GOBLIN_FOREST_BOSS_ROOM_PATH .. "/" .. roomName
     else
         DCEI.LogError("Invalid Room Name!!!")
     end
@@ -1548,6 +1563,10 @@ end
 
 function mod.IsSecretRoom(value)
     return string.find(value, "SR")
+end
+
+function mod.IsGoblinForestBossRoom(value)
+    return string.find(value, "GFBR")
 end
 
 
