@@ -953,7 +953,7 @@ local RoomEnemies = {
     direction = nil
 }
 RoomEnemies.__index = RoomEnemies
-function RoomEnemies:new(player, roomGenerator)
+function RoomEnemies:new(player, roomGenerator, roomLevel)
     local roomEnemies = {}
     setmetatable(roomEnemies, RoomEnemies)
 
@@ -974,16 +974,44 @@ function RoomEnemies:new(player, roomGenerator)
     roomEnemies.enemies = {}
     roomEnemies.direction = direction
 
-    roomEnemies:SpawnEnemies(player)
+    roomEnemies:SpawnEnemies(player, roomLevel)
 
     return roomEnemies
 end
-function RoomEnemies:SpawnEnemies(player)
+function RoomEnemies:SpawnEnemies(player, roomLevel)
+    DCEI.LogMessage("Room Level: " .. roomLevel)
+
     local lastActiveSeed = self.roomGenerator:GetRandomSeed()
     math.randomseed(os.time())
 
+    local enemySet
+    local randomValue = math.random()
+
+    if roomLevel == 1 then
+        if randomValue <= 0.2 then
+            enemySet = LEVEL_2_ENEMY_SETS
+        else
+            enemySet = LEVEL_1_ENEMY_SETS
+        end
+    elseif roomLevel == 2 then
+        if randomValue <= 0.1 then
+            enemySet = LEVEL_1_ENEMY_SETS
+        elseif randomValue <= 0.2 then
+            enemySet = LEVEL_3_ENEMY_SETS
+        else
+            enemySet = LEVEL_2_ENEMY_SETS
+        end
+    else
+        if randomValue <= 0.1 then
+            enemySet = LEVEL_1_ENEMY_SETS
+        elseif randomValue <= 0.5 then
+            enemySet = LEVEL_2_ENEMY_SETS
+        else
+            enemySet = LEVEL_3_ENEMY_SETS
+        end
+    end
+
     local playerPosition = DCEI.GetUnitPosition2D(player)
-    local enemySet = LEVEL_1_ENEMY_SETS
     local randomEnemySet = math.random(1, #enemySet)
 
     for i, enemyType in ipairs(enemySet[randomEnemySet]) do

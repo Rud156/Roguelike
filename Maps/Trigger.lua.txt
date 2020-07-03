@@ -93,6 +93,8 @@ local DOOR_OPEN_ANIM = "_Room_Exit_Open"
 local DOOR_CLOSE_ANIM = "_Room_Exit_Close"
 local ROOM_EXIT_DOOR = "_Room_Exit"
 local ROOM_NAME = "RoomName"
+local ROOM_LEVEL_STRING = "RoomLevel"
+local ROOM_LEVEL_MAX = 3
 
 -- #endregion Constants
 
@@ -106,6 +108,7 @@ local UseMeleePlayer = true
 -- Rooms
 local m_roomGenerator
 local m_roomEnemies
+local m_roomLevel = 1
 local m_isBeginningRoom = false
 local m_nextRoomTransitionActive = false
 local m_doorOpenAnimPlayed = false
@@ -402,6 +405,15 @@ end
 function SpawnPlayerAndSetPosition()
     -- Load/Generate Room Data
     local roomType = DCEI.Save.Get(ROOM_NAME)
+    local roomLevel = DCEI.Save.Get(ROOM_LEVEL_STRING)
+
+    if roomLevel ~= nil then
+        m_roomLevel = roomLevel
+    else -- Save the new level if it does not exists...
+        DCEI.Save.Set(ROOM_LEVEL_STRING, m_roomLevel)
+        DCEI.Save.Commit()
+    end
+
     if roomType == nil then -- This should be the beginning room
         DCEI.LogMessage("Beginning Room. Generating Rooms")
 
@@ -474,7 +486,7 @@ function SpawnEnemiesAndCloseDoors()
     end
 
     if not m_isBeginningRoom and not m_roomGenerator:IsPlayerRoomCleared() then
-        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator)
+        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel)
         ActivateDoorCloseAnimations()
     end
 end
@@ -594,15 +606,39 @@ function UpdateCollisionWithExitDoor()
     DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
     DCEI.Wait(maskOptions.duration)
 
-    m_roomGenerator:ClearSaveData()
     m_inventory:SaveInventory()
     m_player:SaveData()
 
-    DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
-    DCEI.Save.Set(LAST_DIRECTION, nil)
-    DCEI.Save.Commit()
-    DCEI.Wait(1)
-    DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
+    m_roomLevel = m_roomLevel + 1
+    if m_roomLevel > ROOM_LEVEL_MAX then
+        m_roomGenerator:ClearSaveData()
+
+        DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
+        DCEI.Save.Set(LAST_DIRECTION, nil)
+        DCEI.Save.Set(ROOM_LEVEL_STRING, nil)
+        DCEI.Save.Commit()
+        DCEI.Wait(1)
+        DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
+
+    else
+        m_roomGenerator:ClearSaveData()
+        
+        local randomSeed = os.time()
+        math.randomseed(randomSeed)
+        m_randomSeed = randomSeed
+        
+        m_roomGenerator = RoomGenerator:new(randomSeed)
+        
+        local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
+        local roomPath = RoomMod.GetRoomPath(roomName)
+
+        DCEI.Save.Set(ROOM_NAME, roomName)
+        DCEI.Save.Set(LAST_DIRECTION, nil)
+        DCEI.Save.Set(ROOM_LEVEL_STRING, m_roomLevel)
+        DCEI.Save.Commit()
+        DCEI.Wait(1)
+        DCEI.PlayLevel(roomPath, roomName)
+    end
 end
 
 -- #endregion Doorways
@@ -676,6 +712,7 @@ function DisplayGameOverSequence(playerWon)
 
         DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
         DCEI.Save.Set(LAST_DIRECTION, nil)
+        DCEI.Save.Set(ROOM_LEVEL_STRING, nil)
         DCEI.Save.Commit()
         DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
