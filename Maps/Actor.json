@@ -350,7 +350,8 @@
                 "eventMacros": [
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
-                    "_Enemy_Stunned_Effect"
+                    "_Enemy_Stunned_Effect",
+                    "_Enemy_Spawn_Gold"
                 ],
                 "hostSites": {
                     "Attack Host Site": {
@@ -420,7 +421,8 @@
                 "eventMacros": [
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
-                    "_Enemy_Stunned_Effect"
+                    "_Enemy_Stunned_Effect",
+                    "_Enemy_Spawn_Gold"
                 ],
                 "hostSites": {
                     "StunnedEffectSite": {
@@ -617,7 +619,8 @@
                 "eventMacros": [
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
-                    "_Enemy_Stunned_Effect"
+                    "_Enemy_Stunned_Effect",
+                    "_Enemy_Spawn_Gold"
                 ],
                 "hostSites": {
                     "Attack Host Site": {
@@ -726,7 +729,8 @@
                 ],
                 "eventMacros": [
                     "_Enemy_Spawn",
-                    "_Enemy_Damage_Effect"
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Spawn_Gold"
                 ]
             }
         },
@@ -2536,6 +2540,54 @@
                 },
                 "modelScale": 1
             }
+        },
+        "_FX_Enemy_Gold_Drop": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_spell_greedcannon_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -2911,6 +2963,22 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Helm_Of_Valor"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Enemy_Spawn_Gold": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitDeath": {}
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Enemy_Gold_Drop"
                             }
                         }
                     ]

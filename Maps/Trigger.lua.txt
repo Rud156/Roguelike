@@ -793,8 +793,8 @@ function CreatePlayerGoldDisplay()
     DCEI.SetSpacing(playerGoldStack, 14)
     
     local playerGoldImage = DCEI.NewFrame(playerGoldStack)
-    DCEI.SetMinSize(playerGoldImage, 50, 54)
-    DCEI.SetBackgroundImage(playerGoldImage, "icon_affinity_gold")
+    DCEI.SetMinSize(playerGoldImage, 50, 50)
+    DCEI.SetBackgroundImage(playerGoldImage, "ui_ingame_coin")
 
     local playerGoldText = DCEI.NewText(playerGoldStack)
     DCEI.SetTextFontSize(playerGoldText, 30)
@@ -1024,13 +1024,13 @@ function mod.ActivateMerchantRooms()
     math.randomseed(randomSeed) -- TODO: Check if this is correct
 
     local spawnUnits = DCEI.FindUnits(SPAWN_MARKER_UNIT)
-
-    for _, unit in ipairs(spawnUnits) do
+    local shuffledCollectibles = ExtensionFunction.ShuffleTable(InventoryCollectiblesName)
+    
+    for i, unit in ipairs(spawnUnits) do
         local unitPosition = DCEI.GetUnitPosition2D(unit)
         DCEI.RemoveUnit(unit)
 
-        local randomCollectibleIndex = math.random(1, #InventoryCollectiblesName)
-        DCEI.CreateUnit(1, 1, InventoryCollectiblesName[randomCollectibleIndex], unitPosition.x, unitPosition.y)
+        DCEI.CreateUnit(1, 1, shuffledCollectibles[i], unitPosition.x, unitPosition.y)
     end
 end
 

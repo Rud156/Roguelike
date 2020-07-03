@@ -5,17 +5,13 @@ local BaseRoomMod = GameModules["Mods/NewRoomMod"]
 local BaseRoomGenerator = BaseRoomMod.RoomGenerator
 
 function ValidateAndLoadSaveData()
-    local maskOptionsStart = {
-        color = { r = 0, g = 0, b = 0 },
-        duration = 1
-    }
-    local maskOptionsEnd = {
-        color = { r = 0, g = 0, b = 0 },
-        duration = 1
-    }
+    local uiRoot = DCEI.GetUiRoot()
+    local screenMask = DCEI.NewFrame(uiRoot)
+    DCEI.SetMatchParent(screenMask, true, true)
+    DCEI.SetBackgroundImage(screenMask, "shape_square_sharp_32x32")
+    DCEI.SetBackgroundImageColor(screenMask, 0, 0, 0, 1)
 
-    DCEI.ShowScreenMaskWithAlpha(1, maskOptionsStart)
-    DCEI.Wait(maskOptionsStart.duration)
+    DCEI.Wait(1)
 
     local savedRoomType = DCEI.Save.Get(MainMap.RoomName)
     if savedRoomType ~= nil then
@@ -25,19 +21,16 @@ function ValidateAndLoadSaveData()
         BaseRoomGenerator:ClearSaveData() -- If nothing exits reload a fresh game
     end
 
-    DCEI.ShowScreenMaskWithAlpha(0, maskOptionsEnd)
-    DCEI.Wait(maskOptionsEnd.duration)
-    DCEI.HideScreenMask()
+    DCEI.Destroy(screenMask)
 end
 
 DCEI.TriggerAddTimerEventElapsed(
     function()
-        ValidateAndLoadSaveData()
-
         local spawnPoint = DCEI.FindUnit(MainMap.SpawnMarkerUnit)
         local spawnPosition = DCEI.GetUnitPosition2D(spawnPoint)
         DCEI.RemoveUnit(spawnPoint)
 
+        ValidateAndLoadSaveData()
         MainMap.Start(spawnPosition, nil, nil, nil)
     end,
     0
