@@ -6,6 +6,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_enhance_frosttower_tempestaura",
         itemStackable = -1,
         itemType = 0,
+        itemCost = 50,
         itemBehaviourName = "_Collectible_Boots_Of_Speed",
         itemDescription = "Increases the movement speed of the Hero by 30% when placed in inventory. Boots of Speed do not stack. Two boots of speed will make a Hero just as fast as one"           
     },
@@ -14,6 +15,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_enhance_crusader_blessed_hammer",
         itemStackable = -1,
         itemType = 0,
+        itemCost = 65,
         itemBehaviourName = "_Collectible_Hammer_Of_Attack",
         itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage"
     },
@@ -22,6 +24,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_enhance_lighthouse_guardian",
         itemStackable = -1,
         itemType = 0,
+        itemCost = 35,
         itemBehaviourName = "_Collectible_Helm_Of_Valor",
         itemDescription = "When placed in the inventory and active, Helm of Valor will block 1 incoming attack for the Hero. After blocking the damage, Helm of Valor will become inactive, becoming active after 10 seconds"
     },
@@ -30,6 +33,7 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_catalyst_main_item5_orange_02",
         itemStackable = 2,
         itemType = 1,
+        itemCost = 30,
         itemDescription = "Consume to instantly regenerate 50 HP",
         itemBehaviourName = "_Collectible_Potion",
         itemPotionHealth = 50
@@ -39,9 +43,18 @@ local COLLECTIBLES_TABLE = {
         itemImage = "icon_gear_bomb_01",
         itemStackable = 2,
         itemType = 1,
+        itemCost = 15,
         itemDescription = "Place a bomb that will explode 2 seconds after placement from where the Hero is standing. Bomb explosion will deal 30 damage in a radius of 1",
         itemBombName = "_Collectible_Bomb_Unit"
     }
+}
+
+local COLLECTIBLES = {
+    "_Collectible_Boots_Of_Speed",
+    "_Collectible_Hammer_Of_Attack",
+    "_Collectible_Helm_Of_Valor",
+    "_Collectible_Potion",
+    "_Collectible_Bomb"
 }
 
 -- Item  Type
@@ -439,4 +452,5 @@ end
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
 mod.InventoryCollectibles = COLLECTIBLES_TABLE
+mod.InventoryCollectiblesName = COLLECTIBLES
 return mod

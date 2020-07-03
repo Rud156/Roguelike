@@ -48,7 +48,7 @@ local EXIT_ROOM_PATH_LENGTH = 3
 local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 
 local ROOM_SIZE = 30
-local MAX_ENEMIES = 10
+local MERCHANT_ROOM_SPAWN_RATE = 3
 
 local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
 
@@ -317,6 +317,7 @@ function RoomGenerator:GenerateRoomBase()
 
     self:PlaceSecretRooms()
     self:MergeCommonSecretRooms()
+    self:SpawnMerchantRooms()
     self:SetupClearMatrix()
 end
 function RoomGenerator:PlaceSecretRooms()
@@ -448,6 +449,26 @@ function RoomGenerator:MergeCommonSecretRooms()
         end
     end
 end
+function RoomGenerator:SpawnMerchantRooms()
+    local secretRoomGroup = {}
+
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] ~= nil and mod.IsSecretRoom(self.roomMatrix[i][j]) then
+                table.insert(secretRoomGroup, { x = i, y = j })
+                
+                if #secretRoomGroup == 3 then
+                    local randomIndex = math.random(1, #secretRoomGroup)
+                    local position = secretRoomGroup[randomIndex]
+                    local secretRoom = self.roomMatrix[position.x][position.y]
+
+                    self.roomMatrix[position.x][position.y] = mod.ConvertSecretRoomToMerchantRoom(secretRoom)
+                    secretRoomGroup = {}
+                end
+            end
+        end
+    end
+end
 function RoomGenerator:SetupClearMatrix()
     for i = self.minRow, self.maxRow do
         for j = self.minColumn, self.maxColumn do
@@ -469,6 +490,11 @@ function RoomGenerator:SetupClearMatrix()
                     roomClear = true
                 else
                     self.roomVisitedMatrix[i][j] = false
+                end
+
+                -- Clear Merchant Rooms...
+                if mod.IsMerchantRoom(self.roomMatrix[i][j]) then
+                    roomClear = true
                 end
 
                 self.roomClearMatrix[i][j] = roomClear
@@ -1402,6 +1428,10 @@ end
 
 function mod.RoomHasBottomExit(value)
     return string.find(value, "_.*B.*_")
+end
+
+function mod.ConvertSecretRoomToMerchantRoom(secretRoom)
+    return string.gsub(secretRoom, "SR", "MR") -- Maybe make this more complicated later if required...
 end
 
 function mod.Convert2DMatrixToString(matrix, minRow, maxRow, minColumn, maxColumn)

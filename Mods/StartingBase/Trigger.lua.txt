@@ -4,9 +4,6 @@ local BaseRoomMod = GameModules["Mods/NewRoomMod"]
 
 local BaseRoomGenerator = BaseRoomMod.RoomGenerator
 
-local BASE_ROOM_NAME = "RoomName"
-local SPAWN_POINT = { x = 23.62, y = 14 }
-
 function ValidateAndLoadSaveData()
     local maskOptionsStart = {
         color = { r = 0, g = 0, b = 0 },
@@ -20,7 +17,7 @@ function ValidateAndLoadSaveData()
     DCEI.ShowScreenMaskWithAlpha(1, maskOptionsStart)
     DCEI.Wait(maskOptionsStart.duration)
 
-    local savedRoomType = DCEI.Save.Get(BASE_ROOM_NAME)
+    local savedRoomType = DCEI.Save.Get(MainMap.RoomName)
     if savedRoomType ~= nil then
         local roomPath = BaseRoomMod.GetRoomPath(savedRoomType)
         DCEI.PlayLevel(roomPath, savedRoomType)
@@ -36,7 +33,12 @@ end
 DCEI.TriggerAddTimerEventElapsed(
     function()
         ValidateAndLoadSaveData()
-        MainMap.Start(SPAWN_POINT, nil, nil, nil)
+
+        local spawnPoint = DCEI.FindUnit(MainMap.SpawnMarkerUnit)
+        local spawnPosition = DCEI.GetUnitPosition2D(spawnPoint)
+        DCEI.RemoveUnit(spawnPoint)
+
+        MainMap.Start(spawnPosition, nil, nil, nil)
     end,
     0
 )

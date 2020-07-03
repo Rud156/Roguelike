@@ -11,6 +11,7 @@ local PlayerMod = GameModules["Mods/PlayerMod"]
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryCollectibles = InventoryMod.InventoryCollectibles
+local InventoryCollectiblesName = InventoryMod.InventoryCollectiblesName
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
@@ -62,6 +63,8 @@ local BOTTOM = "B"
 local LAST_DIRECTION = "LastDirection"
 
 local DEBUG_UNIT = "__DebugMarkerUnit"
+local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
+
 local EXIT_DOORWAY = "_TrapDoorway"
 local EXIT_DOORWAY_OPEN = "_DoorwayOpen"
 local EXIT_DOORWAY_CLOSE = "_DoorwayClose"
@@ -281,6 +284,12 @@ function Update()
                 ActivateDoorOpenAnimations()
             end
         else
+            -- This will generally trigger on Merchant Rooms
+            -- Does not matter if it triggers on already cleared rooms
+            if not m_isBeginningRoom then
+                m_roomGenerator:MarkRoomAtPlayerPositionVisited()
+            end
+
             m_doorOpenAnimPlayed = true
             m_roomEnemiesCleared = true
             ActivateDoorOpenAnimations()
@@ -384,14 +393,7 @@ function HandleUnitSelected()
     -- Add Collectibles to Inventory if successful
     -- Then destroy the unit
     if string.match(unitName, COLLECTIBLE_STRING) then
-        local success = m_inventory:CheckAndAddItemToSlot(unitName)
-        if success then
-            DCEI.RemoveUnit(unit)
-        else
-            DCEI.LogError("Inventory is full!!!")
-        end
-
-        ApplyInventoryItemBehaviour(unitName)
+        HandleInventoryUnitClicked(unit, unitName)
     end
 end
 -- #endregion Unit Events
@@ -862,6 +864,33 @@ end
 
 -- #region Inventory Functions
 
+function HandleInventoryUnitClicked(unit, unitName)
+    if m_player == nil then
+        DCEI.LogError("Player does not exist")
+        return
+    end
+
+    local playerGold = m_player:GetPlayerGold()
+    local itemCost = InventoryCollectibles[unitName].itemCost
+
+    if playerGold < itemCost then
+        DCEI.LogMessage("Item Name: " .. unitName .. ", Item Gold: " .. itemCost)
+        DCEI.LogMessage("Not enough gold to buy!!!")
+        return
+    end
+
+    m_player:UseGold(itemCost)
+
+    local success = m_inventory:CheckAndAddItemToSlot(unitName)
+    if success then
+        DCEI.RemoveUnit(unit)
+    else
+        DCEI.LogError("Inventory is full!!!")
+    end
+
+    ApplyInventoryItemBehaviour(unitName)
+end
+
 function CreateInventoryUI()
     local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
     DCEI.SetTopAlignmentInParent(horizontalStack)
@@ -987,5 +1016,25 @@ end
 -- #endregion Inventory Functions
 
 -- #endregion Utility Fuctions
+
+-- This function shuold be run before Start...
+function mod.ActivateMerchantRooms()
+    local randomSeed = os.time()
+    DCEI.LogMessage("Merchant Room Seed: " .. randomSeed)
+    math.randomseed(randomSeed) -- TODO: Check if this is correct
+
+    local spawnUnits = DCEI.FindUnits(SPAWN_MARKER_UNIT)
+
+    for _, unit in ipairs(spawnUnits) do
+        local unitPosition = DCEI.GetUnitPosition2D(unit)
+        DCEI.RemoveUnit(unit)
+
+        local randomCollectibleIndex = math.random(1, #InventoryCollectiblesName)
+        DCEI.CreateUnit(1, 1, InventoryCollectiblesName[randomCollectibleIndex], unitPosition.x, unitPosition.y)
+    end
+end
+
+mod.SpawnMarkerUnit = SPAWN_MARKER_UNIT
+mod.RoomName = ROOM_NAME
 
 return mod
