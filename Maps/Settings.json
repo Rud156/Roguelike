@@ -69,7 +69,8 @@
             "_Collectible_Helm_Of_Valor",
             "_Unit_Invincible",
             "_Enemy_Ooze_ReSpawn",
-            "_Collectible_Potion"
+            "_Collectible_Potion",
+            "_Collectible_Dropped"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"

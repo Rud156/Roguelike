@@ -85,6 +85,7 @@ local COLLECTIBLE_BOOTS_OF_SPEED = "_Collectible_Boots_Of_Speed"
 local COLLECTIBLE_HAMMER_OF_ATTACK = "_Collectible_Hammer_Of_Attack"
 local COLLECTIBLE_POTION = "_Collectible_Potion"
 local COLLECTIBLE_BOMB = "_Collectible_Bomb"
+local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
 local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
 local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
@@ -395,6 +396,8 @@ function HandleUnitSelected()
     if string.match(unitName, COLLECTIBLE_STRING) then
         HandleInventoryUnitClicked(unit, unitName)
     end
+
+    DCEI.DeselectUnit(unit)
 end
 -- #endregion Unit Events
 
@@ -870,16 +873,19 @@ function HandleInventoryUnitClicked(unit, unitName)
         return
     end
 
-    local playerGold = m_player:GetPlayerGold()
-    local itemCost = InventoryCollectibles[unitName].itemCost
+    local behaviourStack = DCEI.UnitBehaviorStackCount(unit, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    if behaviourStack == 0 then
+        local playerGold = m_player:GetPlayerGold()
+        local itemCost = InventoryCollectibles[unitName].itemCost
 
-    if playerGold < itemCost then
-        DCEI.LogMessage("Item Name: " .. unitName .. ", Item Gold: " .. itemCost)
-        DCEI.LogMessage("Not enough gold to buy!!!")
-        return
+        if playerGold < itemCost then
+            DCEI.LogMessage("Item Name: " .. unitName .. ", Item Gold: " .. itemCost)
+            DCEI.LogMessage("Not enough gold to buy!!!")
+            return
+        end
+
+        m_player:UseGold(itemCost)
     end
-
-    m_player:UseGold(itemCost)
 
     local success = m_inventory:CheckAndAddItemToSlot(unitName)
     if success then
@@ -972,7 +978,8 @@ function HandleInventoryItemDropped(itemName, inventorySlot)
     end
 
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-    DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+    local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+    DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
 
     RemoveInventoryItemBehaviour(itemName)
     inventorySlot:DropInventoryItem()

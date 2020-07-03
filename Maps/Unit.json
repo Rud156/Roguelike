@@ -34,7 +34,7 @@
                     "turningSpeed": 900
                 },
                 "behavior": {
-                    "behaviorType": 1
+                    "behaviorType": 0
                 },
                 "unitBattleData": {
                     "enemySearchRange": 3,
@@ -53,7 +53,7 @@
             "components": {
                 "unitStats": {
                     "radius": 0.125,
-                    "selectable": true
+                    "selectable": false
                 },
                 "health": {
                     "maxHealth": 10
@@ -97,7 +97,7 @@
                     "turningSpeed": 900
                 },
                 "behavior": {
-                    "behaviorType": 1
+                    "behaviorType": 0
                 },
                 "unitBattleData": {
                     "enemySearchRange": 3,
@@ -128,7 +128,7 @@
                     "turningSpeed": 900
                 },
                 "behavior": {
-                    "behaviorType": 1
+                    "behaviorType": 0
                 },
                 "unitBattleData": {
                     "enemySearchRange": 3,
@@ -159,7 +159,7 @@
                     "turningSpeed": 900
                 },
                 "behavior": {
-                    "behaviorType": 1
+                    "behaviorType": 0
                 },
                 "unitBattleData": {
                     "enemySearchRange": 3,

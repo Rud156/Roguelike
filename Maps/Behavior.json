@@ -17,6 +17,9 @@
                 }
             }
         },
+        "_Collectible_Dropped": {
+            "maxStackCount": 1
+        },
         "_Collectible_Hammer_Of_Attack": {
             "maxStackCount": 1,
             "behaviorTagArray": [
