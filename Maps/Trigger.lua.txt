@@ -29,6 +29,7 @@ RoomMod.EnemyGoblinChef = EnemyGoblinChef
 RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
+RoomMod.InventoryCollectiblesName = InventoryCollectiblesName
 RoomMod.split = ExtensionFunction.split
 RoomMod.ToBoolean = ExtensionFunction.ToBoolean
 RoomMod.ArrayHasValue = ExtensionFunction.ArrayHasValue
@@ -1014,6 +1015,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
     else
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+        DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
 
         RemoveInventoryItemBehaviour(itemName)
         inventorySlot:DropInventoryItem()
@@ -1026,18 +1028,21 @@ end
 
 -- This function shuold be run before Start...
 function mod.ActivateMerchantRooms()
-    local randomSeed = os.time()
-    DCEI.LogMessage("Merchant Room Seed: " .. randomSeed)
-    math.randomseed(randomSeed) -- TODO: Check if this is correct
-
     local spawnUnits = DCEI.FindUnits(SPAWN_MARKER_UNIT)
-    local shuffledCollectibles = ExtensionFunction.ShuffleTable(InventoryCollectiblesName)
+    local row = m_roomGenerator.currentPlayerRow
+    local column = m_roomGenerator.currentPlayerColumn
+
+    local items = m_roomGenerator:GetMerchantRoomData(row, column)
+    if items == nil then
+        DCEI.LogError("Invalid Merchant Room!!!")
+        return
+    end
     
     for i, unit in ipairs(spawnUnits) do
         local unitPosition = DCEI.GetUnitPosition2D(unit)
         DCEI.RemoveUnit(unit)
-
-        DCEI.CreateUnit(1, 1, shuffledCollectibles[i], unitPosition.x, unitPosition.y)
+        
+        DCEI.CreateUnit(1, 1, items[i], unitPosition.x, unitPosition.y)
     end
 end
 

@@ -3,5 +3,5 @@ local MainMap = GameModules["Maps"]
 
 local SPAWN_POINT_TOP = { x = 10, y = 16 }
 
-MainMap.ActivateMerchantRooms()
 MainMap.Start(nil, nil, SPAWN_POINT_TOP, nil)
+MainMap.ActivateMerchantRooms()

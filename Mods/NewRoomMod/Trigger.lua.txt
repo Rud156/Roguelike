@@ -82,6 +82,8 @@ local MAP_CONNECTOR_WIDTH = 10
 local MAP_CONNECTOR_HEIGHT = 6
 local MAP_DEFAULT_OFFSET = 30
 
+local MERCHANT_ROOM_ITEM_COUNT = 3
+
 -- #region Room Generator
 
 local RoomGenerator  = {
@@ -90,6 +92,8 @@ local RoomGenerator  = {
     roomClearMatrix = {},
     roomVisitedMatrix = {},
     roomAdjacencyList = {},
+
+    merchantRoomItems = {},
 
     spawnRoomRow = 100,
     spawnRoomColumn = 100,
@@ -117,6 +121,8 @@ function RoomGenerator:new(randomSeed, roomLevel)
     roomGenerator.roomClearMatrix = {}
     roomGenerator.roomVisitedMatrix = {}
     roomGenerator.roomAdjacencyList = {}
+
+    roomGenerator.merchantRoomItems = {}
 
     roomGenerator.spawnRoomRow = -1
     roomGenerator.spawnRoomColumn = -1
@@ -150,6 +156,8 @@ function RoomGenerator:SaveRoomStructure()
     DCEI.Save.Set("RoomVisitedMatrix", mod.Convert2DMatrixToString(self.roomVisitedMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
     DCEI.Save.Set("RoomAdjacencyList", mod.ConvertAdjacencyListToString(self.roomAdjacencyList))
 
+    DCEI.Save.Set("MerchantRoomItems", mod.ConvertMerchantRoomDataToString(self.merchantRoomItems))
+
     DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
     DCEI.Save.Set("SpawnRoomColumn", self.spawnRoomColumn)
     
@@ -180,6 +188,8 @@ function RoomGenerator:LoadRoomStructure()
     roomGenerator.roomVisitedMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomVisitedMatrix"), 2)
     roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(DCEI.Save.Get("RoomAdjacencyList"))
 
+    roomGenerator.merchantRoomItems = mod.ConvertStringToMerchantRoomData(DCEI.Save.Get("MerchantRoomItems"))
+
     roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
     roomGenerator.spawnRoomColumn = DCEI.Save.Get("SpawnRoomColumn")
 
@@ -209,6 +219,8 @@ function RoomGenerator:ClearSaveData()
     DCEI.Save.Set("RoomClearMatrix", nil)
     DCEI.Save.Set("RoomVisitedMatrix", nil)
     DCEI.Save.Set("RoomAdjacencyList", nil)
+
+    DCEI.Save.Set("MerchantRoomItems", nil)
 
     DCEI.Save.Set("SpawnRoomRow", nil)
     DCEI.Save.Set("SpawnRoomColumn", nil)
@@ -319,6 +331,7 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
     self:PlaceSecretRooms()
     self:MergeCommonSecretRooms()
     self:SpawnMerchantRooms()
+    self:SpawnMerchantRoomItems()
     self:SetupClearMatrix()
     self:CheckAndEnableBossRoom(roomLevel)
 end
@@ -470,6 +483,31 @@ function RoomGenerator:SpawnMerchantRooms()
             end
         end
     end
+end
+function RoomGenerator:SpawnMerchantRoomItems()
+    local merchantRoomItems = {}
+
+    for i = self.minRow, self.maxRow do
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrix[i][j] ~= nil and mod.IsMerchantRoom(self.roomMatrix[i][j]) then
+                local shuffledCollectibles = mod.ShuffleTable(mod.InventoryCollectiblesName)
+                local items = {}
+
+                for i = 1, MERCHANT_ROOM_ITEM_COUNT do
+                    table.insert(items, shuffledCollectibles[i])
+                end
+
+                local finalTable = {
+                    x=  i,
+                    y = j,
+                    items = items
+                }
+                table.insert(merchantRoomItems, finalTable)
+            end
+        end
+    end
+
+    self.merchantRoomItems = merchantRoomItems
 end
 function RoomGenerator:SetupClearMatrix()
     for i = self.minRow, self.maxRow do
@@ -876,6 +914,15 @@ function RoomGenerator:RemoveRoomsWithBottomExit(rooms)
     end
 
     return validRooms
+end
+function RoomGenerator:GetMerchantRoomData(row, column)
+    for _, merchantRoomItem in ipairs(self.merchantRoomItems) do
+        if merchantRoomItem.x == row and merchantRoomItem.y == column then
+            return merchantRoomItem.items
+        end
+    end
+
+    return nil
 end
 function RoomGenerator:GetRandomSeed()
     return self.randomSeed
@@ -1536,6 +1583,53 @@ function mod.ConvertStringToAdjacencyList(stringValue)
     return adjacencyList
 end
 
+function mod.ConvertMerchantRoomDataToString(roomData)
+    local stringValue = ""
+
+    for _, data in ipairs(roomData) do
+        local row = data.x
+        local column = data.y
+        local items = data.items
+        
+        stringValue = stringValue .. row .. ":" .. column .. ":"
+        for _, item in ipairs(items) do
+            stringValue = stringValue .. item .. ","
+        end
+
+        stringValue = stringValue .. "|"
+    end
+
+    return stringValue
+end
+
+function mod.ConvertStringToMerchantRoomData(stringValue)
+    local listArray = mod.split(stringValue, "|")
+    local merchantRoomItems = {}
+
+    for _, value in ipairs(listArray) do
+        local data = mod.split(value, ":")
+        local itemsArray = mod.split(data[3], ",")
+
+        local xPosition = tonumber(data[1])
+        local yPosition = tonumber(data[2])
+        
+        local items = {}
+        for _, item in ipairs(itemsArray) do
+            table.insert(items, item)
+        end
+
+        local finalTable = {
+            x = xPosition,
+            y = yPosition,
+            items = items
+        }
+
+        table.insert(merchantRoomItems, finalTable)
+    end
+
+    return merchantRoomItems
+end
+
 function mod.GetRoomPath(roomName)
     DCEI.LogMessage("Room Name")
     DCEI.LogMessage(roomName)
@@ -1579,6 +1673,8 @@ mod.MaxDirectionPosition = MAX_DIRECTION_POSITION
 mod.RoomSize = ROOM_SIZE
 
 mod.WalkableTextureId = WALKABLE_TEXTURE_ID
+
+mod.InventoryCollectiblesName = nil
 
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil
