@@ -31,6 +31,7 @@ RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
 RoomMod.InventoryCollectiblesName = InventoryCollectiblesName
 RoomMod.split = ExtensionFunction.split
+RoomMod.IsEqual = ExtensionFunction.IsEqual
 RoomMod.ToBoolean = ExtensionFunction.ToBoolean
 RoomMod.ArrayHasValue = ExtensionFunction.ArrayHasValue
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
@@ -38,6 +39,7 @@ RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
 local RoomGenerator = RoomMod.RoomGenerator
 local RoomEnemies = RoomMod.RoomEnemies
 local MiniMap = RoomMod.MiniMap
+local RoomItemDrops = RoomMod.ItemDrops
 
 local Camera = CameraMod.Camera
 
@@ -93,6 +95,7 @@ local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
 
 -- Rooms
 local BEGINNING_ROOM_NAME = "StartingBase"
+local BEGINNING_ROOM_MARKER = -1
 local BEGINNING_ROOM_PATH = "Mods/StartingBase"
 local DOOR_OPEN_ANIM = "_Room_Exit_Open"
 local DOOR_CLOSE_ANIM = "_Room_Exit_Close"
@@ -113,6 +116,7 @@ local UseMeleePlayer = true
 -- Rooms
 local m_roomGenerator
 local m_roomEnemies
+local m_roomItemDrops
 local m_roomLevel = 1
 local m_isBeginningRoom = false
 local m_nextRoomTransitionActive = false
@@ -481,7 +485,33 @@ function SpawnPlayerAndSetPosition()
         )
     end
 
+    SpawnItemDrops()
     ApplyInventoryBehaviours()
+end
+
+function SpawnItemDrops()
+    m_roomItemDrops = RoomItemDrops:new()
+    local roomName
+    local playerRow = BEGINNING_ROOM_MARKER
+    local playerColumn = BEGINNING_ROOM_MARKER
+
+    if m_isBeginningRoom then
+        roomName = BEGINNING_ROOM_NAME
+    else
+        playerRow = m_roomGenerator.currentPlayerRow
+        playerColumn = m_roomGenerator.currentPlayerColumn
+        roomName = m_roomGenerator.roomMatrix[playerRow][playerColumn]
+    end
+
+    local roomItems = m_roomItemDrops:GetItemsInRoom(roomName, playerRow, playerColumn)
+    for _, item in ipairs(roomItems) do
+        local xPosition = item.xPosition
+        local yPosition = item.yPosition
+        local itemName = item.itemName
+
+        local item = DCEI.CreateUnit(1, 1, itemName, xPosition, yPosition)
+        DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    end
 end
 
 function SpawnEnemiesAndCloseDoors()
@@ -614,6 +644,7 @@ function UpdateCollisionWithExitDoor()
 
     m_inventory:SaveInventory()
     m_player:SaveData()
+    m_roomItemDrops:ClearData() -- Clear the data for the older dungeon
 
     m_roomLevel = m_roomLevel + 1
     if m_roomLevel > ROOM_LEVEL_MAX then
@@ -684,6 +715,7 @@ function SaveNextRoomData()
     end
 
     -- Only Save when going into the new room
+    m_roomItemDrops:SaveData()
     m_inventory:SaveInventory() 
     m_player:SaveData() -- Ideally in this case, the player will not be destroyed
 end
@@ -715,6 +747,7 @@ function DisplayGameOverSequence(playerWon)
     else
         m_roomGenerator:ClearSaveData()
         m_inventory:ClearInventorySave()
+        m_roomItemDrops:ClearData()
 
         DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
         DCEI.Save.Set(LAST_DIRECTION, nil)
@@ -875,6 +908,8 @@ function HandleInventoryUnitClicked(unit, unitName)
     end
 
     local behaviourStack = DCEI.UnitBehaviorStackCount(unit, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    local usedGold = false
+
     if behaviourStack == 0 then
         local playerGold = m_player:GetPlayerGold()
         local itemCost = InventoryCollectibles[unitName].itemCost
@@ -889,11 +924,29 @@ function HandleInventoryUnitClicked(unit, unitName)
         local column = m_roomGenerator.currentPlayerColumn
 
         m_roomGenerator:MarkMerchantItemAsBought(row, column, unitName)
+        usedGold = true
         m_player:UseGold(itemCost)
     end
 
     local success = m_inventory:CheckAndAddItemToSlot(unitName)
     if success then
+        if not usedGold then
+            local unitPosition = DCEI.GetUnitPosition2D(unit)
+            local roomName
+            local playerRow = BEGINNING_ROOM_MARKER
+            local playerColumn = BEGINNING_ROOM_MARKER
+
+            if m_isBeginningRoom then
+                roomName = BEGINNING_ROOM_NAME
+            else
+                playerRow = m_roomGenerator.currentPlayerRow
+                playerColumn = m_roomGenerator.currentPlayerColumn
+                roomName = m_roomGenerator.roomMatrix[playerRow][playerColumn]
+            end
+
+            m_roomItemDrops:RemoveItemFromList(unitName, unitPosition.x, unitPosition.y, roomName, playerRow, playerColumn)
+        end
+
         DCEI.RemoveUnit(unit)
     else
         DCEI.LogError("Inventory is full!!!")
@@ -982,9 +1035,7 @@ function HandleInventoryItemDropped(itemName, inventorySlot)
         return
     end
 
-    local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-    local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
-    DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    DropInventoryItemToWorld(itemName)
 
     RemoveInventoryItemBehaviour(itemName)
     inventorySlot:DropInventoryItem()
@@ -1017,13 +1068,31 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         inventorySlot:UseItem()
 
     else
-        local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-        local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
-        DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+        DropInventoryItemToWorld(itemName)
 
         RemoveInventoryItemBehaviour(itemName)
         inventorySlot:DropInventoryItem()
     end
+end
+
+function DropInventoryItemToWorld(itemName)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+    local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+    DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+
+    local roomName
+    local playerRow = BEGINNING_ROOM_MARKER
+    local playerColumn = BEGINNING_ROOM_MARKER
+
+    if m_isBeginningRoom then
+        roomName = BEGINNING_ROOM_NAME
+    else
+        playerRow = m_roomGenerator.currentPlayerRow
+        playerColumn = m_roomGenerator.currentPlayerColumn
+        roomName = m_roomGenerator.roomMatrix[playerRow][playerColumn]
+    end
+
+    m_roomItemDrops:AddItemToList(itemName, playerPosition.x, playerPosition.y, roomName, playerRow, playerColumn)
 end
 
 -- #endregion Inventory Functions

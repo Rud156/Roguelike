@@ -82,6 +82,10 @@ function mod.ShuffleTable(tInput)
     return tReturn
 end
 
+function mod.IsEqual(a, b, tolerance)
+    return math.abs(a - b) <= tolerance
+end
+
 function mod.split(s, sep)
     local fields = {}
 
