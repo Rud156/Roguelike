@@ -494,11 +494,14 @@ function RoomGenerator:SpawnMerchantRoomItems()
                 local items = {}
 
                 for i = 1, MERCHANT_ROOM_ITEM_COUNT do
-                    table.insert(items, shuffledCollectibles[i])
+                    table.insert(items, {
+                        itemName = shuffledCollectibles[i],
+                        bought = false
+                    })
                 end
 
                 local finalTable = {
-                    x=  i,
+                    x = i,
                     y = j,
                     items = items
                 }
@@ -923,6 +926,18 @@ function RoomGenerator:GetMerchantRoomData(row, column)
     end
 
     return nil
+end
+function RoomGenerator:MarkMerchantItemAsBought(row, column, itemName)
+    for _, merchantRoomItem in ipairs(self.merchantRoomItems) do
+        if merchantRoomItem.x == row and merchantRoomItem.y == column then
+            
+            for _, item in ipairs(merchantRoomItem.items) do
+                if item.itemName == itemName then
+                    item.bought = true
+                end
+            end
+        end
+    end
 end
 function RoomGenerator:GetRandomSeed()
     return self.randomSeed
@@ -1593,7 +1608,7 @@ function mod.ConvertMerchantRoomDataToString(roomData)
         
         stringValue = stringValue .. row .. ":" .. column .. ":"
         for _, item in ipairs(items) do
-            stringValue = stringValue .. item .. ","
+            stringValue = stringValue .. item.itemName .. ";" .. tostring(item.bought) .. ","
         end
 
         stringValue = stringValue .. "|"
@@ -1615,7 +1630,15 @@ function mod.ConvertStringToMerchantRoomData(stringValue)
         
         local items = {}
         for _, item in ipairs(itemsArray) do
-            table.insert(items, item)
+            local itemInfo = mod.split(item, ";")
+            local itemName = itemInfo[1]
+            local itemBought = mod.ToBoolean(itemInfo[2])
+
+            local itemTable = {
+                itemName = itemName,
+                bought = itemBought
+            }
+            table.insert(items, itemTable)
         end
 
         local finalTable = {

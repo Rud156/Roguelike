@@ -885,6 +885,10 @@ function HandleInventoryUnitClicked(unit, unitName)
             return
         end
 
+        local row = m_roomGenerator.currentPlayerRow
+        local column = m_roomGenerator.currentPlayerColumn
+
+        m_roomGenerator:MarkMerchantItemAsBought(row, column, unitName)
         m_player:UseGold(itemCost)
     end
 
@@ -1014,7 +1018,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 
     else
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-        DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
+        local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
         DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
 
         RemoveInventoryItemBehaviour(itemName)
@@ -1042,7 +1046,10 @@ function mod.ActivateMerchantRooms()
         local unitPosition = DCEI.GetUnitPosition2D(unit)
         DCEI.RemoveUnit(unit)
         
-        DCEI.CreateUnit(1, 1, items[i], unitPosition.x, unitPosition.y)
+        local item = items[i]
+        if not item.bought then
+            DCEI.CreateUnit(1, 1, item.itemName, unitPosition.x, unitPosition.y)
+        end
     end
 end
 
