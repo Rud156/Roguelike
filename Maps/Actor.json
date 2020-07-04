@@ -2588,6 +2588,19 @@
                 },
                 "modelScale": 1
             }
+        },
+        "_Enemy_GoblinMiner": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "name": "boss_goblin_miner_ground"
+                },
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit DeathAnimation Decay"
+                ]
+            }
         }
     },
     "actorEventMacros": {
