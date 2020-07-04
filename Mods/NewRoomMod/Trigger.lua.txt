@@ -20,6 +20,17 @@ local COMMON_ROOMS = {
     "CR_TL_0",
     "CR_TLR_0",
     "CR_TR_0"
+    "CR_BL_1",
+    "CR_BLR_1",
+    "CR_BR_1",
+    "CR_LR_1",
+    "CR_TB_1",
+    "CR_TBL_1",
+    "CR_TBLR_1",
+    "CR_TBR_1",
+    "CR_TL_1",
+    "CR_TLR_1",
+    "CR_TR_1",
 }
 
 local MERCHANT_ROOMS = {
