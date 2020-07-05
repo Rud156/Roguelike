@@ -768,7 +768,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "ooze_biggest"
+                    "name": "ooze_biggest_red"
                 },
                 "events": [
                     {
@@ -2516,8 +2516,8 @@
         "_TrapDoorway": {
             "unitActor": {
                 "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_trapdoor"
+                    "type": "ParticleAnimation",
+                    "name": "vfx_light_world_portal"
                 },
                 "events": [
                     {
