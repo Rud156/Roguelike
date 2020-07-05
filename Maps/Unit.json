@@ -260,6 +260,31 @@
                 ]
             }
         },
+        "_Enemy_GoblinMiner": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 300
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
         "_Enemy_GoblinSapper": {
             "components": {
                 "unitStats": {
@@ -661,31 +686,6 @@
                     "behaviorType": 0
                 }
             }
-        },
-        "_Enemy_GoblinMiner": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 300
-                },
-                "movement": {
-                    "moveSpeed": 1
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 1
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
         }
     }
 }

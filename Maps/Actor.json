@@ -434,6 +434,19 @@
                 "modelScale": 0.8
             }
         },
+        "_Enemy_GoblinMiner": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "name": "boss_goblin_miner_ground"
+                },
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit DeathAnimation Decay"
+                ]
+            }
+        },
         "_Enemy_GoblinSapper": {
             "parent": "",
             "unitActor": {
@@ -643,7 +656,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "ooze_biggest"
+                    "name": "ooze_biggest_red"
                 },
                 "events": [
                     {
@@ -731,7 +744,8 @@
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Spawn_Gold"
-                ]
+                ],
+                "modelScale": 1.2
             }
         },
         "_FX_Collectible_Bomb_Attack": {
@@ -2391,8 +2405,8 @@
         "_TrapDoorway": {
             "unitActor": {
                 "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_trapdoor"
+                    "type": "ParticleAnimation",
+                    "name": "vfx_light_world_portal"
                 },
                 "events": [
                     {
@@ -2491,7 +2505,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "modelScale": 0
             }
         },
         "_Wall_BreakableWall": {
@@ -2587,19 +2602,6 @@
                     "name": "villager_male_01"
                 },
                 "modelScale": 1
-            }
-        },
-        "_Enemy_GoblinMiner": {
-            "parent": "_StandardUnitMinimal",
-            "unitActor": {
-                "resource": {
-                    "name": "boss_goblin_miner_ground"
-                },
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit DeathAnimation Decay"
-                ]
             }
         }
     },
