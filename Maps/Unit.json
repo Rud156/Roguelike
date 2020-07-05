@@ -260,6 +260,39 @@
                 ]
             }
         },
+        "_Enemy_GoblinMiner": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 300
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_GoblinMiner_RocketBarrage",
+                    "_Enemy_GoblinMiner_Drill",
+                    "_Enemy_GoblinMiner_LeapAttack",
+                    "_Enemy_GoblinMiner_SummonGoblins"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
         "_Enemy_GoblinSapper": {
             "components": {
                 "unitStats": {
@@ -662,30 +695,21 @@
                 }
             }
         },
-        "_Enemy_GoblinMiner": {
-            "components": {
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 300
-                },
-                "movement": {
-                    "moveSpeed": 1
-                },
-                "turning": {
-                    "turningSpeed": 900
-                },
-                "behavior": {
-                    "behaviorType": 1
-                },
-                "unitBattleData": {
-                    "enemySearchRange": 3,
-                    "resetRadius": 2
-                }
-            },
-            "displayName": "data/GameData/unit/_CUnit/display_name"
+        "_Missile_Enemy_GoblinMiner_Leap": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_Enemy_GoblinMiner_Leap_Missile"
+                ]
+            }
+        },
+        "_Missile_Enemy_GoblinMiner_Drill": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_Enemy_GoblinMiner_Drill"
+                ]
+            }
         }
     }
 }

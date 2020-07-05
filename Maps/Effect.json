@@ -561,14 +561,6 @@
                 ]
             }
         },
-        "_Set_Periodic_GoblinChef_Attack": {
-            "set": {
-                "effectList": [
-                    "_Search_Enemy_GoblinChef",
-                    "_Periodic_Remove_Projectile_NotOnNavMesh"
-                ]
-            }
-        },
         "_Set_Periodic_PlayerCharacter_Ranged_HeavyAttack": {
             "set": {
                 "effectList": [
@@ -642,6 +634,156 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
+            }
+        },
+        "_Set_Enemy_GoblinMiner_Leap_Launch": {
+            "set": {
+                "effectList": [
+                    "_Launch_Enemy_GoblinMiner_Leap_Missile",
+                    "_Set_Behaviour_Enemy_Invincible"
+                ]
+            }
+        },
+        "_Collided_Enemy_GoblinMiner_Leap_Missile": {
+            "applyBehavior": {
+                "behavior": "_Enemy_GoblinMiner_Missile_Reached",
+                "target": 2
+            }
+        },
+        "_Set_Behaviour_Enemy_GoblinMiner_Leap_End": {
+            "applyBehavior": {
+                "behavior": "_Enemy_GoblinMiner_Dash_Ended",
+                "target": 3
+            }
+        },
+        "_Set_Enemy_GoblinMiner_Leap_Missile_Collided": {
+            "set": {
+                "targetType": 1,
+                "effectList": [
+                    "_Search_Enemy_GoblinMiner_Leap_Landed",
+                    "_Collided_Enemy_GoblinMiner_Leap_Missile",
+                    "_Set_Behaviour_Enemy_GoblinMiner_Leap_End",
+                    "_Remove_Behaviour_Enemy_Invincible"
+                ]
+            }
+        },
+        "_Search_GoblinMiner_Leap_Missile": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2,
+                    "enemy": 2
+                },
+                "effect": "_Set_Enemy_GoblinMiner_Leap_Missile_Collided"
+            }
+        },
+        "_Launch_Enemy_GoblinMiner_Leap_Missile": {
+            "launchMissile": {
+                "targetType": 0,
+                "missileUnit": "_Missile_Enemy_GoblinMiner_Leap",
+                "effect": "_Set_Enemy_GoblinMiner_Leap_Missile_Collided",
+                "impactLocation": 2,
+                "mover": "_Enemy_GoblinMiner_Leap"
+            }
+        },
+        "_Launch_Enemy_GoblinMiner_Drill": {
+            "launchMissile": {
+                "missileUnit": "_Missile_Enemy_GoblinMiner_Drill",
+                "impactLocation": 2
+            }
+        },
+        "_Set_Enemy_GoblinMiner_Drill": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinMiner_Drill",
+                    "_Set_Behaviour_PlayerCharacter_Damaged",
+                    "Remove Source"
+                ]
+            }
+        },
+        "_Damage_Enemy_GoblinMiner_Drill": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 25,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Set_Periodic_Enemy_GoblinMiner_Drill": {
+            "set": {
+                "effectList": [
+                    "_Search_Enemy_GoblinMiner_Drill",
+                    "_Periodic_Remove_Projectile_NotOnNavMesh"
+                ]
+            }
+        },
+        "_Set_Periodic_Enemy_GoblinChef_Attack": {
+            "set": {
+                "effectList": [
+                    "_Search_Enemy_GoblinChef",
+                    "_Periodic_Remove_Projectile_NotOnNavMesh"
+                ]
+            }
+        },
+        "_Search_Enemy_GoblinMiner_Drill": {
+            "areaSearch": {
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "caster": 2,
+                "source": 2,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Enemy_GoblinMiner_Drill"
+            }
+        },
+        "_Search_Enemy_GoblinMiner_Leap_Landed": {
+            "areaSearch": {
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.5
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Enemy_GoblinMiner_Leap_Landed"
+            }
+        },
+        "_Set_Enemy_GoblinMiner_Leap_Landed": {
+            "set": {
+                "effectList": [
+                    "_Damage_GoblinMiner_Leap",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
+        "_Damage_GoblinMiner_Leap": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 50,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
             }
         }
     }

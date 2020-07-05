@@ -112,7 +112,7 @@
         "_Search_Enemy_GoblinChef": {
             "maxStackCount": 1,
             "periodicInterval": 0.01,
-            "periodicEffect": "_Set_Periodic_GoblinChef_Attack"
+            "periodicEffect": "_Set_Periodic_Enemy_GoblinChef_Attack"
         },
         "_Search_PlayerCharacter": {
             "maxStackCount": 1,
@@ -153,6 +153,23 @@
                     "count": 1
                 }
             ]
+        },
+        "_Enemy_GoblinMiner_Missile_Reached": {
+            "maxStackCount": 1
+        },
+        "_Enemy_GoblinMiner_Dash_Ended": {
+            "maxStackCount": 1,
+            "duration": 0.01
+        },
+        "_Search_Enemy_GoblinMiner_Leap_Missile": {
+            "maxStackCount": 1,
+            "periodicInterval": 0.01,
+            "periodicEffect": "_Search_PlayerCharacter_Melee_Missile"
+        },
+        "_Search_Enemy_GoblinMiner_Drill": {
+            "maxStackCount": 1,
+            "periodicInterval": 0.01,
+            "periodicEffect": "_Set_Periodic_Enemy_GoblinMiner_Drill"
         }
     }
 }

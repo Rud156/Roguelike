@@ -434,6 +434,131 @@
                 "modelScale": 0.8
             }
         },
+        "_Enemy_GoblinMiner": {
+            "parent": "_StandardUnitMinimal",
+            "unitActor": {
+                "resource": {
+                    "name": "boss_goblin_miner_ground"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinMiner_LeapAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinMiner_LeapAttack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinMiner_Drill"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinMiner_Drill"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinMiner_RocketBarrage"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinMiner_RocketBarrage"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinMiner_SummonGoblins"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 10
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinMiner_SummonGoblins"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 10
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit DeathAnimation Decay"
+                ]
+            }
+        },
         "_Enemy_GoblinSapper": {
             "parent": "",
             "unitActor": {
@@ -2589,17 +2714,20 @@
                 "modelScale": 1
             }
         },
-        "_Enemy_GoblinMiner": {
-            "parent": "_StandardUnitMinimal",
+        "_Missile_Enemy_GoblinMiner_Leap": {
             "unitActor": {
                 "resource": {
+                    "type": "GpuAnimation",
                     "name": "boss_goblin_miner_ground"
-                },
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit DeathAnimation Decay"
-                ]
+                }
+            }
+        },
+        "_Missile_Enemy_GoblinMiner_Drill": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_goblin_miner_drill_missile"
+                }
             }
         }
     },
