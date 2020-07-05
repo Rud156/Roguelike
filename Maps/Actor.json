@@ -1428,6 +1428,22 @@
                 "modelScale": 0.5
             }
         },
+        "_Missile_Enemy_GoblinMiner_Drill": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_goblin_miner_drill_missile"
+                }
+            }
+        },
+        "_Missile_Enemy_GoblinMiner_Leap": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_goblin_miner_ground"
+                }
+            }
+        },
         "_Missile_PlayerCharacter_HeavyAttack": {
             "unitActor": {
                 "resource": {
@@ -2712,22 +2728,6 @@
                     "name": "villager_male_01"
                 },
                 "modelScale": 1
-            }
-        },
-        "_Missile_Enemy_GoblinMiner_Leap": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_goblin_miner_ground"
-                }
-            }
-        },
-        "_Missile_Enemy_GoblinMiner_Drill": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_goblin_miner_drill_missile"
-                }
             }
         }
     },

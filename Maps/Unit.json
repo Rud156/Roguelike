@@ -392,6 +392,22 @@
                 ]
             }
         },
+        "_Missile_Enemy_GoblinMiner_Drill": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_Enemy_GoblinMiner_Drill"
+                ]
+            }
+        },
+        "_Missile_Enemy_GoblinMiner_Leap": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "_Search_Enemy_GoblinMiner_Leap_Missile"
+                ]
+            }
+        },
         "_Missile_PlayerCharacter_HeavyAttack": {
             "baseUnit": "_CMissile",
             "references": {
@@ -695,21 +711,8 @@
                 }
             }
         },
-        "_Missile_Enemy_GoblinMiner_Leap": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "_Search_Enemy_GoblinMiner_Leap_Missile"
-                ]
-            }
-        },
-        "_Missile_Enemy_GoblinMiner_Drill": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "_Search_Enemy_GoblinMiner_Drill"
-                ]
-            }
+        "_Missile_Enemy_GoblinMiner_RocketBarrage": {
+            "baseUnit": "_CMissile"
         }
     }
 }
