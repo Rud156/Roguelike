@@ -1,3 +1,5 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+
 -- Constants
 -- TODO: Probably put common strings into a Mod and use that?
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
@@ -48,6 +50,19 @@ local OOZE_JUMP_RADIUS = 1
 local OOZE_IDLING_TIME = 3
 local OOZE_ATTACK_TIME = 3
 local OOZE_GOLD = 1
+
+local GOBLIN_MINER = "_Enemy_GoblinMiner"
+local GOBLIN_MINER_DRILL = "_Enemy_GoblinMiner_Drill"
+local GOBLIN_MINER_LEAP = "_Enemy_GoblinMiner_Leap"
+local GOBLIN_MINER_ROCKET = "_Launch_Enemy_GoblinMiner_RocketBarrage"
+local GOBLIN_MINER_RANDOM_MOVEMENT_TIMER = 7
+local GOBLIN_MINER_GOBLIN_SPAWN_RADIUS = 1
+local GOBLIN_MINER_GOBLIN_COUNT = 5
+local GOBLIN_MINER_ROCKET_DELAY = 0.5
+local GOBLIN_MINER_MIN_ROCKETS = 4
+local GOBLIN_MINER_MAX_ROCKETS = 5
+local GOBLIN_MINER_DRILL_TIMER = 2
+local GOBLIN_MINER_LEAP_TIMER = 2
 
 local mod = {}
 
@@ -261,6 +276,9 @@ end
 function GoblinChef:IsActive()
     return true
 end
+function GoblinChef:ForceSetPosition(position)
+    return false
+end
 -- #endregion
 
 -- #region Hob Goblin Enemy
@@ -391,6 +409,9 @@ function HobGoblin:CleanupEnemyDied()
 end
 function HobGoblin:IsActive()
     return true
+end
+function HobGoblin:ForceSetPosition(position)
+    return false
 end
 -- #endregion
 
@@ -523,6 +544,9 @@ end
 function Goblin:IsActive()
     return true
 end
+function Goblin:ForceSetPosition(position)
+    return false
+end
 -- #endregion
 
 -- #region Goblin Sapper Enemy
@@ -606,6 +630,9 @@ end
 function GoblinSapper:IsActive()
     return true
 end
+function GoblinSapper:ForceSetPosition(position)
+    return false
+end
 -- #endregion
 
 -- #region Ooze Enemy
@@ -632,6 +659,9 @@ function Ooze:new(room, xPosition, yPosition)
     ooze.unit = enemyUnit
 
     ooze.enemyState = 0
+
+    ooze.targetPosition = nil
+    ooze.currentTimer = 0
 
     return ooze
 end
@@ -756,7 +786,6 @@ function Ooze:FindAndSetRandomMovement()
     self.currentTimer = OOZE_RANDOM_MOVEMENT_TIMER
 end
 function Ooze:SetEnemyState(enemyState)
-    DCEI.LogMessage("Enemy State: " .. enemyState)
     self.enemyState = enemyState
 end
 function Ooze:GetEnemyGold()
@@ -771,6 +800,208 @@ end
 function Ooze:IsActive()
     return self.enemyState ~= 3
 end
+function Ooze:ForceSetPosition(position)
+    return false
+end
+-- #endregion
+
+-- #region Goblin Miner
+local GoblinMiner = {
+    -- Units
+    room = nil,
+    unit = nil,
+    
+    enemyState = 0, -- 0: Random Movement, 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile
+
+    -- Movement
+    targetPosition = nil,
+
+    -- Rockets
+    rocketCount = 0,
+
+    -- General
+    currentTimer = 0
+}
+GoblinMiner.__index = GoblinMiner
+function GoblinMiner:new(room, xPosition, yPosition)
+    local goblinMiner = {}
+    setmetatable(goblinMiner, GoblinMiner)
+
+    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_MINER, 10, 10) -- TODO: Change this later on...
+    goblinMiner.room = room
+    goblinMiner.unit = enemyUnit
+    
+    goblinMiner.enemyState = 0
+
+    goblinMiner.targetPosition = nil
+
+    goblinMiner.rocketCount = 0
+    
+    goblinMiner.currentTimer = 0
+
+    return goblinMiner
+end
+function GoblinMiner:Update(deltaTime, playerPosition)
+    if self.enemyState == 0 then
+        self:UpdateRandomMovement(deltaTime, playerPosition)
+    elseif self.enemyState == 1 then
+        self:UpdateRocketBarrage(deltaTime, playerPosition)
+    elseif self.enemyState == 2 then
+        self:UpdateLeapAttack(deltaTime)
+    elseif self.enemyState == 3 then
+        self:UpdateDrillAttack(deltaTime)
+    end
+end
+function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
+    -- Do nothing here...
+end
+function GoblinMiner:UpdateRandomMovement(deltaTime, playerPosition)
+    if self.targetPosition == nil then
+        self:FindAndSetRandomMovement()
+        return
+    end
+
+    self.currentTimer = self.currentTimer - deltaTime
+
+    if self.currentTimer <= 0 then
+        self:ActivateRandomAtack(playerPosition)
+    else
+        DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
+    end
+end
+function GoblinMiner:UpdateRocketBarrage(deltaTime, playerPosition)
+    self.currentTimer = self.currentTimer - deltaTime
+
+    if self.currentTimer <= 0 then
+        self.currentTimer = GOBLIN_MINER_ROCKET_DELAY
+        self.rocketCount = self.rocketCount - 1
+
+        DCEI.LogMessage("Spawning Missile")
+        ArcadeCore.CreateEffect(GOBLIN_MINER_ROCKET, playerPosition.x, playerPosition.y)
+    end
+
+    if self.rocketCount <= 0 then
+        self:SetEnemyState(0)
+        self:FindAndSetRandomMovement()
+    end
+end
+function GoblinMiner:UpdateLeapAttack(deltaTime)
+    self.currentTimer = self.currentTimer - deltaTime
+    if self.currentTimer <= 0 then
+        self:SetEnemyState(0)
+        self:FindAndSetRandomMovement()
+    end
+end
+function GoblinMiner:UpdateDrillAttack(deltaTime)
+    self.currentTimer = self.currentTimer - deltaTime
+    if self.currentTimer <= 0 then
+        self:SetEnemyState(0)
+        self:FindAndSetRandomMovement()
+    end
+end
+function GoblinMiner:ActivateRandomAtack(playerPosition)
+    local position = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.Move(self.unit, position.x, position.y)
+
+    -- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
+    local randomNumber = math.random(1, 4)
+    randomNumber = 2 -- TODO: Remove this later on...
+
+    if randomNumber == 1 then
+        self:SetEnemyState(1)
+        self.rocketCount = math.random(GOBLIN_MINER_MIN_ROCKETS, GOBLIN_MINER_MAX_ROCKETS)
+    elseif randomNumber == 2 then
+        self:LeapAtPlayer(playerPosition)
+    elseif randomNumber == 3 then
+        self:LaunchDrillMissile(playerPosition)
+    else
+        self:SpawnGoblinsInCircle()
+        self:SetEnemyState(0)
+        self:FindAndSetRandomMovement()
+    end
+end
+function GoblinMiner:LeapAtPlayer(playerPosition)
+    DCEI.LogMessage("Leaping At Player")
+
+    self:SetEnemyState(2)
+
+    self.currentTimer = GOBLIN_MINER_LEAP_TIMER
+    self:LookAtPlayer(playerPosition)
+
+    DCEI.CastAbilityAtPosition(GOBLIN_MINER_LEAP, self.unit, playerPosition.x, playerPosition.y)
+end
+function GoblinMiner:LaunchDrillMissile(playerPosition)
+    DCEI.LogMessage("Launching Drill Missile")
+
+    self:SetEnemyState(3)
+
+    self.currentTimer = GOBLIN_MINER_DRILL_TIMER
+    self:LookAtPlayer(playerPosition)
+
+    DCEI.CastAbilityAtPosition(GOBLIN_MINER_DRILL, self.unit, playerPosition.x, playerPosition.y)
+end
+function GoblinMiner:SpawnGoblinsInCircle()
+    DCEI.LogMessage("Spawning Goblins")
+    
+    local radius = GOBLIN_MINER_GOBLIN_SPAWN_RADIUS
+    local validPositions = {}
+    local position = DCEI.GetUnitPosition2D(self.unit)
+
+    for i = 0, 360 do
+        local xPosition = radius * math.sin(math.rad(i)) + position.x
+        local yPosition = radius * math.cos(math.rad(i)) + position.y
+
+        if DCEI.IsPointOnNavMesh(xPosition, yPosition) then
+            table.insert(validPositions, { x = xPosition, y = yPosition })
+        end
+    end
+    
+    validPositions = mod.ShuffleTable(validPositions)
+    for i = 1, GOBLIN_MINER_GOBLIN_COUNT do
+        local spawnPosition = validPositions[i]
+
+        local goblin = Goblin:new(self.room, spawnPosition.x, spawnPosition.y)
+        self.room:AddChildEnemy(goblin)
+    end
+end
+function GoblinMiner:LookAtPlayer(playerPosition)
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+
+    local direction = mod.VectorSubtract(playerPosition, enemyPosition)
+    local angle = math.deg(math.atan(direction.x, direction.y))
+
+    DCEI.SetUnitRotationEuler(self.unit, 0, angle, 0)
+end
+function GoblinMiner:FindAndSetRandomMovement()
+    local emptyPositions = self.room:GetEmptyPositions()
+    local randomEmptyPosition = math.random(1, #emptyPositions)
+
+    local position = emptyPositions[randomEmptyPosition]
+
+    self.targetPosition = { x = position.x, y = position.y }
+    self.currentTimer = GOBLIN_MINER_RANDOM_MOVEMENT_TIMER
+end
+function GoblinMiner:SetEnemyState(enemyState)
+    DCEI.LogMessage("Enemy State: " .. enemyState)
+    self.enemyState = enemyState
+end
+function GoblinMiner:GetEnemyGold()
+    return 1
+end
+function GoblinMiner:GetMainUnit()
+    return self.unit
+end
+function GoblinMiner:CleanupEnemyDied()
+    -- Do nothing here...
+end
+function GoblinMiner:IsActive()
+    return true
+end
+function GoblinMiner:ForceSetPosition(position)
+    DCEI.SetUnitPosition2D(self.unit, position.x, position.y)
+    DCEI.Move(self.unit, position.x, position.y)
+    return true
+end
 -- #endregion
 
 mod.EnemyGoblinChef = GoblinChef 
@@ -778,11 +1009,13 @@ mod.EnemyHobGoblin = HobGoblin
 mod.EnemyGoblin = Goblin
 mod.EnemyGoblinSapper = GoblinSapper
 mod.EnemyOoze = Ooze
+mod.EnemyGoblinMiner = GoblinMiner
 
 mod.VectorDistance = nil
 mod.VectorSubtract = nil
 mod.LerpAngleDeg = nil
 mod.NormalizeUnitRotation = nil
+mod.ShuffleTable = nil
 
 mod.WalkableTextureId = nil
 

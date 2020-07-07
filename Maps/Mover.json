@@ -5,12 +5,26 @@
                 "speed": 3
             }
         },
+        "_Enemy_GoblinMiner_Drill": {
+            "ballistic": {
+                "speed": 3
+            }
+        },
         "_Enemy_GoblinMiner_Leap": {
             "ballistic": {
-                "flightTime": 0.5,
+                "flightTime": 0,
+                "speed": 7,
                 "gravity": 12
             },
             "stayOnNavMesh": true
+        },
+        "_Enemy_GoblinMiner_RocketBarrage": {
+            "guidance": {
+                "acceleration": 20,
+                "speed": 20,
+                "minSpeed": 0,
+                "maxSpeed": 24
+            }
         },
         "_PlayerCharacter_HeavyAttack": {
             "ballistic": {
@@ -40,14 +54,6 @@
                 "gravity": 12
             },
             "stayOnNavMesh": true
-        },
-        "_Enemy_GoblinMiner_RocketBarrage": {
-            "guidance": {
-                "acceleration": 10,
-                "speed": 2,
-                "minSpeed": 10,
-                "maxSpeed": 24
-            }
         }
     }
 }

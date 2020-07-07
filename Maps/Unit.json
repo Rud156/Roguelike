@@ -285,10 +285,8 @@
             },
             "references": {
                 "abilityList": [
-                    "_Enemy_GoblinMiner_RocketBarrage",
                     "_Enemy_GoblinMiner_Drill",
-                    "_Enemy_GoblinMiner_LeapAttack",
-                    "_Enemy_GoblinMiner_SummonGoblins"
+                    "_Enemy_GoblinMiner_Leap"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -407,6 +405,9 @@
                     "_Search_Enemy_GoblinMiner_Leap_Missile"
                 ]
             }
+        },
+        "_Missile_Enemy_GoblinMiner_RocketBarrage": {
+            "baseUnit": "_CMissile"
         },
         "_Missile_PlayerCharacter_HeavyAttack": {
             "baseUnit": "_CMissile",
@@ -710,9 +711,6 @@
                     "behaviorType": 0
                 }
             }
-        },
-        "_Missile_Enemy_GoblinMiner_RocketBarrage": {
-            "baseUnit": "_CMissile"
         }
     }
 }

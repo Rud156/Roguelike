@@ -17,18 +17,21 @@ EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
 EnemyMod.LerpAngleDeg = ExtensionFunction.LerpAngleDeg
 EnemyMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
+EnemyMod.ShuffleTable = ExtensionFunction.ShuffleTable
 EnemyMod.WalkableTextureId = RoomMod.WalkableTextureId
 local EnemyHobGoblin = EnemyMod.EnemyHobGoblin
 local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 local EnemyGoblin = EnemyMod.EnemyGoblin
 local EnemyGoblinSapper = EnemyMod.EnemyGoblinSapper
 local EnemyOoze = EnemyMod.EnemyOoze
+local EnemyGoblinMiner = EnemyMod.EnemyGoblinMiner
 
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
 RoomMod.EnemyGoblinChef = EnemyGoblinChef
 RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
+RoomMod.EnemyGoblinMiner = EnemyGoblinMiner
 RoomMod.InventoryCollectiblesName = InventoryCollectiblesName
 RoomMod.split = ExtensionFunction.split
 RoomMod.IsEqual = ExtensionFunction.IsEqual
@@ -81,6 +84,7 @@ local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 
 -- Enemy
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
+local GOBLIN_MINER_MISSILE_BEHAVIOUR = "_Enemy_GoblinMiner_Missile_Reached"
 
 -- Collectibles
 local COLLECTIBLE_STRING = "_Collectible"
@@ -371,6 +375,14 @@ function HandleBehaviourAdded()
         m_player:SetPlayerPosition(missilePosition.x, missilePosition.y)
         m_player:SetDashInActive()
 
+    elseif behaviourName == GOBLIN_MINER_MISSILE_BEHAVIOUR then
+        DCEI.LogMessage("Miner Missile Reached")
+        local missilePosition = DCEI.GetUnitPosition2D(unit)
+
+        if m_roomEnemies ~= nil then
+            m_roomEnemies:ForceSetUnitPosition(missilePosition)
+        end
+
     elseif behaviourName == ENEMY_STUNNED_BEHAVIOUR then
         DCEI.LogMessage("Enemy Stun Behaviour Added")
         if m_roomEnemies ~= nil then
@@ -522,7 +534,18 @@ function SpawnEnemiesAndCloseDoors()
     end
 
     if not m_isBeginningRoom and not m_roomGenerator:IsPlayerRoomCleared() then
-        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel)
+        local spawnRoomRow = m_roomGenerator.spawnRoomRow
+        local spawnRoomColumn = m_roomGenerator.spawnRoomColumn
+
+        local playerRow = m_roomGenerator.currentPlayerRow
+        local playerColumn = m_roomGenerator.currentPlayerColumn
+
+        if spawnRoomRow == playerRow and spawnRoomColumn == playerColumn then
+            m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel, true)
+        else
+            m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel)
+        end
+
         ActivateDoorCloseAnimations()
     end
 end

@@ -541,7 +541,7 @@ function RoomGenerator:SetupClearMatrix()
                 local roomClear = false
                 if i == spawnRow and j == spawnColumn then
                     self.roomVisitedMatrix[i][j] = true
-                    roomClear = true
+                    roomClear = false -- TODO: Change this later on...
                 else
                     self.roomVisitedMatrix[i][j] = false
                 end
@@ -1065,7 +1065,9 @@ local RoomEnemies = {
     direction = nil
 }
 RoomEnemies.__index = RoomEnemies
-function RoomEnemies:new(player, roomGenerator, roomLevel)
+function RoomEnemies:new(player, roomGenerator, roomLevel, spawnBoss)
+    spawnBoss = spawnBoss or false
+
     local roomEnemies = {}
     setmetatable(roomEnemies, RoomEnemies)
 
@@ -1086,9 +1088,18 @@ function RoomEnemies:new(player, roomGenerator, roomLevel)
     roomEnemies.enemies = {}
     roomEnemies.direction = direction
 
-    roomEnemies:SpawnEnemies(player, roomLevel)
+    if not spawnBoss then
+        roomEnemies:SpawnEnemies(player, roomLevel)
+    else
+        roomEnemies:SpawnBossEnemy()
+    end
 
     return roomEnemies
+end
+function RoomEnemies:SpawnBossEnemy()
+    local position = self:GetRandomValidPointInRoom()
+    local enemy = mod.EnemyGoblinMiner:new(self, position.x, position.y)
+    table.insert(self.enemies, enemy)
 end
 function RoomEnemies:SpawnEnemies(player, roomLevel)
     DCEI.LogMessage("Room Level: " .. roomLevel)
@@ -1293,6 +1304,16 @@ function RoomEnemies:ClearEnemies()
     end
 
     self.enemies = {}
+end
+function RoomEnemies:AddChildEnemy(enemy)
+    table.insert(self.enemies, enemy)
+end
+function RoomEnemies:ForceSetUnitPosition(position)
+    for _, enemy in ipairs(self.enemies) do
+        if enemy:ForceSetPosition(position) then
+            break
+        end
+    end
 end
 
 -- #endregion Room Enemies
@@ -1833,6 +1854,7 @@ mod.EnemyGoblinChef = nil
 mod.EnemyGoblin = nil
 mod.EnemyGoblinSapper = nil
 mod.EnemyOoze = nil
+mod.EnemyGoblinMiner = nil
 
 mod.split = nil
 mod.IsEqual = nil

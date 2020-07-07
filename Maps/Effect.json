@@ -81,6 +81,19 @@
                 ]
             }
         },
+        "_Damage_Enemy_GoblinMiner_RocketBarrage": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    }
+                ]
+            }
+        },
         "_Damage_Enemy_GoblinSapper_Attack": {
             "damage": {
                 "whichUnit": 1,
@@ -193,8 +206,11 @@
         },
         "_Launch_Enemy_GoblinMiner_Drill": {
             "launchMissile": {
+                "targetType": 2,
                 "missileUnit": "_Missile_Enemy_GoblinMiner_Drill",
-                "impactLocation": 2
+                "effect": "_Search_Enemy_GoblinMiner_Drill",
+                "impactLocation": 2,
+                "mover": "_Enemy_GoblinMiner_Drill"
             }
         },
         "_Launch_Enemy_GoblinMiner_Leap_Missile": {
@@ -204,6 +220,19 @@
                 "effect": "_Set_Enemy_GoblinMiner_Leap_Missile_Collided",
                 "impactLocation": 2,
                 "mover": "_Enemy_GoblinMiner_Leap"
+            }
+        },
+        "_Launch_Enemy_GoblinMiner_RocketBarrage": {
+            "launchMissile": {
+                "targetType": 0,
+                "missileUnit": "_Missile_Enemy_GoblinMiner_RocketBarrage",
+                "effect": "_Search_Enemy_GoblinMiner_RocketBarrage",
+                "launchLocation": 2,
+                "impactLocation": 2,
+                "launchOffset": {
+                    "up": 10
+                },
+                "mover": "_Enemy_GoblinMiner_RocketBarrage"
             }
         },
         "_Launch_PlayerCharacter_Melee": {
@@ -323,6 +352,7 @@
         },
         "_Search_Enemy_GoblinMiner_Drill": {
             "areaSearch": {
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -338,6 +368,7 @@
         },
         "_Search_Enemy_GoblinMiner_Leap_Landed": {
             "areaSearch": {
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1.5
@@ -348,6 +379,37 @@
                     "player": 2
                 },
                 "effect": "_Set_Enemy_GoblinMiner_Leap_Landed"
+            }
+        },
+        "_Search_Enemy_GoblinMiner_Leap_Missile": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.25
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2,
+                    "enemy": 2
+                },
+                "effect": "_Set_Enemy_GoblinMiner_Leap_Missile_Collided"
+            }
+        },
+        "_Search_Enemy_GoblinMiner_RocketBarrage": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Enemy_GoblinMiner_RocketBarrage_Landed"
             }
         },
         "_Search_Enemy_GoblinSapper_Bomb": {
@@ -645,6 +707,14 @@
                 ]
             }
         },
+        "_Set_Enemy_GoblinMiner_RocketBarrage_Landed": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinMiner_RocketBarrage",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
         "_Set_Enemy_GoblinSapper_Attack": {
             "set": {
                 "effectList": [
@@ -768,68 +838,6 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
-            }
-        },
-        "_Launch_Enemy_GoblinMiner_RocketBarrage": {
-            "launchMissile": {
-                "missileUnit": "_Missile_Enemy_GoblinMiner_RocketBarrage",
-                "effect": "_Search_Enemy_GoblinMiner_RocketBarrage",
-                "launchLocation": 2,
-                "impactLocation": 2,
-                "launchOffset": {
-                    "up": 50
-                }
-            }
-        },
-        "_Search_Enemy_GoblinMiner_Leap_Missile": {
-            "areaSearch": {
-                "debugDraw": true,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2,
-                    "enemy": 2
-                },
-                "effect": "_Set_Enemy_GoblinMiner_Leap_Missile_Collided"
-            }
-        },
-        "_Search_Enemy_GoblinMiner_RocketBarrage": {
-            "areaSearch": {
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 1
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "_Set_Enemy_GoblinMiner_RocketBarrage_Landed"
-            }
-        },
-        "_Damage_Enemy_GoblinMiner_RocketBarrage": {
-            "damage": {
-                "whichUnit": 1,
-                "damageAmount": 30,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
-        "_Set_Enemy_GoblinMiner_RocketBarrage_Landed": {
-            "set": {
-                "effectList": [
-                    "_Damage_Enemy_GoblinMiner_RocketBarrage",
-                    "_Set_Behaviour_PlayerCharacter_Damaged"
-                ]
             }
         }
     }

@@ -57,10 +57,12 @@
             "_Enemy_GoblinSapper",
             "_Enemy_Ooze",
             "_Enemy_Goblin",
-            "__SpawnMarkerUnit"
+            "__SpawnMarkerUnit",
+            "_Enemy_GoblinMiner"
         ],
         "usedEffects": [
-            "__StopMovement"
+            "__StopMovement",
+            "_Launch_Enemy_GoblinMiner_RocketBarrage"
         ],
         "usedBehaviors": [
             "_PlayerCharacter_Damage_Invincible",
