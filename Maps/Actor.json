@@ -1393,6 +1393,33 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "boss_goblin_miner_drill_missile"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_GoblinMiner_RocketWarning"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_GoblinMiner_RocketTrail",
+                                    "hostSite": "Trail"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "Trail": {
+                        "offset": {
+                            "forward": -0.5
+                        }
+                    }
                 }
             }
         },
@@ -2680,6 +2707,77 @@
                     "name": "villager_male_01"
                 },
                 "modelScale": 1
+            }
+        },
+        "_FX_Enemy_GoblinMiner_RocketTrail": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_cannontower_bfrocket_missile"
+                },
+                "aliases": [
+                    "_UnitModelAddition"
+                ]
+            }
+        },
+        "_FX_Enemy_GoblinMiner_RocketWarning": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_indicator_white"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 255
+                                    }
+                                }
+                            },
+                            {
+                                "setModelScale": {
+                                    "modelScale": 1,
+                                    "duration": 2
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp AbsoluteHeight 0",
+                    "SOp FaceNorth"
+                ],
+                "modelScale": 0.1,
+                "aliases": [
+                    "_UnitModelAddition"
+                ]
+            }
+        },
+        "_FX_Enemy_GoblinMiner_RocketAttack": {
+            "actionActor": {
+                "effect": "_Search_Enemy_GoblinMiner_RocketBarrage",
+                "impactModel": "_FX_Enemy_GoblinMiner_RocketImpact",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "_FX_Enemy_GoblinMiner_RocketImpact": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_cannontower_bfrocket_impact"
+                },
+                "hostSiteOperations": [
+                    "SOp AbsoluteHeight Dot01"
+                ]
             }
         }
     },
