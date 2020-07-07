@@ -50,7 +50,7 @@
         "_Enemy_GoblinMiner_Leap": {
             "abilityType": 1,
             "castType": 1,
-            "targetRangeMode": 2,
+            "targetRangeMode": 0,
             "effect": "_Set_Enemy_GoblinMiner_Leap_Launch",
             "stats": {
                 "finishTime": 0.3,
