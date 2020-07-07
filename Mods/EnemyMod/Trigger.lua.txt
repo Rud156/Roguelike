@@ -905,7 +905,6 @@ function GoblinMiner:ActivateRandomAtack(playerPosition)
 
     -- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
     local randomNumber = math.random(1, 4)
-    randomNumber = 2 -- TODO: Remove this later on...
 
     if randomNumber == 1 then
         self:SetEnemyState(1)
