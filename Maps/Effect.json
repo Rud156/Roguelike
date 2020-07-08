@@ -230,7 +230,7 @@
                 "launchLocation": 2,
                 "impactLocation": 2,
                 "launchOffset": {
-                    "up": 10
+                    "up": 20
                 },
                 "mover": "_Enemy_GoblinMiner_RocketBarrage"
             }
