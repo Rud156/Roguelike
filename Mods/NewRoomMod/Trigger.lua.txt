@@ -1192,22 +1192,22 @@ function RoomEnemies:GetRandomValidPointInRoom()
                 
                 if self.direction == LEFT then
                     if j > MIN_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = j, y = i })
+                        table.insert(validPositions, { x = i, y = j })
                     end
 
                 elseif self.direction == RIGHT then
                     if j < MAX_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = j, y = i })
+                        table.insert(validPositions, { x = i, y = j })
                     end 
                 
                 elseif self.direction == TOP then
                     if i < MAX_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = j, y = i })
+                        table.insert(validPositions, { x = i, y = j })
                     end
 
                 else
                     if i > MIN_DIRECTION_POSITION then
-                        table.insert(validPositions, { x = j, y = i })
+                        table.insert(validPositions, { x = i, y = j })
                     end
 
                 end
@@ -1224,7 +1224,7 @@ function RoomEnemies:GetEmptyPositions()
     for i = 1, ROOM_SIZE do
         for j = 1, ROOM_SIZE do
             if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID then
-                table.insert(validPositions, { x = j, y = i })
+                table.insert(validPositions, { x = i, y = j })
             end
         end
     end
