@@ -1187,7 +1187,7 @@ function RoomEnemies:GetRandomValidPointInRoom()
 
     for i = 1, ROOM_SIZE do
         for j = 1, ROOM_SIZE do
-            if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID then
+            if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID and DCEI.IsPointOnNavMesh(i, j) then
                 
                 if self.direction == LEFT then
                     if j > MIN_DIRECTION_POSITION then

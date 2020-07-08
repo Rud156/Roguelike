@@ -590,7 +590,7 @@ function CheckAndSpawnEntryDoor()
     local validPositions = {}
     for i = 1, RoomMod.RoomSize do
         for j = 1, RoomMod.RoomSize do
-            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId then
+            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId and DCEI.IsPointOnNavMesh(i, j) then
                 table.insert(validPositions, { x = i, y = j })
             end
         end
@@ -631,7 +631,7 @@ function CheckAndSpawnExitDoor()
     local validPositions = {}
     for i = 1, RoomMod.RoomSize do
         for j = 1, RoomMod.RoomSize do
-            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId then
+            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId and DCEI.IsPointOnNavMesh(i, j) then
                 table.insert(validPositions, { x = i, y = j })
             end
         end
@@ -689,8 +689,10 @@ end
 function GetRandomCenterPointOnMap(validPositions)
     local capturedPositions = {}
 
-    local currentX = 15
-    local currentY = 15
+    local worldCenter = DCEI.GetMapCenterPoint()
+    
+    local currentX = math.floor(worldCenter.x)
+    local currentY = math.floor(worldCenter.y)
     local initialDiff = 1
 
     while true do
