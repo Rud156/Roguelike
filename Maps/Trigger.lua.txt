@@ -59,8 +59,8 @@ local mod = {}
 -- #region Constants
 local WORLD_WIDTH = 30
 local WORLD_HEIGHT = 30
-local MAX_ROOM_COLUMNS = 3
 local GAME_LOOP_RATE = 0.0625
+local CENTER_POSITIONS_MAX_COUNT = 10
 
 local LEFT = "L"
 local RIGHT = "R"
@@ -595,10 +595,8 @@ function CheckAndSpawnEntryDoor()
             end
         end
     end
-
-    local randomPosition = math.random(1, #validPositions)
-    local doorSpawnPoint = validPositions[randomPosition]
-
+ 
+    local doorSpawnPoint = GetRandomCenterPointOnMap(validPositions)
     m_entryDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
 
     local spawnDirection = DCEI.Save.Get(LAST_DIRECTION)
@@ -639,9 +637,7 @@ function CheckAndSpawnExitDoor()
         end
     end
 
-    local randomPosition = math.random(1, #validPositions)
-    local doorSpawnPoint = validPositions[randomPosition]
-
+    local doorSpawnPoint = GetRandomCenterPointOnMap(validPositions)
     m_exitDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
 end
 
@@ -688,6 +684,63 @@ function UpdateCollisionWithExitDoor()
         DCEI.Wait(1)
         DCEI.PlayLevel(roomPath, roomName)
     end
+end
+
+function GetRandomCenterPointOnMap(validPositions)
+    local capturedPositions = {}
+
+    local currentX = 15
+    local currentY = 15
+    local initialDiff = 1
+
+    while true do
+        for i = currentX, currentX + initialDiff - 1 do
+            local position = { x = i, y = currentY }
+            if ExtensionFunction.ArrayHasPosition(validPositions, position) then
+                table.insert(capturedPositions, position)
+            end
+        end
+        currentX = currentX + initialDiff
+
+        for i = currentY, currentY - initialDiff + 1, -1 do
+            local position = { x = currentX, y = i }
+            if ExtensionFunction.ArrayHasPosition(validPositions, position) then
+                table.insert(capturedPositions, position)
+            end
+        end
+        currentY = currentY - initialDiff
+
+        initialDiff = initialDiff + 1
+
+        for i = currentX, currentX - initialDiff + 1, -1 do
+            local position = { x = i, y = currentY }
+            if ExtensionFunction.ArrayHasPosition(validPositions, position) then
+                table.insert(capturedPositions, position)
+            end
+        end
+        currentX = currentX - initialDiff
+
+        for i = currentY, currentY + initialDiff - 1 do
+            local position = { x = currentX, y = i }
+            if ExtensionFunction.ArrayHasPosition(validPositions, position) then
+                table.insert(capturedPositions, position)
+            end
+        end
+        currentY = currentY + initialDiff
+
+        if currentX >= WORLD_WIDTH or currentY >= WORLD_HEIGHT or currentX <= 0 or currentY <= 0 then
+            break
+        end
+
+        if #capturedPositions >= CENTER_POSITIONS_MAX_COUNT then
+            break
+        end
+    end
+
+    local randomIndex = math.random(1, #capturedPositions)
+    local targetPosition = capturedPositions[randomIndex]
+
+    return targetPosition
 end
 
 -- #endregion Doorways

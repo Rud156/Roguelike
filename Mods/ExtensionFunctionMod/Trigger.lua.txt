@@ -54,8 +54,18 @@ function mod.ToBoolean(stringValue)
 end
 
 function mod.ArrayHasValue(array, value)
-    for i, data in ipairs(array) do
+    for _, data in ipairs(array) do
         if data == value then
+            return true
+        end
+    end
+
+    return false
+end
+
+function mod.ArrayHasPosition(array, position)
+    for _, data in ipairs(array) do
+        if data.x == position.x and data.y == position.y then
             return true
         end
     end
