@@ -1,50 +1,62 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+
 local mod = {}
 
 local COLLECTIBLES_TABLE = {
     _Collectible_Boots_Of_Speed = {
         itemName = "_Collectible_Boots_Of_Speed",
+        itemDisplayName = "Boots Of Speed",
         itemImage = "icon_enhance_frosttower_tempestaura",
         itemStackable = -1,
         itemType = 0,
         itemCost = 50,
         itemBehaviourName = "_Collectible_Boots_Of_Speed",
-        itemDescription = "Increases the movement speed of the Hero by 30% when placed in inventory. Boots of Speed do not stack. Two boots of speed will make a Hero just as fast as one"           
+        itemDescription = "Increases the movement speed of the Hero by 30% when placed in inventory. Boots of Speed do not stack. Two boots of speed will make a Hero just as fast as one",
+        itemSmallDescription = "Movement Speed Buff.\nNo Stacking"
     },
     _Collectible_Hammer_Of_Attack = {
         itemName = "_Collectible_Hammer_Of_Attack",
+        itemDisplayName = "Hammer Of Attack",
         itemImage = "icon_enhance_crusader_blessed_hammer",
         itemStackable = -1,
         itemType = 0,
         itemCost = 65,
         itemBehaviourName = "_Collectible_Hammer_Of_Attack",
-        itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage"
+        itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage",
+        itemSmallDescription = "Attack Buff.\nNo Stacking"
     },
     _Collectible_Helm_Of_Valor = {
         itemName = "_Collectible_Helm_Of_Valor",
+        itemDisplayName = "Helm Of Valor",
         itemImage = "icon_enhance_lighthouse_guardian",
         itemStackable = -1,
         itemType = 0,
         itemCost = 35,
         itemBehaviourName = "_Collectible_Helm_Of_Valor",
-        itemDescription = "When placed in the inventory and active, Helm of Valor will block 1 incoming attack for the Hero. After blocking the damage, Helm of Valor will become inactive, becoming active after 10 seconds"
+        itemDescription = "When placed in the inventory and active, Helm of Valor will block 1 incoming attack for the Hero. After blocking the damage, Helm of Valor will become inactive, becoming active after 10 seconds",
+        itemSmallDescription = "Blocks 1 attack"
     },
     _Collectible_Potion = {
         itemName = "_Collectible_Potion",
+        itemDisplayName = "Potion",
         itemImage = "icon_catalyst_main_item5_orange_02",
         itemStackable = 2,
         itemType = 1,
         itemCost = 30,
         itemDescription = "Consume to instantly regenerate 50 HP",
+        itemSmallDescription = "Consume to instantly regenerate 50 HP",
         itemBehaviourName = "_Collectible_Potion",
         itemPotionHealth = 50
     },
     _Collectible_Bomb = {
         itemName = "_Collectible_Bomb",
+        itemDisplayName = "Bomb",
         itemImage = "icon_gear_bomb_01",
         itemStackable = 2,
         itemType = 1,
         itemCost = 15,
         itemDescription = "Place a bomb that will explode 2 seconds after placement from where the Hero is standing. Bomb explosion will deal 30 damage in a radius of 1",
+        itemSmallDescription = "Explode after 2 sec",
         itemBombName = "_Collectible_Bomb_Unit"
     }
 }
@@ -56,6 +68,9 @@ local COLLECTIBLES = {
     "_Collectible_Potion",
     "_Collectible_Bomb"
 }
+
+local COLLECTIBLES_UI_DISPLAY_DIST = 1
+local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
 -- Item  Type
 -- -1: Empty
@@ -449,8 +464,140 @@ function Inventory:GetInventorySlots()
 end
 
 
+local CollectiblesUI = {
+    unit = nil,
+    displayHolder = nil,
+    priceHolder = nil
+}
+CollectiblesUI.__index = CollectiblesUI
+function CollectiblesUI:new(uiRoot, unit, itemName)
+    local collectiblesUi = {}
+    setmetatable(collectiblesUi, CollectiblesUI)
+
+    collectiblesUi.unit = unit
+    collectiblesUi.displayHolder = nil
+    collectiblesUi.priceHolder = nil
+
+    collectiblesUi:CreateUI(uiRoot, unit, itemName)
+
+    return collectiblesUi
+end
+function CollectiblesUI:CreateUI(uiRoot, unit, itemName)
+    local mainFrame = DCEI.NewFrame(uiRoot)
+    DCEI.SetBackgroundImage(mainFrame, "shape_square_gradient_32x32")
+    DCEI.SetBackgroundImageColor(mainFrame, 0.9, 0.8, 0.467, 1)
+    DCEI.SetPadding(mainFrame, 14)
+
+    local hStack = DCEI.NewHStack(mainFrame)
+    DCEI.SetSpacing(hStack, 14)
+
+    local backgroundImage = DCEI.NewFrame(hStack)
+    DCEI.SetBackgroundImage(backgroundImage, COLLECTIBLES_TABLE[itemName].itemImage)
+    DCEI.SetMinSize(backgroundImage, 100, 100)
+
+    local infoFrame = DCEI.NewVStack(hStack)
+    DCEI.SetSpacing(infoFrame, 14)
+
+    local itemNameText = DCEI.NewText(infoFrame)
+    DCEI.SetText(itemNameText, COLLECTIBLES_TABLE[itemName].itemDisplayName) -- Probably redundant
+
+    local itemPriceFrame = DCEI.NewHStack(infoFrame)
+    DCEI.SetSpacing(itemPriceFrame, 14)
+
+    local itemPriceImage = DCEI.NewFrame(itemPriceFrame)
+    DCEI.SetBackgroundImage(itemPriceImage, "ui_ingame_coin")
+    DCEI.SetMinSize(itemPriceImage, 30, 30)
+    local itemPrice = DCEI.NewText(itemPriceFrame)
+    DCEI.SetText(itemPrice, COLLECTIBLES_TABLE[itemName].itemCost)
+
+    local itemDestription = DCEI.NewText(infoFrame)
+    DCEI.SetText(itemDestription, COLLECTIBLES_TABLE[itemName].itemSmallDescription)
+
+    DCEI.AttachToUnit(mainFrame, unit, { offset = { up = 2 } })
+    self.displayHolder = mainFrame
+    self.priceHolder = itemPriceFrame
+
+    DCEI.TriggerAddUnitRemovedEvent(
+        self.unit,
+        function()
+            DCEI.Destroy(self.displayHolder)
+        end
+    )
+end
+function CollectiblesUI:Update(deltaTime, playerPosition)
+    if not self:IsValid() then
+        return
+    end
+
+    local unitPosition = DCEI.GetUnitPosition2D(self.unit)
+    local distance = mod.VectorDistance(unitPosition, playerPosition)
+
+    if distance <= COLLECTIBLES_UI_DISPLAY_DIST then
+        DCEI.SetActive(self.displayHolder, true)
+    else
+        DCEI.SetActive(self.displayHolder, false)
+    end
+
+    local behaviourStack = DCEI.UnitBehaviorStackCount(self.unit, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    if behaviourStack ~= 0 then
+        DCEI.SetActive(self.priceHolder, false)
+    else
+        DCEI.SetActive(self.priceHolder, true)
+    end
+end
+function CollectiblesUI:IsValid()
+    return ArcadeCore.UnitIsAlive(self.unit)
+end
+
+
+local CollectiblesUIManager = {
+    collectiblesUi = {}
+}
+CollectiblesUIManager.__index = CollectiblesUIManager
+function CollectiblesUIManager:new(uiRoot)
+    local collectiblesUiManager = {}
+    setmetatable(collectiblesUiManager, CollectiblesUIManager)
+
+    collectiblesUiManager.collectiblesUi = {}
+
+    for _, itemName in ipairs(COLLECTIBLES) do
+        local units = DCEI.FindUnits(itemName)
+
+        for _, item in ipairs(units) do
+            local itemDisplay = CollectiblesUI:new(uiRoot, item, itemName)
+            table.insert(collectiblesUiManager.collectiblesUi, itemDisplay)
+        end
+    end
+
+    return collectiblesUiManager
+end
+function CollectiblesUIManager:Update(deltaTime, playerPosition)
+    local removalIndex = -1
+
+    for i, collectible in ipairs(self.collectiblesUi) do
+        if collectible:IsValid() then
+            collectible:Update(deltaTime, playerPosition)
+        else
+            removalIndex = i
+        end
+    end
+
+    if removalIndex ~= -1 then
+        table.remove(self.collectiblesUi, removalIndex)
+    end
+end
+function CollectiblesUIManager:AddNewUI(uiRoot, unit, itemName)
+    local itemDisplay = CollectiblesUI:new(uiRoot, unit, itemName)
+    table.insert(self.collectiblesUi, itemDisplay)
+end
+
+
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
+mod.CollectiblesUIManager = CollectiblesUIManager
 mod.InventoryCollectibles = COLLECTIBLES_TABLE
 mod.InventoryCollectiblesName = COLLECTIBLES
+
+mod.VectorDistance = nil
+
 return mod

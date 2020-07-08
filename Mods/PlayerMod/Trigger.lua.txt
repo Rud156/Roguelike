@@ -76,7 +76,7 @@ function Player:new(xPosition, yPosition, playerType, uiRoot)
     player.playerStaminaAmount = PLAYER_MAX_STAMINA
     player.playerStaminaRegenTimer = 0
 
-    player.playerGoldAmount = 0
+    player.playerGoldAmount = 100 -- TODO: Change this later on...
 
     player:CreatePlayerUI(uiRoot)
     player:LoadData()

@@ -8,10 +8,12 @@ local CameraMod = GameModules["Mods/CameraMod"]
 local UtilClassMod = GameModules["Mods/UtilClassMod"]
 local PlayerMod = GameModules["Mods/PlayerMod"]
 
+InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryCollectibles = InventoryMod.InventoryCollectibles
 local InventoryCollectiblesName = InventoryMod.InventoryCollectiblesName
+local CollectiblesUIManager = InventoryMod.CollectiblesUIManager
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
@@ -154,6 +156,7 @@ local m_inventory
 local m_damageDisplay
 local m_playerGoldDisplay
 local m_miniMap
+local m_collectiblesUi
 -- Random
 local m_randomSeed
 
@@ -175,6 +178,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     ArcadeCore.HideDefaultUi()
     CreateInventoryUI()
     CreateDebugUI()
+    CreateCollectiblesUI()
 
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())
@@ -255,6 +259,9 @@ function Update()
         m_player:Update(GAME_LOOP_RATE)
         local playerGoldAmount = m_player:GetPlayerGold()
         DCEI.SetText(m_playerGoldDisplay,  tostring(playerGoldAmount))
+
+        local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+        m_collectiblesUi:Update(GAME_LOOP_RATE, playerPosition)
     end
 
     if m_roomEnemies ~= nil and m_player ~= nil then
@@ -881,6 +888,10 @@ function CreateBaseUIElements()
     m_uiTopLayer = topFrame
 end
 
+function CreateCollectiblesUI()
+    m_collectiblesUi = CollectiblesUIManager:new(m_uiRoot)
+end
+
 function CreatePlayerDamageDisplay()
     local damageDisplay = DCEI.NewFrame(m_uiTopLayer)
     DCEI.SetMatchParent(damageDisplay, true, true)
@@ -1162,6 +1173,7 @@ function DropInventoryItemToWorld(itemName)
     end
 
     m_roomItemDrops:AddItemToList(itemName, playerPosition.x, playerPosition.y, roomName, playerRow, playerColumn)
+    m_collectiblesUi:AddNewUI(m_uiRoot, item, itemName)
 end
 
 -- #endregion Inventory Functions
