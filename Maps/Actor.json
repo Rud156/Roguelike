@@ -1741,7 +1741,8 @@
                     "_PlayerCharacter_Health_Potion",
                     "_PlayerCharacter_Boots_Of_Speed",
                     "_PlayerCharacter_Hammer_Of_Attack",
-                    "_PlayerCharacter_DeadEffect"
+                    "_PlayerCharacter_DeadEffect",
+                    "_PlayerCharacter_Enemy_Ooze_Slow"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -1899,7 +1900,8 @@
                     "_PlayerCharacter_Health_Potion",
                     "_PlayerCharacter_Boots_Of_Speed",
                     "_PlayerCharacter_Hammer_Of_Attack",
-                    "_PlayerCharacter_DeadEffect"
+                    "_PlayerCharacter_DeadEffect",
+                    "_PlayerCharacter_Enemy_Ooze_Slow"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -2779,6 +2781,44 @@
                 },
                 "modelScale": 1
             }
+        },
+        "_SFX_Enemy_Gold_Drop": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goldorb_collect"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Player_Character_Slowed": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_status_slime"
+                }
+            }
         }
     },
     "actorEventMacros": {
@@ -2859,6 +2899,11 @@
                         {
                             "create": {
                                 "actor": "_FX_Enemy_Gold_Drop"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Enemy_Gold_Drop"
                             }
                         }
                     ]
@@ -3170,6 +3215,39 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Helm_Of_Valor"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Enemy_Ooze_Slow": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Enemy_Ooze_Slow"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Player_Character_Slowed",
+                                "hostSite": "UnitCenter"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Enemy_Ooze_Slow"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Player_Character_Slowed"
                             }
                         }
                     ]

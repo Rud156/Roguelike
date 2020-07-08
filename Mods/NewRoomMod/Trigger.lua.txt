@@ -62,14 +62,16 @@ local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 local ROOM_SIZE = 30
 local MERCHANT_ROOM_SPAWN_RATE = 3
 
+-- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin, 3: Goblin Sapper, 4: Slime
 local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
 
 local LEVEL_1_ENEMY_SETS = {
-    { 2, 2 },
-    { 2, 0 },
-    { 3, 3, 4 },
-    { 0, 0, 0 },
-    { 2, 4 },    
+    -- { 2, 2 },
+    -- { 2, 0 },
+    -- { 3, 3, 4 },
+    -- { 0, 0, 0 },
+    -- { 2, 4 },  
+    {4, 4}
 }
 
 local LEVEL_2_ENEMY_SETS = {
@@ -541,7 +543,7 @@ function RoomGenerator:SetupClearMatrix()
                 local roomClear = false
                 if i == spawnRow and j == spawnColumn then
                     self.roomVisitedMatrix[i][j] = true
-                    roomClear = false -- TODO: Change this later on...
+                    roomClear = true
                 else
                     self.roomVisitedMatrix[i][j] = false
                 end
