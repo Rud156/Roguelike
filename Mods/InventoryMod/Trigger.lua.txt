@@ -44,7 +44,7 @@ local COLLECTIBLES_TABLE = {
         itemType = 1,
         itemCost = 30,
         itemDescription = "Consume to instantly regenerate 50 HP",
-        itemSmallDescription = "Consume to instantly regenerate 50 HP",
+        itemSmallDescription = "Consume to instantly\nregenerate 50 HP",
         itemBehaviourName = "_Collectible_Potion",
         itemPotionHealth = 50
     },
@@ -499,7 +499,7 @@ function CollectiblesUI:CreateUI(uiRoot, unit, itemName)
     DCEI.SetSpacing(infoFrame, 14)
 
     local itemNameText = DCEI.NewText(infoFrame)
-    DCEI.SetText(itemNameText, COLLECTIBLES_TABLE[itemName].itemDisplayName) -- Probably redundant
+    DCEI.SetText(itemNameText, COLLECTIBLES_TABLE[itemName].itemDisplayName)
 
     local itemPriceFrame = DCEI.NewHStack(infoFrame)
     DCEI.SetSpacing(itemPriceFrame, 14)
