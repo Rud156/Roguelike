@@ -58,7 +58,8 @@
             "_Enemy_Ooze",
             "_Enemy_Goblin",
             "__SpawnMarkerUnit",
-            "_Enemy_GoblinMiner"
+            "_Enemy_GoblinMiner",
+            "_DungeonDoorway"
         ],
         "usedEffects": [
             "__StopMovement",

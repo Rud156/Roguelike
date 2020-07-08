@@ -585,10 +585,6 @@
                 }
             },
             "references": {
-                "abilityList": [
-                    "_DoorwayOpen",
-                    "_DoorwayClose"
-                ],
                 "behaviorList": [
                     "_Unit_Invincible"
                 ]
@@ -711,6 +707,29 @@
                     "behaviorType": 0
                 }
             }
+        },
+        "_DungeonDoorway": {
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 4
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
         }
     }
 }

@@ -762,19 +762,22 @@ function SaveNextRoomData()
     if not m_isBeginningRoom then
         DCEI.LogMessage("Saving Next Room Data")
 
+        DCEI.LogMessage("Min: " .. RoomMod.GetMinDirectionPosition(false))
+        DCEI.LogMessage("Max: " .. RoomMod.GetMaxDirectionPosition(false))
+
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         local direction = ""
         
-        if playerPosition.x < RoomMod.MinDirectionPosition then
+        if playerPosition.x < RoomMod.GetMinDirectionPosition(true) then
             m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn - 1
             direction = RIGHT
-        elseif playerPosition.x > RoomMod.MaxDirectionPosition then
+        elseif playerPosition.x > RoomMod.GetMaxDirectionPosition(true) then
             m_roomGenerator.currentPlayerColumn = m_roomGenerator.currentPlayerColumn + 1
             direction = LEFT
-        elseif playerPosition.y < RoomMod.MinDirectionPosition then
+        elseif playerPosition.y < RoomMod.GetMinDirectionPosition(false) then
             m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow + 1
             direction = TOP
-        elseif playerPosition.y > RoomMod.MaxDirectionPosition then
+        elseif playerPosition.y > RoomMod.GetMaxDirectionPosition(false) then
             m_roomGenerator.currentPlayerRow = m_roomGenerator.currentPlayerRow - 1
             direction = BOTTOM
         else

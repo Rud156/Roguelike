@@ -52,8 +52,7 @@ local RIGHT = "R"
 local TOP = "T"
 local BOTTOM = "B"
 
-local MIN_DIRECTION_POSITION = 5
-local MAX_DIRECTION_POSITION = 14
+local WORLD_HALF_SIZE = 10
 
 local WALKABLE_TEXTURE_ID = 4
 local EXIT_ROOM_PATH_LENGTH = 3
@@ -1075,11 +1074,11 @@ function RoomEnemies:new(player, roomGenerator, roomLevel, spawnBoss)
     local playerPosition = DCEI.GetUnitPosition2D(player)
     local direction
 
-    if playerPosition.x < MIN_DIRECTION_POSITION then
+    if playerPosition.x < mod.GetMinDirectionPosition(true) then
         direction = LEFT
-    elseif playerPosition.x > MAX_DIRECTION_POSITION then
+    elseif playerPosition.x > mod.GetMaxDirectionPosition(true) then
         direction = RIGHT
-    elseif playerPosition.y < MIN_DIRECTION_POSITION then
+    elseif playerPosition.y < mod.GetMinDirectionPosition(false) then
         direction = BOTTOM
     else
         direction = TOP
@@ -1190,22 +1189,22 @@ function RoomEnemies:GetRandomValidPointInRoom()
             if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID and DCEI.IsPointOnNavMesh(i, j) then
                 
                 if self.direction == LEFT then
-                    if j > MIN_DIRECTION_POSITION then
+                    if i > mod.GetMinDirectionPosition(true) then
                         table.insert(validPositions, { x = i, y = j })
                     end
 
                 elseif self.direction == RIGHT then
-                    if j < MAX_DIRECTION_POSITION then
+                    if i < mod.GetMaxDirectionPosition(true) then
                         table.insert(validPositions, { x = i, y = j })
                     end 
                 
                 elseif self.direction == TOP then
-                    if i < MAX_DIRECTION_POSITION then
+                    if j < mod.GetMaxDirectionPosition(false) then
                         table.insert(validPositions, { x = i, y = j })
                     end
 
                 else
-                    if i > MIN_DIRECTION_POSITION then
+                    if j > mod.GetMinDirectionPosition(false) then
                         table.insert(validPositions, { x = i, y = j })
                     end
 
@@ -1836,14 +1835,34 @@ function mod.IsGoblinForestBossRoom(value)
     return string.find(value, "GFBR")
 end
 
+function mod.GetMinDirectionPosition(isXAxis)
+    -- TODO: Definitely can be optimized
+    local worldCenter = DCEI.GetMapCenterPoint()
+
+    if isXAxis then
+        return worldCenter.x - (WORLD_HALF_SIZE / 2)
+    else
+        return worldCenter.y - (WORLD_HALF_SIZE / 2)
+    end
+end
+
+function mod.GetMaxDirectionPosition(isXAxis)
+    -- TODO: Definitely can be optimized
+    local worldCenter = DCEI.GetMapCenterPoint()
+
+    if isXAxis then
+        return worldCenter.x + (WORLD_HALF_SIZE / 2)
+    else
+        return worldCenter.y + (WORLD_HALF_SIZE / 2)
+    end
+end
+
 
 mod.RoomGenerator = RoomGenerator
 mod.RoomEnemies = RoomEnemies
 mod.MiniMap = MiniMap
 mod.ItemDrops = ItemDrops
 
-mod.MinDirectionPosition = MIN_DIRECTION_POSITION
-mod.MaxDirectionPosition = MAX_DIRECTION_POSITION
 mod.RoomSize = ROOM_SIZE
 
 mod.WalkableTextureId = WALKABLE_TEXTURE_ID

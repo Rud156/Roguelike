@@ -2339,6 +2339,36 @@
                 ]
             }
         },
+        "_SFX_Enemy_Goblin_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_SFX_Enemy_Gold_Drop": {
             "modelActor": {
                 "resource": {
@@ -2434,6 +2464,36 @@
                 "resource": {
                     "type": "Sound",
                     "name": "awaken_sucessed"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Ooze_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "ooze_die"
                 },
                 "events": [
                     {
@@ -2742,64 +2802,12 @@
                 "modelScale": 1
             }
         },
-        "_SFX_Enemy_Goblin_Death": {
-            "modelActor": {
+        "_DungeonDoorway": {
+            "unitActor": {
                 "resource": {
-                    "type": "Sound",
-                    "name": "goblin_die"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Enemy_Ooze_Death": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "ooze_die"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
+                    "type": "GpuAnimation",
+                    "name": "mineworld_gate00"
+                }
             }
         }
     },
