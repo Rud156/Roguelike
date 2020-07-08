@@ -728,6 +728,8 @@ function GetRandomCenterPointOnMap(validPositions)
         end
         currentY = currentY + initialDiff
 
+        initialDiff = initialDiff + 1
+
         if currentX >= WORLD_WIDTH or currentY >= WORLD_HEIGHT or currentX <= 0 or currentY <= 0 then
             break
         end
