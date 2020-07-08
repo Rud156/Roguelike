@@ -315,6 +315,11 @@
                                 "playAnimation": {
                                     "clipId": 1
                                 }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Goblin_Death"
+                                }
                             }
                         ]
                     },
@@ -413,6 +418,11 @@
                             {
                                 "playAnimation": {
                                     "clipId": 1
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinChef_Death"
                                 }
                             }
                         ]
@@ -681,6 +691,11 @@
                                 "playAnimation": {
                                     "clipId": 1
                                 }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Hobgoblin_Death"
+                                }
                             }
                         ]
                     }
@@ -712,7 +727,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "ooze_biggest_red"
+                    "name": "ooze_biggest"
                 },
                 "events": [
                     {
@@ -791,6 +806,11 @@
                             {
                                 "playAnimation": {
                                     "clipId": 1
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_Ooze_Death"
                                 }
                             }
                         ]
@@ -1434,7 +1454,7 @@
                 "modelScale": 4
             }
         },
-        "_FX_Player_Character_Slowed": {
+        "_FX_PlayerCharacter_Slowed": {
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
@@ -2721,6 +2741,66 @@
                 },
                 "modelScale": 1
             }
+        },
+        "_SFX_Enemy_Goblin_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_Ooze_Death": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "ooze_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -3029,7 +3109,7 @@
                     "actions": [
                         {
                             "create": {
-                                "actor": "_FX_Player_Character_Slowed",
+                                "actor": "_FX_PlayerCharacter_Slowed",
                                 "hostSite": "UnitCenter"
                             }
                         }
@@ -3044,7 +3124,7 @@
                     "actions": [
                         {
                             "destroy": {
-                                "actor": "_FX_Player_Character_Slowed"
+                                "actor": "_FX_PlayerCharacter_Slowed"
                             }
                         }
                     ]
