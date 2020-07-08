@@ -1222,7 +1222,7 @@ function RoomEnemies:GetEmptyPositions()
     for i = 1, ROOM_SIZE do
         for j = 1, ROOM_SIZE do
             if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID then
-                table.insert(validPositions, { x = i, y = j })
+                table.insert(validPositions, { x = j, y = i })
             end
         end
     end
