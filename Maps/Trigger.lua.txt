@@ -216,6 +216,10 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     -- Add Triggers At The End...
     DCEI.TriggerAddJoystickEvent(
         function()
+            if m_sceneTransitionActive then
+                return
+            end
+
             local axes = DCEI.TriggeringJoystickAxes
             if m_player ~= nil then
                 m_player:HandleJoystickMoved(axes)
@@ -224,6 +228,10 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     )
     DCEI.TriggerAddJoystickReleaseEvent(
         function()
+            if m_sceneTransitionActive then
+                return
+            end
+
             if m_player ~= nil then
                 m_player:HandleJoystickReleased()
             end
@@ -231,6 +239,10 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     )
     DCEI.TriggerAddJoystickButtonEvent(0, 
         function()
+            if m_sceneTransitionActive then
+                return
+            end
+
             local buttonId = DCEI.TriggeringJoystickButtonId
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
@@ -242,6 +254,10 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     )
     DCEI.TriggerAddJoystickButtonEvent(1, 
         function()
+            if m_sceneTransitionActive then
+                return
+            end
+
             local buttonId = DCEI.TriggeringJoystickButtonId
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
@@ -253,6 +269,10 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     )
     DCEI.TriggerAddJoystickButtonEvent(2, 
         function()
+            if m_sceneTransitionActive then
+                return
+            end
+
             local buttonId = DCEI.TriggeringJoystickButtonId
             local buttonEvent = DCEI.TriggeringJoystickButtonEventType
 
@@ -350,6 +370,10 @@ end
 
 -- #region Unit Events
 function HandleUnitDied()
+    if m_sceneTransitionActive then
+        return
+    end
+
     local unit = DCEI.TriggeringUnit
 
     -- Just go through all rooms and trigger it
@@ -379,6 +403,10 @@ function HandleUnitDied()
 end
 
 function HandleBehaviourAdded()
+    if m_sceneTransitionActive then
+        return
+    end
+
     local behaviourName = DCEI.TriggeringBehaviorName
     local unit = DCEI.TriggeringUnit
     local unitName = DCEI.UnitName(unit)
@@ -467,6 +495,10 @@ function HandleBehaviourAdded()
 end
 
 function HandleUnitSelected()
+    if m_sceneTransitionActive then
+        return
+    end
+    
     local unit = DCEI.TriggeringUnit
     local unitName = DCEI.UnitName(unit)
 
