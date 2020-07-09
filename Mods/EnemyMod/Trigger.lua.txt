@@ -827,7 +827,7 @@ function GoblinMiner:new(room, xPosition, yPosition)
     local goblinMiner = {}
     setmetatable(goblinMiner, GoblinMiner)
 
-    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_MINER, 10, 10) -- TODO: Change this later on...
+    local enemyUnit = DCEI.CreateUnit(-1, -1, GOBLIN_MINER, xPosition, yPosition)
     goblinMiner.room = room
     goblinMiner.unit = enemyUnit
     
