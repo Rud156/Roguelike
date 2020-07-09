@@ -33,6 +33,13 @@ local COMMON_ROOMS = {
     "CR_TR_1",
 }
 
+local FAKE_COMMON_ROOMS = {
+    "CR_B_0",
+    "CR_L_0",
+    "CR_R_0",
+    "CR_T_0",
+}
+
 local MERCHANT_ROOMS = {
     "MR_B_0",
     "MR_L_0",
@@ -108,9 +115,11 @@ local RoomGenerator  = {
 
     spawnRoomRow = 100,
     spawnRoomColumn = 100,
+    spawnRoomDoorDirection = "",
 
     exitRoomRow = 100,
     exitRoomColumn = 100,
+    exitRoomDoorDirection = "",
 
     minRow = 999,
     maxRow = -1,
@@ -137,9 +146,11 @@ function RoomGenerator:new(randomSeed, roomLevel)
 
     roomGenerator.spawnRoomRow = -1
     roomGenerator.spawnRoomColumn = -1
+    roomGenerator.spawnRoomDoorDirection = ""
 
     roomGenerator.exitRoomRow = -1
     roomGenerator.exitRoomColumn = -1
+    roomGenerator.exitRoomDoorDirection = ""
 
     roomGenerator.minRow = 999
     roomGenerator.maxRow = -1
@@ -171,9 +182,11 @@ function RoomGenerator:SaveRoomStructure()
 
     DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
     DCEI.Save.Set("SpawnRoomColumn", self.spawnRoomColumn)
+    DCEI.Save.Set("SpawnRoomDoorDirection", self.spawnRoomDoorDirection)
     
     DCEI.Save.Set("ExitRoomRow", self.exitRoomRow)
     DCEI.Save.Set("ExitRoomColumn", self.exitRoomColumn)
+    DCEI.Save.Set("ExitRoomDoorDirection", self.exitRoomDoorDirection)
     
     DCEI.Save.Set("MinRow", self.minRow)
     DCEI.Save.Set("MaxRow", self.maxRow)
@@ -203,9 +216,11 @@ function RoomGenerator:LoadRoomStructure()
 
     roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
     roomGenerator.spawnRoomColumn = DCEI.Save.Get("SpawnRoomColumn")
+    roomGenerator.spawnRoomDoorDirection = DCEI.Save.Get("SpawnRoomDoorDirection")
 
     roomGenerator.exitRoomRow = DCEI.Save.Get("ExitRoomRow")
     roomGenerator.exitRoomColumn = DCEI.Save.Get("ExitRoomColumn")
+    roomGenerator.exitRoomDoorDirection = DCEI.Save.Get("ExitRoomDoorDirection")
 
     roomGenerator.minRow = DCEI.Save.Get("MinRow")
     roomGenerator.maxRow = DCEI.Save.Get("MaxRow")
@@ -235,9 +250,11 @@ function RoomGenerator:ClearSaveData()
 
     DCEI.Save.Set("SpawnRoomRow", nil)
     DCEI.Save.Set("SpawnRoomColumn", nil)
+    DCEI.Save.Set("SpawnRoomDoorDirection", nil)
     
     DCEI.Save.Set("ExitRoomRow", nil)
     DCEI.Save.Set("ExitRoomColumn", nil)
+    DCEI.Save.Set("ExitRoomDoorDirection", nil)
     
     DCEI.Save.Set("MinRow", nil)
     DCEI.Save.Set("MaxRow", nil)
@@ -280,6 +297,34 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
     local randomCommonRoom = math.random(1, #COMMON_ROOMS)
     self.roomMatrix[i] = {}
     self.roomMatrix[i][j] = COMMON_ROOMS[randomCommonRoom]
+
+    local randomEntryExit = self:SelectRandomExit(self.roomMatrix[i][j])
+    self.spawnRoomDoorDirection = randomEntryExit
+    local actualSpawnRoom = self.roomMatrix[i][j]
+    
+    local spawnHasLeft = mod.RoomHasLeftExit(self.roomMatrix[i][j])
+    local spawnHasRight = mod.RoomHasRightExit(self.roomMatrix[i][j])
+    local spawnHasTop = mod.RoomHasTopExit(self.roomMatrix[i][j])
+    local spawnHasBottom = mod.RoomHasBottomExit(self.roomMatrix[i][j])
+    if randomEntryExit == LEFT then
+        spawnHasLeft = false
+    elseif randomEntryExit == RIGHT then
+        spawnHasRight = false
+    elseif randomEntryExit == TOP then
+        spawnHasTop = false
+    else
+        spawnHasBottom = false
+    end
+    if spawnHasLeft then spawnHasLeft = 1 else spawnHasLeft = -1 end
+    if spawnHasRight then spawnHasRight = 1 else spawnHasRight = -1 end
+    if spawnHasTop then spawnHasTop = 1 else spawnHasTop = -1 end
+    if spawnHasBottom then spawnHasBottom = 1 else spawnHasBottom = -1 end
+ 
+    local fakeSpawnRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, spawnHasLeft, spawnHasRight, spawnHasTop, spawnHasBottom)
+    if not fakeSpawnRoom then
+        fakeSpawnRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, spawnHasLeft, spawnHasRight, spawnHasTop, spawnHasBottom)
+    end
+    self.roomMatrix[i][j] = fakeSpawnRoom
 
     self:UpdateMinMaxRowColumn(i, j)
     
@@ -339,12 +384,93 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
         end
     end
 
+    self.roomMatrix[spawnRoomRow][spawnRoomColumn] = actualSpawnRoom -- Replace it with the actual room
+    local actualExitRoom = self.roomMatrix[self.exitRoomRow][self.exitRoomColumn]
+    local fakeExitRoom = self:GetFakeExitRoom()
+    self.roomMatrix[self.exitRoomRow][self.exitRoomColumn] = fakeExitRoom
+
     self:PlaceSecretRooms()
     self:MergeCommonSecretRooms()
     self:SpawnMerchantRooms()
     self:SpawnMerchantRoomItems()
     self:SetupClearMatrix()
+
+    self.roomMatrix[self.exitRoomRow][self.exitRoomColumn] = actualExitRoom
     self:CheckAndEnableBossRoom(roomLevel)
+end
+function RoomGenerator:GetFakeExitRoom()
+    local exitRoomRow = self.exitRoomRow
+    local exitRoomColumn = self.exitRoomColumn
+    local exitRoom = self.roomMatrix[exitRoomRow][exitRoomColumn]
+
+    local exitHasLeft = mod.RoomHasLeftExit(exitRoom)
+    local exitHasRight = mod.RoomHasRightExit(exitRoom)
+    local exitHasTop = mod.RoomHasTopExit(exitRoom)
+    local exitHasBottom = mod.RoomHasBottomExit(exitRoom)
+
+    local exitLeft, exitRight, exitTop, exitBottom = self:GetAdjacentRoomExits(exitRoomRow, exitRoomColumn)
+
+    local validExits = { 0, 0, 0, 0 }
+    if exitLeft == 0 and exitHasLeft then
+        exitLeft = 1
+        validExits[1] = 1
+    end
+    if exitRight == 0 and exitHasRight then
+        exitRight = 1
+        validExits[2] = 1
+    end
+    if exitTop == 0 and exitHasTop then
+        exitTop = 1
+        validExits[3] = 1
+    end
+    if exitBottom == 0 and exitHasBottom then
+        exitBottom = 1
+        validExits[4] = 1
+    end
+
+    local actualSides = {}
+    for i, side in ipairs(validExits) do
+        if side == 1 then
+            table.insert(actualSides, i)
+        end
+    end
+
+    local randomIndex = math.random(1, #actualSides)
+    local validSide = actualSides[randomIndex]
+
+    local fakeExitRoom
+    
+    if validSide == 1 then -- Left
+        fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, -1, exitRight, exitTop, exitBottom)
+        if not fakeExitRoom then
+            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, -1, exitRight, exitTop, exitBottom)
+        end
+        self.exitRoomDoorDirection = LEFT
+
+    elseif validSide == 2 then -- Right
+        fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, -1, exitTop, exitBottom)
+        if not fakeExitRoom then
+            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, exitLeft, -1, exitTop, exitBottom)
+        end
+        self.exitRoomDoorDirection = RIGHT
+
+    elseif validSide == 3 then -- Top
+        fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, exitRight, -1, exitBottom)
+        if not fakeExitRoom then
+            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, exitLeft, exitRight, -1, exitBottom)
+        end
+        self.exitRoomDoorDirection = TOP
+
+    else -- Bottom
+        fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, -1)
+        if not fakeExitRoom then
+            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, exitLeft, exitRight, exitTop, -1)
+        end
+        self.exitRoomDoorDirection = BOTTOM
+
+    end
+
+    return fakeExitRoom
 end
 function RoomGenerator:PlaceSecretRooms()
     DCEI.LogMessage("Placing Secret Rooms")
@@ -557,7 +683,7 @@ function RoomGenerator:SetupClearMatrix()
     end
 end
 function RoomGenerator:CheckAndEnableBossRoom(roomLevel)
-    if roomLevel < 3 then
+    if roomLevel < 5 then
         return
     end
 
@@ -837,6 +963,10 @@ function RoomGenerator:GetRoomWithSpecificExits(rooms, hasLeft, hasRight, hasTop
     end
 
     DCEI.LogMessage("New Length: " .. #actualValidRooms)
+
+    if #actualValidRooms <= 0 then
+        return false
+    end
 
     local randomIndex = math.random(1, #actualValidRooms)
     return actualValidRooms[randomIndex]

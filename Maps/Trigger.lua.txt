@@ -73,9 +73,7 @@ local LAST_DIRECTION = "LastDirection"
 local DEBUG_UNIT = "__DebugMarkerUnit"
 local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
 
-local EXIT_DOORWAY = "_TrapDoorway"
-local EXIT_DOORWAY_OPEN = "_DoorwayOpen"
-local EXIT_DOORWAY_CLOSE = "_DoorwayClose"
+local EXIT_DOORWAY = "_DungeonDoorway"
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Damage_Invincible"
@@ -128,8 +126,6 @@ local m_isBeginningRoom = false
 local m_nextRoomTransitionActive = false
 local m_doorOpenAnimPlayed = false
 local m_roomEnemiesCleared = false
-local m_exitDoor
-local m_entryDoor
 -- Player
 local m_player
 local m_leftSpawn
@@ -357,14 +353,6 @@ function HandleBehaviourAdded()
             SaveNextRoomData()
             DisplayGameOverSequence(true)
 
-        elseif unitName == EXIT_DOORWAY and unit == m_exitDoor then
-            if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
-                return
-            end
-
-            m_nextRoomTransitionActive = true
-            UpdateCollisionWithExitDoor()
-
         elseif unitName == EXIT_DOORWAY and m_isBeginningRoom then
             if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
                 return
@@ -373,6 +361,16 @@ function HandleBehaviourAdded()
             m_nextRoomTransitionActive = true
             SaveNextRoomData()
             DisplayGameOverSequence(true)
+
+        elseif unitName == EXIT_DOORWAY then
+            if m_roomGenerator.currentPlayerRow == m_roomGenerator.exitRoomRow and m_roomGenerator.currentPlayerColumn == m_roomGenerator.exitRoomColumn then
+                if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
+                    return
+                end
+
+                m_nextRoomTransitionActive = true
+                UpdateCollisionWithExitDoor()
+            end
         end
 
     elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
@@ -493,17 +491,6 @@ function SpawnPlayerAndSetPosition()
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
     -- Spawn Player
 
-    if m_isBeginningRoom then
-        DCEI.TriggerAddTimerEventElapsed(
-            function()
-                local trapDoor = DCEI.FindUnit(EXIT_DOORWAY)
-                local doorPosition = DCEI.GetUnitPosition2D(trapDoor)
-                DCEI.CastAbilityAtPosition(EXIT_DOORWAY_OPEN, trapDoor, doorPosition.x, doorPosition.y)
-            end,
-            1
-        )
-    end
-
     SpawnItemDrops()
     ApplyInventoryBehaviours()
 end
@@ -556,10 +543,6 @@ function ActivateDoorCloseAnimations()
         DCEI.LogMessage("Casting Close Ability")
         DCEI.CastAbility(DOOR_CLOSE_ANIM, door, door)
     end
-
-    if m_exitDoor ~= nil then
-        DCEI.CastAbility(EXIT_DOORWAY_CLOSE, m_exitDoor, m_exitDoor)
-    end
 end
 
 function ActivateDoorOpenAnimations()
@@ -572,16 +555,33 @@ function ActivateDoorOpenAnimations()
         DCEI.LogMessage("Casting Open Ability")
         DCEI.CastAbility(DOOR_OPEN_ANIM, door, door)
     end
-
-    if m_exitDoor ~= nil then
-        DCEI.LogMessage("Playing Exit Door Animation")
-        DCEI.CastAbility(EXIT_DOORWAY_OPEN, m_exitDoor, m_exitDoor)
-    end
 end
 
 -- #endregion Common Game Spawn
 
 -- #region Doorways
+
+function GetDoorsInDirection(doors, direction)
+    local validDoors = {}
+
+    for _, door in ipairs(doors) do
+        local position = DCEI.GetUnitPosition2D(door)
+        if position.x < RoomMod.GetMinDirectionPosition(true) and direction == LEFT then
+            table.insert(validDoors, door)
+
+        elseif position.x > RoomMod.GetMaxDirectionPosition(true) and direction == RIGHT then
+            table.insert(validDoors, door)
+
+        elseif position.y < RoomMod.GetMinDirectionPosition(false) and direction == BOTTOM then
+            table.insert(validDoors, door)
+
+        elseif position.y > RoomMod.GetMaxDirectionPosition(false) and direction == TOP then
+            table.insert(validDoors, door)
+        end
+    end
+
+    return validDoors
+end
 
 function CheckAndSpawnEntryDoor()
     local playerSpawnRow = m_roomGenerator.currentPlayerRow
@@ -594,30 +594,39 @@ function CheckAndSpawnEntryDoor()
         return
     end
 
-    local validPositions = {}
-    for i = 1, RoomMod.RoomSize do
-        for j = 1, RoomMod.RoomSize do
-            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId and DCEI.IsPointOnNavMesh(i, j) then
-                table.insert(validPositions, { x = i, y = j })
-            end
-        end
+    local direction = m_roomGenerator.spawnRoomDoorDirection
+    local roomExits = DCEI.FindUnits(ROOM_EXIT_DOOR)
+    local validExits = GetDoorsInDirection(roomExits, direction)
+
+    for _, exit in ipairs(validExits) do
+        local position = DCEI.GetUnitPosition2D(exit)
+        local rotation = ExtensionFunction.NormalizeUnitRotation(DCEI.GetUnitRotationEuler(exit))
+
+        local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
+        DCEI.SetUnitRotationEuler(newDoor, 0, rotation, 0)
+
+        DCEI.RemoveUnit(exit)
     end
- 
-    local doorSpawnPoint = GetRandomCenterPointOnMap(validPositions)
-    m_entryDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
 
     local spawnDirection = DCEI.Save.Get(LAST_DIRECTION)
+    
     if spawnDirection == nil then
-        DCEI.SetUnitPosition2D(m_player:GetPlayerUnit(), doorSpawnPoint.x, doorSpawnPoint.y)
-        DCEI.Move(m_player:GetPlayerUnit(), doorSpawnPoint.x, doorSpawnPoint.y)
-    end
+        spawnDirection = direction
+        local spawnPosition
 
-    DCEI.TriggerAddTimerEventElapsed(
-        function()
-            DCEI.CastAbilityAtPosition(EXIT_DOORWAY_CLOSE, m_entryDoor, doorSpawnPoint.x, doorSpawnPoint.y)
-        end,
-        1
-    )
+        if spawnDirection == LEFT then
+            spawnPosition = m_leftSpawn
+        elseif spawnDirection == RIGHT then
+            spawnPosition = m_rightSpawn
+        elseif spawnDirection == TOP then
+            spawnPosition = m_topSpawn
+        elseif spawnDirection == BOTTOM then
+            spawnPosition = m_bottomSpawn
+        end
+
+        DCEI.SetUnitPosition2D(m_player:GetPlayerUnit(), spawnPosition.x, spawnPosition.y)
+        DCEI.Move(m_player:GetPlayerUnit(), spawnPosition.x, spawnPosition.y)
+    end
 end
 
 function CheckAndSpawnExitDoor()
@@ -635,17 +644,19 @@ function CheckAndSpawnExitDoor()
         return
     end
 
-    local validPositions = {}
-    for i = 1, RoomMod.RoomSize do
-        for j = 1, RoomMod.RoomSize do
-            if DCEI.GetTerrainTypeAtPoint(i, j) == RoomMod.WalkableTextureId and DCEI.IsPointOnNavMesh(i, j) then
-                table.insert(validPositions, { x = i, y = j })
-            end
-        end
-    end
+    local direction = m_roomGenerator.exitRoomDoorDirection
+    local roomExits = DCEI.FindUnits(ROOM_EXIT_DOOR)
+    local validExits = GetDoorsInDirection(roomExits, direction)
 
-    local doorSpawnPoint = GetRandomCenterPointOnMap(validPositions)
-    m_exitDoor = DCEI.CreateUnit(0, 0, EXIT_DOORWAY, doorSpawnPoint.x, doorSpawnPoint.y)
+    for _, exit in ipairs(validExits) do
+        local position = DCEI.GetUnitPosition2D(exit)
+        local rotation = ExtensionFunction.NormalizeUnitRotation(DCEI.GetUnitRotationEuler(exit))
+
+        local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
+        DCEI.SetUnitRotationEuler(newDoor, 0, rotation, 0)
+
+        DCEI.RemoveUnit(exit)
+    end
 end
 
 function UpdateCollisionWithExitDoor()
@@ -761,9 +772,6 @@ end
 function SaveNextRoomData()
     if not m_isBeginningRoom then
         DCEI.LogMessage("Saving Next Room Data")
-
-        DCEI.LogMessage("Min: " .. RoomMod.GetMinDirectionPosition(false))
-        DCEI.LogMessage("Max: " .. RoomMod.GetMaxDirectionPosition(false))
 
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         local direction = ""
@@ -1201,7 +1209,8 @@ function mod.ActivateMerchantRooms()
         
         local item = items[i]
         if not item.bought then
-            DCEI.CreateUnit(1, 1, item.itemName, unitPosition.x, unitPosition.y)
+            local itemInstance = DCEI.CreateUnit(1, 1, item.itemName, unitPosition.x, unitPosition.y)
+            m_collectiblesUi:AddNewUI(m_uiRoot, itemInstance, item.itemName)
         end
     end
 end

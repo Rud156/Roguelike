@@ -204,6 +204,30 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_DungeonDoorway": {
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.6,
+                    "immortal": true,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "behavior": {
+                    "behaviorType": 0
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
         "_Enemy_Goblin": {
             "baseUnit": "_CUnit",
             "components": {
@@ -707,29 +731,6 @@
                     "behaviorType": 0
                 }
             }
-        },
-        "_DungeonDoorway": {
-            "components": {
-                "unit": {
-                    "unitType": 2
-                },
-                "unitStats": {
-                    "radius": 0.125,
-                    "selectable": true
-                },
-                "health": {
-                    "maxHealth": 10
-                },
-                "behavior": {
-                    "behaviorType": 4
-                }
-            },
-            "references": {
-                "behaviorList": [
-                    "_Unit_Invincible"
-                ]
-            },
-            "displayName": "data/GameData/unit/_CBuilding/display_name"
         }
     }
 }

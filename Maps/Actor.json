@@ -239,6 +239,14 @@
                 ]
             }
         },
+        "_DungeonDoorway": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "mineworld_gate00"
+                }
+            }
+        },
         "_Enemy_Goblin": {
             "parent": "_StandardUnit DecayOnDeath",
             "unitActor": {
@@ -2800,14 +2808,6 @@
                     "name": "villager_male_01"
                 },
                 "modelScale": 1
-            }
-        },
-        "_DungeonDoorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "mineworld_gate00"
-                }
             }
         }
     },
