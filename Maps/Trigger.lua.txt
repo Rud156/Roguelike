@@ -159,6 +159,7 @@ local m_miniMap
 local m_collectiblesUi
 -- Random
 local m_randomSeed
+-- Scene Transition
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
