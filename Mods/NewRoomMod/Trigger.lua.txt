@@ -384,7 +384,6 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
         end
     end
 
-    self.roomMatrix[spawnRoomRow][spawnRoomColumn] = actualSpawnRoom -- Replace it with the actual room
     local actualExitRoom, fakeExitRoom = self:GetFakeExitRoom()
     self.roomMatrix[self.exitRoomRow][self.exitRoomColumn] = fakeExitRoom
 
@@ -394,6 +393,8 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
     self:SpawnMerchantRoomItems()
     self:SetupClearMatrix()
 
+    -- Replace it with the actual room
+    self.roomMatrix[spawnRoomRow][spawnRoomColumn] = actualSpawnRoom
     self.roomMatrix[self.exitRoomRow][self.exitRoomColumn] = actualExitRoom
     self:CheckAndEnableBossRoom(roomLevel)
 end
