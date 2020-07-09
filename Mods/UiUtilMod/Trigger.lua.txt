@@ -1,0 +1,88 @@
+local mod = {}
+
+local FADE_IN_RATE = 0.3
+local FADE_OUT_RATE = 0.5
+
+local Fader = {
+    currentAlpha = 0,
+    startDelay = 0,
+
+    fadeInActive = false,
+    fadeOutActive = false,
+
+    fadeImage = nil,
+    callback = nil
+}
+Fader.__index = Fader
+function Fader:new()
+    local fader = {}
+    setmetatable(fader, Fader)
+
+    local uiRoot = DCEI.GetUiRoot()
+    local fadeImage = DCEI.NewFrame(uiRoot)
+    DCEI.SetMatchParent(fadeImage, true, true)
+    DCEI.SetBackgroundImage(fadeImage, "shape_square_sharp_32x32")
+    DCEI.SetBackgroundImageColor(fadeImage, 0, 0, 0, 1)
+
+    fader.currentAlpha = 0
+    fader.startDelay = 0
+
+    fader.fadeInActive = false
+    fader.fadeOutActive = false
+
+    fader.fadeImage = fadeImage
+    fader.callback = nil
+
+    return fader
+end
+function Fader:Update(deltaTime)
+    if not self.fadeInActive and not self.fadeOutActive then
+        return
+    end
+
+    if self.startDelay > 0 then
+        self.startDelay = self.startDelay - deltaTime
+        
+    else
+        if self.fadeInActive then
+            self.currentAlpha = self.currentAlpha + FADE_IN_RATE * deltaTime
+    
+            if self.currentAlpha >= 1 then
+                self.fadeInActive = false
+                self.callback()
+            end
+            
+        elseif self.fadeOutActive then
+            self.currentAlpha = self.currentAlpha - FADE_OUT_RATE * deltaTime
+    
+            if self.currentAlpha <= 0 then
+                self.fadeOutActive = false
+                self.callback()
+            end
+        end
+    end
+
+    DCEI.SetBackgroundImageColor(self.fadeImage, 0, 0, 0, self.currentAlpha)
+end
+function Fader:StartFadeIn(delay, callback)
+    DCEI.SetBackgroundImageColor(self.fadeImage, 0, 0, 0, 0)
+    
+    self.fadeInActive = true
+    self.currentAlpha = 0
+    self.startDelay = delay
+
+    self.callback = callback
+end
+function Fader:StartFadeOut(delay, callback)
+    DCEI.SetBackgroundImageColor(self.fadeImage, 0, 0, 0, 1)
+
+    self.fadeOutActive = true
+    self.currentAlpha = 1
+    self.startDelay = delay
+
+    self.callback = callback
+end
+
+
+mod.Fader = Fader
+return mod

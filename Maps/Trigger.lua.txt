@@ -7,6 +7,7 @@ local RoomMod = GameModules["Mods/NewRoomMod"]
 local CameraMod = GameModules["Mods/CameraMod"]
 local UtilClassMod = GameModules["Mods/UtilClassMod"]
 local PlayerMod = GameModules["Mods/PlayerMod"]
+local UiUtilMod = GameModules["Mods/UiUtilMod"]
 
 InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
 local Inventory = InventoryMod.Inventory
@@ -47,6 +48,7 @@ local MiniMap = RoomMod.MiniMap
 local RoomItemDrops = RoomMod.ItemDrops
 
 local Camera = CameraMod.Camera
+local Fader = UiUtilMod.Fader
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
@@ -120,6 +122,8 @@ local PlayerInvincibleTimer = 3
 local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
 local UseMeleePlayer = true
+-- Fader
+local FadeInDelay = 1
 -- Private Variables
 -- Rooms
 local m_roomGenerator
@@ -160,6 +164,8 @@ local m_collectiblesUi
 -- Random
 local m_randomSeed
 -- Scene Transition
+local m_fader
+local m_sceneTransitionActive = false
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
@@ -172,6 +178,17 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     m_rightSpawn = spawnPositionRight
     m_topSpawn = spawnPositionTop
     m_bottomSpawn = spawnPositionBottom
+
+    -- Fader
+    m_fader = Fader:new()
+    m_sceneTransitionActive = true
+    m_fader:StartFadeOut(
+        FadeInDelay, 
+        function()
+            m_player:ShowPlayerUI()
+            m_sceneTransitionActive = false
+        end
+    )
     
     CreateBaseUIElements()
     CreatePlayerDamageDisplay()
@@ -254,6 +271,18 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
 end
 
 function Update()
+
+    if m_sceneTransitionActive then
+        m_fader:Update(GAME_LOOP_RATE)
+
+        -- Update the camera to set the final state earlier
+        if m_player ~= nil and m_player:GetPlayerUnit() ~= nil then
+            m_camera:Update(GAME_LOOP_RATE)
+        end
+
+        return
+    end
+
     UpdatePlayerHealth(GAME_LOOP_RATE) -- Update Health first otherwise the Player will have current health as LastFramePlayerHealth
     
     if m_player ~= nil then
@@ -333,7 +362,13 @@ function HandleUnitDied()
         m_player = nil
 
         m_nextRoomTransitionActive = true
-        DisplayGameOverSequence(false)
+        m_sceneTransitionActive = true
+        m_fader:StartFadeIn(
+            0, 
+            function()
+                DisplayGameOverSequence(false)
+            end
+        )
 
     elseif m_roomEnemies ~= nil then
         local goldAmount = m_roomEnemies:RemoveDeadEnemy(unit)
@@ -355,8 +390,16 @@ function HandleBehaviourAdded()
             end
 
             m_nextRoomTransitionActive = true
+            m_sceneTransitionActive = true
+            m_player:HidePlayerUI()
+
             SaveNextRoomData()
-            DisplayGameOverSequence(true)
+            m_fader:StartFadeIn(
+                0,
+                function()
+                    DisplayGameOverSequence(true)
+                end
+            )
 
         elseif unitName == EXIT_DOORWAY and m_isBeginningRoom then
             if m_nextRoomTransitionActive or not m_roomEnemiesCleared then
@@ -364,8 +407,16 @@ function HandleBehaviourAdded()
             end
 
             m_nextRoomTransitionActive = true
+            m_sceneTransitionActive = true
+            m_player:HidePlayerUI()
+
             SaveNextRoomData()
-            DisplayGameOverSequence(true)
+            m_fader:StartFadeIn(
+                0,
+                function()
+                    DisplayGameOverSequence(true)
+                end
+            )
 
         elseif unitName == EXIT_DOORWAY then
             if m_roomGenerator.currentPlayerRow == m_roomGenerator.exitRoomRow and m_roomGenerator.currentPlayerColumn == m_roomGenerator.exitRoomColumn then
@@ -374,7 +425,10 @@ function HandleBehaviourAdded()
                 end
 
                 m_nextRoomTransitionActive = true
-                UpdateCollisionWithExitDoor()
+                m_sceneTransitionActive = true
+                m_player:HidePlayerUI()
+
+                m_fader:StartFadeIn(0, UpdateCollisionWithExitDoor)
             end
         end
 
@@ -681,14 +735,6 @@ function CheckAndSpawnExitDoor()
 end
 
 function UpdateCollisionWithExitDoor()
-    local maskOptions = {
-        color = { r = 0, g = 0, b = 0 },
-        duration = 1
-    }
-
-    DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
-    DCEI.Wait(maskOptions.duration)
-
     m_inventory:SaveInventory()
     m_player:SaveData()
     m_roomItemDrops:ClearData() -- Clear the data for the older dungeon
@@ -829,14 +875,6 @@ function SaveNextRoomData()
 end
 
 function DisplayGameOverSequence(playerWon)
-    local maskOptions = {
-        color = { r = 0, g = 0, b = 0 },
-        duration = 1
-    }
-
-    DCEI.ShowScreenMaskWithAlpha(1, maskOptions)
-    DCEI.Wait(maskOptions.duration)
-
     if m_player ~= nil then
         m_player:Destroy()
         m_player = nil

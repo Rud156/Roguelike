@@ -44,6 +44,9 @@ local Player = {
     playerStaminaAmount = 0,
     playerStaminaRegenTimer = 0,
 
+    healthBarBackground = nil,
+    staminaBarHolder = nil,
+
     playerGoldAmount = 0
 }
 Player.__index = Player
@@ -75,6 +78,9 @@ function Player:new(xPosition, yPosition, playerType, uiRoot)
     player.playerStaminaList = {}
     player.playerStaminaAmount = PLAYER_MAX_STAMINA
     player.playerStaminaRegenTimer = 0
+
+    player.healthBarBackground = nil
+    player.staminaBarHolder = nil
 
     player.playerGoldAmount = 0
 
@@ -174,6 +180,19 @@ function Player:CreatePlayerUI(uiRoot)
             DCEI.Destroy(staminaBarHolder)
         end
     )
+
+    self.healthBarBackground = healthBarBackground
+    self.staminaBarHolder = staminaBarHolder
+
+    self:HidePlayerUI()
+end
+function Player:ShowPlayerUI()
+    DCEI.SetActive(self.healthBarBackground, true)
+    DCEI.SetActive(self.staminaBarHolder, true)
+end
+function Player:HidePlayerUI()
+    DCEI.SetActive(self.healthBarBackground, false)
+    DCEI.SetActive(self.staminaBarHolder, false)
 end
 function Player:Update(deltaTime)
     self:UpdatePlayerStamina(deltaTime)

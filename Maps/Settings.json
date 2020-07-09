@@ -11,7 +11,8 @@
             "Mods/CameraMod",
             "Mods/UtilClassMod",
             "Mods/PlayerMod",
-            "Mods/NewRoomMod"
+            "Mods/NewRoomMod",
+            "Mods/UiUtilMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",

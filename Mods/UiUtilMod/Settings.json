@@ -1,0 +1,9 @@
+{
+    "settings": {
+        "version": "0.0.7",
+        "type": 1,
+        "dependencies": [
+            "Arcade/Core"
+        ]
+    }
+}

@@ -5,21 +5,12 @@ local BaseRoomMod = GameModules["Mods/NewRoomMod"]
 local BaseRoomGenerator = BaseRoomMod.RoomGenerator
 
 function ValidateAndLoadSaveData()
-    local uiRoot = DCEI.GetUiRoot()
-    local screenMask = DCEI.NewFrame(uiRoot)
-    DCEI.SetMatchParent(screenMask, true, true)
-    DCEI.SetBackgroundImage(screenMask, "shape_square_sharp_32x32")
-    DCEI.SetBackgroundImageColor(screenMask, 0, 0, 0, 1)
-
-    DCEI.Wait(1)
-
     local savedRoomType = DCEI.Save.Get(MainMap.RoomName)
     if savedRoomType ~= nil then
         local roomPath = BaseRoomMod.GetRoomPath(savedRoomType)
         DCEI.PlayLevel(roomPath, savedRoomType)
     else
         BaseRoomGenerator:ClearSaveData() -- If nothing exits reload a fresh game
-        DCEI.Destroy(screenMask)
     end
 end
 
