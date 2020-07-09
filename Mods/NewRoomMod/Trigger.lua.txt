@@ -62,7 +62,7 @@ local BOTTOM = "B"
 local WORLD_HALF_SIZE = 10
 
 local WALKABLE_TEXTURE_ID = 4
-local EXIT_ROOM_PATH_LENGTH = 3
+local EXIT_ROOM_PATH_LENGTH = 2
 local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 
 local ROOM_SIZE = 30

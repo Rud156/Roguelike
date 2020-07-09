@@ -76,7 +76,7 @@ local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
 local EXIT_DOORWAY = "_DungeonDoorway"
 local EXIT_LEFT_ROTATION = -90
 local EXIT_RIGHT_ROTATION = 90
-local EXIT_TOP_ROTATION = 180
+local EXIT_TOP_ROTATION = 0
 local EXIT_BOTTOM_ROTATION = -180
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
