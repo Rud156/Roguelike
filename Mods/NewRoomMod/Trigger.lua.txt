@@ -347,6 +347,10 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
             i = i + 1
         end
 
+        if i == spawnRoomRow and j == spawnRoomColumn then
+            goto continue
+        end
+
         self:UpdateMinMaxRowColumn(i, j)
 
         if self.roomMatrix[i] == nil then
@@ -387,6 +391,8 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
         if breakLoop then
             break
         end
+
+        ::continue::
     end
 
     local actualExitRoom, fakeExitRoom = self:GetFakeExitRoom()

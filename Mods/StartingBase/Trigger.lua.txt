@@ -19,9 +19,8 @@ function ValidateAndLoadSaveData()
         DCEI.PlayLevel(roomPath, savedRoomType)
     else
         BaseRoomGenerator:ClearSaveData() -- If nothing exits reload a fresh game
+        DCEI.Destroy(screenMask)
     end
-
-    DCEI.Destroy(screenMask)
 end
 
 DCEI.TriggerAddTimerEventElapsed(
