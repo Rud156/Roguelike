@@ -74,6 +74,10 @@ local DEBUG_UNIT = "__DebugMarkerUnit"
 local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
 
 local EXIT_DOORWAY = "_DungeonDoorway"
+local EXIT_LEFT_ROTATION = -90
+local EXIT_RIGHT_ROTATION = 90
+local EXIT_TOP_ROTATION = 180
+local EXIT_BOTTOM_ROTATION = -180
 
 local PLAYER_COLLISION_BEHAVIOUR = "_CollisionDetection_PlayerCharacter"
 local PLAYER_INVINCIBLE_BEHAVIOUR = "_PlayerCharacter_Damage_Invincible"
@@ -598,13 +602,21 @@ function CheckAndSpawnEntryDoor()
     local roomExits = DCEI.FindUnits(ROOM_EXIT_DOOR)
     local validExits = GetDoorsInDirection(roomExits, direction)
 
+    local exit = validExits[1]
+    local position = DCEI.GetUnitPosition2D(exit)
+    local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
+
+    if direction == LEFT then
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_LEFT_ROTATION, 0)
+    elseif direction == RIGHT then
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_RIGHT_ROTATION, 0)
+    elseif direction == TOP then
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_TOP_ROTATION, 0)
+    else
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_BOTTOM_ROTATION, 0)
+    end
+
     for _, exit in ipairs(validExits) do
-        local position = DCEI.GetUnitPosition2D(exit)
-        local rotation = ExtensionFunction.NormalizeUnitRotation(DCEI.GetUnitRotationEuler(exit))
-
-        local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
-        DCEI.SetUnitRotationEuler(newDoor, 0, rotation, 0)
-
         DCEI.RemoveUnit(exit)
     end
 
@@ -648,13 +660,21 @@ function CheckAndSpawnExitDoor()
     local roomExits = DCEI.FindUnits(ROOM_EXIT_DOOR)
     local validExits = GetDoorsInDirection(roomExits, direction)
 
+    local exit = validExits[1]
+    local position = DCEI.GetUnitPosition2D(exit)
+    local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
+
+    if direction == LEFT then
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_LEFT_ROTATION, 0)
+    elseif direction == RIGHT then
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_RIGHT_ROTATION, 0)
+    elseif direction == TOP then
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_TOP_ROTATION, 0)
+    else
+        DCEI.SetUnitRotationEuler(newDoor, 0, EXIT_BOTTOM_ROTATION, 0)
+    end
+
     for _, exit in ipairs(validExits) do
-        local position = DCEI.GetUnitPosition2D(exit)
-        local rotation = ExtensionFunction.NormalizeUnitRotation(DCEI.GetUnitRotationEuler(exit))
-
-        local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
-        DCEI.SetUnitRotationEuler(newDoor, 0, rotation, 0)
-
         DCEI.RemoveUnit(exit)
     end
 end
