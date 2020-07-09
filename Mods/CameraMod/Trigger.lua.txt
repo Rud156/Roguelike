@@ -1,3 +1,10 @@
+local CAMERA_LEFT_OFFSET = 1
+local CAMERA_RIGHT_OFFSET = 1
+local CAMERA_TOP_OFFSET = 0.5
+local CAMERA_BOTTOM_OFFSET = -1
+
+local WORLD_HALF_WIDTH = 10
+
 local mod = {}
 
 local Camera = { 
@@ -8,7 +15,9 @@ local Camera = {
     shakeDelayTime = 0,
 
     shakeWithUnit = false,
-    shakeUnit = nil
+    shakeUnit = nil,
+
+    worldCenter = nil,
 }
 Camera.__index = Camera
 function Camera:new(targetUnit)
@@ -24,7 +33,9 @@ function Camera:new(targetUnit)
     camera.shakeDelayTime = 0
 
     camera.shakeWithUnit = false
-    camera.shakeUnit = nil 
+    camera.shakeUnit = nil
+
+    camera.worldCenter = DCEI.GetMapCenterPoint()
 
     return camera
 end
@@ -34,8 +45,7 @@ function Camera:Update(deltaTime)
             return
         end
 
-        local position = DCEI.GetUnitPosition2D(self.targetUnit)
-        DCEI.SetCameraFocusSmooth(position.x, position.y, true)
+        self:UpdateCameraPosition(self.targetUnit)
     else
         if self.shakeDelayTime <= 0 then
             self.shakeTimeLeft = self.shakeTimeLeft - deltaTime
@@ -56,6 +66,25 @@ function Camera:Update(deltaTime)
             self.shakeStarted = true
         end
     end
+end
+function Camera:UpdateCameraPosition(targetUnit)
+    local position = DCEI.GetUnitPosition2D(self.targetUnit)
+
+    if position.x > self.worldCenter.x + WORLD_HALF_WIDTH - CAMERA_RIGHT_OFFSET then
+        position.x = self.worldCenter.x + WORLD_HALF_WIDTH - CAMERA_RIGHT_OFFSET
+
+    elseif position.x < self.worldCenter.x - WORLD_HALF_WIDTH + CAMERA_LEFT_OFFSET then
+        position.x = self.worldCenter.x - WORLD_HALF_WIDTH + CAMERA_LEFT_OFFSET
+
+    elseif position.y > self.worldCenter.y + WORLD_HALF_WIDTH - CAMERA_TOP_OFFSET then
+        position.y = self.worldCenter.y + WORLD_HALF_WIDTH - CAMERA_TOP_OFFSET
+
+    elseif position.y < self.worldCenter.y - WORLD_HALF_WIDTH + CAMERA_BOTTOM_OFFSET then
+        position.y = self.worldCenter.y - WORLD_HALF_WIDTH + CAMERA_BOTTOM_OFFSET
+
+    end
+
+    DCEI.SetCameraFocusSmooth(position.x, position.y, true)
 end
 function Camera:UpdateTarget(targetUnit)
     self.targetUnit = targetUnit

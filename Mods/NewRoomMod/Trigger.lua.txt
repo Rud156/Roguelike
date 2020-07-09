@@ -67,6 +67,7 @@ local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 
 local ROOM_SIZE = 30
 local MERCHANT_ROOM_SPAWN_RATE = 3
+local MERCHANT_ROOM_ITEM_COUNT = 3
 
 -- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin, 3: Goblin Sapper, 4: Slime
 local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
@@ -99,8 +100,12 @@ local MAP_SQUARE_SIZE = 20
 local MAP_CONNECTOR_WIDTH = 10
 local MAP_CONNECTOR_HEIGHT = 6
 local MAP_DEFAULT_OFFSET = 30
+local MAP_TRIANGLE_SIZE = 14
 
-local MERCHANT_ROOM_ITEM_COUNT = 3
+local MAP_LEFT_ROTATION = 270
+local MAP_RIGHT_ROTATION = 90
+local MAP_TOP_ROTATION = 180
+local MAP_BOTTOM_ROTATION = 0
 
 -- #region Room Generator
 
@@ -703,8 +708,10 @@ function RoomGenerator:SetupClearMatrix()
                     self.roomVisitedMatrix[i][j] = false
                 end
 
-                -- Clear Merchant Rooms...
+                -- Clear Merchant Rooms and Secret Rooms...
                 if mod.IsMerchantRoom(self.roomMatrix[i][j]) then
+                    roomClear = true
+                elseif mod.IsSecretRoom(self.roomMatrix[i][j]) then
                     roomClear = true
                 end
 
@@ -1512,7 +1519,12 @@ local MiniMapSquare = {
     leftSquare = nil,
     rightSquare = nil,
     topSquare = nil,
-    bottomSquare = nil
+    bottomSquare = nil,
+
+    leftTriangle = nil,
+    rightTriangle = nil,
+    topTriangle = nil,
+    bottomTriangle = nil
 }
 MiniMapSquare.__index = MiniMapSquare
 function MiniMapSquare:new(uiLayer, hOffset, vOffset)
@@ -1546,15 +1558,43 @@ function MiniMapSquare:new(uiLayer, hOffset, vOffset)
     DCEI.SetBackgroundImage(bottomSquare, "shape_square_sharp_32x32")
     DCEI.SetVerticalOffsetInParent(bottomSquare, -MAP_SQUARE_SIZE / 2)
 
+    local leftTriangle = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(leftTriangle, MAP_TRIANGLE_SIZE, MAP_TRIANGLE_SIZE)
+    DCEI.SetBackgroundImage(leftTriangle, "dialog_frame_03")
+    DCEI.SetHorizontalOffsetInParent(leftTriangle, -MAP_SQUARE_SIZE / 2 - 3)
+
+    local rightTriangle = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(rightTriangle, MAP_TRIANGLE_SIZE, MAP_TRIANGLE_SIZE)
+    DCEI.SetBackgroundImage(rightTriangle, "dialog_frame_03")
+    DCEI.SetHorizontalOffsetInParent(rightTriangle, MAP_SQUARE_SIZE / 2 + 3)
+
+    local topTriangle = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(topTriangle, MAP_TRIANGLE_SIZE, MAP_TRIANGLE_SIZE)
+    DCEI.SetBackgroundImage(topTriangle, "dialog_frame_03")
+    DCEI.SetVerticalOffsetInParent(topTriangle, MAP_SQUARE_SIZE / 2 + 3)
+
+    local bottomTriangle = DCEI.NewFrame(centerSquare)
+    DCEI.SetMinSize(bottomTriangle, MAP_TRIANGLE_SIZE, MAP_TRIANGLE_SIZE)
+    DCEI.SetBackgroundImage(bottomTriangle, "dialog_frame_03")
+    DCEI.SetVerticalOffsetInParent(bottomTriangle, -MAP_SQUARE_SIZE / 2 - 3)
+
     miniMapSquare.centerSquare = centerSquare
+
     miniMapSquare.leftSquare = leftSquare
     miniMapSquare.rightSquare = rightSquare
     miniMapSquare.topSquare = topSquare
     miniMapSquare.bottomSquare = bottomSquare
 
+    miniMapSquare.leftTriangle = leftTriangle
+    miniMapSquare.rightTriangle = rightTriangle
+    miniMapSquare.topTriangle = topTriangle
+    miniMapSquare.bottomTriangle = bottomTriangle
+
     return miniMapSquare
 end
 function MiniMapSquare:UpdateSquareDisplay(isActive, hasLeft, hasRight, hasTop, hasBottom)
+    self:DisableExitTriangles()
+
     if isActive then
         DCEI.SetActive(self.centerSquare, true)
         DCEI.SetActive(self.leftSquare, true)
@@ -1582,19 +1622,90 @@ function MiniMapSquare:UpdateSquareDisplay(isActive, hasLeft, hasRight, hasTop, 
         DCEI.SetActive(self.bottomSquare, false)
     end
 end
+function MiniMapSquare:DisableExitTriangles()
+    DCEI.SetActive(self.leftTriangle, false)
+    DCEI.SetActive(self.rightTriangle, false)
+    DCEI.SetActive(self.topTriangle, false)
+    DCEI.SetActive(self.bottomTriangle, false)
+end
+function MiniMapSquare:UpdateExitDirection(exitSide, isEntrance)
+    local targetTriangle
+    local targetRotation
+
+    if exitSide == LEFT then
+        DCEI.SetActive(self.leftTriangle, true)
+        targetTriangle = self.leftTriangle
+        targetRotation = MAP_LEFT_ROTATION
+        
+    elseif exitSide == RIGHT then
+        DCEI.SetActive(self.rightTriangle, true)
+        targetTriangle = self.rightTriangle
+        targetRotation = MAP_RIGHT_ROTATION
+
+    elseif exitSide == TOP then
+        DCEI.SetActive(self.topTriangle, true)
+        targetTriangle = self.topTriangle
+        targetRotation = MAP_TOP_ROTATION
+
+    else
+        DCEI.SetActive(self.bottomTriangle, true)
+        targetTriangle = self.bottomTriangle
+        targetRotation = MAP_BOTTOM_ROTATION
+    end
+
+    if isEntrance then
+        targetRotation = targetRotation + 180
+    
+        if exitSide == LEFT then
+            DCEI.SetHorizontalOffsetInParent(self.leftTriangle, -MAP_SQUARE_SIZE / 2)
+        elseif exitSide == RIGHT then
+            DCEI.SetHorizontalOffsetInParent(self.rightTriangle, MAP_SQUARE_SIZE / 2)
+        elseif exitSide == TOP then
+            DCEI.SetVerticalOffsetInParent(self.topTriangle, MAP_SQUARE_SIZE / 2)
+        else
+            DCEI.SetVerticalOffsetInParent(self.bottomTriangle, -MAP_SQUARE_SIZE / 2)
+        end
+        
+    else
+        if exitSide == LEFT then
+            DCEI.SetHorizontalOffsetInParent(self.leftTriangle, -MAP_SQUARE_SIZE / 2 - 3)
+        elseif exitSide == RIGHT then
+            DCEI.SetHorizontalOffsetInParent(self.rightTriangle, MAP_SQUARE_SIZE / 2 + 3)
+        elseif exitSide == TOP then
+            DCEI.SetVerticalOffsetInParent(self.topTriangle, MAP_SQUARE_SIZE / 2 + 3)
+        else
+            DCEI.SetVerticalOffsetInParent(self.bottomTriangle, -MAP_SQUARE_SIZE / 2 - 3)
+        end
+    end
+
+    DCEI.LogMessage("Target Rotation: " .. targetRotation)
+    DCEI.SetRotation(targetTriangle, targetRotation)
+end
 function MiniMapSquare:FadeOutSquare()
     DCEI.SetBackgroundImageColor(self.centerSquare, 0.7, 0.7, 0.7, 1)
+
     DCEI.SetBackgroundImageColor(self.leftSquare, 0.7, 0.7, 0.7, 1)
     DCEI.SetBackgroundImageColor(self.rightSquare, 0.7, 0.7, 0.7, 1)
     DCEI.SetBackgroundImageColor(self.topSquare, 0.7, 0.7, 0.7, 1)
     DCEI.SetBackgroundImageColor(self.bottomSquare, 0.7, 0.7, 0.7, 1)
+
+    DCEI.SetBackgroundImageColor(self.leftTriangle, 0.529, 0.98, 0.65, 0.5)
+    DCEI.SetBackgroundImageColor(self.rightTriangle, 0.529, 0.98, 0.65, 0.5)
+    DCEI.SetBackgroundImageColor(self.topTriangle, 0.529, 0.98, 0.65, 0.5)
+    DCEI.SetBackgroundImageColor(self.bottomTriangle, 0.529, 0.98, 0.65, 0.5)
 end
 function MiniMapSquare:FadeInSquare()
     DCEI.SetBackgroundImageColor(self.centerSquare, 1, 1, 1, 1)
+
     DCEI.SetBackgroundImageColor(self.leftSquare, 1, 1, 1, 1)
     DCEI.SetBackgroundImageColor(self.rightSquare, 1, 1, 1, 1)
     DCEI.SetBackgroundImageColor(self.topSquare, 1, 1, 1, 1)
     DCEI.SetBackgroundImageColor(self.bottomSquare, 1, 1, 1, 1)
+
+    DCEI.SetBackgroundImageColor(self.leftTriangle, 0.529, 0.98, 0.65, 1)
+    DCEI.SetBackgroundImageColor(self.rightTriangle, 0.529, 0.98, 0.65, 1)
+    DCEI.SetBackgroundImageColor(self.topTriangle, 0.529, 0.98, 0.65, 1)
+    DCEI.SetBackgroundImageColor(self.bottomTriangle, 0.529, 0.98, 0.65, 1)
 end
 
 -- #endregion Mini-Map Square
@@ -1681,8 +1792,6 @@ function MiniMap:UpdateMiniMap()
                     self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateSquareDisplay(false, false, false, false, false)
                 else
                     local roomType = self.roomGenerator.roomMatrix[i][j]
-                    DCEI.LogMessage("Room Type: " .. roomType)
-                    DCEI.LogMessage("Row: " .. miniMapRow .. ", Column: " .. miniMapColumn)
 
                     local hasLeftExit = mod.RoomHasLeftExit(roomType)
                     local hasRightExit = mod.RoomHasRightExit(roomType)
@@ -1690,6 +1799,7 @@ function MiniMap:UpdateMiniMap()
                     local hasBottomExit = mod.RoomHasBottomExit(roomType)
                     local direction = ""
 
+                    -- This disables the exit room direction
                     if i == exitRow and j == exitColumn then
                         direction = self.roomGenerator.exitRoomDoorDirection
                     elseif i == spawnRow and j == spawnColumn then
@@ -1717,6 +1827,13 @@ function MiniMap:UpdateMiniMap()
                         else
                             self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateSquareDisplay(false, false, false, false, false)
                         end
+                    end
+
+                    -- This places a triangle on the exit direction
+                    if i == exitRow and j == exitColumn then
+                        self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateExitDirection(direction, false)
+                    elseif i == spawnRow and j == spawnColumn then
+                        self.miniMapRooms[miniMapRow][miniMapColumn]:UpdateExitDirection(direction, true)
                     end
                 end
 
