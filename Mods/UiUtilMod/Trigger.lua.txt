@@ -1,7 +1,7 @@
 local mod = {}
 
-local FADE_IN_RATE = 0.3
-local FADE_OUT_RATE = 0.5
+local FADE_IN_RATE = 0.8	
+local FADE_OUT_RATE = 0.8
 
 local Fader = {
     currentAlpha = 0,

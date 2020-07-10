@@ -123,7 +123,7 @@ local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
 local UseMeleePlayer = true
 -- Fader
-local FadeInDelay = 1
+local FadeOutDelay = 0.1
 -- Private Variables
 -- Rooms
 local m_roomGenerator
@@ -183,7 +183,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     m_fader = Fader:new()
     m_sceneTransitionActive = true
     m_fader:StartFadeOut(
-        FadeInDelay, 
+        FadeOutDelay, 
         function()
             m_player:ShowPlayerUI()
             m_sceneTransitionActive = false
