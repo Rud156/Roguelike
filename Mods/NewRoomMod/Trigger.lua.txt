@@ -64,7 +64,7 @@ local EXIT_ROOM_PATH_LENGTH = 2
 local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
 
 local ROOM_SIZE = 30
-local MERCHANT_ROOM_SPAWN_RATE = 3
+local MERCHANT_ROOM_SPAWN_RATE = 1
 local MERCHANT_ROOM_ITEM_COUNT = 3
 
 -- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin, 3: Goblin Sapper, 4: Slime
@@ -649,7 +649,7 @@ function RoomGenerator:SpawnMerchantRooms()
             if self.roomMatrix[i][j] ~= nil and mod.IsSecretRoom(self.roomMatrix[i][j]) then
                 table.insert(secretRoomGroup, { x = i, y = j })
                 
-                if #secretRoomGroup == 3 then
+                if #secretRoomGroup == MERCHANT_ROOM_SPAWN_RATE then
                     local randomIndex = math.random(1, #secretRoomGroup)
                     local position = secretRoomGroup[randomIndex]
                     local secretRoom = self.roomMatrix[position.x][position.y]
