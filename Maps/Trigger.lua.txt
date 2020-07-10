@@ -1070,6 +1070,7 @@ function HandleCharacterSwitch()
     end
     
     m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot)
+    m_player:ShowPlayerUI()
 
     UseMeleePlayer = not UseMeleePlayer
 

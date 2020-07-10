@@ -453,7 +453,7 @@
                 "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
-                        "radius": 0.5
+                        "radius": 0.8
                     }
                 },
                 "maxUnitCount": 10,

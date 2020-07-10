@@ -236,7 +236,7 @@
                     "selectable": true
                 },
                 "health": {
-                    "maxHealth": 8
+                    "maxHealth": 15
                 },
                 "movement": {
                     "moveSpeed": 2
@@ -266,7 +266,7 @@
                     "radius": 0.25
                 },
                 "health": {
-                    "maxHealth": 20
+                    "maxHealth": 25
                 },
                 "movement": {
                     "moveSpeed": 0.8
@@ -291,7 +291,7 @@
                     "selectable": true
                 },
                 "health": {
-                    "maxHealth": 300
+                    "maxHealth": 200
                 },
                 "movement": {
                     "moveSpeed": 1
@@ -322,7 +322,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 5
+                    "maxHealth": 12
                 },
                 "movement": {
                     "moveSpeed": 1.5
@@ -353,7 +353,7 @@
                     "selectable": true
                 },
                 "health": {
-                    "maxHealth": 45
+                    "maxHealth": 55
                 },
                 "movement": {
                     "moveSpeed": 1
@@ -383,7 +383,7 @@
                     "selectable": false
                 },
                 "health": {
-                    "maxHealth": 5
+                    "maxHealth": 8
                 },
                 "movement": {
                     "moveSpeed": 1

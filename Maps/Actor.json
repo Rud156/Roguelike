@@ -303,7 +303,7 @@
                         "actions": [
                             {
                                 "create": {
-                                    "actor": "_FX_Enemy_Hobgoblin_Attack",
+                                    "actor": "_FX_Enemy_Goblin_Attack",
                                     "hostSite": "Attack Host Site",
                                     "hostSiteOperations": [
                                         "SOp HoldPosition"
@@ -312,7 +312,7 @@
                             },
                             {
                                 "create": {
-                                    "actor": "_SFX_Enemy_Hobgoblin_Attack"
+                                    "actor": "_SFX_Enemy_Goblin_Attack"
                                 }
                             }
                         ]
@@ -806,7 +806,8 @@
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Spawn_Gold"
-                ]
+                ],
+                "modelScale": 1.2
             }
         },
         "_FX_Collectible_Bomb_Attack": {
@@ -1174,6 +1175,58 @@
                 "targetSite": "SiteHit"
             }
         },
+        "_FX_Enemy_Goblin_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_drow_blink_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    ""
+                ],
+                "modelScale": 1
+            }
+        },
         "_FX_Enemy_Gold_Drop": {
             "modelActor": {
                 "resource": {
@@ -1536,7 +1589,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "arrowtower_unit_rank03"
+                    "name": "boss_drowmage_red"
                 }
             }
         },
@@ -1776,7 +1829,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "arrowtower_unit_rank03"
+                    "name": "boss_drowmage_red"
                 },
                 "events": [
                     {
@@ -1859,6 +1912,25 @@
                     },
                     {
                         "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_PlayerCharacter_Dash_Ended"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Forced Visiblility"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
                             "unitAbilityStart": {
                                 "ability": "_PlayerCharacter_Ranged_Dash"
                             }
@@ -1879,30 +1951,6 @@
                             {
                                 "setVisibility": {
                                     "visibility": true
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Normal Visibility"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOn": {
-                                "behavior": "_PlayerCharacter_Dash_Ended"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setVisibility": {
-                                    "visibility": true
-                                }
-                            },
-                            {
-                                "log": {
-                                    "message": "Forced Visiblility"
                                 }
                             }
                         ]
@@ -2325,6 +2373,36 @@
                 ]
             }
         },
+        "_SFX_Enemy_Goblin_Attack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "skull_flyer_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_SFX_Enemy_Goblin_Death": {
             "modelActor": {
                 "resource": {
@@ -2629,7 +2707,7 @@
             "modelActor": {
                 "resource": {
                     "type": "Sound",
-                    "name": "goblin_sapper_death_explosion_v3"
+                    "name": "flamethrower_billowsweep_launch"
                 },
                 "events": [
                     {
@@ -2659,7 +2737,7 @@
             "modelActor": {
                 "resource": {
                     "type": "Sound",
-                    "name": "crossbow_hit_v4"
+                    "name": "tower_frost_shatter_impact "
                 },
                 "events": [
                     {
