@@ -1,10 +1,12 @@
 {
     "settings": {
-        "version": "0.0.7",
+        "version": "0.0.8",
         "dependencies": [
             "Arcade/Core",
             "Maps",
-            "Mods/NewRoomMod"
+            "Mods/NewRoomMod",
+            "Mods/PlayerMod",
+            "Mods/InventoryMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",
@@ -26,7 +28,18 @@
             "Mods/RoomTemplates/SecretRoom/SR_L_0",
             "Mods/RoomTemplates/SecretRoom/SR_R_0",
             "Mods/RoomTemplates/SecretRoom/SR_T_0",
-            "Mods/StartingBase"
+            "Mods/StartingBase",
+            "Mods/RoomTemplates/CommonRoom/CR_BL_1",
+            "Mods/RoomTemplates/CommonRoom/CR_BLR_1",
+            "Mods/RoomTemplates/CommonRoom/CR_BR_1",
+            "Mods/RoomTemplates/CommonRoom/CR_LR_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TB_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TBL_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TBLR_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TBR_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TL_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TLR_1",
+            "Mods/RoomTemplates/CommonRoom/CR_TR_1"
         ]
     }
 }
