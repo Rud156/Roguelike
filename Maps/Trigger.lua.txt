@@ -612,6 +612,12 @@ function SpawnItemDrops()
 end
 
 function SpawnEnemiesAndCloseDoors()
+    local playerRow = m_roomGenerator.currentPlayerRow
+    local playerColumn = m_roomGenerator.currentPlayerColumn
+
+    local spawnRow = m_roomGenerator.spawnRoomRow
+    local spawnColumn = m_roomGenerator.spawnRoomColumn
+
     local spawnEnemies = true
 
     if m_isBeginningRoom then
@@ -619,7 +625,11 @@ function SpawnEnemiesAndCloseDoors()
     end
 
     if not m_isBeginningRoom and not m_roomGenerator:IsPlayerRoomCleared() then
-        m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel)
+        if playerRow == spawnRow and playerColumn == spawnColumn then
+            m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel, true)
+        else
+            m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel, false)
+        end
         ActivateDoorCloseAnimations()
     end
 end

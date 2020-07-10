@@ -707,7 +707,7 @@ function RoomGenerator:SetupClearMatrix()
                 local roomClear = false
                 if i == spawnRow and j == spawnColumn then
                     self.roomVisitedMatrix[i][j] = true
-                    roomClear = true
+                    -- roomClear = true -- TODO: Change this later on...
                 else
                     self.roomVisitedMatrix[i][j] = false
                 end
