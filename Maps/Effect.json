@@ -314,7 +314,7 @@
         },
         "_Search_Enemy_Goblin": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circleSector": {
                         "outerRadius": 0.9,
@@ -352,7 +352,7 @@
         },
         "_Search_Enemy_GoblinMiner_Drill": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -368,7 +368,7 @@
         },
         "_Search_Enemy_GoblinMiner_Leap_Landed": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1.5
@@ -383,7 +383,7 @@
         },
         "_Search_Enemy_GoblinMiner_Leap_Missile": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -399,7 +399,7 @@
         },
         "_Search_Enemy_GoblinMiner_RocketBarrage": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
@@ -414,7 +414,7 @@
         },
         "_Search_Enemy_GoblinSapper_Bomb": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
@@ -450,7 +450,7 @@
         },
         "_Search_Enemy_Ooze_Attack": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.8
@@ -467,7 +467,7 @@
         },
         "_Search_PlayerCharacter": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.27
@@ -483,7 +483,7 @@
         },
         "_Search_PlayerCharacter_Melee_HeavyAttack": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 1
@@ -498,7 +498,7 @@
         },
         "_Search_PlayerCharacter_Melee_LightAttack": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "rectangle": {
                         "width": 0.4,
@@ -517,7 +517,7 @@
         },
         "_Search_PlayerCharacter_Melee_Missile": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
@@ -565,7 +565,7 @@
         },
         "_Search_PlayerCharacter_Ranged_Missile": {
             "areaSearch": {
-                "debugDraw": true,
+                "debugDraw": false,
                 "areaSearchType": {
                     "circle": {
                         "radius": 0.25
