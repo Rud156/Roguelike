@@ -42,8 +42,8 @@
             "targetRangeMode": 2,
             "effect": "_Launch_Enemy_GoblinMiner_Drill",
             "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.3,
+                "prepTime": 0,
+                "finishTime": 0,
                 "range": 30
             }
         },

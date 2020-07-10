@@ -53,6 +53,8 @@ local OOZE_GOLD = 1
 
 local GOBLIN_MINER = "_Enemy_GoblinMiner"
 local GOBLIN_MINER_DRILL = "_Enemy_GoblinMiner_Drill"
+local GOBLIN_MINER_DRILL_START = "_Enemy_GoblinMiner_Drill_Start"
+local GOBLIN_MINER_DRILL_END  = "_Enemy_GoblinMiner_Drill_End"
 local GOBLIN_MINER_LEAP = "_Enemy_GoblinMiner_Leap"
 local GOBLIN_MINER_ROCKET = "_Launch_Enemy_GoblinMiner_RocketBarrage"
 local GOBLIN_MINER_RANDOM_MOVEMENT_TIMER = 3
@@ -61,7 +63,11 @@ local GOBLIN_MINER_GOBLIN_COUNT = 5
 local GOBLIN_MINER_ROCKET_DELAY = 0.7
 local GOBLIN_MINER_MIN_ROCKETS = 4
 local GOBLIN_MINER_MAX_ROCKETS = 5
-local GOBLIN_MINER_DRILL_TIMER = 2
+local GOBLIN_MINER_DRILL_TIMER = 1
+local GOBLIN_MINER_MIN_DRILL_COUNT = 3
+local GOBLIN_MINER_MAX_DRILL_COUNT = 5
+local GOBLIN_MINER_DRILL_WIND_TIME = 0.55
+local GOBLIN_MINER_DRILL_FOLLOW_TIME = 0.35
 local GOBLIN_MINER_LEAP_TIMER = 2
 
 local mod = {}
@@ -816,11 +822,9 @@ local GoblinMiner = {
     -- Movement
     targetPosition = nil,
 
-    -- Rockets
-    rocketCount = 0,
-
     -- General
-    currentTimer = 0
+    currentTimer = 0,
+    attackCounter = 0
 }
 GoblinMiner.__index = GoblinMiner
 function GoblinMiner:new(room, xPosition, yPosition)
@@ -835,7 +839,7 @@ function GoblinMiner:new(room, xPosition, yPosition)
 
     goblinMiner.targetPosition = nil
 
-    goblinMiner.rocketCount = 0
+    goblinMiner.attackCounter = 0
     
     goblinMiner.currentTimer = 0
 
@@ -844,12 +848,16 @@ end
 function GoblinMiner:Update(deltaTime, playerPosition)
     if self.enemyState == 0 then
         self:UpdateRandomMovement(deltaTime, playerPosition)
+
     elseif self.enemyState == 1 then
         self:UpdateRocketBarrage(deltaTime, playerPosition)
+
     elseif self.enemyState == 2 then
         self:UpdateLeapAttack(deltaTime)
+
     elseif self.enemyState == 3 then
-        self:UpdateDrillAttack(deltaTime)
+        self:UpdateDrillAttack(deltaTime, playerPosition)
+
     end
 end
 function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
@@ -874,13 +882,13 @@ function GoblinMiner:UpdateRocketBarrage(deltaTime, playerPosition)
 
     if self.currentTimer <= 0 then
         self.currentTimer = GOBLIN_MINER_ROCKET_DELAY
-        self.rocketCount = self.rocketCount - 1
+        self.attackCounter = self.attackCounter - 1
 
         DCEI.LogMessage("Spawning Missile")
         ArcadeCore.CreateEffect(GOBLIN_MINER_ROCKET, playerPosition.x, playerPosition.y)
     end
 
-    if self.rocketCount <= 0 then
+    if self.attackCounter <= 0 then
         self:SetEnemyState(0)
         self:FindAndSetRandomMovement()
     end
@@ -892,12 +900,29 @@ function GoblinMiner:UpdateLeapAttack(deltaTime)
         self:FindAndSetRandomMovement()
     end
 end
-function GoblinMiner:UpdateDrillAttack(deltaTime)
+function GoblinMiner:UpdateDrillAttack(deltaTime, playerPosition)
     self.currentTimer = self.currentTimer - deltaTime
+    
     if self.currentTimer <= 0 then
-        self:SetEnemyState(0)
-        self:FindAndSetRandomMovement()
+        if self.attackCounter == -10 then
+            self.attackCounter = math.random(GOBLIN_MINER_MIN_DRILL_COUNT, GOBLIN_MINER_MAX_DRILL_COUNT)
+        end
+
+        if self.attackCounter > 0 then
+            self:LaunchDrillMissile(playerPosition)
+
+            if self.attackCounter == 0 then
+                DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_DRILL_END)
+                self.currentTimer = GOBLIN_MINER_DRILL_FOLLOW_TIME
+            end
+        
+        elseif self.attackCounter == 0 then
+            self:SetEnemyState(0)
+            self:FindAndSetRandomMovement()
+        end
     end
+
+    self:LookAtPlayer(playerPosition)
 end
 function GoblinMiner:ActivateRandomAtack(playerPosition)
     local position = DCEI.GetUnitPosition2D(self.unit)
@@ -905,14 +930,18 @@ function GoblinMiner:ActivateRandomAtack(playerPosition)
 
     -- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
     local randomNumber = math.random(1, 4)
+    randomNumber = 3
 
     if randomNumber == 1 then
         self:SetEnemyState(1)
-        self.rocketCount = math.random(GOBLIN_MINER_MIN_ROCKETS, GOBLIN_MINER_MAX_ROCKETS)
+        self.attackCounter = math.random(GOBLIN_MINER_MIN_ROCKETS, GOBLIN_MINER_MAX_ROCKETS)
+
     elseif randomNumber == 2 then
         self:LeapAtPlayer(playerPosition)
+
     elseif randomNumber == 3 then
-        self:LaunchDrillMissile(playerPosition)
+        self:SetupDrillMissile()
+
     else
         self:SpawnGoblinsInCircle()
         self:SetEnemyState(0)
@@ -929,14 +958,21 @@ function GoblinMiner:LeapAtPlayer(playerPosition)
 
     DCEI.CastAbilityAtPosition(GOBLIN_MINER_LEAP, self.unit, playerPosition.x, playerPosition.y)
 end
+function GoblinMiner:SetupDrillMissile()
+    DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_DRILL_START)
+    self.currentTimer = GOBLIN_MINER_DRILL_WIND_TIME
+    self.attackCounter = -10 -- Probably use another variable to indicate another state?
+
+    self:SetEnemyState(3)
+end
 function GoblinMiner:LaunchDrillMissile(playerPosition)
     DCEI.LogMessage("Launching Drill Missile")
 
-    self:SetEnemyState(3)
-
     self.currentTimer = GOBLIN_MINER_DRILL_TIMER
+    self.attackCounter = self.attackCounter - 1
+    
     self:LookAtPlayer(playerPosition)
-
+    
     DCEI.CastAbilityAtPosition(GOBLIN_MINER_DRILL, self.unit, playerPosition.x, playerPosition.y)
 end
 function GoblinMiner:SpawnGoblinsInCircle()

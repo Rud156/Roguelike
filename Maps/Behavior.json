@@ -52,6 +52,12 @@
             "maxStackCount": 1,
             "duration": 0.01
         },
+        "_Enemy_GoblinMiner_Drill_End": {
+            "duration": 0.01
+        },
+        "_Enemy_GoblinMiner_Drill_Start": {
+            "duration": 0.01
+        },
         "_Enemy_GoblinMiner_Missile_Reached": {
             "maxStackCount": 1
         },

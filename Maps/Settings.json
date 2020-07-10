@@ -85,7 +85,9 @@
             "_Unit_Invincible",
             "_Enemy_Ooze_ReSpawn",
             "_Collectible_Potion",
-            "_Collectible_Dropped"
+            "_Collectible_Dropped",
+            "_Enemy_GoblinMiner_Drill_Start",
+            "_Enemy_GoblinMiner_Drill_End"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"

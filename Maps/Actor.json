@@ -462,13 +462,34 @@
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Enemy_GoblinMiner_Drill"
+                            "behaviorOn": {
+                                "behavior": "_Enemy_GoblinMiner_Drill_Start"
                             }
                         },
                         "actions": [
                             {
-                                "playAnimation": {
+                                "playAnimationWithDuration": {
+                                    "clipId": 4,
+                                    "clipDuration": 0.6
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseDrillAnim",
+                                    "duration": 0.55
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseDrillAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
                                     "clipId": 4
                                 }
                             }
@@ -476,14 +497,15 @@
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Enemy_GoblinMiner_Drill"
+                            "behaviorOn": {
+                                "behavior": "_Enemy_GoblinMiner_Drill_End"
                             }
                         },
                         "actions": [
                             {
-                                "stopAnimation": {
-                                    "clipId": 4
+                                "playAnimationWithDuration": {
+                                    "clipId": 10,
+                                    "clipDuration": 0.4
                                 }
                             }
                         ]
@@ -493,7 +515,16 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit DeathAnimation Decay"
-                ]
+                ],
+                "hostSites": {
+                    "SiteLaunchDrill": {
+                        "offset": {
+                            "forward": 1.3,
+                            "right": 0.2,
+                            "up": 0.6
+                        }
+                    }
+                }
             }
         },
         "_Enemy_GoblinSapper": {
@@ -1085,6 +1116,62 @@
                         ]
                     }
                 ]
+            }
+        },
+        "_FX_Enemy_GoblinMiner_Drill_Launch": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_hunterhut_weapon_launch"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSite": "SiteLaunchDrill"
+            }
+        },
+        "_FX_Enemy_GoblinMiner_Drill_Launch_Actor": {
+            "actionActor": {
+                "effect": "_Launch_Enemy_GoblinMiner_Drill",
+                "launchModel": "_FX_Enemy_GoblinMiner_Drill_Launch",
+                "launchSite": "SiteLaunchDrill"
             }
         },
         "_FX_Enemy_GoblinMiner_RocketAttack": {

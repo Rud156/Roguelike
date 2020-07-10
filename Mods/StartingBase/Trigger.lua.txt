@@ -7,23 +7,23 @@ local InventoryMod = GameModules["Mods/InventoryMod"]
 local BaseRoomGenerator = BaseRoomMod.RoomGenerator
 
 function ValidateAndLoadSaveData()
-    BaseRoomGenerator:ClearSaveData()
-    PlayerMod.Player:ClearData()
-    BaseRoomMod.ItemDrops:ClearData()
+    -- BaseRoomGenerator:ClearSaveData()
+    -- PlayerMod.Player:ClearData()
+    -- BaseRoomMod.ItemDrops:ClearData()
 
-    for i = 1, 4 do
-        DCEI.Save.Set("Slot_" .. i .. "_Name", nil)
-        DCEI.Save.Set("Slot_" .. i .. "_Stack", nil)
-        DCEI.Save.Set("Slot_" .. i .. "_RechargeActive", nil)
-        DCEI.Save.Set("Slot_" .. i .. "_MaxRechargeTime", nil)
-        DCEI.Save.Set("Slot_" .. i .. "_CurrentRechargeTime", nil)
-        DCEI.Save.Commit()
-    end
+    -- for i = 1, 4 do
+    --     DCEI.Save.Set("Slot_" .. i .. "_Name", nil)
+    --     DCEI.Save.Set("Slot_" .. i .. "_Stack", nil)
+    --     DCEI.Save.Set("Slot_" .. i .. "_RechargeActive", nil)
+    --     DCEI.Save.Set("Slot_" .. i .. "_MaxRechargeTime", nil)
+    --     DCEI.Save.Set("Slot_" .. i .. "_CurrentRechargeTime", nil)
+    --     DCEI.Save.Commit()
+    -- end
 
-    DCEI.Save.Set("RoomLevel", nil)
-    DCEI.Save.Set("RoomName", nil)
-    DCEI.Save.Set("LastDirection", nil)
-    DCEI.Save.Commit()
+    -- DCEI.Save.Set("RoomLevel", nil)
+    -- DCEI.Save.Set("RoomName", nil)
+    -- DCEI.Save.Set("LastDirection", nil)
+    -- DCEI.Save.Commit()
 
     local savedRoomType = DCEI.Save.Get(MainMap.RoomName)
     if savedRoomType ~= nil then

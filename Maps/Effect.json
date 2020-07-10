@@ -760,8 +760,7 @@
         "_Set_Periodic_Enemy_GoblinMiner_Drill": {
             "set": {
                 "effectList": [
-                    "_Search_Enemy_GoblinMiner_Drill",
-                    "_Periodic_Remove_Projectile_NotOnNavMesh"
+                    "_Search_Enemy_GoblinMiner_Drill"
                 ]
             }
         },
