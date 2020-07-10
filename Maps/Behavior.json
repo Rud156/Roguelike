@@ -45,6 +45,9 @@
             "maxStackCount": 0,
             "duration": 0.01
         },
+        "_DungeonDoorway_Open": {
+            "duration": 0
+        },
         "_Enemy_Damage_Taken": {
             "maxStackCount": 1
         },

@@ -1,5 +1,15 @@
 {
     "actors": {
+        "SOp FaceForward": {
+            "siteOperation": {
+                "rotate": {
+                    "x": 0,
+                    "y": 90,
+                    "z": 0,
+                    "orientation": 0
+                }
+            }
+        },
         "_Camera_ShakeCameraActor": {
             "parent": "",
             "modelActor": {
@@ -244,6 +254,31 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "mineworld_gate00"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "_DungeonDoorway_Open"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_DungeonDoorway_Portal",
+                                    "hostSite": "SitePortal"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SitePortal": {
+                        "offset": {
+                            "forward": 0,
+                            "up": 0
+                        }
+                    }
                 }
             }
         },
@@ -1117,6 +1152,14 @@
                         ]
                     }
                 ]
+            }
+        },
+        "_FX_DungeonDoorway_Portal": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_dwarfsmith_ignite_buff"
+                }
             }
         },
         "_FX_Enemy_GoblinMiner_Drill_Launch": {

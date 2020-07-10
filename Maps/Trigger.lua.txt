@@ -76,6 +76,7 @@ local DEBUG_UNIT = "__DebugMarkerUnit"
 local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
 
 local EXIT_DOORWAY = "_DungeonDoorway"
+local EXIT_DOORWAY_OPEN = "_DungeonDoorway_Open"
 local EXIT_LEFT_ROTATION = -90
 local EXIT_RIGHT_ROTATION = 90
 local EXIT_TOP_ROTATION = 0
@@ -655,6 +656,11 @@ function ActivateDoorOpenAnimations()
     for _, door in ipairs(roomDoors) do
         DCEI.LogMessage("Casting Open Ability")
         DCEI.CastAbility(DOOR_OPEN_ANIM, door, door)
+    end
+
+    local exitDoors = DCEI.FindUnits(EXIT_DOORWAY)
+    for _, door in ipairs(exitDoors) do
+        DCEI.ApplyBehavior(door, EXIT_DOORWAY_OPEN)
     end
 end
 

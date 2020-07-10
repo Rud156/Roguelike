@@ -354,8 +354,9 @@
             "areaSearch": {
                 "debugDraw": false,
                 "areaSearchType": {
-                    "circle": {
-                        "radius": 0.25
+                    "rectangle": {
+                        "width": 0.2,
+                        "length": 0.4
                     }
                 },
                 "caster": 2,
@@ -363,7 +364,11 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Set_Enemy_GoblinMiner_Drill"
+                "effect": "_Set_Enemy_GoblinMiner_Drill",
+                "offset": {
+                    "forward": 0.6,
+                    "right": 0.2
+                }
             }
         },
         "_Search_Enemy_GoblinMiner_Leap_Landed": {

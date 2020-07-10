@@ -87,7 +87,8 @@
             "_Collectible_Potion",
             "_Collectible_Dropped",
             "_Enemy_GoblinMiner_Drill_Start",
-            "_Enemy_GoblinMiner_Drill_End"
+            "_Enemy_GoblinMiner_Drill_End",
+            "_DungeonDoorway_Open"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"
