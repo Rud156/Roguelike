@@ -59,8 +59,6 @@ local RIGHT = "R"
 local TOP = "T"
 local BOTTOM = "B"
 
-local WORLD_HALF_SIZE = 10
-
 local WALKABLE_TEXTURE_ID = 4
 local EXIT_ROOM_PATH_LENGTH = 2
 local ARRAY_NIL = -9999 -- Because LUA has weird ideas of arrays
@@ -2168,24 +2166,24 @@ function mod.IsGoblinForestBossRoom(value)
 end
 
 function mod.GetMinDirectionPosition(isXAxis)
-    -- TODO: Definitely can be optimized
+    local worldSize = DCEI.GetMapSize()
     local worldCenter = DCEI.GetMapCenterPoint()
 
     if isXAxis then
-        return worldCenter.x - (WORLD_HALF_SIZE / 2)
+        return worldCenter.x - (worldSize.x / 4)
     else
-        return worldCenter.y - (WORLD_HALF_SIZE / 2)
+        return worldCenter.y - (worldSize.x / 4)
     end
 end
 
 function mod.GetMaxDirectionPosition(isXAxis)
-    -- TODO: Definitely can be optimized
+    local worldSize = DCEI.GetMapSize()
     local worldCenter = DCEI.GetMapCenterPoint()
 
     if isXAxis then
-        return worldCenter.x + (WORLD_HALF_SIZE / 2)
+        return worldCenter.x + (worldSize.y / 4)
     else
-        return worldCenter.y + (WORLD_HALF_SIZE / 2)
+        return worldCenter.y + (worldSize.y / 4)
     end
 end
 
