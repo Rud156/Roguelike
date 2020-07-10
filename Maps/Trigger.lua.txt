@@ -674,6 +674,24 @@ function GetDoorsInDirection(doors, direction)
     return validDoors
 end
 
+function GetNearestDoorFromCenter(validDoors)
+    local nearestPosition = 999
+    local nearestUnit = nil
+    local worldCenter = DCEI.GetMapCenterPoint()
+
+    for _, door in ipairs(validDoors) do
+        local position = DCEI.GetUnitPosition2D(door)
+        local distance = ExtensionFunction.VectorDistance(worldCenter, position)
+
+        if distance < nearestPosition then
+            nearestPosition = distance
+            nearestUnit = door
+        end
+    end
+
+    return nearestUnit
+end
+
 function CheckAndSpawnEntryDoor()
     local playerSpawnRow = m_roomGenerator.currentPlayerRow
     local playerSpawnColumn = m_roomGenerator.currentPlayerColumn
@@ -689,8 +707,8 @@ function CheckAndSpawnEntryDoor()
     local roomExits = DCEI.FindUnits(ROOM_EXIT_DOOR)
     local validExits = GetDoorsInDirection(roomExits, direction)
 
-    local exit = validExits[1]
-    local position = DCEI.GetUnitPosition2D(exit)
+    local validExit = GetNearestDoorFromCenter(validExits)
+    local position = DCEI.GetUnitPosition2D(validExit)
     local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
 
     if direction == LEFT then
@@ -747,8 +765,8 @@ function CheckAndSpawnExitDoor()
     local roomExits = DCEI.FindUnits(ROOM_EXIT_DOOR)
     local validExits = GetDoorsInDirection(roomExits, direction)
 
-    local exit = validExits[1]
-    local position = DCEI.GetUnitPosition2D(exit)
+    local validExit = GetNearestDoorFromCenter(validExits)
+    local position = DCEI.GetUnitPosition2D(validExit)
     local newDoor = DCEI.CreateUnit(1, 1, EXIT_DOORWAY, position.x, position.y)
 
     if direction == LEFT then
