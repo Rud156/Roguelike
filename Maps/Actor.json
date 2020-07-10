@@ -258,7 +258,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
-                                "ability": "_Enemy_Hobgoblin_Attack"
+                                "ability": "_Enemy_Goblin_Attack"
                             }
                         },
                         "actions": [
@@ -270,7 +270,7 @@
                             {
                                 "createTimer": {
                                     "name": "AttackEffectSpawn",
-                                    "duration": 1
+                                    "duration": 0.7
                                 }
                             }
                         ]
@@ -278,7 +278,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStop": {
-                                "ability": "_Enemy_Hobgoblin_Attack"
+                                "ability": "_Enemy_Goblin_Attack"
                             }
                         },
                         "actions": [
@@ -304,7 +304,10 @@
                             {
                                 "create": {
                                     "actor": "_FX_Enemy_Hobgoblin_Attack",
-                                    "hostSite": "Attack Host Site"
+                                    "hostSite": "Attack Host Site",
+                                    "hostSiteOperations": [
+                                        "SOp HoldPosition"
+                                    ]
                                 }
                             },
                             {
@@ -327,34 +330,6 @@
                             {
                                 "create": {
                                     "actor": "_SFX_Enemy_Goblin_Death"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Enemy_Goblin_Attack"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {
-                                    "clipId": 0
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "unitAbilityStop": {
-                                "ability": "_Enemy_Goblin_Attack"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "stopAnimation": {
-                                    "clipId": 0
                                 }
                             }
                         ]
@@ -680,7 +655,10 @@
                             {
                                 "create": {
                                     "actor": "_FX_Enemy_Hobgoblin_Attack",
-                                    "hostSite": "Attack Host Site"
+                                    "hostSite": "Attack Host Site",
+                                    "hostSiteOperations": [
+                                        "SOp HoldPosition"
+                                    ]
                                 }
                             },
                             {
