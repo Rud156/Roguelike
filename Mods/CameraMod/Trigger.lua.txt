@@ -1,9 +1,7 @@
-local CAMERA_LEFT_OFFSET = 1
-local CAMERA_RIGHT_OFFSET = 1
-local CAMERA_TOP_OFFSET = 0.5
-local CAMERA_BOTTOM_OFFSET = -1
-
-local WORLD_HALF_WIDTH = 10
+local CAMERA_LEFT_OFFSET = 7
+local CAMERA_RIGHT_OFFSET = 7
+local CAMERA_TOP_OFFSET = 6
+local CAMERA_BOTTOM_OFFSET = 5
 
 local mod = {}
 
@@ -18,6 +16,7 @@ local Camera = {
     shakeUnit = nil,
 
     worldCenter = nil,
+    worldSize = nil,
 }
 Camera.__index = Camera
 function Camera:new(targetUnit)
@@ -36,6 +35,10 @@ function Camera:new(targetUnit)
     camera.shakeUnit = nil
 
     camera.worldCenter = DCEI.GetMapCenterPoint()
+
+    local worldSize = DCEI.GetMapSize()
+    DCEI.LogMessage("X: " .. worldSize.x .. ", Y: " .. worldSize.y)
+    camera.worldSize = { x = worldSize.x / 2, y = worldSize.y / 2 }
 
     return camera
 end
@@ -70,17 +73,17 @@ end
 function Camera:UpdateCameraPosition(targetUnit)
     local position = DCEI.GetUnitPosition2D(self.targetUnit)
 
-    if position.x > self.worldCenter.x + WORLD_HALF_WIDTH - CAMERA_RIGHT_OFFSET then
-        position.x = self.worldCenter.x + WORLD_HALF_WIDTH - CAMERA_RIGHT_OFFSET
+    if position.x > self.worldCenter.x + self.worldSize.x - CAMERA_RIGHT_OFFSET then
+        position.x = self.worldCenter.x + self.worldSize.x - CAMERA_RIGHT_OFFSET
 
-    elseif position.x < self.worldCenter.x - WORLD_HALF_WIDTH + CAMERA_LEFT_OFFSET then
-        position.x = self.worldCenter.x - WORLD_HALF_WIDTH + CAMERA_LEFT_OFFSET
+    elseif position.x < self.worldCenter.x - self.worldSize.x + CAMERA_LEFT_OFFSET then
+        position.x = self.worldCenter.x - self.worldSize.x + CAMERA_LEFT_OFFSET
 
-    elseif position.y > self.worldCenter.y + WORLD_HALF_WIDTH - CAMERA_TOP_OFFSET then
-        position.y = self.worldCenter.y + WORLD_HALF_WIDTH - CAMERA_TOP_OFFSET
+    elseif position.y > self.worldCenter.y + self.worldSize.y - CAMERA_TOP_OFFSET then
+        position.y = self.worldCenter.y + self.worldSize.y - CAMERA_TOP_OFFSET
 
-    elseif position.y < self.worldCenter.y - WORLD_HALF_WIDTH + CAMERA_BOTTOM_OFFSET then
-        position.y = self.worldCenter.y - WORLD_HALF_WIDTH + CAMERA_BOTTOM_OFFSET
+    elseif position.y < self.worldCenter.y - self.worldSize.y + CAMERA_BOTTOM_OFFSET then
+        position.y = self.worldCenter.y - self.worldSize.y + CAMERA_BOTTOM_OFFSET
 
     end
 
