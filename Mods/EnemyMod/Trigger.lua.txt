@@ -685,7 +685,7 @@ function Ooze:Update(deltaTime, playerPosition)
     end
 end
 function Ooze:CheckAndActivateStunnedState(enemyUnit)
-    -- Do nothing here...
+    DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
 function Ooze:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then
@@ -861,7 +861,7 @@ function GoblinMiner:Update(deltaTime, playerPosition)
     end
 end
 function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
-    -- Do nothing here...
+    DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
 function GoblinMiner:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then

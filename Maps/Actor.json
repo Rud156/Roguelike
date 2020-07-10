@@ -514,7 +514,8 @@
                 "eventMacros": [
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit DeathAnimation Decay"
+                    "Events StandardUnit DeathAnimation Decay",
+                    "_Enemy_Damage_Effect"
                 ],
                 "hostSites": {
                     "SiteLaunchDrill": {
@@ -2848,14 +2849,6 @@
                         ]
                     }
                 ]
-            }
-        },
-        "_TrapDoorway": {
-            "unitActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_light_world_portal"
-                }
             }
         },
         "_Wall_BreakableWall": {
