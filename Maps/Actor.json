@@ -279,7 +279,8 @@
                             "up": 0
                         }
                     }
-                }
+                },
+                "modelScale": 2
             }
         },
         "_Enemy_Goblin": {
@@ -512,6 +513,11 @@
                                 "createTimer": {
                                     "name": "PauseDrillAnim",
                                     "duration": 0.55
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinMiner_DrillAttack"
                                 }
                             }
                         ]
@@ -2449,6 +2455,36 @@
                 "resource": {
                     "type": "Sound",
                     "name": "goblin_die"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinMiner_DrillAttack": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "spell_polybomb_launch"
                 },
                 "events": [
                     {
