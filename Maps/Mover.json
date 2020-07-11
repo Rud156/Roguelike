@@ -12,11 +12,11 @@
         },
         "_Enemy_GoblinMiner_Leap": {
             "ballistic": {
-                "flightTime": 0,
-                "speed": 7,
-                "gravity": 12
+                "flightTime": 2,
+                "speed": 15,
+                "gravity": 2
             },
-            "stayOnNavMesh": true
+            "stayOnNavMesh": false
         },
         "_Enemy_GoblinMiner_RocketBarrage": {
             "guidance": {

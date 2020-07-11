@@ -63,10 +63,10 @@ local GOBLIN_MINER_GOBLIN_COUNT = 5
 local GOBLIN_MINER_ROCKET_DELAY = 0.7
 local GOBLIN_MINER_MIN_ROCKETS = 4
 local GOBLIN_MINER_MAX_ROCKETS = 5
-local GOBLIN_MINER_DRILL_TIMER = 1
-local GOBLIN_MINER_MIN_DRILL_COUNT = 3
-local GOBLIN_MINER_MAX_DRILL_COUNT = 5
-local GOBLIN_MINER_DRILL_WIND_TIME = 0.55
+local GOBLIN_MINER_DRILL_TIMER = 0.5
+local GOBLIN_MINER_MIN_DRILL_COUNT = 5
+local GOBLIN_MINER_MAX_DRILL_COUNT = 6
+local GOBLIN_MINER_DRILL_WIND_TIME = 0.45
 local GOBLIN_MINER_DRILL_FOLLOW_TIME = 0.35
 local GOBLIN_MINER_LEAP_TIMER = 2
 
@@ -930,7 +930,7 @@ function GoblinMiner:ActivateRandomAtack(playerPosition)
 
     -- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
     local randomNumber = math.random(1, 4)
-    randomNumber = 3
+     -- randomNumber = 2
 
     if randomNumber == 1 then
         self:SetEnemyState(1)
