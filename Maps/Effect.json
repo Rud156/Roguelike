@@ -273,6 +273,18 @@
                 "mover": "_PlayerCharacter_LightAttack"
             }
         },
+        "_Launch_Up_Enemy_GoblinMiner_RocketBarrage": {
+            "launchMissile": {
+                "missileUnit": "_Missile_Enemy_GoblinMiner_RocketBarrage",
+                "effect": "DoNothing",
+                "launchLocation": 2,
+                "impactLocation": 2,
+                "impactOffset": {
+                    "up": 30
+                },
+                "mover": "_Enemy_GoblinMiner_RocketBarrage"
+            }
+        },
         "_Periodic_Remove_Projectile_NotOnNavMesh": {
             "persistent": {
                 "periodicCount": 1,

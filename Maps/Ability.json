@@ -38,6 +38,17 @@
                 "range": 7
             }
         },
+        "_Enemy_GoblinMiner_RocketBarrage": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_Up_Enemy_GoblinMiner_RocketBarrage",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "range": 1
+            }
+        },
         "_Enemy_GoblinSapper_Attack": {
             "abilityType": 2,
             "castType": 1,

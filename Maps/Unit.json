@@ -310,6 +310,7 @@
             "references": {
                 "abilityList": [
                     "_Enemy_GoblinMiner_Drill",
+                    "_Enemy_GoblinMiner_RocketBarrage",
                     "_Enemy_GoblinMiner_Leap"
                 ]
             },

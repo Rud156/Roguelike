@@ -464,12 +464,24 @@
             }
         },
         "_Enemy_GoblinMiner": {
-            "parent": "_StandardUnitMinimal",
+            "parent": "_StandardUnit DecayOnDeath",
             "unitActor": {
                 "resource": {
                     "name": "boss_goblin_miner_ground"
                 },
                 "events": [
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
@@ -550,6 +562,34 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinMiner_RocketBarrage"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinMiner_RocketBarrage"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
                     }
                 ],
                 "eventMacros": [
@@ -564,6 +604,12 @@
                             "forward": 1.3,
                             "right": 0.2,
                             "up": 0.6
+                        }
+                    },
+                    "SiteRocketBarrage": {
+                        "offset": {
+                            "forward": -0.5,
+                            "up": 1
                         }
                     }
                 }
@@ -1230,6 +1276,12 @@
                 "impactModel": "_FX_Enemy_GoblinMiner_RocketImpact",
                 "launchSite": "SiteWeapon",
                 "targetSite": "SiteHit"
+            }
+        },
+        "_FX_Enemy_GoblinMiner_RocketBarrage_Up_Actor": {
+            "actionActor": {
+                "effect": "_Launch_Up_Enemy_GoblinMiner_RocketBarrage",
+                "launchSite": "SiteRocketBarrage"
             }
         },
         "_FX_Enemy_GoblinMiner_RocketImpact": {
