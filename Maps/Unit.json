@@ -233,7 +233,7 @@
             "components": {
                 "unitStats": {
                     "radius": 0.25,
-                    "selectable": true
+                    "selectable": false
                 },
                 "health": {
                     "maxHealth": 15
@@ -263,7 +263,8 @@
             "baseUnit": "_CUnit",
             "components": {
                 "unitStats": {
-                    "radius": 0.25
+                    "radius": 0.25,
+                    "selectable": false
                 },
                 "health": {
                     "maxHealth": 25
@@ -288,7 +289,7 @@
             "components": {
                 "unitStats": {
                     "radius": 0.3,
-                    "selectable": true
+                    "selectable": false
                 },
                 "health": {
                     "maxHealth": 200
@@ -310,8 +311,7 @@
             "references": {
                 "abilityList": [
                     "_Enemy_GoblinMiner_Drill",
-                    "_Enemy_GoblinMiner_RocketBarrage",
-                    "_Enemy_GoblinMiner_Leap"
+                    "_Enemy_GoblinMiner_RocketBarrage"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -351,7 +351,7 @@
             "components": {
                 "unitStats": {
                     "radius": 0.25,
-                    "selectable": true
+                    "selectable": false
                 },
                 "health": {
                     "maxHealth": 55
@@ -424,14 +424,12 @@
             }
         },
         "_Missile_Enemy_GoblinMiner_Leap": {
-            "baseUnit": "_CMissile",
-            "references": {
-                "behaviorList": [
-                    "_Search_Enemy_GoblinMiner_Leap_Missile"
-                ]
-            }
+            "baseUnit": "_CMissile"
         },
         "_Missile_Enemy_GoblinMiner_RocketBarrage": {
+            "baseUnit": "_CMissile"
+        },
+        "_Missile_Enemy_GoblinMiner_RocketBarrage_Up": {
             "baseUnit": "_CMissile"
         },
         "_Missile_PlayerCharacter_HeavyAttack": {

@@ -11,10 +11,10 @@
             }
         },
         "_Enemy_GoblinMiner_Leap": {
-            "ballistic": {
-                "flightTime": 2,
-                "speed": 15,
-                "gravity": 2
+            "guidance": {
+                "acceleration": 20,
+                "speed": 20,
+                "maxSpeed": 24
             },
             "stayOnNavMesh": false
         },

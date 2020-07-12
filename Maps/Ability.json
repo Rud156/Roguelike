@@ -28,16 +28,6 @@
                 "range": 30
             }
         },
-        "_Enemy_GoblinMiner_Leap": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 0,
-            "effect": "_Set_Enemy_GoblinMiner_Leap_Launch",
-            "stats": {
-                "finishTime": 0.3,
-                "range": 7
-            }
-        },
         "_Enemy_GoblinMiner_RocketBarrage": {
             "abilityType": 2,
             "castType": 1,

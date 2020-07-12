@@ -484,32 +484,6 @@
                     },
                     {
                         "actorTerm": {
-                            "unitAbilityStart": {
-                                "ability": "_Enemy_GoblinMiner_Leap"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setVisibility": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "behaviorOn": {
-                                "behavior": "_Enemy_GoblinMiner_Dash_Ended"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "setVisibility": {
-                                    "visibility": true
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
                             "behaviorOn": {
                                 "behavior": "_Enemy_GoblinMiner_Drill_Start"
                             }
@@ -1711,7 +1685,7 @@
             "unitActor": {
                 "resource": {
                     "type": "GpuAnimation",
-                    "name": "boss_goblin_miner_ground"
+                    "name": "boss_goblin_miner_flying"
                 }
             }
         },
@@ -1732,6 +1706,36 @@
                                     "actor": "_FX_Enemy_GoblinMiner_RocketWarning"
                                 }
                             },
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_GoblinMiner_RocketTrail",
+                                    "hostSite": "Trail"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "Trail": {
+                        "offset": {
+                            "forward": -0.5
+                        }
+                    }
+                }
+            }
+        },
+        "_Missile_Enemy_GoblinMiner_RocketBarrage_Up": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_goblin_miner_drill_missile"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
                             {
                                 "create": {
                                     "actor": "_FX_Enemy_GoblinMiner_RocketTrail",

@@ -135,11 +135,6 @@
             "periodicInterval": 0.01,
             "periodicEffect": "_Set_Periodic_Enemy_GoblinMiner_Drill"
         },
-        "_Search_Enemy_GoblinMiner_Leap_Missile": {
-            "maxStackCount": 1,
-            "periodicInterval": 0.01,
-            "periodicEffect": "_Search_PlayerCharacter_Melee_Missile"
-        },
         "_Search_PlayerCharacter": {
             "maxStackCount": 1,
             "periodicInterval": 0.01,
