@@ -77,9 +77,9 @@ local GOBLIN_MINER_DRILL_WIND_TIME = 0.45
 local GOBLIN_MINER_DRILL_FOLLOW_TIME = 0.35
 local GOBLIN_MINER_AIR_STRAFE_LERP = 1
 local GOBLIN_MINER_LEAP_START_TIME = 1 -- Initial wind up animation time
-local GOBLIN_MINER_LEAP_SKY_DELAY = 4 -- How long it takes to go up
+local GOBLIN_MINER_LEAP_SKY_DELAY = 2 -- How long it takes to go up
 local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 3 -- How long it tracks the player when in air
-local GOBLIN_MINER_LEAP_LAND_TIME = 7 -- How it takes to come down. So that the enemy is displayed again
+local GOBLIN_MINER_LEAP_LAND_TIME = 2.8 -- How it takes to come down. So that the enemy is displayed again
 
 local mod = {}
 

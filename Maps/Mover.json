@@ -14,7 +14,7 @@
             "guidance": {
                 "acceleration": 3,
                 "speed": 3,
-                "maxSpeed": 3
+                "maxSpeed": 10
             },
             "stayOnNavMesh": false
         },

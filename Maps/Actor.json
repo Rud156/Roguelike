@@ -500,11 +500,6 @@
                                     "name": "PauseDrillAnim",
                                     "duration": 0.55
                                 }
-                            },
-                            {
-                                "create": {
-                                    "actor": "_SFX_Enemy_GoblinMiner_DrillAttack"
-                                }
                             }
                         ]
                     },
@@ -593,6 +588,20 @@
                                 "log": {
                                     "type": 0,
                                     "message": "Leap End"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinMiner_Drill"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinMiner_DrillAttack"
                                 }
                             }
                         ]
