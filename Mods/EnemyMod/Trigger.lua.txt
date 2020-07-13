@@ -52,25 +52,31 @@ local OOZE_ATTACK_TIME = 4
 local OOZE_GOLD = 1
 
 local GOBLIN_MINER = "_Enemy_GoblinMiner"
+local GOBLIN_MINER_LEAP_UNIT = "_Missile_Enemy_GoblinMiner_Leap_Static_Model"
+local GOBLIN_MINER_LEAP_START = "_Enemy_GoblinMiner_Leap_Start"
+local GOBLIN_MINER_LEAP_END = "_Enemy_GoblinMiner_Leap_End"
 local GOBLIN_MINER_ROCKET_BARRAGE = "_Enemy_GoblinMiner_RocketBarrage"
 local GOBLIN_MINER_ROCKET_EFFECT = "_Launch_Enemy_GoblinMiner_RocketBarrage"
 local GOBLIN_MINER_DRILL = "_Enemy_GoblinMiner_Drill"
 local GOBLIN_MINER_DRILL_START = "_Enemy_GoblinMiner_Drill_Start"
 local GOBLIN_MINER_DRILL_END  = "_Enemy_GoblinMiner_Drill_End"
 local GOBLIN_MINER_LEAP = "_Enemy_GoblinMiner_Leap"
+local GOBLIN_MINER_LEAP_EFFECT = "_Launch_Enemy_GoblinMiner_Leap"
 local GOBLIN_MINER_RANDOM_MOVEMENT_TIMER = 3
 local GOBLIN_MINER_GOBLIN_SPAWN_RADIUS = 1
 local GOBLIN_MINER_GOBLIN_COUNT = 5
 local GOBLIN_MINER_ROCKET_DELAY = 0.7
 local GOBLIN_MINER_MIN_ROCKETS = 4
 local GOBLIN_MINER_MAX_ROCKETS = 5
-local GOBLIN_MINER_ROCKET_SKYE_DELAY = 0.5
+local GOBLIN_MINER_ROCKET_SKY_DELAY = 0.5
 local GOBLIN_MINER_DRILL_TIMER = 0.5
 local GOBLIN_MINER_MIN_DRILL_COUNT = 5
 local GOBLIN_MINER_MAX_DRILL_COUNT = 6
 local GOBLIN_MINER_DRILL_WIND_TIME = 0.45
 local GOBLIN_MINER_DRILL_FOLLOW_TIME = 0.35
-local GOBLIN_MINER_LEAP_TIMER = 2
+local GOBLIN_MINER_LEAP_START_TIME = 0.4
+local GOBLIN_MINER_LEAP_SKY_DELAY = 0.5
+local GOBLIN_MINER_LEAP_LAND_TIME = 0.75
 
 local mod = {}
 
@@ -824,12 +830,15 @@ local GoblinMiner = {
     -- Movement
     targetPosition = nil,
 
-    -- Rocket Barrage
-    hasBarrageLaunched = false,
+    -- Leap
+    fakeLeapUnit = nil,
+    leapState = 0, -- 0: Fake Unit Anim, 1: Going Up, 2: Coming Down TODO: Add Air Strafing
+    leapPosition = nil,
 
     -- General
     currentTimer = 0,
-    attackCounter = 0
+    attackCounter = 0,
+    hasSkyAttackLaunched = false
 }
 GoblinMiner.__index = GoblinMiner
 function GoblinMiner:new(room, xPosition, yPosition)
@@ -844,10 +853,13 @@ function GoblinMiner:new(room, xPosition, yPosition)
 
     goblinMiner.targetPosition = nil
 
-    goblinMiner.hasBarrageLaunched = false
+    goblinMiner.fakeLeapUnit = nil
+    goblinMiner.leapState = 0
+    goblinMiner.leapPosition = nil
 
-    goblinMiner.attackCounter = 0
     goblinMiner.currentTimer = 0
+    goblinMiner.attackCounter = 0
+    goblinMiner.hasSkyAttackLaunched = false
 
     return goblinMiner
 end
@@ -859,7 +871,7 @@ function GoblinMiner:Update(deltaTime, playerPosition)
         self:UpdateRocketBarrage(deltaTime, playerPosition)
 
     elseif self.enemyState == 2 then
-        self:UpdateLeapAttack(deltaTime)
+        self:UpdateLeapAttack(deltaTime, playerPosition)
 
     elseif self.enemyState == 3 then
         self:UpdateDrillAttack(deltaTime, playerPosition)
@@ -888,12 +900,12 @@ function GoblinMiner:UpdateRocketBarrage(deltaTime, playerPosition)
 
     if self.currentTimer <= 0 then
 
-        if self.hasBarrageLaunched then
+        if self.hasSkyAttackLaunched then
             DCEI.CreateEffect(GOBLIN_MINER_ROCKET_EFFECT, self.unit, playerPosition.x, playerPosition.y)
             self.attackCounter = self.attackCounter - 1
 
             self.currentTimer = GOBLIN_MINER_ROCKET_DELAY
-            self.hasBarrageLaunched = false
+            self.hasSkyAttackLaunched = false
 
             if self.attackCounter <= 0 then
                 self:FindAndSetRandomMovement()
@@ -906,11 +918,43 @@ function GoblinMiner:UpdateRocketBarrage(deltaTime, playerPosition)
         end
     end
 end
-function GoblinMiner:UpdateLeapAttack(deltaTime)
+function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
     self.currentTimer = self.currentTimer - deltaTime
+
     if self.currentTimer <= 0 then
-        self:SetEnemyState(0)
-        self:FindAndSetRandomMovement()
+        if self.leapState == 0 then
+            DCEI.LogMessage("Leap State 0")
+
+            local position = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.CastAbilityAtPosition(GOBLIN_MINER_LEAP, self.unit, position.x, position.y)
+            DCEI.RemoveUnit(self.fakeLeapUnit)
+
+            self.leapState = 1
+            self.currentTimer = GOBLIN_MINER_LEAP_SKY_DELAY
+            
+        elseif self.leapState == 1 then
+            DCEI.LogMessage("Leap State 1")
+
+            DCEI.CreateEffect(GOBLIN_MINER_LEAP_EFFECT, self.unit, playerPosition.x, playerPosition.y)
+
+            self.leapState = 2
+            self.currentTimer = GOBLIN_MINER_LEAP_LAND_TIME
+            self.leapPosition = playerPosition
+
+        elseif self.leapState == 2 then
+            DCEI.LogMessage("Leap State 2")
+
+            DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_LEAP_END)
+
+            DCEI.SetUnitPosition2D(self.unit, self.leapPosition.x, self.leapPosition.y)
+            DCEI.Move(self.unit, self.leapPosition.x, self.leapPosition.y)
+
+            self:FindAndSetRandomMovement()
+            self:SetEnemyState(0)
+
+        else
+            DCEI.LogError("Invalid Leap State!?")
+        end
     end
 end
 function GoblinMiner:UpdateDrillAttack(deltaTime, playerPosition)
@@ -943,7 +987,7 @@ function GoblinMiner:ActivateRandomAtack(playerPosition)
 
     -- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
     local randomNumber = math.random(1, 4)
-    randomNumber = 1
+    randomNumber = 2
 
     if randomNumber == 1 then
         self.attackCounter = math.random(GOBLIN_MINER_MIN_ROCKETS, GOBLIN_MINER_MAX_ROCKETS)
@@ -952,7 +996,8 @@ function GoblinMiner:ActivateRandomAtack(playerPosition)
         self:SetEnemyState(1)
 
     elseif randomNumber == 2 then
-        self:LeapAtPlayer(playerPosition)
+        self:LookAtPlayer(playerPosition)
+        self:SetupLeap()
 
     elseif randomNumber == 3 then
         self:SetupDrillMissile()
@@ -967,18 +1012,22 @@ function GoblinMiner:SetupRocketBarrage()
     local position = DCEI.GetUnitPosition2D(self.unit)
     DCEI.CastAbilityAtPosition(GOBLIN_MINER_ROCKET_BARRAGE, self.unit, position.x, position.y)
 
-    self.currentTimer = GOBLIN_MINER_ROCKET_SKYE_DELAY
-    self.hasBarrageLaunched = true
+    self.currentTimer = GOBLIN_MINER_ROCKET_SKY_DELAY
+    self.hasSkyAttackLaunched = true
 end
-function GoblinMiner:LeapAtPlayer(playerPosition)
-    DCEI.LogMessage("Leaping At Player")
+function GoblinMiner:SetupLeap()
+    local position = DCEI.GetUnitPosition2D(self.unit)
+    local rotation = DCEI.GetUnitRotationEuler(self.unit)
+
+    local fakeLeapUnit = DCEI.CreateUnit(1, 1, GOBLIN_MINER_LEAP_UNIT, position.x, position.y)
+    DCEI.SetUnitRotationEuler(fakeLeapUnit, rotation.x, rotation.y, rotation.z)
+    DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_LEAP_START)
+
+    self.fakeLeapUnit = fakeLeapUnit
+    self.leapState = 0
+    self.currentTimer = GOBLIN_MINER_LEAP_START_TIME
 
     self:SetEnemyState(2)
-
-    self.currentTimer = GOBLIN_MINER_LEAP_TIMER
-    self:LookAtPlayer(playerPosition)
-
-    DCEI.CastAbilityAtPosition(GOBLIN_MINER_LEAP, self.unit, playerPosition.x, playerPosition.y)
 end
 function GoblinMiner:SetupDrillMissile()
     DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_DRILL_START)

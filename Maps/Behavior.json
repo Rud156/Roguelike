@@ -51,18 +51,19 @@
         "_Enemy_Damage_Taken": {
             "maxStackCount": 1
         },
-        "_Enemy_GoblinMiner_Dash_Ended": {
-            "maxStackCount": 1,
-            "duration": 0.01
-        },
         "_Enemy_GoblinMiner_Drill_End": {
             "duration": 0.01
         },
         "_Enemy_GoblinMiner_Drill_Start": {
             "duration": 0.01
         },
-        "_Enemy_GoblinMiner_Missile_Reached": {
-            "maxStackCount": 1
+        "_Enemy_GoblinMiner_Leap_End": {
+            "maxStackCount": 1,
+            "duration": 0.01
+        },
+        "_Enemy_GoblinMiner_Leap_Start": {
+            "maxStackCount": 1,
+            "duration": 0.01
         },
         "_Enemy_Ooze_ReSpawn": {
             "duration": 0.1

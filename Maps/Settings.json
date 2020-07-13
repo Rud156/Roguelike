@@ -70,11 +70,13 @@
             "_Enemy_Goblin",
             "__SpawnMarkerUnit",
             "_Enemy_GoblinMiner",
-            "_DungeonDoorway"
+            "_DungeonDoorway",
+            "_Missile_Enemy_GoblinMiner_Leap_Static_Model"
         ],
         "usedEffects": [
             "__StopMovement",
-            "_Launch_Enemy_GoblinMiner_RocketBarrage"
+            "_Launch_Enemy_GoblinMiner_RocketBarrage",
+            "_Launch_Enemy_GoblinMiner_Leap"
         ],
         "usedBehaviors": [
             "_PlayerCharacter_Damage_Invincible",
@@ -87,7 +89,9 @@
             "_Collectible_Dropped",
             "_Enemy_GoblinMiner_Drill_Start",
             "_Enemy_GoblinMiner_Drill_End",
-            "_DungeonDoorway_Open"
+            "_DungeonDoorway_Open",
+            "_Enemy_GoblinMiner_Leap_Start",
+            "_Enemy_GoblinMiner_Leap_End"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"

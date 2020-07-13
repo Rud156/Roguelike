@@ -311,7 +311,8 @@
             "references": {
                 "abilityList": [
                     "_Enemy_GoblinMiner_Drill",
-                    "_Enemy_GoblinMiner_RocketBarrage"
+                    "_Enemy_GoblinMiner_RocketBarrage",
+                    "_Enemy_GoblinMiner_Leap"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -424,6 +425,39 @@
             }
         },
         "_Missile_Enemy_GoblinMiner_Leap": {
+            "baseUnit": "_CMissile"
+        },
+        "_Missile_Enemy_GoblinMiner_Leap_Static_Model": {
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 0
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Missile_Enemy_GoblinMiner_Leap_Up": {
             "baseUnit": "_CMissile"
         },
         "_Missile_Enemy_GoblinMiner_RocketBarrage": {
