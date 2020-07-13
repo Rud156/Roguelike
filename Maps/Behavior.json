@@ -63,7 +63,12 @@
         },
         "_Enemy_GoblinMiner_Leap_Start": {
             "maxStackCount": 1,
-            "duration": 0.01
+            "duration": 0,
+            "modifiers": {
+                "flags": {
+                    "suppressCollision": true
+                }
+            }
         },
         "_Enemy_Ooze_ReSpawn": {
             "duration": 0.1

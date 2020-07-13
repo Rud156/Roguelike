@@ -948,6 +948,7 @@ function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
             self.leapPosition = playerPosition
             
         elseif self.leapState == 3 then
+            DCEI.RemoveBehavior(self.unit, GOBLIN_MINER_LEAP_START)
             DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_LEAP_END)
             DCEI.RemoveUnit(self.fakeLeapUnit)
 
