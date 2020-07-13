@@ -71,7 +71,8 @@
             "__SpawnMarkerUnit",
             "_Enemy_GoblinMiner",
             "_DungeonDoorway",
-            "_Missile_Enemy_GoblinMiner_Leap_Static_Model"
+            "_Missile_Enemy_GoblinMiner_Leap_Static_Model",
+            "_Enemy_GoblinMiner_Leap_AirStrafe"
         ],
         "usedEffects": [
             "__StopMovement",

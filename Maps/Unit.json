@@ -317,6 +317,20 @@
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
         },
+        "_Enemy_GoblinMiner_Leap_AirStrafe": {
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false,
+                    "ignoreCollision": true
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            }
+        },
         "_Enemy_GoblinSapper": {
             "components": {
                 "unitStats": {
@@ -456,9 +470,6 @@
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
-        },
-        "_Missile_Enemy_GoblinMiner_Leap_Up": {
-            "baseUnit": "_CMissile"
         },
         "_Missile_Enemy_GoblinMiner_RocketBarrage": {
             "baseUnit": "_CMissile"

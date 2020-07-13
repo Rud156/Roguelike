@@ -53,6 +53,7 @@ local OOZE_GOLD = 1
 
 local GOBLIN_MINER = "_Enemy_GoblinMiner"
 local GOBLIN_MINER_LEAP_UNIT = "_Missile_Enemy_GoblinMiner_Leap_Static_Model"
+local GOBLIN_MINER_LEAP_AIRSTRAFE = "_Enemy_GoblinMiner_Leap_AirStrafe"
 local GOBLIN_MINER_LEAP_START = "_Enemy_GoblinMiner_Leap_Start"
 local GOBLIN_MINER_LEAP_END = "_Enemy_GoblinMiner_Leap_End"
 local GOBLIN_MINER_ROCKET_BARRAGE = "_Enemy_GoblinMiner_RocketBarrage"
@@ -76,6 +77,7 @@ local GOBLIN_MINER_DRILL_WIND_TIME = 0.45
 local GOBLIN_MINER_DRILL_FOLLOW_TIME = 0.35
 local GOBLIN_MINER_LEAP_START_TIME = 0.4
 local GOBLIN_MINER_LEAP_SKY_DELAY = 0.5
+local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 1
 local GOBLIN_MINER_LEAP_LAND_TIME = 0.75
 
 local mod = {}
@@ -832,7 +834,7 @@ local GoblinMiner = {
 
     -- Leap
     fakeLeapUnit = nil,
-    leapState = 0, -- 0: Fake Unit Anim, 1: Going Up, 2: Coming Down TODO: Add Air Strafing
+    leapState = 0, -- 0: Going Up, 1: Air Strafe, 2: Coming Down, 3: End Leap
     leapPosition = nil,
 
     -- General
@@ -923,28 +925,29 @@ function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
 
     if self.currentTimer <= 0 then
         if self.leapState == 0 then
-            DCEI.LogMessage("Leap State 0")
-
             local position = DCEI.GetUnitPosition2D(self.unit)
             DCEI.CastAbilityAtPosition(GOBLIN_MINER_LEAP, self.unit, position.x, position.y)
             DCEI.RemoveUnit(self.fakeLeapUnit)
+            DCEI.ApplyBehavior(self.unit, ENEMY_INVINCIBLE)
 
             self.leapState = 1
             self.currentTimer = GOBLIN_MINER_LEAP_SKY_DELAY
-            
-        elseif self.leapState == 1 then
-            DCEI.LogMessage("Leap State 1")
 
+        elseif self.leapState == 1 then
+            self.fakeLeapUnit = DCEI.CreateUnit(1, 1, GOBLIN_MINER_LEAP_AIRSTRAFE, playerPosition.x, playerPosition.y)
+            self.leapState = 2
+            self.currentTimer = GOBLIN_MINER_LEAP_AIRSTRAFE_TIME
+            
+        elseif self.leapState == 2 then
             DCEI.CreateEffect(GOBLIN_MINER_LEAP_EFFECT, self.unit, playerPosition.x, playerPosition.y)
 
-            self.leapState = 2
+            self.leapState = 3
             self.currentTimer = GOBLIN_MINER_LEAP_LAND_TIME
             self.leapPosition = playerPosition
-
-        elseif self.leapState == 2 then
-            DCEI.LogMessage("Leap State 2")
-
+            
+        elseif self.leapState == 3 then
             DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_LEAP_END)
+            DCEI.RemoveUnit(self.fakeLeapUnit)
 
             DCEI.SetUnitPosition2D(self.unit, self.leapPosition.x, self.leapPosition.y)
             DCEI.Move(self.unit, self.leapPosition.x, self.leapPosition.y)
@@ -955,6 +958,13 @@ function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
         else
             DCEI.LogError("Invalid Leap State!?")
         end
+    end
+
+    if self.leapState == 2 then
+        DCEI.SetUnitPosition2D(self.fakeLeapUnit, playerPosition.x, playerPosition.y)
+
+    elseif self.leapState == 3 then
+        DCEI.SetUnitPosition2D(self.fakeLeapUnit, self.leapPosition.x, self.leapPosition.y)
     end
 end
 function GoblinMiner:UpdateDrillAttack(deltaTime, playerPosition)

@@ -626,6 +626,30 @@
                 }
             }
         },
+        "_Enemy_GoblinMiner_Leap_AirStrafe": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_indicator_white"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 255
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "_Enemy_GoblinSapper": {
             "parent": "",
             "unitActor": {
@@ -1319,7 +1343,7 @@
                 ]
             }
         },
-        "_FX_Enemy_GoblinMiner_Warning": {
+        "_FX_Enemy_GoblinMiner_Rocket_Warning": {
             "parent": "_UnitModelAddition",
             "modelActor": {
                 "resource": {
@@ -1736,11 +1760,6 @@
                                 }
                             },
                             {
-                                "create": {
-                                    "actor": "_FX_Enemy_GoblinMiner_Warning"
-                                }
-                            },
-                            {
                                 "createTimer": {
                                     "name": "StartSpin",
                                     "duration": 0.3,
@@ -1789,49 +1808,6 @@
                 ]
             }
         },
-        "_Missile_Enemy_GoblinMiner_Leap_Up": {
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "boss_goblin_miner_flying"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimationWithDuration": {
-                                    "clipDuration": 0.3
-                                }
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "StartSpin",
-                                    "duration": 0.3,
-                                    "repeat": true
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "StartSpin"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "playAnimationWithDuration": {
-                                    "clipDuration": 0.3
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
         "_Missile_Enemy_GoblinMiner_RocketBarrage": {
             "unitActor": {
                 "resource": {
@@ -1846,7 +1822,7 @@
                         "actions": [
                             {
                                 "create": {
-                                    "actor": "_FX_Enemy_GoblinMiner_Warning"
+                                    "actor": "_FX_Enemy_GoblinMiner_Rocket_Warning"
                                 }
                             },
                             {

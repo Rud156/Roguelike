@@ -274,7 +274,7 @@
         "_Launch_Up_Enemy_GoblinMiner_Leap": {
             "launchMissile": {
                 "targetType": 2,
-                "missileUnit": "_Missile_Enemy_GoblinMiner_Leap_Up",
+                "missileUnit": "_Missile_Enemy_GoblinMiner_Leap",
                 "effect": "DoNothing",
                 "launchLocation": 2,
                 "impactLocation": 2,
@@ -400,7 +400,7 @@
                 "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
-                        "radius": 0.5
+                        "radius": 1
                     }
                 },
                 "maxUnitCount": 10,
