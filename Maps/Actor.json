@@ -569,6 +569,26 @@
                         "actions": [
                             {
                                 "setVisibility": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseLeapStartSFX",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseLeapStartSFX"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinMiner_LeapLaunch"
+                                }
                             }
                         ]
                     },
@@ -588,6 +608,19 @@
                                 "log": {
                                     "type": 0,
                                     "message": "Leap End"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Enemy_GoblinMiner_LeapImpact"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_GoblinMiner_LeapImpact",
+                                    "hostSiteOperations": [
+                                        "SOp HoldPosition"
+                                    ]
                                 }
                             }
                         ]
@@ -656,7 +689,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "modelScale": 1.5
             }
         },
         "_Enemy_GoblinSapper": {
@@ -1312,6 +1346,18 @@
                 "effect": "_Launch_Enemy_GoblinMiner_Drill",
                 "launchModel": "_FX_Enemy_GoblinMiner_Drill_Launch",
                 "launchSite": "SiteLaunchDrill"
+            }
+        },
+        "_FX_Enemy_GoblinMiner_LeapImpact": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_dwarfsmith_hammercrash_impact_aoe"
+                },
+                "hostSiteOperations": [
+                    "SOp AbsoluteHeight Dot01"
+                ]
             }
         },
         "_FX_Enemy_GoblinMiner_RocketAttack": {
@@ -2672,6 +2718,66 @@
                 "resource": {
                     "type": "Sound",
                     "name": "spell_polybomb_launch"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinMiner_LeapImpact": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "evilwings_meteor_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Enemy_GoblinMiner_LeapLaunch": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "flamethrower_billowsweep_launch"
                 },
                 "events": [
                     {
