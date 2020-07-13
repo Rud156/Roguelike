@@ -1756,13 +1756,13 @@
                         "actions": [
                             {
                                 "playAnimationWithDuration": {
-                                    "clipDuration": 0.3
+                                    "clipDuration": 1
                                 }
                             },
                             {
                                 "createTimer": {
                                     "name": "StartSpin",
-                                    "duration": 0.3,
+                                    "duration": 1,
                                     "repeat": true
                                 }
                             }
@@ -1777,11 +1777,14 @@
                         "actions": [
                             {
                                 "playAnimationWithDuration": {
-                                    "clipDuration": 0.3
+                                    "clipDuration": 1
                                 }
                             }
                         ]
                     }
+                ],
+                "hostSiteOperations": [
+                    "SOp FaceNorth"
                 ]
             }
         },
@@ -1800,7 +1803,7 @@
                             {
                                 "playAnimationWithDuration": {
                                     "clipId": 4,
-                                    "clipDuration": 0.4
+                                    "clipDuration": 1
                                 }
                             }
                         ]

@@ -18,6 +18,7 @@ local CollectiblesUIManager = InventoryMod.CollectiblesUIManager
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
 EnemyMod.VectorSubtract = ExtensionFunction.VectorSubtract
+EnemyMod.VectorLerp = ExtensionFunction.VectorLerp
 EnemyMod.LerpAngleDeg = ExtensionFunction.LerpAngleDeg
 EnemyMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
 EnemyMod.ShuffleTable = ExtensionFunction.ShuffleTable

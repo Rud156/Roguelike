@@ -12,9 +12,9 @@
         },
         "_Enemy_GoblinMiner_Leap": {
             "guidance": {
-                "acceleration": 20,
-                "speed": 20,
-                "maxSpeed": 24
+                "acceleration": 3,
+                "speed": 3,
+                "maxSpeed": 3
             },
             "stayOnNavMesh": false
         },

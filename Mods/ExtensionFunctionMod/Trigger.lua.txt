@@ -7,6 +7,15 @@ function mod.VectorDistance(vectorA, vectorB)
     return math.sqrt(x * x + y * y)
 end
 
+function mod.VectorLerp(vectorA, vectorB, progress)
+    local invertedProgress = 1 - progress
+
+    local xPosition = (vectorA.x * invertedProgress) + (vectorB.x * progress)
+    local yPosition = (vectorA.y * invertedProgress) + (vectorB.y * progress)
+
+    return { x = xPosition, y = yPosition }
+end
+
 function mod.VectorSubtract(vectorA, vectorB)
     local xDiff = vectorA.x - vectorB.x
     local yDiff = vectorA.y - vectorB.y

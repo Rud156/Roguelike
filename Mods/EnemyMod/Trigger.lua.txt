@@ -75,10 +75,11 @@ local GOBLIN_MINER_MIN_DRILL_COUNT = 5
 local GOBLIN_MINER_MAX_DRILL_COUNT = 6
 local GOBLIN_MINER_DRILL_WIND_TIME = 0.45
 local GOBLIN_MINER_DRILL_FOLLOW_TIME = 0.35
-local GOBLIN_MINER_LEAP_START_TIME = 0.4
-local GOBLIN_MINER_LEAP_SKY_DELAY = 0.5
-local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 1
-local GOBLIN_MINER_LEAP_LAND_TIME = 0.75
+local GOBLIN_MINER_AIR_STRAFE_LERP = 1
+local GOBLIN_MINER_LEAP_START_TIME = 1 -- Initial wind up animation time
+local GOBLIN_MINER_LEAP_SKY_DELAY = 4 -- How long it takes to go up
+local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 3 -- How long it tracks the player when in air
+local GOBLIN_MINER_LEAP_LAND_TIME = 7 -- How it takes to come down. So that the enemy is displayed again
 
 local mod = {}
 
@@ -834,7 +835,7 @@ local GoblinMiner = {
 
     -- Leap
     fakeLeapUnit = nil,
-    leapState = 0, -- 0: Going Up, 1: Air Strafe, 2: Coming Down, 3: End Leap
+    leapState = 0, -- -1: Wind Up, 0: Going Up, 1: Air Strafe, 2: Coming Down, 3: End Leap
     leapPosition = nil,
 
     -- General
@@ -935,6 +936,7 @@ function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
 
         elseif self.leapState == 1 then
             self.fakeLeapUnit = DCEI.CreateUnit(1, 1, GOBLIN_MINER_LEAP_AIRSTRAFE, playerPosition.x, playerPosition.y)
+            DCEI.SetUnitPosition2D(self.fakeLeapUnit, playerPosition.x, playerPosition.y)
             self.leapState = 2
             self.currentTimer = GOBLIN_MINER_LEAP_AIRSTRAFE_TIME
             
@@ -961,10 +963,14 @@ function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
     end
 
     if self.leapState == 2 then
-        DCEI.SetUnitPosition2D(self.fakeLeapUnit, playerPosition.x, playerPosition.y)
+        local position = DCEI.GetUnitPosition2D(self.fakeLeapUnit)
+        local targetPosition = mod.VectorLerp(position, playerPosition, GOBLIN_MINER_AIR_STRAFE_LERP * deltaTime)
+        DCEI.SetUnitPosition2D(self.fakeLeapUnit, targetPosition.x, targetPosition.y)
 
     elseif self.leapState == 3 then
-        DCEI.SetUnitPosition2D(self.fakeLeapUnit, self.leapPosition.x, self.leapPosition.y)
+        local position = DCEI.GetUnitPosition2D(self.fakeLeapUnit)
+        local targetPosition = mod.VectorLerp(position, self.leapPosition, GOBLIN_MINER_AIR_STRAFE_LERP * deltaTime)
+        DCEI.SetUnitPosition2D(self.fakeLeapUnit, targetPosition.x, targetPosition.y)
     end
 end
 function GoblinMiner:UpdateDrillAttack(deltaTime, playerPosition)
@@ -1129,6 +1135,7 @@ mod.EnemyGoblinMiner = GoblinMiner
 
 mod.VectorDistance = nil
 mod.VectorSubtract = nil
+mod.VectorLerp = nil
 mod.LerpAngleDeg = nil
 mod.NormalizeUnitRotation = nil
 mod.ShuffleTable = nil
