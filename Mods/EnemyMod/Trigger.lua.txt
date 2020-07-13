@@ -80,6 +80,11 @@ local GOBLIN_MINER_LEAP_START_TIME = 1 -- Initial wind up animation time
 local GOBLIN_MINER_LEAP_SKY_DELAY = 2 -- How long it takes to go up
 local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 1 -- How long it tracks the player when in air
 local GOBLIN_MINER_LEAP_LAND_TIME = 2.8 -- How it takes to come down. So that the enemy is displayed again
+-- Attack Ranges
+local GOBLIN_MINER_ROCKET_RANGE = { min = 5 }
+local GOBLIN_MINER_DRILL_RANGE = { min = 5, max = 15 }
+local GOBLIN_MINER_LEAP_RANGE = {}
+local GOBLIN_MINER_GOBLIN_RANGE = {}
 
 local mod = {}
 
@@ -998,25 +1003,24 @@ function GoblinMiner:UpdateDrillAttack(deltaTime, playerPosition)
 
     self:LookAtPlayer(playerPosition)
 end
+-- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
 function GoblinMiner:ActivateRandomAtack(playerPosition)
     local position = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, position.x, position.y)
 
-    -- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
-    local randomNumber = math.random(1, 4)
-    randomNumber = 2
+    local randomAttack = self:GetValidAttacksForRange(playerPosition, position)
 
-    if randomNumber == 1 then
+    if randomAttack == 1 then
         self.attackCounter = math.random(GOBLIN_MINER_MIN_ROCKETS, GOBLIN_MINER_MAX_ROCKETS)
         self:LookAtPlayer(playerPosition)
         self:SetupRocketBarrage()
         self:SetEnemyState(1)
 
-    elseif randomNumber == 2 then
+    elseif randomAttack == 2 then
         self:LookAtPlayer(playerPosition)
         self:SetupLeap()
 
-    elseif randomNumber == 3 then
+    elseif randomAttack == 3 then
         self:SetupDrillMissile()
 
     else
@@ -1024,6 +1028,50 @@ function GoblinMiner:ActivateRandomAtack(playerPosition)
         self:SetEnemyState(0)
         self:FindAndSetRandomMovement()
     end
+end
+-- 1: Rocket Barrage, 2: Leap Attack, 3: Drill Missile, 4: Summon Goblins
+function GoblinMiner:GetValidAttacksForRange(playerPosition, unitPosition)
+    local distance = mod.VectorDistance(playerPosition, unitPosition)
+    local validAttacks = {}
+
+    local minRocketDistance = GOBLIN_MINER_ROCKET_RANGE.min or 0
+    local maxRocketDistance = GOBLIN_MINER_ROCKET_RANGE.max or 999
+    if distance >= minRocketDistance and distance <= maxRocketDistance then
+        table.insert(validAttacks, 1)
+    end
+
+    local minLeapDist = GOBLIN_MINER_LEAP_RANGE.min or 0
+    local maxLeapDist = GOBLIN_MINER_LEAP_RANGE.max or 999
+    if distance >= minLeapDist and distance <= maxLeapDist then
+        table.insert(validAttacks, 2)
+    end
+
+    local minDrillDist = GOBLIN_MINER_DRILL_RANGE.min or 0
+    local maxDrillDist = GOBLIN_MINER_DRILL_RANGE.max or 999
+    if distance >= minDrillDist and distance <= maxDrillDist then
+        table.insert(validAttacks, 3)
+    end
+
+    local minGoblinDist = GOBLIN_MINER_GOBLIN_RANGE.min or 0
+    local maxGoblinDist = GOBLIN_MINER_GOBLIN_RANGE.max or 999
+    if distance >= minGoblinDist and distance <= maxGoblinDist then
+        local roomEnemies = self.room:GetRoomEnemies()
+        local hasOtherEnemies = false
+
+        for _, enemy in ipairs(roomEnemies) do
+            local unitName = DCEI.UnitName(enemy:GetMainUnit())
+            if unitName ~= GOBLIN_MINER then
+                hasOtherEnemies = true
+            end
+        end
+
+        if not hasOtherEnemies then
+            table.insert(validAttacks, 4)
+        end
+    end
+
+    local randomAttack = math.random(1, #validAttacks)
+    return validAttacks[randomAttack]
 end
 function GoblinMiner:SetupRocketBarrage()
     local position = DCEI.GetUnitPosition2D(self.unit)

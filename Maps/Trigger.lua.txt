@@ -617,8 +617,8 @@ function SpawnEnemiesAndCloseDoors()
     local playerRow = m_roomGenerator.currentPlayerRow
     local playerColumn = m_roomGenerator.currentPlayerColumn
 
-    local spawnRow = m_roomGenerator.spawnRoomRow
-    local spawnColumn = m_roomGenerator.spawnRoomColumn
+    local exitRow = m_roomGenerator.exitRoomRow
+    local exitColumn = m_roomGenerator.exitRoomColumn
 
     local spawnEnemies = true
 
@@ -627,7 +627,7 @@ function SpawnEnemiesAndCloseDoors()
     end
 
     if not m_isBeginningRoom and not m_roomGenerator:IsPlayerRoomCleared() then
-        if playerRow == spawnRow and playerColumn == spawnColumn then
+        if playerRow == exitRow and playerColumn == exitColumn and m_roomLevel == ROOM_LEVEL_MAX then
             m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel, true)
         else
             m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_roomLevel, false)

@@ -40,6 +40,20 @@ local FAKE_COMMON_ROOMS = {
     "CR_T_0",
 }
 
+local GOBLIN_BOSS_ROOMS = {
+    "GFBR_BL_0",
+    "GFBR_BLR_0",
+    "GFBR_BR_0",
+    "GFBR_LR_0",
+    "GFBR_TB_0",
+    "GFBR_TBL_0",
+    "GFBR_TBLR_0",
+    "GFBR_TBR_0",
+    "GFBR_TL_0",
+    "GFBR_TLR_0",
+    "GFBR_TR_0"
+}
+
 local MERCHANT_ROOMS = {
     "MR_B_0",
     "MR_L_0",
@@ -53,6 +67,8 @@ local SECRET_ROOMS = {
     "SR_R_0",
     "SR_T_0"
 }
+
+local BOSS_ROOM_LEVEL = 3
 
 local LEFT = "L"
 local RIGHT = "R"
@@ -707,7 +723,7 @@ function RoomGenerator:SetupClearMatrix()
                 local roomClear = false
                 if i == spawnRow and j == spawnColumn then
                     self.roomVisitedMatrix[i][j] = true
-                    -- roomClear = true -- TODO: Change this later on...
+                    roomClear = true
                 else
                     self.roomVisitedMatrix[i][j] = false
                 end
@@ -725,7 +741,7 @@ function RoomGenerator:SetupClearMatrix()
     end
 end
 function RoomGenerator:CheckAndEnableBossRoom(roomLevel)
-    if roomLevel < 5 then
+    if roomLevel < BOSS_ROOM_LEVEL then
         return
     end
 
@@ -733,7 +749,20 @@ function RoomGenerator:CheckAndEnableBossRoom(roomLevel)
     local exitColumn = self.exitRoomColumn
     local exitRoom = self.roomMatrix[exitRow][exitColumn]
 
-    self.roomMatrix[exitRow][exitColumn] = mod.ConvertRoomToRoom(exitRoom, "CR", "GFBR")
+    local hasLeftExit = mod.RoomHasLeftExit(exitRoom)
+    local hasRightExit = mod.RoomHasRightExit(exitRoom)
+    local hasTopExit = mod.RoomHasTopExit(exitRoom)
+    local hasBottomExit = mod.RoomHasBottomExit(exitRoom)
+
+    if hasLeftExit then hasLeftExit = 1 else hasLeftExit = -1 end
+    if hasRightExit then hasRightExit = 1 else hasRightExit = -1 end
+    if hasTopExit then hasTopExit = 1 else hasTopExit = -1 end
+    if hasBottomExit then hasBottomExit = 1 else hasBottomExit = -1 end
+
+    local newExitRoom = self:GetRoomWithSpecificExits(GOBLIN_BOSS_ROOMS, hasLeftExit, hasRightExit, hasTopExit, hasBottomExit)
+
+    DCEI.LogMessage("Old Exit: " .. exitRoom .. ", New Exit: " .. newExitRoom)
+    self.roomMatrix[exitRow][exitColumn] = newExitRoom
 end
 function RoomGenerator:UpdateMinMaxRowColumn(i, j)
     if self.minRow > i then
@@ -1511,6 +1540,9 @@ function RoomEnemies:ForceSetUnitPosition(position)
             break
         end
     end
+end
+function RoomEnemies:GetRoomEnemies()
+    return self.enemies
 end
 
 -- #endregion Room Enemies
