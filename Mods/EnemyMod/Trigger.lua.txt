@@ -29,7 +29,7 @@ local GOBLIN_HOB_GOLD = { MinGold = 5, MaxGold = 8 }
 local GOBLIN = "_Enemy_Goblin"
 local GOBLIN_ATTACK = "_Enemy_Goblin_Attack"
 local GOBLIN_ATTACK_RANGE = 1
-local GOBLIN_ATTACK_WAIT_TIMER = 1.5
+local GOBLIN_ATTACK_WAIT_TIMER = 2
 local GOBLIN_MIN_CLOSEST_DISTANCE = 1
 local GOBLIN_STUN_TIME = 3.5
 local GOBLIN_GOLD = { MinGold = 3, MaxGold = 5 }
@@ -64,8 +64,8 @@ local GOBLIN_MINER_DRILL_END  = "_Enemy_GoblinMiner_Drill_End"
 local GOBLIN_MINER_LEAP = "_Enemy_GoblinMiner_Leap"
 local GOBLIN_MINER_LEAP_EFFECT = "_Launch_Enemy_GoblinMiner_Leap"
 local GOBLIN_MINER_RANDOM_MOVEMENT_TIMER = 3
-local GOBLIN_MINER_GOBLIN_SPAWN_RADIUS = 1
-local GOBLIN_MINER_GOBLIN_COUNT = 5
+local GOBLIN_MINER_GOBLIN_SPAWN_RADIUS = 5
+local GOBLIN_MINER_GOBLIN_COUNT = 3
 local GOBLIN_MINER_ROCKET_DELAY = 0.7
 local GOBLIN_MINER_MIN_ROCKETS = 4
 local GOBLIN_MINER_MAX_ROCKETS = 5
@@ -81,9 +81,9 @@ local GOBLIN_MINER_LEAP_SKY_DELAY = 2 -- How long it takes to go up
 local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 1 -- How long it tracks the player when in air
 local GOBLIN_MINER_LEAP_LAND_TIME = 2.8 -- How it takes to come down. So that the enemy is displayed again
 -- Attack Ranges
-local GOBLIN_MINER_ROCKET_RANGE = { min = 5 }
-local GOBLIN_MINER_DRILL_RANGE = { min = 5, max = 15 }
-local GOBLIN_MINER_LEAP_RANGE = {}
+local GOBLIN_MINER_ROCKET_RANGE = { min = 4 }
+local GOBLIN_MINER_DRILL_RANGE = { min = 1, max = 5 }
+local GOBLIN_MINER_LEAP_RANGE = { min = 2 } 
 local GOBLIN_MINER_GOBLIN_RANGE = {}
 
 local mod = {}
@@ -955,6 +955,7 @@ function GoblinMiner:UpdateLeapAttack(deltaTime, playerPosition)
         elseif self.leapState == 3 then
             DCEI.RemoveBehavior(self.unit, GOBLIN_MINER_LEAP_START)
             DCEI.ApplyBehavior(self.unit, GOBLIN_MINER_LEAP_END)
+            DCEI.RemoveBehavior(self.unit, ENEMY_INVINCIBLE)
             DCEI.RemoveUnit(self.fakeLeapUnit)
 
             DCEI.SetUnitPosition2D(self.unit, self.leapPosition.x, self.leapPosition.y)

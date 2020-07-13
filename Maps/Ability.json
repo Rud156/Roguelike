@@ -64,8 +64,8 @@
             "castType": 1,
             "effect": "_Search_Enemy_Goblin",
             "stats": {
-                "prepTime": 0.5,
-                "finishTime": 0.5,
+                "prepTime": 0.7,
+                "finishTime": 0.3,
                 "period": 0
             }
         },

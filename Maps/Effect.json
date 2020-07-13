@@ -341,9 +341,9 @@
                 "debugDraw": false,
                 "areaSearchType": {
                     "circleSector": {
-                        "outerRadius": 0.9,
+                        "outerRadius": 0.7,
                         "innerRadius": 0.2,
-                        "angle": 60
+                        "angle": 45
                     }
                 },
                 "maxUnitCount": 10,
