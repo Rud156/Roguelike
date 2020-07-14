@@ -571,7 +571,7 @@ function SpawnPlayerAndSetPosition()
     end
 
     local spawnPosition
-    local spawnDirection = SaveMod.GetRoomLevel()
+    local spawnDirection = SaveMod.GetRoomLastDirection()
 
     if spawnDirection == LEFT then
         spawnPosition = m_leftSpawn
