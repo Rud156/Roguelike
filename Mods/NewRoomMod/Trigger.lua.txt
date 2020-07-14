@@ -191,65 +191,67 @@ end
 function RoomGenerator:SaveRoomStructure()
     DCEI.LogMessage("Saving Room Structure")
 
-    DCEI.Save.Set("RoomMatrix", mod.Convert2DMatrixToString(self.roomMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
-    DCEI.Save.Set("RoomMatrixCounter", mod.Convert2DMatrixToString(self.roomMatrixCounter, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
-    DCEI.Save.Set("RoomClearMatrix", mod.Convert2DMatrixToString(self.roomClearMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
-    DCEI.Save.Set("RoomVisitedMatrix", mod.Convert2DMatrixToString(self.roomVisitedMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn))
-    DCEI.Save.Set("RoomAdjacencyList", mod.ConvertAdjacencyListToString(self.roomAdjacencyList))
+    mod.SaveRoomData({
+        roomMatrix = mod.Convert2DMatrixToString(self.roomMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn),
+        roomMatrixCounter = mod.Convert2DMatrixToString(self.roomMatrixCounter, self.minRow, self.maxRow, self.minColumn, self.maxColumn),
+        roomClearMatrix = mod.Convert2DMatrixToString(self.roomClearMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn),
+        roomVisitedMatrix = mod.Convert2DMatrixToString(self.roomVisitedMatrix, self.minRow, self.maxRow, self.minColumn, self.maxColumn),
+        roomAdjacencyList = mod.ConvertAdjacencyListToString(self.roomAdjacencyList),
 
-    DCEI.Save.Set("MerchantRoomItems", mod.ConvertMerchantRoomDataToString(self.merchantRoomItems))
+        merchantRoomItems = mod.ConvertMerchantRoomDataToString(self.merchantRoomItems),
 
-    DCEI.Save.Set("SpawnRoomRow", self.spawnRoomRow)
-    DCEI.Save.Set("SpawnRoomColumn", self.spawnRoomColumn)
-    DCEI.Save.Set("SpawnRoomDoorDirection", self.spawnRoomDoorDirection)
-    
-    DCEI.Save.Set("ExitRoomRow", self.exitRoomRow)
-    DCEI.Save.Set("ExitRoomColumn", self.exitRoomColumn)
-    DCEI.Save.Set("ExitRoomDoorDirection", self.exitRoomDoorDirection)
-    
-    DCEI.Save.Set("MinRow", self.minRow)
-    DCEI.Save.Set("MaxRow", self.maxRow)
-    DCEI.Save.Set("MinColumn", self.minColumn)
-    DCEI.Save.Set("MaxColumn", self.maxColumn)
+        spawnRoomRow = self.spawnRoomRow,
+        spawnRoomColumn = self.spawnRoomColumn,
+        spawnRoomDoorDirection = self.spawnRoomDoorDirection,
 
-    DCEI.Save.Set("PlayerRow", self.currentPlayerRow)
-    DCEI.Save.Set("PlayerColumn", self.currentPlayerColumn)
+        exitRoomRow = self.exitRoomRow,
+        exitRoomColumn = self.exitRoomColumn,
+        exitRoomDoorDirection = self.exitRoomDoorDirection,
 
-    DCEI.Save.Set("RandomSeed", self.randomSeed)
+        minRow = self.minRow,
+        maxRow = self.maxRow,
+        minColumn = self.minColumn,
+        maxColumn = self.maxColumn,
 
-    DCEI.Save.Commit()
+        playerRow = self.currentPlayerRow,
+        playerColumn = self.currentPlayerColumn,
+
+        randomSeed = self.randomSeed
+    })
 end
 function RoomGenerator:LoadRoomStructure()
     DCEI.LogMessage("Loading Room Structure")
 
+    local dataInstance = mod.GetRoomData()
+
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
         
-    roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrix"), 0)
-    roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomMatrixCounter"), 1)
-    roomGenerator.roomClearMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomClearMatrix"), 2)
-    roomGenerator.roomVisitedMatrix = mod.ConvertStringTo2DMatrix(DCEI.Save.Get("RoomVisitedMatrix"), 2)
-    roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(DCEI.Save.Get("RoomAdjacencyList"))
+    roomGenerator.roomMatrix = mod.ConvertStringTo2DMatrix(dataInstance.roomMatrix, 0)
+    roomGenerator.roomMatrixCounter = mod.ConvertStringTo2DMatrix(dataInstance.roomMatrixCounter, 1)
+    roomGenerator.roomClearMatrix = mod.ConvertStringTo2DMatrix(dataInstance.roomClearMatrix, 2)
+    roomGenerator.roomVisitedMatrix = mod.ConvertStringTo2DMatrix(dataInstance.roomVisitedMatrix, 2)
+    roomGenerator.roomAdjacencyList = mod.ConvertStringToAdjacencyList(dataInstance.roomAdjacencyList)
 
-    roomGenerator.merchantRoomItems = mod.ConvertStringToMerchantRoomData(DCEI.Save.Get("MerchantRoomItems"))
+    roomGenerator.merchantRoomItems = mod.ConvertStringToMerchantRoomData(dataInstance.merchantRoomItems)
 
-    roomGenerator.spawnRoomRow = DCEI.Save.Get("SpawnRoomRow")
-    roomGenerator.spawnRoomColumn = DCEI.Save.Get("SpawnRoomColumn")
-    roomGenerator.spawnRoomDoorDirection = DCEI.Save.Get("SpawnRoomDoorDirection")
+    roomGenerator.spawnRoomRow = dataInstance.spawnRoomRow
+    roomGenerator.spawnRoomColumn = dataInstance.spawnRoomColumn
+    roomGenerator.spawnRoomDoorDirection = dataInstance.spawnRoomDoorDirection
 
-    roomGenerator.exitRoomRow = DCEI.Save.Get("ExitRoomRow")
-    roomGenerator.exitRoomColumn = DCEI.Save.Get("ExitRoomColumn")
-    roomGenerator.exitRoomDoorDirection = DCEI.Save.Get("ExitRoomDoorDirection")
+    roomGenerator.exitRoomRow = dataInstance.exitRoomRow
+    roomGenerator.exitRoomColumn = dataInstance.exitRoomColumn
+    roomGenerator.exitRoomDoorDirection = dataInstance.exitRoomDoorDirection
 
-    roomGenerator.minRow = DCEI.Save.Get("MinRow")
-    roomGenerator.maxRow = DCEI.Save.Get("MaxRow")
-    roomGenerator.minColumn = DCEI.Save.Get("MinColumn")
-    roomGenerator.maxColumn = DCEI.Save.Get("MaxColumn")
+    roomGenerator.minRow = dataInstance.minRow
+    roomGenerator.maxRow = dataInstance.maxRow
+    roomGenerator.minColumn = dataInstance.minColumn
+    roomGenerator.maxColumn = dataInstance.maxColumn
 
-    roomGenerator.currentPlayerRow = DCEI.Save.Get("PlayerRow")
-    roomGenerator.currentPlayerColumn = DCEI.Save.Get("PlayerColumn")
+    roomGenerator.currentPlayerRow = dataInstance.playerRow
+    roomGenerator.currentPlayerColumn = dataInstance.playerColumn
 
-    roomGenerator.randomSeed = DCEI.Save.Get("RandomSeed")
+    roomGenerator.randomSeed = dataInstance.randomSeed
     
     roomGenerator:PrintRooms()
     roomGenerator:PrintSpawnAndExit()
@@ -258,34 +260,7 @@ function RoomGenerator:LoadRoomStructure()
 end
 function RoomGenerator:ClearSaveData()
    DCEI.LogMessage("Deleting Save Room Data") 
-
-    DCEI.Save.Set("RoomMatrix", nil)
-    DCEI.Save.Set("RoomMatrixCounter", nil)
-    DCEI.Save.Set("RoomClearMatrix", nil)
-    DCEI.Save.Set("RoomVisitedMatrix", nil)
-    DCEI.Save.Set("RoomAdjacencyList", nil)
-
-    DCEI.Save.Set("MerchantRoomItems", nil)
-
-    DCEI.Save.Set("SpawnRoomRow", nil)
-    DCEI.Save.Set("SpawnRoomColumn", nil)
-    DCEI.Save.Set("SpawnRoomDoorDirection", nil)
-    
-    DCEI.Save.Set("ExitRoomRow", nil)
-    DCEI.Save.Set("ExitRoomColumn", nil)
-    DCEI.Save.Set("ExitRoomDoorDirection", nil)
-    
-    DCEI.Save.Set("MinRow", nil)
-    DCEI.Save.Set("MaxRow", nil)
-    DCEI.Save.Set("MinColumn", nil)
-    DCEI.Save.Set("MaxColumn", nil)
-
-    DCEI.Save.Set("PlayerRow", nil)
-    DCEI.Save.Set("PlayerColumn", nil)
-
-    DCEI.Save.Set("RandomSeed", nil)
-
-    DCEI.Save.Commit()
+    mod.ClearRoomData()
 end
 function RoomGenerator:IsPlayerRoomCleared()
     return self.roomClearMatrix[self.currentPlayerRow][self.currentPlayerColumn]
@@ -1897,18 +1872,16 @@ function ItemDrops:new()
     return itemDrops
 end
 function ItemDrops:SaveData()
-    DCEI.Save.Set("ItemDrops", mod.ConvertItemDropToString(self.items))
-    DCEI.Save.Commit()
+    mod.SaveItemDrops(mod.ConvertItemDropToString(self.items))
 end
 function ItemDrops:LoadData()
-    local itemDropsString = DCEI.Save.Get("ItemDrops")
+    local itemDropsString = mod.GetItemDrops()
     if itemDropsString ~= "" and itemDropsString ~= nil then
         self.items = mod.ConvertStringToItemDrop(itemDropsString)
     end
 end
 function ItemDrops:ClearData()
-    DCEI.Save.Set("ItemDrops", nil)
-    DCEI.Save.Commit()
+    mod.ClearItemDrops()
 end
 function ItemDrops:AddItemToList(itemName, xPosition, yPosition, roomName, roomRow, roomColumn)
     local itemTable = {
@@ -2237,6 +2210,14 @@ mod.EnemyGoblin = nil
 mod.EnemyGoblinSapper = nil
 mod.EnemyOoze = nil
 mod.EnemyGoblinMiner = nil
+
+mod.SaveRoomData = nil
+mod.GetRoomData = nil
+mod.ClearRoomData = nil
+
+mod.SaveItemDrops = nil
+mod.GetItemDrops = nil
+mod.ClearItemDrops = nil
 
 mod.split = nil
 mod.IsEqual = nil

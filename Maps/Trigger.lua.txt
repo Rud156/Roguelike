@@ -8,8 +8,12 @@ local CameraMod = GameModules["Mods/CameraMod"]
 local UtilClassMod = GameModules["Mods/UtilClassMod"]
 local PlayerMod = GameModules["Mods/PlayerMod"]
 local UiUtilMod = GameModules["Mods/UiUtilMod"]
+local SaveMod = GameModules["Mods/SaveMod"]
 
 InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
+InventoryMod.SaveInventorySlotData = SaveMod.SaveInventorySlotData
+InventoryMod.GetInventorySlotData = SaveMod.GetInventorySlotData
+InventoryMod.ClearInventorySlotData = SaveMod.ClearInventorySlotData
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryCollectibles = InventoryMod.InventoryCollectibles
@@ -43,6 +47,12 @@ RoomMod.ToBoolean = ExtensionFunction.ToBoolean
 RoomMod.ArrayHasValue = ExtensionFunction.ArrayHasValue
 RoomMod.VectorDistance = ExtensionFunction.VectorDistance
 RoomMod.ShuffleTable = ExtensionFunction.ShuffleTable
+RoomMod.SaveRoomData = SaveMod.SaveRoomData
+RoomMod.GetRoomData = SaveMod.GetRoomData
+RoomMod.ClearRoomData = SaveMod.ClearRoomData
+RoomMod.SaveItemDrops = SaveMod.SaveItemDrops
+RoomMod.GetItemDrops = SaveMod.GetItemDrops
+RoomMod.ClearItemDrops = SaveMod.ClearItemDrops
 local RoomGenerator = RoomMod.RoomGenerator
 local RoomEnemies = RoomMod.RoomEnemies
 local MiniMap = RoomMod.MiniMap
@@ -53,6 +63,9 @@ local Fader = UiUtilMod.Fader
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
+PlayerMod.SavePlayerData = SaveMod.SavePlayerData
+PlayerMod.GetPlayerData = SaveMod.GetPlayerData
+PlayerMod.ClearPlayerData = SaveMod.ClearPlayerData
 local Player = PlayerMod.Player
 
 local Rect = UtilClassMod.Rect
@@ -524,14 +537,13 @@ end
 
 function SpawnPlayerAndSetPosition()
     -- Load/Generate Room Data
-    local roomType = DCEI.Save.Get(ROOM_NAME)
-    local roomLevel = DCEI.Save.Get(ROOM_LEVEL_STRING)
+    local roomType = SaveMod.GetRoomName()
+    local roomLevel = SaveMod.GetRoomLevel()
 
     if roomLevel ~= nil then
         m_roomLevel = roomLevel
     else -- Save the new level if it does not exists...
-        DCEI.Save.Set(ROOM_LEVEL_STRING, m_roomLevel)
-        DCEI.Save.Commit()
+        SaveMod.SaveMainMapRoomLevel(m_roomLevel)
     end
 
     if roomType == nil then -- This should be the beginning room
@@ -559,7 +571,7 @@ function SpawnPlayerAndSetPosition()
     end
 
     local spawnPosition
-    local spawnDirection = DCEI.Save.Get(LAST_DIRECTION)
+    local spawnDirection = SaveMod.GetRoomLevel()
 
     if spawnDirection == LEFT then
         spawnPosition = m_leftSpawn
@@ -742,7 +754,7 @@ function CheckAndSpawnEntryDoor()
         DCEI.RemoveUnit(exit)
     end
 
-    local spawnDirection = DCEI.Save.Get(LAST_DIRECTION)
+    local spawnDirection = SaveMod.GetRoomLastDirection()
     
     if spawnDirection == nil then
         spawnDirection = direction
@@ -810,10 +822,7 @@ function UpdateCollisionWithExitDoor()
     if m_roomLevel > ROOM_LEVEL_MAX then
         m_roomGenerator:ClearSaveData()
 
-        DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
-        DCEI.Save.Set(LAST_DIRECTION, nil)
-        DCEI.Save.Set(ROOM_LEVEL_STRING, nil)
-        DCEI.Save.Commit()
+        SaveMod.ClearAllMainMapData()
         DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
 
@@ -829,10 +838,7 @@ function UpdateCollisionWithExitDoor()
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)
 
-        DCEI.Save.Set(ROOM_NAME, roomName)
-        DCEI.Save.Set(LAST_DIRECTION, nil)
-        DCEI.Save.Set(ROOM_LEVEL_STRING, m_roomLevel)
-        DCEI.Save.Commit()
+        SaveMod.SaveAllMainMapData(roomName, nil, m_roomLevel)
         DCEI.Wait(1)
         DCEI.PlayLevel(roomPath, roomName)
     end
@@ -926,13 +932,11 @@ function SaveNextRoomData()
             DCEI.LogError("Invalid Bounds?!!")
         end
 
-        DCEI.Save.Set(LAST_DIRECTION, direction)
-        DCEI.Save.Commit()
+        SaveMod.SaveMainMapLastDirection(direction)
 
         m_roomGenerator:SaveRoomStructure()
     else
-        DCEI.Save.Set(LAST_DIRECTION, nil)
-        DCEI.Save.Commit()
+        SaveMod.SaveMainMapLastDirection(nil)
     end
 
     -- Only Save when going into the new room
@@ -953,8 +957,7 @@ function DisplayGameOverSequence(playerWon)
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)
 
-        DCEI.Save.Set(ROOM_NAME, roomName)
-        DCEI.Save.Commit()
+        SaveMod.SaveMainMapRoomName(roomName)
         DCEI.Wait(1)
         DCEI.PlayLevel(roomPath, roomName)
     else
@@ -962,10 +965,7 @@ function DisplayGameOverSequence(playerWon)
         m_inventory:ClearInventorySave()
         m_roomItemDrops:ClearData()
 
-        DCEI.Save.Set(ROOM_NAME, nil) -- Reset to beginning room
-        DCEI.Save.Set(LAST_DIRECTION, nil)
-        DCEI.Save.Set(ROOM_LEVEL_STRING, nil)
-        DCEI.Save.Commit()
+        SaveMod.ClearAllMainMapData()
         DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
     end

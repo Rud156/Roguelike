@@ -93,22 +93,17 @@ function Player:SaveData()
     DCEI.LogMessage("Saving Player Data")
 
     local playerHealth = DCEI.GetHealthValue(self.playerUnit)
-    DCEI.Save.Set("PlayerHealth", playerHealth)
-
-    DCEI.Save.Set("PlayerStaminaAmount", self.playerStaminaAmount)
-    DCEI.Save.Set("PlayerStaminaTimer", self.playerStaminaRegenTimer)
-
-    DCEI.Save.Set("PlayerGold", self.playerGoldAmount)
-
-    DCEI.Save.Commit()
+    mod.SavePlayerData(
+        playerHealth,
+        self.playerStaminaAmount,
+        self.playerStaminaRegenTimer,
+        self.playerGoldAmount
+    )
 end
 function Player:LoadData()
     DCEI.LogMessage("Getting Player Data")
 
-    local playerHealth = DCEI.Save.Get("PlayerHealth", playerHealth)
-    local playerStaminaAmount = DCEI.Save.Get("PlayerStaminaAmount", self.playerStaminaAmount)
-    local playerStaminaRegenTimer = DCEI.Save.Get("PlayerStaminaTimer", self.playerStaminaRegenTimer)
-    local playerGoldAmount = DCEI.Save.Get("PlayerGold")
+    local playerHealth, playerStaminaAmount, playerStaminaRegenTimer, playerGoldAmount = mod.GetPlayerData()
 
     if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil then
         return
@@ -126,14 +121,7 @@ function Player:LoadData()
 end
 function Player:ClearData()
     DCEI.LogMessage("Clearing Player Data")
-
-    DCEI.Save.Set("PlayerHealth", nil)
-    DCEI.Save.Set("PlayerStaminaAmount", nil)
-    DCEI.Save.Set("PlayerStaminaTimer", nil)
-
-    DCEI.Save.Set("PlayerGold", nil)
-
-    DCEI.Save.Commit()
+    mod.ClearPlayerData()
 end
 function Player:CreatePlayerUI(uiRoot)
     -- Health Bar
@@ -535,4 +523,9 @@ mod.Player = Player
 
 mod.NormalizeUnitRotation = nil
 mod.VectorSubtract = nil
+
+mod.SavePlayerData = nil
+mod.GetPlayerData = nil
+mod.ClearPlayerData = nil
+
 return mod

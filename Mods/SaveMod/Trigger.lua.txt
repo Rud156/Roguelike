@@ -1,0 +1,277 @@
+local mod = {}
+
+-- #region Main Map
+
+local ROOM_NAME = "RoomName"
+local ROOM_LEVEL = "RoomLevel"
+local LAST_DIRECTION = "LastDirection"
+
+function mod.SaveAllMainMapData(roomName, roomLevel, lastDirection)
+    DCEI.Save.Set(ROOM_NAME, roomName)
+    DCEI.Save.Set(ROOM_LEVEL, roomLevel)
+    DCEI.Save.Set(LAST_DIRECTION, lastDirection)
+    DCEI.Save.Commit()
+end
+
+function mod.SaveMainMapRoomName(roomName)
+    DCEI.Save.Set(ROOM_NAME, roomName)
+    DCEI.Save.Commit()
+end
+
+function mod.SaveMainMapRoomLevel(roomLevel)
+    DCEI.Save.Set(ROOM_LEVEL, roomLevel)
+    DCEI.Save.Commit()
+end
+
+function mod.SaveMainMapLastDirection(lastDirection)
+    DCEI.Save.Set(LAST_DIRECTION, lastDirection)
+    DCEI.Save.Commit()
+end
+
+function mod.GetAllMainMapData()
+    local roomName = DCEI.Save.Get(ROOM_NAME)
+    local roomLevel = DCEI.Save.Get(ROOM_LEVEL)
+    local lastDirection = DCEI.Save.Get(LAST_DIRECTION)
+
+    return roomName, roomLevel, lastDirection
+end
+
+function mod.GetRoomName()
+    return DCEI.Save.Get(ROOM_NAME)
+end
+
+function mod.GetRoomLevel()
+    return DCEI.Save.Get(ROOM_LEVEL)
+end
+
+function mod.GetRoomLastDirection()
+    return DCEI.Save.Get(LAST_DIRECTION)
+end
+
+function mod.ClearAllMainMapData()
+    DCEI.Save.Set(ROOM_NAME, nil)
+    DCEI.Save.Set(ROOM_LEVEL, nil)
+    DCEI.Save.Set(LAST_DIRECTION, nil)
+    DCEI.Save.Commit()
+end
+
+-- #endregion Main Map
+
+-- #region Item Drops
+
+local ITEM_DROPS = "ItemDrops"
+
+function mod.SaveItemDrops(itemsString)
+    DCEI.Save.Set(ITEM_DROPS, itemsString)
+    DCEI.Save.Commit()
+end
+
+function mod.GetItemDrops()
+    return DCEI.Save.Get(ITEM_DROPS)
+end
+
+function mod.ClearItemDrops()
+    DCEI.Save.Set(ITEM_DROPS, nil)
+    DCEI.Save.Commit()
+end
+
+-- #endregion Item Drops
+
+-- #region Player Data
+
+local PLAYER_HEALTH = "PlayerHealth"
+local PLAYER_STAMINA_AMOUNT = "PlayerStaminaAmount"
+local PLAYER_STAMINA_TIMER = "PlayerStaminaTimer"
+local PLAYER_GOLD = "PlayerGold"
+
+function mod.SavePlayerData(health, staminaAmount, staminaTimer, gold)
+    DCEI.Save.Set(PLAYER_HEALTH, health)
+    DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, staminaAmount)
+    DCEI.Save.Set(PLAYER_STAMINA_TIMER, staminaTimer)
+    DCEI.Save.Set(PLAYER_GOLD, gold)
+    DCEI.Save.Commit()
+end
+
+function mod.GetPlayerData()
+    local health = DCEI.Save.Get(PLAYER_HEALTH)
+    local staminaAmount = DCEI.Save.Get(PLAYER_STAMINA_AMOUNT)
+    local staminaTimer = DCEI.Save.Get(PLAYER_STAMINA_TIMER)
+    local gold = DCEI.Save.Get(PLAYER_GOLD)
+
+    return health, staminaAmount, staminaTimer, gold
+end
+
+function mod.ClearPlayerData()
+    DCEI.Save.Set(PLAYER_HEALTH, nil)
+    DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, nil)
+    DCEI.Save.Set(PLAYER_STAMINA_TIMER, nil)
+    DCEI.Save.Set(PLAYER_GOLD, nil)
+    DCEI.Save.Commit()
+end
+
+-- #endregion Player Data
+
+-- #region Inventory
+
+local SLOT_BASE = "Slot_"
+local SLOT_NAME = "_Name"
+local SLOT_STACK = "_Stack"
+local SLOT_RECHARGE_ACTIVE = "_RechargeActive"
+local SLOT_MAX_RECHARGE_TIME = "_MaxRechargeTime"
+local SLOT_CURRENT_RECHARGE_TIME = "_CurrentRechargeTime"
+
+function mod.SaveInventorySlotData(index, slotName, slotStack, slotRechargeActive, slotMaxRecharge, slotCurrentRechargeTime)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_NAME, slotName)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_STACK, slotStack)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_RECHARGE_ACTIVE, slotRechargeActive)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_MAX_RECHARGE_TIME, slotMaxRecharge)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME, slotCurrentRechargeTime)
+    DCEI.Save.Commit()
+end
+
+function mod.GetInventorySlotData(index)
+    local slotName = DCEI.Save.Get(SLOT_BASE .. index .. SLOT_NAME)
+    local slotStack = DCEI.Save.Get(SLOT_BASE .. index .. SLOT_STACK)
+    local slotRechargeActive = DCEI.Save.Get(SLOT_BASE .. index .. SLOT_RECHARGE_ACTIVE)
+    local slotMaxRecharge = DCEI.Save.Get(SLOT_BASE .. index .. SLOT_MAX_RECHARGE_TIME)
+    local slotCurrentRechargeTime = DCEI.Save.Get(SLOT_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME)
+
+    return slotName, slotStack, slotRechargeActive, slotMaxRecharge, slotCurrentRechargeTime
+end
+
+function mod.ClearInventorySlotData(index)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_NAME, nil)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_STACK, nil)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_RECHARGE_ACTIVE, nil)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_MAX_RECHARGE_TIME, nil)
+    DCEI.Save.Set(SLOT_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME, nil)
+    DCEI.Save.Commit()
+end
+
+-- #endregion Inventory
+
+-- #region Room Data
+
+local ROOM_MATRIX = "RoomMatrix"
+local ROOM_MATRIX_COUNTER = "RoomMatrixCounter"
+local ROOM_CLEAR_MATRIX = "RoomClearMatrix"
+local ROOM_VISITED_MATRIX = "RoomVisitedMatrix"
+local ROOM_ADJACENCY_LIST = "RoomAdjacencyList"
+local MERCHANT_ROOM_ITEMS = "MerchantRoomItems"
+local SPAWN_ROOM_ROW = "SpawnRoomRow"
+local SPAWN_ROOM_COLUMN = "SpawnRoomColumn"
+local SPAWN_ROOM_DOOR_DIRECTION = "SpawnRoomDoorDirection"
+local EXIT_ROOM_ROW = "ExitRoomRow"
+local EXIT_ROOM_COLUMN = "ExitRoomColumn"
+local EXIT_ROOM_DOOR_DIRECTION = "ExitRoomDoorDirection"
+local MIN_ROW = "MinRow"
+local MAX_ROW = "MaxRow"
+local MIN_COLUMN = "MinColumn"
+local MAX_COLUMN = "MaxColumn"
+local PLAYER_ROW = "PlayerRow"
+local PLAYER_COLUMN = "PlayerColumn"
+local RANDOM_SEED = "RandomSeed"
+
+function mod.SaveRoomData(roomInstance)
+    DCEI.Save.Set(ROOM_MATRIX, roomInstance.roomMatrix)
+    DCEI.Save.Set(ROOM_MATRIX_COUNTER, roomInstance.roomMatrixCounter)
+    DCEI.Save.Set(ROOM_CLEAR_MATRIX, roomInstance.roomClearMatrix)
+    DCEI.Save.Set(ROOM_VISITED_MATRIX, roomInstance.roomVisitedMatrix)
+    DCEI.Save.Set(ROOM_ADJACENCY_LIST, roomInstance.roomAdjacencyList)
+
+    DCEI.Save.Set(MERCHANT_ROOM_ITEMS, roomInstance.merchantRoomItems)
+    
+    DCEI.Save.Set(SPAWN_ROOM_ROW, roomInstance.spawnRoomRow)
+    DCEI.Save.Set(SPAWN_ROOM_COLUMN, roomInstance.spawnRoomColumn)
+    DCEI.Save.Set(SPAWN_ROOM_DOOR_DIRECTION, roomInstance.spawnRoomDoorDirection)
+
+    DCEI.Save.Set(EXIT_ROOM_ROW, roomInstance.exitRoomRow)
+    DCEI.Save.Set(EXIT_ROOM_COLUMN, roomInstance.exitRoomColumn)
+    DCEI.Save.Set(EXIT_ROOM_DOOR_DIRECTION, roomInstance.exitRoomDoorDirection)
+
+    DCEI.Save.Set(MIN_ROW, roomInstance.minRow)
+    DCEI.Save.Set(MAX_ROW, roomInstance.maxRow)
+    DCEI.Save.Set(MIN_COLUMN, roomInstance.minColumn)
+    DCEI.Save.Set(MAX_COLUMN, roomInstance.maxColumn)
+
+    DCEI.Save.Set(PLAYER_ROW, roomInstance.playerRow)
+    DCEI.Save.Set(PLAYER_COLUMN, roomInstance.playerColumn)
+
+    DCEI.Save.Set(RANDOM_SEED, roomInstance.randomSeed)
+
+    DCEI.Save.Commit()
+end
+
+function mod.GetRoomData()
+    local roomInstance = {}
+
+    roomInstance.roomMatrix = DCEI.Save.Get(ROOM_MATRIX)
+    roomInstance.roomMatrixCounter = DCEI.Save.Get(ROOM_MATRIX_COUNTER)
+    roomInstance.roomClearMatrix = DCEI.Save.Get(ROOM_CLEAR_MATRIX)
+    roomInstance.roomVisitedMatrix = DCEI.Save.Get(ROOM_VISITED_MATRIX)
+    roomInstance.roomAdjacencyList = DCEI.Save.Get(ROOM_ADJACENCY_LIST)
+
+    roomInstance.merchantRoomItems = DCEI.Save.Get(MERCHANT_ROOM_ITEMS)
+    
+    roomInstance.spawnRoomRow = DCEI.Save.Get(SPAWN_ROOM_ROW)
+    roomInstance.spawnRoomColumn = DCEI.Save.Get(SPAWN_ROOM_COLUMN)
+    roomInstance.spawnRoomDoorDirection = DCEI.Save.Get(SPAWN_ROOM_DOOR_DIRECTION)
+
+    roomInstance.exitRoomRow = DCEI.Save.Get(EXIT_ROOM_ROW)
+    roomInstance.exitRoomColumn = DCEI.Save.Get(EXIT_ROOM_COLUMN)
+    roomInstance.exitRoomDoorDirection = DCEI.Save.Get(EXIT_ROOM_DOOR_DIRECTION)
+
+    roomInstance.minRow = DCEI.Save.Get(MIN_ROW)
+    roomInstance.maxRow = DCEI.Save.Get(MAX_ROW)
+    roomInstance.minColumn = DCEI.Save.Get(MIN_COLUMN)
+    roomInstance.maxColumn = DCEI.Save.Get(MAX_COLUMN)
+
+    roomInstance.playerRow = DCEI.Save.Get(PLAYER_ROW)
+    roomInstance.playerColumn = DCEI.Save.Get(PLAYER_COLUMN)
+
+     roomInstance.randomSeed = DCEI.Save.Get(RANDOM_SEED)
+
+    return roomInstance
+end
+
+function mod.ClearRoomData()
+    DCEI.Save.Set(ROOM_MATRIX, nil)
+    DCEI.Save.Set(ROOM_MATRIX_COUNTER, nil)
+    DCEI.Save.Set(ROOM_CLEAR_MATRIX, nil)
+    DCEI.Save.Set(ROOM_VISITED_MATRIX, nil)
+    DCEI.Save.Set(ROOM_ADJACENCY_LIST, nil)
+
+    DCEI.Save.Set(MERCHANT_ROOM_ITEMS, nil)
+    
+    DCEI.Save.Set(SPAWN_ROOM_ROW, nil)
+    DCEI.Save.Set(SPAWN_ROOM_COLUMN, nil)
+    DCEI.Save.Set(SPAWN_ROOM_DOOR_DIRECTION, nil)
+
+    DCEI.Save.Set(EXIT_ROOM_ROW, nil)
+    DCEI.Save.Set(EXIT_ROOM_COLUMN, nil)
+    DCEI.Save.Set(EXIT_ROOM_DOOR_DIRECTION, nil)
+
+    DCEI.Save.Set(MIN_ROW, nil)
+    DCEI.Save.Set(MAX_ROW, nil)
+    DCEI.Save.Set(MIN_COLUMN, nil)
+    DCEI.Save.Set(MAX_COLUMN, nil)
+
+    DCEI.Save.Set(PLAYER_ROW, nil)
+    DCEI.Save.Set(PLAYER_COLUMN, nil)
+
+    DCEI.Save.Set(RANDOM_SEED, nil)
+
+    DCEI.Save.Commit()
+end
+
+-- #endregion
+
+function mod.ClearAllData()
+    mod.ClearAllMainMapData()
+    mod.ClearInventorySlotData()
+    mod.ClearItemDrops()
+    mod.ClearPlayerData()
+    mod.ClearRoomData()
+end
+
+return mod

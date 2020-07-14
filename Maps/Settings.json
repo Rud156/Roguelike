@@ -12,7 +12,8 @@
             "Mods/UtilClassMod",
             "Mods/PlayerMod",
             "Mods/NewRoomMod",
-            "Mods/UiUtilMod"
+            "Mods/UiUtilMod",
+            "Mods/SaveMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",

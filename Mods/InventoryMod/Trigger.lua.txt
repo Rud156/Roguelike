@@ -163,20 +163,17 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, slotClicke
     return inventory
 end
 function InventorySlot:SaveSlot(index)
-    DCEI.Save.Set("Slot_" .. index .. "_Name", self.itemName)
-    DCEI.Save.Set("Slot_" .. index .. "_Stack", self.currentStack)
-    DCEI.Save.Set("Slot_" .. index .. "_RechargeActive", self.isSlotRechargeActive)
-    DCEI.Save.Set("Slot_" .. index .. "_MaxRechargeTime", self.maxRechargeTime)
-    DCEI.Save.Set("Slot_" .. index .. "_CurrentRechargeTime", self.currentRechargeTime)
-    DCEI.Save.Commit()
+    mod.SaveInventorySlotData(
+        index,
+        self.itemName,
+        self.currentStack,
+        self.isSlotRechargeActive,
+        self.maxRechargeTime,
+        self.currentRechargeTime
+    )
 end
 function InventorySlot:LoadSlot(index)
-    local itemName = DCEI.Save.Get("Slot_" .. index .. "_Name")
-    local currentStack = DCEI.Save.Get("Slot_" .. index .. "_Stack")
-    local isSlotRechargeActive = DCEI.Save.Get("Slot_" .. index .. "_RechargeActive")
-    local maxRechargeTime = DCEI.Save.Get("Slot_" .. index .. "_MaxRechargeTime")
-    local currentRechargeTime = DCEI.Save.Get("Slot_" .. index .. "_CurrentRechargeTime")
-
+    local itemName, currentStack, isSlotRechargeActive, maxRechargeTime, currentRechargeTime = mod.GetInventorySlotData(index)
 
     if itemName ~= nil and itemName ~= "" and currentStack ~= -1 and currentStack ~= nil then
         local collectibleItem = COLLECTIBLES_TABLE[itemName]
@@ -202,12 +199,7 @@ function InventorySlot:LoadSlot(index)
     end
 end
 function InventorySlot:ClearSlot(index)
-    DCEI.Save.Set("Slot_" .. index .. "_Name", nil)
-    DCEI.Save.Set("Slot_" .. index .. "_Stack", nil)
-    DCEI.Save.Set("Slot_" .. index .. "_RechargeActive", nil)
-    DCEI.Save.Set("Slot_" .. index .. "_MaxRechargeTime", nil)
-    DCEI.Save.Set("Slot_" .. index .. "_CurrentRechargeTime", nil)
-    DCEI.Save.Commit()
+    mod.ClearInventorySlotData(index)
 end
 function InventorySlot:GetInventoryItemType()
     return self.itemType
@@ -599,5 +591,9 @@ mod.InventoryCollectibles = COLLECTIBLES_TABLE
 mod.InventoryCollectiblesName = COLLECTIBLES
 
 mod.VectorDistance = nil
+
+mod.SaveInventorySlotData = nil
+mod.GetInventorySlotData = nil
+mod.ClearInventorySlotData = nil
 
 return mod
