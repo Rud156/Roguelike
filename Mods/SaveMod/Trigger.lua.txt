@@ -120,6 +120,9 @@ local SLOT_RECHARGE_ACTIVE = "_RechargeActive"
 local SLOT_MAX_RECHARGE_TIME = "_MaxRechargeTime"
 local SLOT_CURRENT_RECHARGE_TIME = "_CurrentRechargeTime"
 
+local MIN_SLOT_COUNT = 1
+local MAX_SLOT_COUNT = 4
+
 function mod.SaveInventorySlotData(index, slotName, slotStack, slotRechargeActive, slotMaxRecharge, slotCurrentRechargeTime)
     DCEI.Save.Set(SLOT_BASE .. index .. SLOT_NAME, slotName)
     DCEI.Save.Set(SLOT_BASE .. index .. SLOT_STACK, slotStack)
@@ -146,6 +149,12 @@ function mod.ClearInventorySlotData(index)
     DCEI.Save.Set(SLOT_BASE .. index .. SLOT_MAX_RECHARGE_TIME, nil)
     DCEI.Save.Set(SLOT_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME, nil)
     DCEI.Save.Commit()
+end
+
+function mod.ClearAllInventoryData()
+    for i = MIN_SLOT_COUNT, MAX_SLOT_COUNT do
+        mod.ClearInventorySlotData(i)
+    end
 end
 
 -- #endregion Inventory
@@ -268,7 +277,7 @@ end
 
 function mod.ClearAllData()
     mod.ClearAllMainMapData()
-    mod.ClearInventorySlotData()
+    mod.ClearAllInventoryData()
     mod.ClearItemDrops()
     mod.ClearPlayerData()
     mod.ClearRoomData()

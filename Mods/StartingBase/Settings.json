@@ -5,8 +5,7 @@
             "Arcade/Core",
             "Maps",
             "Mods/NewRoomMod",
-            "Mods/PlayerMod",
-            "Mods/InventoryMod"
+            "Mods/SaveMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",
