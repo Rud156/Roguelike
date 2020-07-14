@@ -1,7 +1,7 @@
 local CAMERA_LEFT_OFFSET = 8
 local CAMERA_RIGHT_OFFSET = 8
 local CAMERA_TOP_OFFSET = 6
-local CAMERA_BOTTOM_OFFSET = 1
+local CAMERA_BOTTOM_OFFSET = 6
 
 local mod = {}
 
