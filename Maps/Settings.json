@@ -46,7 +46,18 @@
             "Mods/RoomTemplates/CommonRoom/CR_TBR_1",
             "Mods/RoomTemplates/CommonRoom/CR_TL_1",
             "Mods/RoomTemplates/CommonRoom/CR_TLR_1",
-            "Mods/RoomTemplates/CommonRoom/CR_TR_1"
+            "Mods/RoomTemplates/CommonRoom/CR_TR_1",
+            "Mods/RoomTemplates/CommonRoom/GFBR_BL_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_BLR_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_BR_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_LR_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TB_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TBL_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TBLR_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TBR_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TL_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TLR_0",
+            "Mods/RoomTemplates/CommonRoom/GFBR_TR_0"
         ]
     },
     "triggerSettings": {
