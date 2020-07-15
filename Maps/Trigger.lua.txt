@@ -684,6 +684,12 @@ function ActivateDoorOpenAnimations()
         for _, door in ipairs(exitDoors) do
             DCEI.ApplyBehavior(door, EXIT_DOORWAY_OPEN)
         end
+
+    elseif m_isBeginningRoom then
+        local exitDoors = DCEI.FindUnits(EXIT_DOORWAY)
+        for _, door in ipairs(exitDoors) do
+            DCEI.ApplyBehavior(door, EXIT_DOORWAY_OPEN)
+        end
     end
 end
 
