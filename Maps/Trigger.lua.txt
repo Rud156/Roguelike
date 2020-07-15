@@ -60,6 +60,7 @@ local RoomItemDrops = RoomMod.ItemDrops
 
 local Camera = CameraMod.Camera
 local Fader = UiUtilMod.Fader
+local HexGenerator = UiUtilMod.HexGenerator
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
