@@ -1,6 +1,6 @@
 {
     "settings": {
-        "version": "0.1.2",
+        "version": "0.1.7",
         "dependencies": [
             "Arcade/Core",
             "Maps",

@@ -623,6 +623,7 @@ function SpawnItemDrops()
 
         local item = DCEI.CreateUnit(1, 1, itemName, xPosition, yPosition)
         DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+        m_collectiblesUi:AddNewUI(m_uiRoot, item, itemName)
     end
 end
 
@@ -672,9 +673,17 @@ function ActivateDoorOpenAnimations()
         DCEI.CastAbility(DOOR_OPEN_ANIM, door, door)
     end
 
-    local exitDoors = DCEI.FindUnits(EXIT_DOORWAY)
-    for _, door in ipairs(exitDoors) do
-        DCEI.ApplyBehavior(door, EXIT_DOORWAY_OPEN)
+    local playerRow = m_roomGenerator.currentPlayerRow
+    local playerColumn = m_roomGenerator.currentPlayerColumn
+
+    local spawnRoomRow = m_roomGenerator.spawnRoomRow
+    local spawnRoomColumn = m_roomGenerator.spawnRoomColumn
+
+    if playerRow ~= spawnRoomRow and playerColumn ~= spawnRoomColumn then
+        local exitDoors = DCEI.FindUnits(EXIT_DOORWAY)
+        for _, door in ipairs(exitDoors) do
+            DCEI.ApplyBehavior(door, EXIT_DOORWAY_OPEN)
+        end
     end
 end
 
@@ -829,6 +838,7 @@ function UpdateCollisionWithExitDoor()
 
     else
         m_roomGenerator:ClearSaveData()
+        SaveMod.ClearItemDrops()
         
         local randomSeed = os.time()
         math.randomseed(randomSeed)
@@ -839,7 +849,7 @@ function UpdateCollisionWithExitDoor()
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)
 
-        SaveMod.SaveAllMainMapData(roomName, nil, m_roomLevel)
+        SaveMod.SaveAllMainMapData(roomName, m_roomLevel, nil)
         DCEI.Wait(1)
         DCEI.PlayLevel(roomPath, roomName)
     end
@@ -934,7 +944,6 @@ function SaveNextRoomData()
         end
 
         SaveMod.SaveMainMapLastDirection(direction)
-
         m_roomGenerator:SaveRoomStructure()
     else
         SaveMod.SaveMainMapLastDirection(nil)
@@ -1068,6 +1077,11 @@ function CreateDebugUI()
     DCEI.SetMinSize(characterButton, 50, 50)
     DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
     DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
+
+    local goldButton = DCEI.NewButton(horizontalStack)
+    DCEI.SetMinSize(goldButton, 50, 54)
+    DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
+    DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
 end
 
 function UpdatePlayerDamageUI(deltaTime)
@@ -1114,6 +1128,14 @@ function HandleCharacterSwitch()
 
     m_camera:UpdateTarget(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
+end
+
+function HandleGoldButtonClicked()
+    -- TODO: Remove this later on...
+    if m_player ~= nil then
+        m_player:AddGold(10)
+        DCEI.SetHealthValue(m_player:GetPlayerUnit(), 150)
+    end
 end
 
 -- #endregion

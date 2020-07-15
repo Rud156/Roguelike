@@ -83,7 +83,7 @@ local GOBLIN_MINER_LEAP_LAND_TIME = 2.8 -- How it takes to come down. So that th
 -- Attack Ranges
 local GOBLIN_MINER_ROCKET_RANGE = { min = 4 }
 local GOBLIN_MINER_DRILL_RANGE = { min = 1, max = 5 }
-local GOBLIN_MINER_LEAP_RANGE = { min = 2 } 
+local GOBLIN_MINER_LEAP_RANGE = { min = 0 } 
 local GOBLIN_MINER_GOBLIN_RANGE = {}
 
 local mod = {}
@@ -1063,13 +1063,20 @@ function GoblinMiner:GetValidAttacksForRange(playerPosition, unitPosition)
             local unitName = DCEI.UnitName(enemy:GetMainUnit())
             if unitName ~= GOBLIN_MINER then
                 hasOtherEnemies = true
+                break
             end
         end
 
         if not hasOtherEnemies then
             table.insert(validAttacks, 4)
+
+        else
+            DCEI.LogError("Has Other Enemies!!!")
+
         end
     end
+
+    DCEI.LogMessage("Attacks Length: " .. #validAttacks)
 
     local randomAttack = math.random(1, #validAttacks)
     return validAttacks[randomAttack]
