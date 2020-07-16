@@ -1,0 +1,212 @@
+local mod = {}
+
+local HEX_SIDE = 50
+
+-- Hex Implementation: https://stackoverflow.com/a/1838701
+-- https://www.redblobgames.com/grids/hexagons/
+
+local SKILL_TREE_MATRIX = {
+    { 0, "Hammer", 0, 0, 0 },
+    { "Bomb", "Brown", 0, "GMedal", 0 },
+    { 0, 0, "Center", "Green", 0 },
+    { 0, "BMedal", "Blue", 0, "Rabbit" }
+}
+
+
+local SKILL_TREE = {
+    Hammer = {
+        skillImage = "<image>",
+        skillName = "<name>",
+        skillCost = 20,
+        skillDescription = "<description>"
+    }
+}
+
+-- #region Hex Generator
+
+local HexGenerator = {
+    hexUiMatrix = {},
+    hexUiDisplay = {},
+}
+HexGenerator.__index = HexGenerator
+function HexGenerator:new(uiLayer)
+    local hexGenerator = {}
+    setmetatable(hexGenerator, HexGenerator)
+
+    hexGenerator.hexUiMatrix = {}
+    hexGenerator.hexUiDisplay = {}
+
+    hexGenerator:GenerateHexMapPositions(SKILL_TREE_MATRIX)
+    hexGenerator:DrawUI(uiLayer, SKILL_TREE_MATRIX)
+
+    return hexGenerator
+end
+function HexGenerator:GenerateHexMapPositions(hexMatrix)
+    local currentX = 0
+    local currentY = 0
+
+    self.hexUiMatrix[1] = {}
+    self.hexUiMatrix[1][1] = { x = currentX, y = currentY }
+
+    for i = 1, #hexMatrix do
+        if self.hexUiMatrix[i] == nil then
+            self.hexUiMatrix[i] = {}
+        end
+
+        for j = 1, #hexMatrix[i] do
+
+            local lSide = { x = j - 1, y = i }
+            local tSide = { x = j, y = i - 1 }
+            local ltSide = { x = j - 1, y = i - 1 }
+
+            local rSide = { x = j + 1, y = i }
+            local bSide = { x = j, y = i + 1 }
+            local rbSide = { x = j + 1, y = i + 1 }
+
+            if self.hexUiMatrix[i][j] ~= nil then
+                local tempData = self.hexUiMatrix[i][j]
+                currentX = tempData.x
+                currentY = tempData.y
+            end
+
+
+            if mod.IsSideValid(lSide, #hexMatrix[i], #hexMatrix) then
+                local xPosition = -mod.GetHexHorizontalSpacing(HEX_SIDE) + currentX
+                local yPosition = mod.GetHexHalfVerticalSpacing(HEX_SIDE) + currentY
+
+                if self.hexUiMatrix[lSide.y][lSide.x] == nil then
+                    self.hexUiMatrix[lSide.y][lSide.x] = { x = xPosition, y = yPosition }
+                end
+            end
+
+            if mod.IsSideValid(tSide, #hexMatrix[i], #hexMatrix) then
+                local xPosition = mod.GetHexHorizontalSpacing(HEX_SIDE) + currentX
+                local yPosition = mod.GetHexHalfVerticalSpacing(HEX_SIDE) + currentY
+
+                if self.hexUiMatrix[tSide.y] == nil then
+                    self.hexUiMatrix[tSide.y] = {}
+                end
+
+                if self.hexUiMatrix[tSide.y][tSide.x] == nil then
+                    self.hexUiMatrix[tSide.y][tSide.x] = { x = xPosition, y = yPosition }
+                end
+            end
+
+            if mod.IsSideValid(ltSide, #hexMatrix[i], #hexMatrix) then
+                local xPosition = currentX
+                local yPosition = mod.GetHexVerticalSpacing(HEX_SIDE) + currentY
+
+                if self.hexUiMatrix[ltSide.y] == nil then
+                    self.hexUiMatrix[ltSide.y] = {}
+                end
+
+                if self.hexUiMatrix[ltSide.y][ltSide.x] == nil then
+                    self.hexUiMatrix[ltSide.y][ltSide.x] = { x = xPosition, y = yPosition }
+                end
+            end
+
+            if mod.IsSideValid(rSide, #hexMatrix[i], #hexMatrix) then
+                local xPosition = mod.GetHexHorizontalSpacing(HEX_SIDE) + currentX
+                local yPosition = -mod.GetHexHalfVerticalSpacing(HEX_SIDE) + currentY
+
+                if self.hexUiMatrix[rSide.y][rSide.x] == nil then
+                    self.hexUiMatrix[rSide.y][rSide.x] = { x = xPosition, y = yPosition }
+                end
+            end
+
+            if mod.IsSideValid(bSide, #hexMatrix[i], #hexMatrix) then
+                local xPosition = -mod.GetHexHorizontalSpacing(HEX_SIDE) + currentX
+                local yPosition = -mod.GetHexHalfVerticalSpacing(HEX_SIDE) + currentY
+
+                if self.hexUiMatrix[bSide.y] == nil then
+                    self.hexUiMatrix[bSide.y] = {}
+                end
+
+                if self.hexUiMatrix[bSide.y][bSide.x] == nil then
+                    self.hexUiMatrix[bSide.y][bSide.x] = { x = xPosition, y = yPosition }
+                end
+            end
+
+            if mod.IsSideValid(rbSide, #hexMatrix[i], #hexMatrix) then
+                local xPosition = currentX
+                local yPosition = -mod.GetHexVerticalSpacing(HEX_SIDE) + currentY
+
+                if self.hexUiMatrix[rbSide.y] == nil then
+                    self.hexUiMatrix[rbSide.y] = {}
+                end
+
+                if self.hexUiMatrix[rbSide.y][rbSide.x] == nil then
+                    self.hexUiMatrix[rbSide.y][rbSide.x] = { x = xPosition, y = yPosition }
+                end
+            end
+        end
+    end
+end
+function HexGenerator:DrawUI(uiLayer, hexMatrix)
+    for i = 1, #self.hexUiMatrix do
+        if self.hexUiDisplay[i] == nil then
+            self.hexUiDisplay[i] = {}
+        end
+
+        for j = 1, #self.hexUiMatrix[i] do
+            local xPosition = self.hexUiMatrix[i][j].x
+            local yPosition = self.hexUiMatrix[i][j].y
+
+            local tileFrame = DCEI.NewButton(uiLayer)
+            DCEI.SetBackgroundImage(tileFrame, "Hexagon")
+            DCEI.SetMinSize(tileFrame, HEX_SIDE * 2, HEX_SIDE * 2)
+
+            DCEI.SetHorizontalOffsetInParent(tileFrame, xPosition)
+            DCEI.SetVerticalOffsetInParent(tileFrame, yPosition)
+
+            if hexMatrix[i][j] ~= 0 then
+                local textDisplay = DCEI.NewText(tileFrame)
+                DCEI.SetTextFontSize(textDisplay, 10)
+                DCEI.SetText(textDisplay, hexMatrix[i][j])
+
+            else
+                DCEI.SetActive(tileFrame, false)
+            end
+
+            DCEI.SetOnClickCallback(
+                tileFrame,
+                function()
+                    DCEI.LogMessage(hexMatrix[i][j])
+                end
+            )
+
+            self.hexUiDisplay[i][j] = tileFrame
+        end
+    end
+end
+
+-- #endregion Hex Generator
+
+function mod.IsSideValid(side, width, height)
+    if side.x < 1 or side.x > width then
+        return false
+    end
+
+    if side.y < 1 or side.y > height then
+        return false
+    end
+
+    return true
+end
+
+function mod.GetHexHorizontalSpacing(side)
+    return 2 * side * 3 / 4
+end
+
+function mod.GetHexVerticalSpacing(side)
+    return math.sqrt(3) * side
+end
+
+function mod.GetHexHalfVerticalSpacing(side)
+    return mod.GetHexVerticalSpacing(side) / 2
+end
+
+mod.HexGenerator = HexGenerator
+mod.IsEqual = nil
+
+return mod

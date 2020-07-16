@@ -3,13 +3,6 @@ local mod = {}
 local FADE_IN_RATE = 0.8	
 local FADE_OUT_RATE = 0.8
 
-local MAP_WIDTH = 5
-local MAP_HEIGHT = 5
-local TILE_X_OFFSET = 50
-local TILE_Y_OFFSET = 40
-local BASE_TILE_X_OFFSET = 10
-local BASE_TILE_Y_OFFSET = 10
-
 -- #region Fader
 
 local Fader = {
@@ -94,71 +87,6 @@ end
 
 -- #endregion Fader
 
--- #region Hex Generator
-
-local HexGenerator = {
-    positions = {},
-    uiItems = {}
-}
-HexGenerator.__index = HexGenerator
-function HexGenerator:new(uiLayer)
-    local hexGenerator = {}
-    setmetatable(hexGenerator, HexGenerator)
-
-    hexGenerator.positions = {}
-    hexGenerator.uiItems = {}
-
-    hexGenerator:GenerateHexMapPositions()
-    hexGenerator:DrawUI(uiLayer)
-
-    return hexGenerator
-end
-function HexGenerator:GenerateHexMapPositions()
-    for i = 0, MAP_WIDTH - 1 do
-        for j = 0, MAP_HEIGHT - 1 do
-
-            if j % 2 == 0 then
-                local position = {
-                    x = i * TILE_X_OFFSET,
-                    y = -j * TILE_Y_OFFSET
-                }
-                table.insert(self.positions, position)
-
-            else
-                local position = {
-                    x = i * TILE_X_OFFSET + TILE_X_OFFSET / 2,
-                    y = -j * TILE_Y_OFFSET
-                }
-                table.insert(self.positions, position)
-            end
-        end
-    end
-end
-function HexGenerator:DrawUI(uiLayer)
-    local baseFrame = DCEI.NewFrame(uiLayer)
-    DCEI.SetMinSize(baseFrame, 50 * MAP_WIDTH, 50 * MAP_HEIGHT)
-
-    for _, position in ipairs(self.positions) do
-        local xPosition = position.x
-        local yPosition = position.y
-
-        local tileFrame = DCEI.NewFrame(baseFrame)
-        DCEI.SetBackgroundImage(tileFrame, "Hexagon")
-        DCEI.SetMinSize(tileFrame, 50, 57)
-
-        DCEI.SetLeftAlignmentInParent(tileFrame)
-        DCEI.SetTopAlignmentInParent(tileFrame)
-
-        DCEI.SetHorizontalOffsetInParent(tileFrame, xPosition)
-        DCEI.SetVerticalOffsetInParent(tileFrame, yPosition)
-
-        table.insert(self.uiItems, tileFrame)
-    end
-end
-
--- #endregion Hex Generator
-
 mod.Fader = Fader
-mod.HexGenerator = HexGenerator
 
 return mod

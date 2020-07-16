@@ -8,6 +8,7 @@ local CameraMod = GameModules["Mods/CameraMod"]
 local UtilClassMod = GameModules["Mods/UtilClassMod"]
 local PlayerMod = GameModules["Mods/PlayerMod"]
 local UiUtilMod = GameModules["Mods/UiUtilMod"]
+local SkillTreeMod = GameModules["Mods/SkillTreeMod"]
 local SaveMod = GameModules["Mods/SaveMod"]
 
 InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
@@ -60,7 +61,9 @@ local RoomItemDrops = RoomMod.ItemDrops
 
 local Camera = CameraMod.Camera
 local Fader = UiUtilMod.Fader
-local HexGenerator = UiUtilMod.HexGenerator
+
+SkillTreeMod.IsEqual = ExtensionFunction.IsEqual
+local HexGenerator = SkillTreeMod.HexGenerator
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
@@ -205,7 +208,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
             m_sceneTransitionActive = false
         end
     )
-    
+
     CreateBaseUIElements()
     CreatePlayerDamageDisplay()
     CreatePlayerGoldDisplay()
@@ -213,6 +216,8 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CreateInventoryUI()
     CreateDebugUI()
     CreateCollectiblesUI()
+
+    HexGenerator:new(m_uiRoot)
 
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())

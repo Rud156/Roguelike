@@ -13,7 +13,8 @@
             "Mods/PlayerMod",
             "Mods/NewRoomMod",
             "Mods/UiUtilMod",
-            "Mods/SaveMod"
+            "Mods/SaveMod",
+            "Mods/SkillTreeMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",
