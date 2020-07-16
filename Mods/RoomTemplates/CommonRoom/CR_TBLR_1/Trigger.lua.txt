@@ -1,8 +1,8 @@
 local ArcadeCore = GameModules["Arcade/Core"]
 local MainMap = GameModules["Maps"]
 
-local SPAWN_POINT_TOP = { x = 10, y = 16 }
-local SPAWN_POINT_BOTTOM = { x = 10, y = 2 }
+local SPAWN_POINT_TOP = { x = 10, y = 15 }
+local SPAWN_POINT_BOTTOM = { x = 10, y = 4 }
 local SPAWN_POINT_LEFT = { x = 3, y = 9 }
 local SPAWN_POINT_RIGHT = { x = 16, y = 9 }
 
