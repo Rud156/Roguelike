@@ -89,25 +89,25 @@ local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
 local LEVEL_1_ENEMY_SETS = {
     { 2, 2, 0 },
     { 3, 3, 3 },
-    { 3, 4, 4 },
+    { 2, 2, 2, 2 },
     { 0, 0, 0 },
-    { 2, 4, 4 },
+    { 3, 0, 0 },
 }
 
 local LEVEL_2_ENEMY_SETS = {
-    { 4, 4, 3, 3 },
-    { 1, 1, 0 },
-    { 2, 2, 1, 0 },
-    { 3, 3, 4, 4 },
-    { 2, 2, 3, 3 },
+    { 1, 3, 3, 4, 4 },
+    { 1, 1, 2, 2 },
+    { 0, 0, 2, 2 },
+    { 1, 3, 4, 4 },
+    { 2, 2, 2, 2, 3 },
 }
 
 local LEVEL_3_ENEMY_SETS = {
     { 0, 0, 0, 3, 3 },
-    { 1, 1, 0, 0 },
-    { 2, 2, 1, 0, 0 },
-    { 3, 3, 1, 1, 4 },
-    { 2, 2, 1, 4, 4 },
+    { 0, 0, 1, 2, 2 },
+    { 0, 0, 1, 2, 2 },
+    { 1, 1, 3, 3, 4 },
+    { 1, 2, 2, 4, 4 },
 }
 
 local MAP_SQUARE_SIZE = 20
@@ -1309,30 +1309,13 @@ function RoomEnemies:SpawnEnemies(player, roomLevel)
     math.randomseed(os.time())
 
     local enemySet
-    local randomValue = math.random()
 
     if roomLevel == 1 then
-        if randomValue <= 0.2 then
-            enemySet = LEVEL_2_ENEMY_SETS
-        else
-            enemySet = LEVEL_1_ENEMY_SETS
-        end
+        enemySet = LEVEL_1_ENEMY_SETS
     elseif roomLevel == 2 then
-        if randomValue <= 0.1 then
-            enemySet = LEVEL_1_ENEMY_SETS
-        elseif randomValue <= 0.2 then
-            enemySet = LEVEL_3_ENEMY_SETS
-        else
-            enemySet = LEVEL_2_ENEMY_SETS
-        end
+        enemySet = LEVEL_2_ENEMY_SETS
     else
-        if randomValue <= 0.1 then
-            enemySet = LEVEL_1_ENEMY_SETS
-        elseif randomValue <= 0.5 then
-            enemySet = LEVEL_2_ENEMY_SETS
-        else
-            enemySet = LEVEL_3_ENEMY_SETS
-        end
+        enemySet = LEVEL_3_ENEMY_SETS
     end
 
     local playerPosition = DCEI.GetUnitPosition2D(player)
