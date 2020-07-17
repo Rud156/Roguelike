@@ -64,6 +64,7 @@ local Fader = UiUtilMod.Fader
 
 SkillTreeMod.IsEqual = ExtensionFunction.IsEqual
 local HexGenerator = SkillTreeMod.HexGenerator
+local SkillDisplay = SkillTreeMod.SkillDisplay
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
@@ -185,6 +186,8 @@ local m_randomSeed
 -- Scene Transition
 local m_fader
 local m_sceneTransitionActive = false
+-- Skill Tree
+local m_skillDisplay
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
@@ -217,7 +220,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CreateDebugUI()
     CreateCollectiblesUI()
 
-    HexGenerator:new(m_uiRoot)
+    m_skillDisplay = SkillDisplay:new(m_uiTopLayer)
 
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())
@@ -1093,6 +1096,15 @@ function CreateDebugUI()
     DCEI.SetMinSize(goldButton, 50, 54)
     DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
     DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
+
+    local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
+    DCEI.SetMinSize(skillTreeButton, 50, 50)
+    DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
+    DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
+    DCEI.SetLeftAlignmentInParent(skillTreeButton)
+    DCEI.SetTopAlignmentInParent(skillTreeButton)
+    DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
+    DCEI.SetVerticalOffsetInParent(skillTreeButton, -100)
 end
 
 function UpdatePlayerDamageUI(deltaTime)
@@ -1146,6 +1158,12 @@ function HandleGoldButtonClicked()
     if m_player ~= nil then
         m_player:AddGold(10)
         DCEI.SetHealthValue(m_player:GetPlayerUnit(), 150)
+    end
+end
+
+function HandleSkillTreeClick()
+    if m_skillDisplay ~= nil then
+        m_skillDisplay:ShowSkillTree(m_player)
     end
 end
 

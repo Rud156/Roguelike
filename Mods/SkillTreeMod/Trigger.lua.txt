@@ -5,41 +5,195 @@ local HEX_SIDE = 50
 -- Hex Implementation: https://stackoverflow.com/a/1838701
 -- https://www.redblobgames.com/grids/hexagons/
 
-local SKILL_TREE_MATRIX = {
-    { 0, "Hammer", 0, 0, 0 },
-    { "Bomb", "Brown", 0, "GMedal", 0 },
-    { 0, 0, "Center", "Green", 0 },
-    { 0, "BMedal", "Blue", 0, "Rabbit" }
-}
-
-
 local SKILL_TREE = {
-    Hammer = {
-        skillImage = "<image>",
-        skillName = "<name>",
+    RobustI = {
+        skillImage = "icon_catalyst_main_item3_blue_01",
+        skillName = "Robust I",
         skillCost = 20,
-        skillDescription = "<description>"
-    }
+        skillDescription = "Increase Dwarf Smith’s max health by 25"
+    },
+    RobustII = {
+        skillImage = "icon_catalyst_main_item3_blue_02",
+        skillName = "Robust II",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s max health by 50"
+    },
+    RobustIII = {
+        skillImage = "icon_catalyst_main_item3_blue_03",
+        skillName = "Robust III",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s max health by 100"
+    },
+    InvulnerabilityI = {
+        skillImage = "icon_catalyst_main_item1_blue_01",
+        skillName = "Invulnerability I",
+        skillCost = 20,
+        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.1"
+    },
+    InvulnerabilityII = {
+        skillImage = "icon_catalyst_main_item1_blue_02",
+        skillName = "Invulnerability II",
+        skillCost = 20,
+        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.2"
+    },
+    InvulnerabilityIII = {
+        skillImage = "icon_catalyst_main_item1_blue_03",
+        skillName = "Invulnerability I",
+        skillCost = 20,
+        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.3"
+    },
+    InvulnerabilityIV = {
+        skillImage = "icon_catalyst_main_item1_blue_04",
+        skillName = "Invulnerability IV",
+        skillCost = 20,
+        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.4"
+    },
+    SurefootedI = {
+        skillImage = "icon_catalyst_main_item4_blue_02",
+        skillName = "Surefooted I",
+        skillCost = 20,
+        skillDescription = "Decrease the duration of any movement impairing effects by 10%"
+    },
+    SurefootedII = {
+        skillImage = "icon_catalyst_main_item4_blue_03",
+        skillName = "Surefooted II",
+        skillCost = 20,
+        skillDescription = "Decrease the duration of any movement impairing effects by 20%"
+    },
+    SurefootedIII = {
+        skillImage = "icon_catalyst_main_item4_blue_04",
+        skillName = "Surefooted III",
+        skillCost = 20,
+        skillDescription = "Decrease the duration of any movement impairing effects by 30%"
+    },
+    KillerInstinct = {
+        skillImage = "icon_enhance_frosttower_shatter",
+        skillName = "Killer Instinct",
+        skillCost = 20,
+        skillDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%"
+    },
+    QuickRecoveryI = {
+        skillImage = "icon_catalyst_main_item3_green_01",
+        skillName = "Quick Recovery I",
+        skillCost = 20,
+        skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 15%"
+    },
+    QuickRecoveryII = {
+        skillImage = "icon_catalyst_main_item3_green_02",
+        skillName = "Quick Recovery II",
+        skillCost = 20,
+        skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 30%"
+    },
+    QuickRecoveryIII = {
+        skillImage = "icon_catalyst_main_item3_green_03",
+        skillName = "Quick Recovery III",
+        skillCost = 20,
+        skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 50%"
+    },
+    EnduranceI = {
+        skillImage = "icon_catalyst_main_item1_green_02",
+        skillName = "Endurance I",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s stamina by 1"
+    },
+    EnduranceII = {
+        skillImage = "icon_catalyst_main_item1_green_03",
+        skillName = "Endurance II",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s stamina by 2"
+    },
+    EnduranceIII = {
+        skillImage = "icon_catalyst_main_item1_green_04",
+        skillName = "Endurance III",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s stamina by 3"
+    },
+    BunnyHop = {
+        skillImage = "icon_enhance_druidtower_wilds_shape",
+        skillName = "Bunny Hop",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s jump distance by 50%"
+    },
+    ForcefulLanding = {
+        skillImage = "icon_enhance_stoneguard_bash",
+        skillName = "Forceful Landing",
+        skillCost = 20,
+        skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.1 seconds upon landing"
+    },
+    WarMachineI = {
+        skillImage = "icon_catalyst_main_item3_orange_01",
+        skillName = "War Machine I",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s light attack damage by 2"
+    },
+    WarMachineII = {
+        skillImage = "icon_catalyst_main_item3_orange_02",
+        skillName = "War Machine II",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s light attack damage by 5"
+    },
+    WarMachineIII = {
+        skillImage = "icon_catalyst_main_item3_orange_03",
+        skillName = "War Machine III",
+        skillCost = 20,
+        skillDescription = "Increase Dwarf Smith’s light attack damage by 10"
+    },
+    Cruelty = {
+        skillImage = "icon_enhance_dragoonbarracks_crush",
+        skillName = "Cruelty",
+        skillCost = 20,
+        skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack"
+    },
+    ConcussionBlow = {
+        skillImage = "icon_enhance_crusader_zeal",
+        skillName = "Concussion Blow",
+        skillCost = 20,
+        skillDescription = "Dwarf Smith’s light attack will now stun normal enemies for 0.1 second"
+    },
+    Hero = {
+        skillImage = "icon_ingame_hero_tower_smith",
+        skillName = "Hero",
+        skillCost = 0,
+        skillDescription = "Dwarf Smith Hero"
+    },
 }
+
+local SKILL_TREE_MATRIX = {
+    { 0, "ConcussionBlow", 0, 0, 0, 0 },
+    { "Cruelty", "WarMachineI", 0, "EnduranceI", 0, 0 },
+    { 0, 0, "Hero", "QuickRecoveryI", 0, 0 },
+    { 0, "InvulnerabilityI", "RobustI", 0, "BunnyHop", "ForcefulLanding" },
+    { 0, 0, 0, "SurefootedI", 0, 0 },
+    { 0, 0, "KillerInstinct", 0, 0, 0 }
+}
+
+local CENTER_SKILL = "Hero"
 
 -- #region Hex Generator
 
 local HexGenerator = {
     hexUiMatrix = {},
     hexUiDisplay = {},
+    skillStatusMatrix = {}
 }
 HexGenerator.__index = HexGenerator
-function HexGenerator:new(uiLayer)
+function HexGenerator:new(uiLayer, callback)
     local hexGenerator = {}
     setmetatable(hexGenerator, HexGenerator)
 
     hexGenerator.hexUiMatrix = {}
     hexGenerator.hexUiDisplay = {}
+    hexGenerator.skillStatusMatrix = {}
 
     hexGenerator:GenerateHexMapPositions(SKILL_TREE_MATRIX)
-    hexGenerator:DrawUI(uiLayer, SKILL_TREE_MATRIX)
+    hexGenerator:DrawUI(uiLayer, SKILL_TREE_MATRIX, callback)
+    hexGenerator:CreateInitialSkillMatrix(SKILL_TREE_MATRIX) -- TODO: Replace with loading data...
+    hexGenerator:UpdateSkillDisplay()
 
     return hexGenerator
+end
+function HexGenerator:LoadSkillTree()
+    -- TODO: Complete this function...
 end
 function HexGenerator:GenerateHexMapPositions(hexMatrix)
     local currentX = 0
@@ -142,7 +296,11 @@ function HexGenerator:GenerateHexMapPositions(hexMatrix)
         end
     end
 end
-function HexGenerator:DrawUI(uiLayer, hexMatrix)
+function HexGenerator:DrawUI(uiLayer, hexMatrix, callback)
+    local baseFrame = DCEI.NewFrame(uiLayer)
+    DCEI.SetMinSize(baseFrame, HEX_SIDE * 11, HEX_SIDE * 10)
+    DCEI.SetLeftAlignmentInParent(baseFrame)
+
     for i = 1, #self.hexUiMatrix do
         if self.hexUiDisplay[i] == nil then
             self.hexUiDisplay[i] = {}
@@ -152,17 +310,20 @@ function HexGenerator:DrawUI(uiLayer, hexMatrix)
             local xPosition = self.hexUiMatrix[i][j].x
             local yPosition = self.hexUiMatrix[i][j].y
 
-            local tileFrame = DCEI.NewButton(uiLayer)
+            local tileFrame = DCEI.NewButton(baseFrame)
             DCEI.SetBackgroundImage(tileFrame, "Hexagon")
             DCEI.SetMinSize(tileFrame, HEX_SIDE * 2, HEX_SIDE * 2)
+            DCEI.SetMaxSize(tileFrame, HEX_SIDE * 2, HEX_SIDE * 2)
 
             DCEI.SetHorizontalOffsetInParent(tileFrame, xPosition)
             DCEI.SetVerticalOffsetInParent(tileFrame, yPosition)
+            DCEI.SetTopAlignmentInParent(tileFrame)
 
             if hexMatrix[i][j] ~= 0 then
-                local textDisplay = DCEI.NewText(tileFrame)
-                DCEI.SetTextFontSize(textDisplay, 10)
-                DCEI.SetText(textDisplay, hexMatrix[i][j])
+                local imageFrame = DCEI.NewFrame(tileFrame)
+                DCEI.SetMinSize(imageFrame, HEX_SIDE, HEX_SIDE)
+                DCEI.LogMessage(hexMatrix[i][j])
+                DCEI.SetBackgroundImage(imageFrame, SKILL_TREE[hexMatrix[i][j]].skillImage)
 
             else
                 DCEI.SetActive(tileFrame, false)
@@ -171,7 +332,7 @@ function HexGenerator:DrawUI(uiLayer, hexMatrix)
             DCEI.SetOnClickCallback(
                 tileFrame,
                 function()
-                    DCEI.LogMessage(hexMatrix[i][j])
+                    callback(hexMatrix[i][j])
                 end
             )
 
@@ -179,8 +340,325 @@ function HexGenerator:DrawUI(uiLayer, hexMatrix)
         end
     end
 end
+function HexGenerator:CreateInitialSkillMatrix(hexMatrix)
+    for i = 1, #hexMatrix do
+        if self.skillStatusMatrix[i] == nil then
+            self.skillStatusMatrix[i] = {}
+        end
+
+        for j = 1, #hexMatrix[i] do
+
+            local skillData = {
+                skillName = hexMatrix[i][j]
+            }
+
+            if hexMatrix[i][j] == CENTER_SKILL then
+                skillData.isUnlocked = true
+                skillData.isDisplayed = true
+            else
+                skillData.isUnlocked = false
+                skillData.isDisplayed = false
+            end
+
+            self.skillStatusMatrix[i][j] = skillData
+        end
+    end
+
+    self:UnlockSkill(SKILL_TREE_MATRIX, CENTER_SKILL)    
+end
+function HexGenerator:UnlockSkill(hexMatrix, skillName)
+    for i = 1, #self.skillStatusMatrix do
+        for j = 1, #self.skillStatusMatrix[i] do
+
+            if self.skillStatusMatrix[i][j].skillName == skillName then
+                self.skillStatusMatrix[i][j].isUnlocked = true
+
+                local lSide = { x = j - 1, y = i }
+                local tSide = { x = j, y = i - 1 }
+                local ltSide = { x = j - 1, y = i - 1 }
+
+                local rSide = { x = j + 1, y = i }
+                local bSide = { x = j, y = i + 1 }
+                local rbSide = { x = j + 1, y = i + 1 }
+
+                if mod.IsSideValid(lSide, #hexMatrix[i], #hexMatrix) then
+                    self.skillStatusMatrix[lSide.y][lSide.x].isDisplayed = true
+                end
+    
+                if mod.IsSideValid(tSide, #hexMatrix[i], #hexMatrix) then
+                    self.skillStatusMatrix[tSide.y][tSide.x].isDisplayed = true
+                end
+    
+                if mod.IsSideValid(ltSide, #hexMatrix[i], #hexMatrix) then
+                    self.skillStatusMatrix[ltSide.y][ltSide.x].isDisplayed = true
+                end
+    
+                if mod.IsSideValid(rSide, #hexMatrix[i], #hexMatrix) then
+                    self.skillStatusMatrix[rSide.y][rSide.x].isDisplayed = true
+                end
+    
+                if mod.IsSideValid(bSide, #hexMatrix[i], #hexMatrix) then
+                    self.skillStatusMatrix[bSide.y][bSide.x].isDisplayed = true
+                end
+    
+                if mod.IsSideValid(rbSide, #hexMatrix[i], #hexMatrix) then
+                    self.skillStatusMatrix[rbSide.y][rbSide.x].isDisplayed = true
+                end
+
+            end
+        end
+    end
+end
+function HexGenerator:UpdateSkillDisplay()
+    for i = 1, #self.skillStatusMatrix do
+        for j = 1, #self.skillStatusMatrix[i] do
+            if not self.skillStatusMatrix[i][j].isDisplayed then
+                DCEI.SetActive(self.hexUiDisplay[i][j], false)
+
+            elseif self.skillStatusMatrix[i][j].skillName == 0 then
+                DCEI.SetActive(self.hexUiDisplay[i][j], false)
+
+            else
+                DCEI.SetActive(self.hexUiDisplay[i][j], true)
+            end
+        end
+    end
+end
+function HexGenerator:GetSkillStatus(skillName)
+    for i = 1, #self.skillStatusMatrix do
+        for j = 1, #self.skillStatusMatrix[i] do
+            
+            if self.skillStatusMatrix[i][j].skillName == skillName then
+                return self.skillStatusMatrix[i][j]
+            end
+        end
+    end
+
+    DCEI.LogError("No such skill found!!!")
+    return nil
+end
 
 -- #endregion Hex Generator
+
+-- #region Skill Display
+
+local SkillDisplay = {
+    leftSideStack = nil,
+    rightSideStack = nil,
+
+    skillName = nil,
+    skillImage = nil,
+    skillDescription = nil,
+    skillCost = nil,
+    skillCostFrame = nil,
+
+    unlockButton = nil,
+    cancelButton = nil,
+
+    hexGenerator = nil,
+    player = nil,
+
+    selectedSkill = nil,
+}
+SkillDisplay.__index = SkillDisplay
+function SkillDisplay:new(uiLayer)
+    local skillDisplay = {}
+    setmetatable(skillDisplay, SkillDisplay)
+
+    skillDisplay.leftSideStack = nil
+    skillDisplay.rightSideStack = nil
+
+    skillDisplay.skillName = nil
+    skillDisplay.skillImage = nil
+    skillDisplay.skillDescription = nil
+    skillDisplay.skillCost = nil
+    skillDisplay.skillCostFrame = nil
+
+    skillDisplay.unlockButton = nil
+    skillDisplay.cancelButton = nil
+
+    skillDisplay.hexGenerator = nil
+    skillDisplay.player = nil
+
+    skillDisplay.selectedSkill = nil
+
+    skillDisplay:CreateSkillTree(uiLayer)
+    skillDisplay:Hide()
+
+    return skillDisplay
+end
+function SkillDisplay:CreateSkillTree(uiLayer)
+    -- #region Left Side
+
+    local leftSideStack = DCEI.NewVStack(uiLayer)
+    DCEI.SetLeftAlignmentInParent(leftSideStack)
+    DCEI.SetTopAlignmentInParent(leftSideStack)
+    DCEI.SetHorizontalOffsetInParent(leftSideStack, 50)
+    DCEI.SetVerticalOffsetInParent(leftSideStack, -50)
+    DCEI.SetSpacing(leftSideStack, 21)
+
+    -- Skill Header
+    local skillHeader = DCEI.NewFrame(leftSideStack)
+    DCEI.SetMinSize(skillHeader, 200, 50)
+    DCEI.SetBackgroundImage(skillHeader, "frame_shape00")
+    DCEI.SetBackgroundImageColor(skillHeader, 0.67, 0.67, 0.67, 1)
+    
+    local headerText = DCEI.NewText(skillHeader)
+    DCEI.SetText(headerText, "SKILL TREE")
+
+    DCEI.SetLeftAlignmentInParent(skillHeader)
+    DCEI.SetTopAlignmentInParent(skillHeader)
+
+    DCEI.SetHorizontalOffsetInParent(skillHeader, 50)
+    DCEI.SetVerticalOffsetInParent(skillHeader, -100)
+
+    -- Skill Tree
+    local hexGenerator = HexGenerator:new(
+        leftSideStack,
+        function(skillName)
+            self:SkillCallback(skillName)
+        end
+    )
+
+    self.leftSideStack = leftSideStack
+    self.hexGenerator = hexGenerator
+
+    -- #endregion Left Side
+
+    -- #region Right Side
+
+    local rightSideStack = DCEI.NewVStack(uiLayer)
+    DCEI.SetRightAlignmentInParent(rightSideStack)
+    DCEI.SetTopAlignmentInParent(rightSideStack)
+    DCEI.SetHorizontalOffsetInParent(rightSideStack, -50)
+    DCEI.SetVerticalOffsetInParent(rightSideStack, -50)
+    DCEI.SetSpacing(rightSideStack, 21)
+
+    -- Skill Display
+    local skillDisplayFrame = DCEI.NewFrame(rightSideStack)
+    DCEI.SetMinSize(skillDisplayFrame, 500, 400)
+    DCEI.SetMaxSize(skillDisplayFrame, 500, 400)
+    DCEI.SetBackgroundImage(skillDisplayFrame, "frame_shape00")
+    DCEI.SetBackgroundImageColor(skillDisplayFrame, 0.67, 0.67, 0.67, 1)
+    DCEI.SetPadding(skillDisplayFrame, 14)
+
+    local skillDisplayStack = DCEI.NewVStack(skillDisplayFrame)
+    DCEI.SetSpacing(skillDisplayStack, 50)
+    DCEI.SetTopAlignmentInParent(skillDisplayStack)
+
+    -- Display Header
+    local headHStack = DCEI.NewHStack(skillDisplayStack)
+    DCEI.SetSpacing(headHStack, 21)
+
+    local skillName = DCEI.NewText(headHStack)
+    DCEI.SetText(skillName, "War Machine I")
+    
+    local skillImage = DCEI.NewFrame(headHStack)
+    DCEI.SetBackgroundImage(skillImage, "icon_enhance_druidtower_lightning_lure")
+    DCEI.SetMinSize(skillImage, 50, 50)
+
+    -- Display Description
+    local skillDescription = DCEI.NewText(skillDisplayStack)
+    DCEI.SetText(skillDescription, "Some description for skills")
+    DCEI.SetMaxSize(skillDescription, 350, 200)
+
+    -- Display Cost
+    local skillCostFrame = DCEI.NewHStack(skillDisplayStack)
+    DCEI.SetSpacing(skillCostFrame, 14)
+
+    local costImage = DCEI.NewFrame(skillCostFrame)
+    DCEI.SetBackgroundImage(costImage, "ui_ingame_coin")
+    DCEI.SetMinSize(costImage, 30, 30)
+
+    local costText = DCEI.NewText(skillCostFrame)
+    DCEI.SetText(costText, "20")
+
+    -- Unlock Button
+    local unlockButton = DCEI.NewButton(rightSideStack)
+    DCEI.SetBackgroundImage(unlockButton, "frame_shape00")
+    DCEI.SetMinSize(unlockButton, 200, 50)
+
+    local unlockText = DCEI.NewText(unlockButton)
+    DCEI.SetText(unlockText, "UNLOCK")
+
+    -- Cancel Button
+    local cancelButton = DCEI.NewButton(rightSideStack)
+    DCEI.SetBackgroundImage(cancelButton, "frame_shape00")
+    DCEI.SetMinSize(cancelButton, 150, 50)
+
+    local cancelText = DCEI.NewText(cancelButton)
+    DCEI.SetText(cancelText, "CANCEL")
+
+    self.rightSideStack = rightSideStack
+    self.skillName = skillName
+    self.skillImage = skillImage
+
+    self.skillDescription = skillDescription
+    self.skillCost = costText
+    self.skillCostFrame = skillCostFrame
+
+    self.unlockButton = unlockButton
+    self.cancelButton = cancelButton
+
+    DCEI.SetActive(rightSideStack, false)
+
+    DCEI.SetOnClickCallback(
+        cancelButton,
+        function()
+            self:Hide()
+        end
+    )
+
+    DCEI.SetOnClickCallback(
+        unlockButton,
+        function()
+            self:HandleUnlockButtonClicked(self.selectedSkill)
+        end
+    )
+
+    -- #endregion Right Side
+end
+function SkillDisplay:SkillCallback(skillName)
+    DCEI.SetActive(self.rightSideStack, true)
+
+    local skill = SKILL_TREE[skillName]
+    local skillStatus = self.hexGenerator:GetSkillStatus(skillName)
+
+    DCEI.SetText(self.skillName, skill.skillName)
+    DCEI.SetBackgroundImage(self.skillImage, skill.skillImage)
+
+    DCEI.SetText(self.skillDescription, skill.skillDescription)
+
+    if not skillStatus.isUnlocked then
+        DCEI.SetText(self.skillCost, skill.skillCost)
+
+        DCEI.SetActive(self.skillCostFrame, true)
+        DCEI.SetActive(self.unlockButton, true)
+    else
+        DCEI.SetActive(self.skillCostFrame, false)
+        DCEI.SetActive(self.unlockButton, false)
+    end
+
+    self.selectedSkill = skillName
+end
+function SkillDisplay:ShowSkillTree(player)
+    self.player = player
+    DCEI.SetActive(self.leftSideStack, true)
+end
+function SkillDisplay:Hide()
+    DCEI.SetActive(self.leftSideStack, false)
+    DCEI.SetActive(self.rightSideStack, false)
+
+    self.selectedSkill = nil
+end
+function SkillDisplay:HandleUnlockButtonClicked(skillName)
+    self.hexGenerator:UnlockSkill(SKILL_TREE_MATRIX, skillName)
+    self:SkillCallback(skillName) -- Update the UI
+
+    self.hexGenerator:UpdateSkillDisplay()
+end
+
+-- #endregion Skill Display
 
 function mod.IsSideValid(side, width, height)
     if side.x < 1 or side.x > width then
@@ -207,6 +685,7 @@ function mod.GetHexHalfVerticalSpacing(side)
 end
 
 mod.HexGenerator = HexGenerator
+mod.SkillDisplay = SkillDisplay
 mod.IsEqual = nil
 
 return mod
