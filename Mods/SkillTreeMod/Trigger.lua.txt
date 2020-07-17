@@ -512,6 +512,7 @@ local SkillDisplay = {
     skillName = nil,
     skillImage = nil,
     skillDescription = nil,
+    skillNextDescription = nil,
     skillCost = nil,
 
     unlockButton = nil,
@@ -534,6 +535,7 @@ function SkillDisplay:new(uiLayer)
     skillDisplay.skillName = nil
     skillDisplay.skillImage = nil
     skillDisplay.skillDescription = nil
+    skillDisplay.skillNextDescription = nil
     skillDisplay.skillCost = nil
 
     skillDisplay.unlockButton = nil
@@ -624,6 +626,10 @@ function SkillDisplay:CreateSkillTree(uiLayer)
     local skillDescription = DCEI.NewText(skillDisplayStack)
     DCEI.SetText(skillDescription, "Some description for skills")
     DCEI.SetMaxSize(skillDescription, 350, 200)
+
+    local skillNextDescription = DCEI.NewText(skillDisplayStack)
+    DCEI.SetText(skillNextDescription, "Some upgrade description")
+    DCEI.SetMaxSize(skillNextDescription, 350, 200)
     
     -- Unlock Button
     
@@ -657,6 +663,7 @@ function SkillDisplay:CreateSkillTree(uiLayer)
     self.skillImage = skillImage
 
     self.skillDescription = skillDescription
+    self.skillNextDescription = skillNextDescription
     self.skillCost = costText
     
     self.unlockButton = unlockButton
@@ -699,16 +706,20 @@ function SkillDisplay:SkillCallback(skillName)
             DCEI.SetText(self.skillCost, skill[skillLevel].skillCost)
             DCEI.SetText(self.unlockText, "UNLOCK")
 
+            DCEI.SetActive(self.skillNextDescription, false)
             DCEI.SetActive(self.unlockButton, true)
 
         else
             if skillLevel < maxSkillLevel then
                 DCEI.SetText(self.skillCost, skill[skillLevel + 1].skillCost)
+                DCEI.SetText(self.skillNextDescription, "Next Level: " .. skill[skillLevel + 1].skillDescription)
                 DCEI.SetText(self.unlockText, "UPGRADE")
                 
+                DCEI.SetActive(self.skillNextDescription, true)
                 DCEI.SetActive(self.unlockButton, true)
 
             else
+                DCEI.SetActive(self.skillNextDescription, false)
                 DCEI.SetActive(self.unlockButton, false)
             end
         end
@@ -722,9 +733,11 @@ function SkillDisplay:SkillCallback(skillName)
             DCEI.SetText(self.skillCost, skill.skillCost)
             DCEI.SetText(self.unlockText, "UNLOCK")
 
+            DCEI.SetActive(self.skillNextDescription, false)
             DCEI.SetActive(self.unlockButton, true)
 
         else
+            DCEI.SetActive(self.skillNextDescription, false)
             DCEI.SetActive(self.unlockButton, false)
         end
     end
