@@ -238,74 +238,74 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     end
     
     -- Add Triggers At The End...
-    DCEI.TriggerAddJoystickEvent(
-        function()
-            if m_sceneTransitionActive then
-                return
-            end
+    -- DCEI.TriggerAddJoystickEvent(
+    --     function()
+    --         if m_sceneTransitionActive then
+    --             return
+    --         end
 
-            local axes = DCEI.TriggeringJoystickAxes
-            if m_player ~= nil then
-                m_player:HandleJoystickMoved(axes)
-            end
-        end
-    )
-    DCEI.TriggerAddJoystickReleaseEvent(
-        function()
-            if m_sceneTransitionActive then
-                return
-            end
+    --         local axes = DCEI.TriggeringJoystickAxes
+    --         if m_player ~= nil then
+    --             m_player:HandleJoystickMoved(axes)
+    --         end
+    --     end
+    -- )
+    -- DCEI.TriggerAddJoystickReleaseEvent(
+    --     function()
+    --         if m_sceneTransitionActive then
+    --             return
+    --         end
 
-            if m_player ~= nil then
-                m_player:HandleJoystickReleased()
-            end
-        end
-    )
-    DCEI.TriggerAddJoystickButtonEvent(0, 
-        function()
-            if m_sceneTransitionActive then
-                return
-            end
+    --         if m_player ~= nil then
+    --             m_player:HandleJoystickReleased()
+    --         end
+    --     end
+    -- )
+    -- DCEI.TriggerAddJoystickButtonEvent(0, 
+    --     function()
+    --         if m_sceneTransitionActive then
+    --             return
+    --         end
 
-            local buttonId = DCEI.TriggeringJoystickButtonId
-            local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+    --         local buttonId = DCEI.TriggeringJoystickButtonId
+    --         local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
-            if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
-            end
-        end, 
-        { icon = "icon_enhance_crusader_zeal" }
-    )
-    DCEI.TriggerAddJoystickButtonEvent(1, 
-        function()
-            if m_sceneTransitionActive then
-                return
-            end
+    --         if m_player ~= nil then
+    --             m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
+    --         end
+    --     end, 
+    --     { icon = "icon_enhance_crusader_zeal" }
+    -- )
+    -- DCEI.TriggerAddJoystickButtonEvent(1, 
+    --     function()
+    --         if m_sceneTransitionActive then
+    --             return
+    --         end
 
-            local buttonId = DCEI.TriggeringJoystickButtonId
-            local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+    --         local buttonId = DCEI.TriggeringJoystickButtonId
+    --         local buttonEvent = DCEI.TriggeringJoystickButtonEventType
             
-            if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
-            end
-        end, 
-        { icon = "icon_enhance_stoneguard_bash" }
-    )
-    DCEI.TriggerAddJoystickButtonEvent(2, 
-        function()
-            if m_sceneTransitionActive then
-                return
-            end
+    --         if m_player ~= nil then
+    --             m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
+    --         end
+    --     end, 
+    --     { icon = "icon_enhance_stoneguard_bash" }
+    -- )
+    -- DCEI.TriggerAddJoystickButtonEvent(2, 
+    --     function()
+    --         if m_sceneTransitionActive then
+    --             return
+    --         end
 
-            local buttonId = DCEI.TriggeringJoystickButtonId
-            local buttonEvent = DCEI.TriggeringJoystickButtonEventType
+    --         local buttonId = DCEI.TriggeringJoystickButtonId
+    --         local buttonEvent = DCEI.TriggeringJoystickButtonEventType
 
-            if m_player ~= nil then
-                m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
-            end
-        end, 
-        { icon = "icon_spell_angelic_host" }
-    )
+    --         if m_player ~= nil then
+    --             m_player:HandleJoystickButtonClicked(buttonId, buttonEvent, m_roomEnemies)
+    --         end
+    --     end, 
+    --     { icon = "icon_spell_angelic_host" }
+    -- )
 
     DCEI.TriggerAddUnitDiedEvent(DCEI.UnitAny, HandleUnitDied)
     DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny, HandleBehaviourAdded)

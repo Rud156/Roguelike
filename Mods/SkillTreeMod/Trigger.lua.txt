@@ -6,65 +6,71 @@ local HEX_SIDE = 50
 -- https://www.redblobgames.com/grids/hexagons/
 
 local SKILL_TREE = {
-    RobustI = {
-        skillImage = "icon_catalyst_main_item3_blue_01",
-        skillName = "Robust I",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s max health by 25"
+    Robust = {
+        {
+            skillImage = "icon_catalyst_main_item3_blue_01",
+            skillName = "Robust I",
+            skillCost = 5,
+            skillDescription = "Increase Dwarf Smith’s max health by 25"
+        },
+        {
+            skillImage = "icon_catalyst_main_item3_blue_02",
+            skillName = "Robust II",
+            skillCost = 10,
+            skillDescription = "Increase Dwarf Smith’s max health by 50"
+        },
+        {
+            skillImage = "icon_catalyst_main_item3_blue_03",
+            skillName = "Robust III",
+            skillCost = 15,
+            skillDescription = "Increase Dwarf Smith’s max health by 100"
+        }
     },
-    RobustII = {
-        skillImage = "icon_catalyst_main_item3_blue_02",
-        skillName = "Robust II",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s max health by 50"
+    Invulnerability = {
+        {
+            skillImage = "icon_catalyst_main_item1_blue_01",
+            skillName = "Invulnerability I",
+            skillCost = 5,
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.1"
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_blue_02",
+            skillName = "Invulnerability II",
+            skillCost = 10,
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.2"
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_blue_03",
+            skillName = "Invulnerability I",
+            skillCost = 15,
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.3"
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_blue_04",
+            skillName = "Invulnerability IV",
+            skillCost = 20,
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.4"
+        }
     },
-    RobustIII = {
-        skillImage = "icon_catalyst_main_item3_blue_03",
-        skillName = "Robust III",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s max health by 100"
-    },
-    InvulnerabilityI = {
-        skillImage = "icon_catalyst_main_item1_blue_01",
-        skillName = "Invulnerability I",
-        skillCost = 20,
-        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.1"
-    },
-    InvulnerabilityII = {
-        skillImage = "icon_catalyst_main_item1_blue_02",
-        skillName = "Invulnerability II",
-        skillCost = 20,
-        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.2"
-    },
-    InvulnerabilityIII = {
-        skillImage = "icon_catalyst_main_item1_blue_03",
-        skillName = "Invulnerability I",
-        skillCost = 20,
-        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.3"
-    },
-    InvulnerabilityIV = {
-        skillImage = "icon_catalyst_main_item1_blue_04",
-        skillName = "Invulnerability IV",
-        skillCost = 20,
-        skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.4"
-    },
-    SurefootedI = {
-        skillImage = "icon_catalyst_main_item4_blue_02",
-        skillName = "Surefooted I",
-        skillCost = 20,
-        skillDescription = "Decrease the duration of any movement impairing effects by 10%"
-    },
-    SurefootedII = {
-        skillImage = "icon_catalyst_main_item4_blue_03",
-        skillName = "Surefooted II",
-        skillCost = 20,
-        skillDescription = "Decrease the duration of any movement impairing effects by 20%"
-    },
-    SurefootedIII = {
-        skillImage = "icon_catalyst_main_item4_blue_04",
-        skillName = "Surefooted III",
-        skillCost = 20,
-        skillDescription = "Decrease the duration of any movement impairing effects by 30%"
+    Surefooted = {
+        {
+            skillImage = "icon_catalyst_main_item4_blue_02",
+            skillName = "Surefooted I",
+            skillCost = 5,
+            skillDescription = "Decrease the duration of any movement impairing effects by 10%"
+        },
+        {
+            skillImage = "icon_catalyst_main_item4_blue_03",
+            skillName = "Surefooted II",
+            skillCost = 10,
+            skillDescription = "Decrease the duration of any movement impairing effects by 20%"
+        },
+        {
+            skillImage = "icon_catalyst_main_item4_blue_04",
+            skillName = "Surefooted III",
+            skillCost = 15,
+            skillDescription = "Decrease the duration of any movement impairing effects by 30%"
+        }
     },
     KillerInstinct = {
         skillImage = "icon_enhance_frosttower_shatter",
@@ -72,41 +78,45 @@ local SKILL_TREE = {
         skillCost = 20,
         skillDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%"
     },
-    QuickRecoveryI = {
-        skillImage = "icon_catalyst_main_item3_green_01",
-        skillName = "Quick Recovery I",
-        skillCost = 20,
-        skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 15%"
+    QuickRecovery = {
+        {
+            skillImage = "icon_catalyst_main_item3_green_01",
+            skillName = "Quick Recovery I",
+            skillCost = 5,
+            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 15%"
+        },
+        {
+            skillImage = "icon_catalyst_main_item3_green_02",
+            skillName = "Quick Recovery II",
+            skillCost = 10,
+            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 30%"
+        },
+        {
+            skillImage = "icon_catalyst_main_item3_green_03",
+            skillName = "Quick Recovery III",
+            skillCost = 15,
+            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 50%"
+        }
     },
-    QuickRecoveryII = {
-        skillImage = "icon_catalyst_main_item3_green_02",
-        skillName = "Quick Recovery II",
-        skillCost = 20,
-        skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 30%"
-    },
-    QuickRecoveryIII = {
-        skillImage = "icon_catalyst_main_item3_green_03",
-        skillName = "Quick Recovery III",
-        skillCost = 20,
-        skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 50%"
-    },
-    EnduranceI = {
-        skillImage = "icon_catalyst_main_item1_green_02",
-        skillName = "Endurance I",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s stamina by 1"
-    },
-    EnduranceII = {
-        skillImage = "icon_catalyst_main_item1_green_03",
-        skillName = "Endurance II",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s stamina by 2"
-    },
-    EnduranceIII = {
-        skillImage = "icon_catalyst_main_item1_green_04",
-        skillName = "Endurance III",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s stamina by 3"
+    Endurance = {
+        {
+            skillImage = "icon_catalyst_main_item1_green_02",
+            skillName = "Endurance I",
+            skillCost = 5,
+            skillDescription = "Increase Dwarf Smith’s stamina by 1"
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_green_03",
+            skillName = "Endurance II",
+            skillCost = 10,
+            skillDescription = "Increase Dwarf Smith’s stamina by 2"
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_green_04",
+            skillName = "Endurance III",
+            skillCost = 15,
+            skillDescription = "Increase Dwarf Smith’s stamina by 3"
+        }
     },
     BunnyHop = {
         skillImage = "icon_enhance_druidtower_wilds_shape",
@@ -120,23 +130,25 @@ local SKILL_TREE = {
         skillCost = 20,
         skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.1 seconds upon landing"
     },
-    WarMachineI = {
-        skillImage = "icon_catalyst_main_item3_orange_01",
-        skillName = "War Machine I",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s light attack damage by 2"
-    },
-    WarMachineII = {
-        skillImage = "icon_catalyst_main_item3_orange_02",
-        skillName = "War Machine II",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s light attack damage by 5"
-    },
-    WarMachineIII = {
-        skillImage = "icon_catalyst_main_item3_orange_03",
-        skillName = "War Machine III",
-        skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s light attack damage by 10"
+    WarMachine = {
+        {
+            skillImage = "icon_catalyst_main_item3_orange_01",
+            skillName = "War Machine I",
+            skillCost = 5,
+            skillDescription = "Increase Dwarf Smith’s light attack damage by 2"
+        },
+        {
+            skillImage = "icon_catalyst_main_item3_orange_02",
+            skillName = "War Machine II",
+            skillCost = 10,
+            skillDescription = "Increase Dwarf Smith’s light attack damage by 5"
+        },
+        {
+            skillImage = "icon_catalyst_main_item3_orange_03",
+            skillName = "War Machine III",
+            skillCost = 15,
+            skillDescription = "Increase Dwarf Smith’s light attack damage by 10"
+        }
     },
     Cruelty = {
         skillImage = "icon_enhance_dragoonbarracks_crush",
@@ -155,19 +167,20 @@ local SKILL_TREE = {
         skillName = "Hero",
         skillCost = 0,
         skillDescription = "Dwarf Smith Hero"
-    },
+    }
 }
 
 local SKILL_TREE_MATRIX = {
     { 0, "ConcussionBlow", 0, 0, 0, 0 },
-    { "Cruelty", "WarMachineI", 0, "EnduranceI", 0, 0 },
-    { 0, 0, "Hero", "QuickRecoveryI", 0, 0 },
-    { 0, "InvulnerabilityI", "RobustI", 0, "BunnyHop", "ForcefulLanding" },
-    { 0, 0, 0, "SurefootedI", 0, 0 },
+    { "Cruelty", "WarMachine", 0, "Endurance", 0, 0 },
+    { 0, 0, "Hero", "QuickRecovery", 0, 0 },
+    { 0, "Invulnerability", "Robust", 0, "BunnyHop", "ForcefulLanding" },
+    { 0, 0, 0, "Surefooted", 0, 0 },
     { 0, 0, "KillerInstinct", 0, 0, 0 }
 }
 
 local CENTER_SKILL = "Hero"
+local NIL_SKILL = 0
 
 -- #region Hex Generator
 
@@ -319,11 +332,12 @@ function HexGenerator:DrawUI(uiLayer, hexMatrix, callback)
             DCEI.SetVerticalOffsetInParent(tileFrame, yPosition)
             DCEI.SetTopAlignmentInParent(tileFrame)
 
+            local imageFrame
+
             if hexMatrix[i][j] ~= 0 then
-                local imageFrame = DCEI.NewFrame(tileFrame)
+                imageFrame = DCEI.NewFrame(tileFrame)
                 DCEI.SetMinSize(imageFrame, HEX_SIDE, HEX_SIDE)
-                DCEI.LogMessage(hexMatrix[i][j])
-                DCEI.SetBackgroundImage(imageFrame, SKILL_TREE[hexMatrix[i][j]].skillImage)
+                DCEI.SetBackgroundImage(imageFrame, "frame_shape00")
 
             else
                 DCEI.SetActive(tileFrame, false)
@@ -336,7 +350,10 @@ function HexGenerator:DrawUI(uiLayer, hexMatrix, callback)
                 end
             )
 
-            self.hexUiDisplay[i][j] = tileFrame
+            self.hexUiDisplay[i][j] = {
+                button = tileFrame,
+                image = imageFrame   
+            }
         end
     end
 end
@@ -353,9 +370,25 @@ function HexGenerator:CreateInitialSkillMatrix(hexMatrix)
             }
 
             if hexMatrix[i][j] == CENTER_SKILL then
+                skillData.skillLevel = 1
+                skillData.maxSkillLevel = 1
                 skillData.isUnlocked = true
                 skillData.isDisplayed = true
+
+            elseif hexMatrix[i][j] == NIL_SKILL then
+                skillData.skillLevel = 1
+                skillData.maxSkillLevel = 1
+                skillData.isUnlocked = false
+                skillData.isDisplayed = false
+
             else
+                if SKILL_TREE[hexMatrix[i][j]][1] ~= nil then
+                    skillData.skillLevel = 1
+                    skillData.maxSkillLevel = #SKILL_TREE[hexMatrix[i][j]]
+                else
+                    skillData.skillLevel = 1
+                    skillData.maxSkillLevel = 1
+                end
                 skillData.isUnlocked = false
                 skillData.isDisplayed = false
             end
@@ -409,17 +442,47 @@ function HexGenerator:UnlockSkill(hexMatrix, skillName)
         end
     end
 end
+function HexGenerator:UpgradeSkill(skillName)
+    for i = 1, #self.skillStatusMatrix do
+        for j = 1, #self.skillStatusMatrix[i] do
+            if self.skillStatusMatrix[i][j].skillName == skillName then
+
+                local skill = self.skillStatusMatrix[i][j]
+                if skill.skillLevel < skill.maxSkillLevel then
+                    skill.skillLevel = skill.skillLevel + 1
+                    self.skillStatusMatrix[i][j].skillLevel = skill.skillLevel
+                end
+
+            end
+        end
+    end
+end
 function HexGenerator:UpdateSkillDisplay()
     for i = 1, #self.skillStatusMatrix do
         for j = 1, #self.skillStatusMatrix[i] do
             if not self.skillStatusMatrix[i][j].isDisplayed then
-                DCEI.SetActive(self.hexUiDisplay[i][j], false)
+                DCEI.SetActive(self.hexUiDisplay[i][j].button, false)
 
             elseif self.skillStatusMatrix[i][j].skillName == 0 then
-                DCEI.SetActive(self.hexUiDisplay[i][j], false)
+                DCEI.SetActive(self.hexUiDisplay[i][j].button, false)
 
             else
-                DCEI.SetActive(self.hexUiDisplay[i][j], true)
+                DCEI.SetActive(self.hexUiDisplay[i][j].button, true)
+
+                local skillStatus = self.skillStatusMatrix[i][j]
+                
+                if skillStatus.maxSkillLevel ~= 1 then
+                    DCEI.SetBackgroundImage(
+                        self.hexUiDisplay[i][j].image,
+                        SKILL_TREE[skillStatus.skillName][skillStatus.skillLevel].skillImage
+                    )
+
+                else
+                    DCEI.SetBackgroundImage(
+                        self.hexUiDisplay[i][j].image,
+                        SKILL_TREE[skillStatus.skillName].skillImage
+                    )
+                end
             end
         end
     end
@@ -450,9 +513,9 @@ local SkillDisplay = {
     skillImage = nil,
     skillDescription = nil,
     skillCost = nil,
-    skillCostFrame = nil,
 
     unlockButton = nil,
+    unlockText = nil,
     cancelButton = nil,
 
     hexGenerator = nil,
@@ -472,9 +535,9 @@ function SkillDisplay:new(uiLayer)
     skillDisplay.skillImage = nil
     skillDisplay.skillDescription = nil
     skillDisplay.skillCost = nil
-    skillDisplay.skillCostFrame = nil
 
     skillDisplay.unlockButton = nil
+    skillDisplay.unlockText = nil
     skillDisplay.cancelButton = nil
 
     skillDisplay.hexGenerator = nil
@@ -561,25 +624,25 @@ function SkillDisplay:CreateSkillTree(uiLayer)
     local skillDescription = DCEI.NewText(skillDisplayStack)
     DCEI.SetText(skillDescription, "Some description for skills")
     DCEI.SetMaxSize(skillDescription, 350, 200)
-
-    -- Display Cost
-    local skillCostFrame = DCEI.NewHStack(skillDisplayStack)
-    DCEI.SetSpacing(skillCostFrame, 14)
-
-    local costImage = DCEI.NewFrame(skillCostFrame)
-    DCEI.SetBackgroundImage(costImage, "ui_ingame_coin")
-    DCEI.SetMinSize(costImage, 30, 30)
-
-    local costText = DCEI.NewText(skillCostFrame)
-    DCEI.SetText(costText, "20")
-
+    
     -- Unlock Button
+    
     local unlockButton = DCEI.NewButton(rightSideStack)
     DCEI.SetBackgroundImage(unlockButton, "frame_shape00")
     DCEI.SetMinSize(unlockButton, 200, 50)
 
-    local unlockText = DCEI.NewText(unlockButton)
+    local buttonFrame = DCEI.NewHStack(unlockButton)
+    DCEI.SetSpacing(buttonFrame, 14)
+
+    local unlockText = DCEI.NewText(buttonFrame)
     DCEI.SetText(unlockText, "UNLOCK")
+
+    local costImage = DCEI.NewFrame(buttonFrame)
+    DCEI.SetBackgroundImage(costImage, "ui_ingame_coin")
+    DCEI.SetMinSize(costImage, 30, 30)
+
+    local costText = DCEI.NewText(buttonFrame)
+    DCEI.SetText(costText, "20")
 
     -- Cancel Button
     local cancelButton = DCEI.NewButton(rightSideStack)
@@ -595,9 +658,9 @@ function SkillDisplay:CreateSkillTree(uiLayer)
 
     self.skillDescription = skillDescription
     self.skillCost = costText
-    self.skillCostFrame = skillCostFrame
-
+    
     self.unlockButton = unlockButton
+    self.unlockText = unlockText
     self.cancelButton = cancelButton
 
     DCEI.SetActive(rightSideStack, false)
@@ -624,19 +687,46 @@ function SkillDisplay:SkillCallback(skillName)
     local skill = SKILL_TREE[skillName]
     local skillStatus = self.hexGenerator:GetSkillStatus(skillName)
 
-    DCEI.SetText(self.skillName, skill.skillName)
-    DCEI.SetBackgroundImage(self.skillImage, skill.skillImage)
+    if skill[1] ~= nil then
+        local skillLevel = skillStatus.skillLevel
+        local maxSkillLevel = skillStatus.maxSkillLevel
+        
+        DCEI.SetText(self.skillName, skill[skillLevel].skillName)
+        DCEI.SetText(self.skillDescription, skill[skillLevel].skillDescription)
+        DCEI.SetBackgroundImage(self.skillImage, skill[skillLevel].skillImage)
 
-    DCEI.SetText(self.skillDescription, skill.skillDescription)
+        if not skillStatus.isUnlocked then
+            DCEI.SetText(self.skillCost, skill[skillLevel].skillCost)
+            DCEI.SetText(self.unlockText, "UNLOCK")
 
-    if not skillStatus.isUnlocked then
-        DCEI.SetText(self.skillCost, skill.skillCost)
+            DCEI.SetActive(self.unlockButton, true)
 
-        DCEI.SetActive(self.skillCostFrame, true)
-        DCEI.SetActive(self.unlockButton, true)
+        else
+            if skillLevel < maxSkillLevel then
+                DCEI.SetText(self.skillCost, skill[skillLevel + 1].skillCost)
+                DCEI.SetText(self.unlockText, "UPGRADE")
+                
+                DCEI.SetActive(self.unlockButton, true)
+
+            else
+                DCEI.SetActive(self.unlockButton, false)
+            end
+        end
+
     else
-        DCEI.SetActive(self.skillCostFrame, false)
-        DCEI.SetActive(self.unlockButton, false)
+        DCEI.SetText(self.skillName, skill.skillName)
+        DCEI.SetText(self.skillDescription, skill.skillDescription)
+        DCEI.SetBackgroundImage(self.skillImage, skill.skillImage)
+
+        if not skillStatus.isUnlocked then
+            DCEI.SetText(self.skillCost, skill.skillCost)
+            DCEI.SetText(self.unlockText, "UNLOCK")
+
+            DCEI.SetActive(self.unlockButton, true)
+
+        else
+            DCEI.SetActive(self.unlockButton, false)
+        end
     end
 
     self.selectedSkill = skillName
@@ -652,9 +742,38 @@ function SkillDisplay:Hide()
     self.selectedSkill = nil
 end
 function SkillDisplay:HandleUnlockButtonClicked(skillName)
-    self.hexGenerator:UnlockSkill(SKILL_TREE_MATRIX, skillName)
-    self:SkillCallback(skillName) -- Update the UI
+    local goldAmount = self.player:GetPlayerGold()
+    local skillStatus = self.hexGenerator:GetSkillStatus(skillName)
 
+    if skillStatus.isUnlocked then
+        local nextLevelGoldAmount = SKILL_TREE[skillName][skillStatus.skillLevel + 1].skillCost
+        if goldAmount >= nextLevelGoldAmount then
+            self.hexGenerator:UpgradeSkill(skillName)
+            self.player:UseGold(nextLevelGoldAmount)
+
+        else
+            DCEI.LogMessage("Not Enough Gold for Upgrading")
+        end
+
+    else
+        local skillCost
+
+        if skillStatus.maxSkillLevel == 1 then
+            skillCost = SKILL_TREE[skillName].skillCost
+        else
+            skillCost = SKILL_TREE[skillName][1].skillCost
+        end
+
+        if goldAmount >= skillCost then
+            self.hexGenerator:UnlockSkill(SKILL_TREE_MATRIX, skillName)
+            self.player:UseGold(skillCost)
+
+        else
+            DCEI.LogMessage("Not Enough Gold for Unlocking")
+        end
+    end
+
+    self:SkillCallback(skillName) -- Update the UI
     self.hexGenerator:UpdateSkillDisplay()
 end
 
