@@ -275,12 +275,34 @@ end
 
 -- #endregion
 
+-- #region Skill Tree
+
+local SKILL_TREE = "SkillTree"
+
+function mod.SaveSkillTree(stringValue)
+    DCEI.Save.Set(SKILL_TREE, stringValue)
+    DCEI.Save.Commit()
+end
+
+function mod.GetSkillTree()
+    return DCEI.Save.Get(SKILL_TREE)
+end
+
+function mod.ClearSkillTree()
+    DCEI.Save.Set(SKILL_TREE, nil)
+    DCEI.Save.Commit()
+end
+
+-- #endregion Skill Tree
+
+
 function mod.ClearAllData()
     mod.ClearAllMainMapData()
     mod.ClearAllInventoryData()
     mod.ClearItemDrops()
     mod.ClearPlayerData()
     mod.ClearRoomData()
+    mod.ClearSkillTree()
 end
 
 return mod

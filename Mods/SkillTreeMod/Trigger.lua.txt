@@ -200,13 +200,28 @@ function HexGenerator:new(uiLayer, callback)
 
     hexGenerator:GenerateHexMapPositions(SKILL_TREE_MATRIX)
     hexGenerator:DrawUI(uiLayer, SKILL_TREE_MATRIX, callback)
-    hexGenerator:CreateInitialSkillMatrix(SKILL_TREE_MATRIX) -- TODO: Replace with loading data...
+    hexGenerator:Load()
     hexGenerator:UpdateSkillDisplay()
 
     return hexGenerator
 end
-function HexGenerator:LoadSkillTree()
-    -- TODO: Complete this function...
+function HexGenerator:Save()
+    local stringValue = mod.ConvertSkillStatusToString(self.skillStatusMatrix)
+    mod.SaveSkillTree(stringValue)
+end
+function HexGenerator:Load()
+    local stringValue = mod.GetSkillTree()
+
+    if stringValue == nil then
+        self:CreateInitialSkillMatrix(SKILL_TREE_MATRIX)
+
+    else
+        local skillStatusMatrix = mod.ConvertStringToSkillStatus(stringValue)
+        self.skillStatusMatrix = skillStatusMatrix
+    end
+end
+function HexGenerator:Clear()
+    mod.ClearSkillTree()
 end
 function HexGenerator:GenerateHexMapPositions(hexMatrix)
     local currentX = 0
@@ -712,7 +727,7 @@ function SkillDisplay:SkillCallback(skillName)
         else
             if skillLevel < maxSkillLevel then
                 DCEI.SetText(self.skillCost, skill[skillLevel + 1].skillCost)
-                DCEI.SetText(self.skillNextDescription, "Next Level: " .. skill[skillLevel + 1].skillDescription)
+                DCEI.SetText(self.skillNextDescription, "Next Level\n" .. skill[skillLevel + 1].skillDescription)
                 DCEI.SetText(self.unlockText, "UPGRADE")
                 
                 DCEI.SetActive(self.skillNextDescription, true)
@@ -789,8 +804,78 @@ function SkillDisplay:HandleUnlockButtonClicked(skillName)
     self:SkillCallback(skillName) -- Update the UI
     self.hexGenerator:UpdateSkillDisplay()
 end
+function SkillDisplay:SaveSkillTree()
+    self.hexGenerator:Save()
+end
+function SkillDisplay:ClearSkillTree()
+    self.hexGenerator:Clear()
+end
 
 -- #endregion Skill Display
+
+function mod.ConvertSkillStatusToString(skillStatusMatrix)
+    local stringValue = ""
+
+    for i = 1, #skillStatusMatrix do
+        for j = 1, #skillStatusMatrix[i] do
+
+        local skillStatus = skillStatusMatrix[i][j]
+        
+        stringValue = stringValue .. i .. "," .. j .. ","
+        stringValue = stringValue .. skillStatus.skillName .. ","
+        stringValue = stringValue .. skillStatus.skillLevel .. "," .. skillStatus.maxSkillLevel .. ","
+        stringValue = stringValue .. tostring(skillStatus.isUnlocked) .. "," .. tostring(skillStatus.isDisplayed) .. ":"
+
+        end
+
+        stringValue = stringValue .. "|"
+    end
+
+    return stringValue
+end
+
+function mod.ConvertStringToSkillStatus(stringValue)
+    local matrix = {}
+    local rows = mod.split(stringValue, "|")
+
+    for _, value in pairs(rows) do
+        local columns = mod.split(value, ":")
+
+        for _, colValue in pairs(columns) do
+            local data = mod.split(colValue, ",")
+
+            local i = tonumber(data[1])
+            local j = tonumber(data[2])
+
+            if matrix[i] == nil then
+                matrix[i] = {}
+            end
+
+            local skillName = data[3]
+            if skillName == "0" then
+                skillName = 0
+            end
+
+            local skillLevel = tonumber(data[4])
+            local maxSkillLevel = tonumber(data[5])
+            
+            local isUnlocked = mod.ToBoolean(data[6])
+            local isDisplayed = mod.ToBoolean(data[7])
+
+            local skillStatus = {
+                skillName = skillName,
+                skillLevel = skillLevel,
+                maxSkillLevel = maxSkillLevel,
+                isUnlocked = isUnlocked,
+                isDisplayed = isDisplayed
+            }
+
+            matrix[i][j] = skillStatus
+        end
+    end
+
+    return matrix
+end
 
 function mod.IsSideValid(side, width, height)
     if side.x < 1 or side.x > width then
@@ -816,8 +901,14 @@ function mod.GetHexHalfVerticalSpacing(side)
     return mod.GetHexVerticalSpacing(side) / 2
 end
 
-mod.HexGenerator = HexGenerator
 mod.SkillDisplay = SkillDisplay
+
 mod.IsEqual = nil
+mod.split = nil
+mod.ToBoolean = nil
+
+mod.SaveSkillTree = nil
+mod.GetSkillTree = nil
+mod.ClearSkillTree = nil
 
 return mod
