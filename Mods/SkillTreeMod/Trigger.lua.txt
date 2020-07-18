@@ -533,6 +533,8 @@ local SkillDisplay = {
     unlockButton = nil,
     unlockText = nil,
     cancelButton = nil,
+    
+    skillTreeFrame = nil,
 
     hexGenerator = nil,
     player = nil,
@@ -557,6 +559,8 @@ function SkillDisplay:new(uiLayer)
     skillDisplay.unlockText = nil
     skillDisplay.cancelButton = nil
 
+    skillDisplay.skillTreeFrame = nil
+
     skillDisplay.hexGenerator = nil
     skillDisplay.player = nil
 
@@ -568,9 +572,15 @@ function SkillDisplay:new(uiLayer)
     return skillDisplay
 end
 function SkillDisplay:CreateSkillTree(uiLayer)
+    local skillTreeFrame = DCEI.NewFrame(uiLayer)
+    DCEI.SetBackgroundImage(skillTreeFrame, "frame_slot00")
+    DCEI.SetMatchParent(skillTreeFrame, true, true)
+
+    self.skillTreeFrame = skillTreeFrame
+
     -- #region Left Side
 
-    local leftSideStack = DCEI.NewVStack(uiLayer)
+    local leftSideStack = DCEI.NewVStack(skillTreeFrame)
     DCEI.SetLeftAlignmentInParent(leftSideStack)
     DCEI.SetTopAlignmentInParent(leftSideStack)
     DCEI.SetHorizontalOffsetInParent(leftSideStack, 50)
@@ -607,7 +617,7 @@ function SkillDisplay:CreateSkillTree(uiLayer)
 
     -- #region Right Side
 
-    local rightSideStack = DCEI.NewVStack(uiLayer)
+    local rightSideStack = DCEI.NewVStack(skillTreeFrame)
     DCEI.SetRightAlignmentInParent(rightSideStack)
     DCEI.SetTopAlignmentInParent(rightSideStack)
     DCEI.SetHorizontalOffsetInParent(rightSideStack, -50)
@@ -760,12 +770,15 @@ function SkillDisplay:SkillCallback(skillName)
     self.selectedSkill = skillName
 end
 function SkillDisplay:ShowSkillTree(player)
-    self.player = player
     DCEI.SetActive(self.leftSideStack, true)
+    DCEI.SetActive(self.skillTreeFrame, true)
+
+    self.player = player
 end
 function SkillDisplay:Hide()
     DCEI.SetActive(self.leftSideStack, false)
     DCEI.SetActive(self.rightSideStack, false)
+    DCEI.SetActive(self.skillTreeFrame, false)
 
     self.selectedSkill = nil
 end
