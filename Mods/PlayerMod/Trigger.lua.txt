@@ -26,6 +26,9 @@ local PLAYER_MAX_STAMINA = 5
 local PLAYER_STAMINA_REGEN_RATE = 1
 local PLAYER_STAMINA_REGEN_DELAY = 2
 
+local PLAYER_BASE_HEALTH = 150
+local DELAYED_LOAD_TIMER = 0.5
+
 local Player = {
     playerUnit = nil,
     camera = nil,
@@ -47,10 +50,13 @@ local Player = {
     healthBarBackground = nil,
     staminaBarHolder = nil,
 
-    playerGoldAmount = 0
+    playerGoldAmount = 0,
+
+    skillDisplay = nil,
+    delayLoadTimer = 0
 }
 Player.__index = Player
-function Player:new(xPosition, yPosition, playerType, uiRoot)
+function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
     local player = {}
     setmetatable(player, Player)
 
@@ -61,6 +67,12 @@ function Player:new(xPosition, yPosition, playerType, uiRoot)
     else
         playerUnit = DCEI.CreateUnit(1, 1, PLAYER_NAME_RANGED, xPosition, yPosition)
     end
+
+    skillDisplay.hexGenerator:AddCallback(
+        function(skillName)
+            player:HandleSkillCallback(skillName)
+        end
+    )
 
     player.playerUnit = playerUnit
     player.camera = nil
@@ -83,9 +95,11 @@ function Player:new(xPosition, yPosition, playerType, uiRoot)
     player.staminaBarHolder = nil
 
     player.playerGoldAmount = 0
+    
+    player.skillDisplay = skillDisplay
+    player.delayLoadTimer = DELAYED_LOAD_TIMER
 
     player:CreatePlayerUI(uiRoot)
-    player:LoadData()
 
     return player
 end
@@ -122,6 +136,22 @@ end
 function Player:ClearData()
     DCEI.LogMessage("Clearing Player Data")
     mod.ClearPlayerData()
+end
+function Player:HandleSkillCallback(skillName)
+    local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(skillName)
+
+    if not skillStatus.isUnlocked then
+        return
+    end
+
+    DCEI.LogMessage("Player Callback. Skill: " .. skillName)
+
+    if skillName == mod.SkillNames.Robust then
+        local value = mod.GetSkillValue(skillName, skillStatus.skillLevel)
+
+        DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
+        DCEI.LogMessage("Changing Player Max Health")
+    end
 end
 function Player:CreatePlayerUI(uiRoot)
     -- Health Bar
@@ -182,7 +212,19 @@ function Player:HidePlayerUI()
     DCEI.SetActive(self.healthBarBackground, false)
     DCEI.SetActive(self.staminaBarHolder, false)
 end
+function Player:HandleInitialSkillData()
+    self:HandleSkillCallback(mod.SkillNames.Robust)
+end
 function Player:Update(deltaTime)
+    if self.delayLoadTimer > 0 then
+        self.delayLoadTimer = self.delayLoadTimer - deltaTime
+        
+        if self.delayLoadTimer <= 0 then
+            self:HandleInitialSkillData()
+            self:LoadData()
+        end
+    end
+
     self:UpdatePlayerStamina(deltaTime)
     self:UpdatePlayerStaminaUI()
 
@@ -523,6 +565,9 @@ mod.Player = Player
 
 mod.NormalizeUnitRotation = nil
 mod.VectorSubtract = nil
+
+mod.GetSkillValue = nil
+mod.SkillNames = SkillNames
 
 mod.SavePlayerData = nil
 mod.GetPlayerData = nil

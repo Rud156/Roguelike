@@ -72,6 +72,8 @@ local SkillDisplay = SkillTreeMod.SkillDisplay
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
+PlayerMod.GetSkillValue = SkillTreeMod.GetSkillValue
+PlayerMod.SkillNames = SkillTreeMod.SkillNames
 PlayerMod.SavePlayerData = SaveMod.SavePlayerData
 PlayerMod.GetPlayerData = SaveMod.GetPlayerData
 PlayerMod.ClearPlayerData = SaveMod.ClearPlayerData
@@ -94,6 +96,9 @@ local RIGHT = "R"
 local TOP = "T"
 local BOTTOM = "B"
 local LAST_DIRECTION = "LastDirection"
+
+local MERCHANT_MALE = "__SpawnMerchantMaleUnit"
+local MERCHANT_FEMALE = "__SpawnMerchantFemaleUnit"
 
 local DEBUG_UNIT = "__DebugMarkerUnit"
 local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
@@ -606,7 +611,7 @@ function SpawnPlayerAndSetPosition()
         end
     end
 
-    m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot)
+    m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot, m_skillDisplay)
     -- Spawn Player
 
     SpawnItemDrops()
@@ -1147,7 +1152,7 @@ function HandleCharacterSwitch()
         playerType = 1
     end
     
-    m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot)
+    m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot, m_skillDisplay)
     m_player:ShowPlayerUI()
 
     UseMeleePlayer = not UseMeleePlayer

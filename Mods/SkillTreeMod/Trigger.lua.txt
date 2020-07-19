@@ -11,19 +11,22 @@ local SKILL_TREE = {
             skillImage = "icon_catalyst_main_item3_blue_01",
             skillName = "Robust I",
             skillCost = 5,
-            skillDescription = "Increase Dwarf Smith’s max health by 25"
+            skillDescription = "Increase Dwarf Smith’s max health by 25",
+            value = 25
         },
         {
             skillImage = "icon_catalyst_main_item3_blue_02",
             skillName = "Robust II",
             skillCost = 10,
-            skillDescription = "Increase Dwarf Smith’s max health by 50"
+            skillDescription = "Increase Dwarf Smith’s max health by 50",
+            value = 50
         },
         {
             skillImage = "icon_catalyst_main_item3_blue_03",
             skillName = "Robust III",
             skillCost = 15,
-            skillDescription = "Increase Dwarf Smith’s max health by 100"
+            skillDescription = "Increase Dwarf Smith’s max health by 100",
+            value = 100
         }
     },
     Invulnerability = {
@@ -31,25 +34,29 @@ local SKILL_TREE = {
             skillImage = "icon_catalyst_main_item1_blue_01",
             skillName = "Invulnerability I",
             skillCost = 5,
-            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.1"
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.1",
+            value = 0.1
         },
         {
             skillImage = "icon_catalyst_main_item1_blue_02",
             skillName = "Invulnerability II",
             skillCost = 10,
-            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.2"
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.2",
+            value = 0.2
         },
         {
             skillImage = "icon_catalyst_main_item1_blue_03",
             skillName = "Invulnerability I",
             skillCost = 15,
-            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.3"
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.3",
+            value = 0.3
         },
         {
             skillImage = "icon_catalyst_main_item1_blue_04",
             skillName = "Invulnerability IV",
             skillCost = 20,
-            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.4"
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.4",
+            value = 0.4
         }
     },
     Surefooted = {
@@ -57,45 +64,52 @@ local SKILL_TREE = {
             skillImage = "icon_catalyst_main_item4_blue_02",
             skillName = "Surefooted I",
             skillCost = 5,
-            skillDescription = "Decrease the duration of any movement impairing effects by 10%"
+            skillDescription = "Decrease the duration of any movement impairing effects by 10%",
+            value = 0.10
         },
         {
             skillImage = "icon_catalyst_main_item4_blue_03",
             skillName = "Surefooted II",
             skillCost = 10,
-            skillDescription = "Decrease the duration of any movement impairing effects by 20%"
+            skillDescription = "Decrease the duration of any movement impairing effects by 20%",
+            value = 0.20
         },
         {
             skillImage = "icon_catalyst_main_item4_blue_04",
             skillName = "Surefooted III",
             skillCost = 15,
-            skillDescription = "Decrease the duration of any movement impairing effects by 30%"
+            skillDescription = "Decrease the duration of any movement impairing effects by 30%",
+            value = 0.30
         }
     },
     KillerInstinct = {
         skillImage = "icon_enhance_frosttower_shatter",
         skillName = "Killer Instinct",
         skillCost = 20,
-        skillDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%"
+        skillDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%",
+        value = 0.30
     },
     QuickRecovery = {
         {
             skillImage = "icon_catalyst_main_item3_green_01",
             skillName = "Quick Recovery I",
             skillCost = 5,
-            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 15%"
+            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 15%",
+            value = 0.15
         },
         {
             skillImage = "icon_catalyst_main_item3_green_02",
             skillName = "Quick Recovery II",
             skillCost = 10,
-            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 30%"
+            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 30%",
+            value = 0.3
         },
         {
             skillImage = "icon_catalyst_main_item3_green_03",
             skillName = "Quick Recovery III",
             skillCost = 15,
-            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 50%"
+            skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 50%",
+            value = 0.5
         }
     },
     Endurance = {
@@ -103,70 +117,81 @@ local SKILL_TREE = {
             skillImage = "icon_catalyst_main_item1_green_02",
             skillName = "Endurance I",
             skillCost = 5,
-            skillDescription = "Increase Dwarf Smith’s stamina by 1"
+            skillDescription = "Increase Dwarf Smith’s stamina by 1",
+            value = 1
         },
         {
             skillImage = "icon_catalyst_main_item1_green_03",
             skillName = "Endurance II",
             skillCost = 10,
-            skillDescription = "Increase Dwarf Smith’s stamina by 2"
+            skillDescription = "Increase Dwarf Smith’s stamina by 2",
+            value = 2
         },
         {
             skillImage = "icon_catalyst_main_item1_green_04",
             skillName = "Endurance III",
             skillCost = 15,
-            skillDescription = "Increase Dwarf Smith’s stamina by 3"
+            skillDescription = "Increase Dwarf Smith’s stamina by 3",
+            value = 3
         }
     },
     BunnyHop = {
         skillImage = "icon_enhance_druidtower_wilds_shape",
         skillName = "Bunny Hop",
         skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s jump distance by 50%"
+        skillDescription = "Increase Dwarf Smith’s jump distance by 50%",
+        value = 0.5
     },
     ForcefulLanding = {
         skillImage = "icon_enhance_stoneguard_bash",
         skillName = "Forceful Landing",
         skillCost = 20,
-        skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.1 seconds upon landing"
+        skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.1 seconds upon landing",
+        value = 0.1
     },
     WarMachine = {
         {
             skillImage = "icon_catalyst_main_item3_orange_01",
             skillName = "War Machine I",
             skillCost = 5,
-            skillDescription = "Increase Dwarf Smith’s light attack damage by 2"
+            skillDescription = "Increase Dwarf Smith’s light attack damage by 2",
+            value = 2
         },
         {
             skillImage = "icon_catalyst_main_item3_orange_02",
             skillName = "War Machine II",
             skillCost = 10,
-            skillDescription = "Increase Dwarf Smith’s light attack damage by 5"
+            skillDescription = "Increase Dwarf Smith’s light attack damage by 5",
+            value = 5
         },
         {
             skillImage = "icon_catalyst_main_item3_orange_03",
             skillName = "War Machine III",
             skillCost = 15,
-            skillDescription = "Increase Dwarf Smith’s light attack damage by 10"
+            skillDescription = "Increase Dwarf Smith’s light attack damage by 10",
+            value = 10
         }
     },
     Cruelty = {
         skillImage = "icon_enhance_dragoonbarracks_crush",
         skillName = "Cruelty",
         skillCost = 20,
-        skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack"
+        skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack",
+        value = 2
     },
     ConcussionBlow = {
         skillImage = "icon_enhance_crusader_zeal",
         skillName = "Concussion Blow",
         skillCost = 20,
-        skillDescription = "Dwarf Smith’s light attack will now stun normal enemies for 0.1 second"
+        skillDescription = "Dwarf Smith’s light attack will now stun normal enemies for 0.1 second",
+        value = 0.1
     },
     Hero = {
         skillImage = "icon_ingame_hero_tower_smith",
         skillName = "Hero",
         skillCost = 0,
-        skillDescription = "Dwarf Smith Hero"
+        skillDescription = "Dwarf Smith Hero",
+        value = 0
     }
 }
 
@@ -182,12 +207,38 @@ local SKILL_TREE_MATRIX = {
 local CENTER_SKILL = "Hero"
 local NIL_SKILL = 0
 
+local SKILL_NAMES = {
+    Robust = "Robust",
+    Invulnerability = "Invulnerability",
+    Surefooted = "Surefooted",
+    KillerInstinct = "KillerInstinct",
+    Deflection = "Deflection",
+    Redemption = "Redemption",
+    Preplan = "Preplan",
+    QuickRecovery = "QuickRecovery",
+    Endurance = "Endurance",
+    BunnyHop = "BunnyHop",
+    ForcefulLanding = "ForcefulLanding",
+    ImprovedSlam = "ImprovedSlam",
+    Toughness = "Toughness",
+    AdenalineRush = "AdenalineRush",
+    WarMachine = "WarMachine",
+    Strength = "Strength",
+    Cruelty = "Cruelty",
+    LuckyStrike = "LuckyStrike",
+    ConcussionBlow = "ConcussionBlow",
+    HeavyBlow = "HeavyBlow",
+    AgressiveLanding = "AgressiveLanding"
+}
+
 -- #region Hex Generator
 
 local HexGenerator = {
     hexUiMatrix = {},
     hexUiDisplay = {},
-    skillStatusMatrix = {}
+    skillStatusMatrix = {},
+
+    skillCallbacks = {},
 }
 HexGenerator.__index = HexGenerator
 function HexGenerator:new(uiLayer, callback)
@@ -197,6 +248,7 @@ function HexGenerator:new(uiLayer, callback)
     hexGenerator.hexUiMatrix = {}
     hexGenerator.hexUiDisplay = {}
     hexGenerator.skillStatusMatrix = {}
+    hexGenerator.skillCallbacks = {}
 
     hexGenerator:GenerateHexMapPositions(SKILL_TREE_MATRIX)
     hexGenerator:DrawUI(uiLayer, SKILL_TREE_MATRIX, callback)
@@ -222,6 +274,9 @@ function HexGenerator:Load()
 end
 function HexGenerator:Clear()
     mod.ClearSkillTree()
+end
+function HexGenerator:AddCallback(callback)
+    table.insert(self.skillCallbacks, callback)
 end
 function HexGenerator:GenerateHexMapPositions(hexMatrix)
     local currentX = 0
@@ -456,6 +511,10 @@ function HexGenerator:UnlockSkill(hexMatrix, skillName)
             end
         end
     end
+
+    for _, callback in ipairs(self.skillCallbacks) do
+        callback(skillName)
+    end
 end
 function HexGenerator:UpgradeSkill(skillName)
     for i = 1, #self.skillStatusMatrix do
@@ -470,6 +529,10 @@ function HexGenerator:UpgradeSkill(skillName)
 
             end
         end
+    end
+
+    for _, callback in ipairs(self.skillCallbacks) do
+        callback(skillName)
     end
 end
 function HexGenerator:UpdateSkillDisplay()
@@ -774,6 +837,7 @@ function SkillDisplay:ShowSkillTree(player)
     DCEI.SetActive(self.skillTreeFrame, true)
 
     self.player = player
+    self.player:HidePlayerUI()
 end
 function SkillDisplay:Hide()
     DCEI.SetActive(self.leftSideStack, false)
@@ -781,6 +845,10 @@ function SkillDisplay:Hide()
     DCEI.SetActive(self.skillTreeFrame, false)
 
     self.selectedSkill = nil
+    
+    if self.player ~= nil then
+        self.player:ShowPlayerUI()
+    end
 end
 function SkillDisplay:HandleUnlockButtonClicked(skillName)
     local goldAmount = self.player:GetPlayerGold()
@@ -825,6 +893,22 @@ function SkillDisplay:ClearSkillTree()
 end
 
 -- #endregion Skill Display
+
+function mod.GetSkillValue(skillName, skillLevel)
+    local skill = SKILL_TREE[skillName]
+    
+    if skill == nil then
+        DCEI.LogError("Invalid Skill Requested")
+        return nil
+    end
+
+    if skill[1] == nil then
+        return skill.value
+
+    else
+        return skill[skillLevel].value
+    end
+end
 
 function mod.ConvertSkillStatusToString(skillStatusMatrix)
     local stringValue = ""
@@ -915,6 +999,7 @@ function mod.GetHexHalfVerticalSpacing(side)
 end
 
 mod.SkillDisplay = SkillDisplay
+mod.SkillNames = SKILL_NAMES
 
 mod.IsEqual = nil
 mod.split = nil
