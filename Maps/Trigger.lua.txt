@@ -1107,14 +1107,17 @@ function CreateDebugUI()
     DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
     DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
 
-    local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
-    DCEI.SetMinSize(skillTreeButton, 50, 50)
-    DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
-    DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
-    DCEI.SetLeftAlignmentInParent(skillTreeButton)
-    DCEI.SetTopAlignmentInParent(skillTreeButton)
-    DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
-    DCEI.SetVerticalOffsetInParent(skillTreeButton, -100)
+    local roomType = SaveMod.GetRoomName()
+    if roomType == nil then
+        local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
+        DCEI.SetMinSize(skillTreeButton, 50, 50)
+        DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
+        DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
+        DCEI.SetLeftAlignmentInParent(skillTreeButton)
+        DCEI.SetTopAlignmentInParent(skillTreeButton)
+        DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
+        DCEI.SetVerticalOffsetInParent(skillTreeButton, -100)
+    end
 end
 
 function UpdatePlayerDamageUI(deltaTime)

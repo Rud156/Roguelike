@@ -150,6 +150,7 @@ function Player:HandleSkillCallback(skillName)
         local value = mod.GetSkillValue(skillName, skillStatus.skillLevel)
 
         DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
+        DCEI.SetHealthValue(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.LogMessage("Changing Player Max Health")
     end
 end
@@ -213,7 +214,12 @@ function Player:HidePlayerUI()
     DCEI.SetActive(self.staminaBarHolder, false)
 end
 function Player:HandleInitialSkillData()
-    self:HandleSkillCallback(mod.SkillNames.Robust)
+    local healthSkillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Robust)
+
+    if healthSkillStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.Robust, healthSkillStatus.skillLevel)
+        DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
+    end
 end
 function Player:Update(deltaTime)
     if self.delayLoadTimer > 0 then
@@ -223,6 +229,10 @@ function Player:Update(deltaTime)
             self:HandleInitialSkillData()
             self:LoadData()
         end
+
+    else
+        -- This is done as the value is otherwise updated in Save Data
+        self.lastFramePlayerHealth = DCEI.GetHealthValue(self.playerUnit)
     end
 
     self:UpdatePlayerStamina(deltaTime)
@@ -240,7 +250,7 @@ function Player:Update(deltaTime)
         end
     end
 
-    self.lastFramePlayerHealth = DCEI.GetHealthValue(self.playerUnit)
+    -- self.lastFramePlayerHealth = DCEI.GetHealthValue(self.playerUnit)
 end
 function Player:UpdatePlayerStamina(deltaTime)
     if self.playerStaminaRegenTimer <= 0 and self.playerStaminaAmount < PLAYER_MAX_STAMINA then
