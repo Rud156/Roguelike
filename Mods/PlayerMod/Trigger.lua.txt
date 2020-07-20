@@ -34,7 +34,7 @@ local DELAYED_LOAD_TIMER = 0.5
 
 local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
 
-local PLAYER_DEFLECTION_DISTANCE = 5
+local PLAYER_DEFLECTION_DISTANCE = 0.8
 
 local Player = {
     playerUnit = nil,
