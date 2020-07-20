@@ -176,8 +176,6 @@ function Player:HandleSkillCallback(skillName)
         DCEI.SetHealthValue(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.LogMessage("Changing Player Max Health")
         
-    elseif skillName == mod.SkillNames.Surefooted then
-        
     end
 end
 function Player:CreatePlayerUI(uiRoot)
