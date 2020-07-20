@@ -31,7 +31,7 @@ local PLAYER_STAMINA_REGEN_RATE = 1
 local PLAYER_STAMINA_REGEN_DELAY = 2
 
 local PLAYER_BASE_HEALTH = 150
-local DELAYED_LOAD_TIMER = 0.5
+local DELAYED_LOAD_TIMER = 0.1
 
 local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
 
@@ -148,7 +148,7 @@ function Player:LoadData()
     local playerGoldAmount = playerData.gold
     local playerMaxStamina = playerData.maxStamina
 
-    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil or maxStamina == nil then
+    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil or playerMaxStamina == nil then
         return
     end
 
