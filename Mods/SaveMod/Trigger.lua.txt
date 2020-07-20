@@ -83,22 +83,27 @@ local PLAYER_HEALTH = "PlayerHealth"
 local PLAYER_STAMINA_AMOUNT = "PlayerStaminaAmount"
 local PLAYER_STAMINA_TIMER = "PlayerStaminaTimer"
 local PLAYER_GOLD = "PlayerGold"
+local PLAYER_MAX_STAMINA = "PlayerMaxStamina"
 
-function mod.SavePlayerData(health, staminaAmount, staminaTimer, gold)
-    DCEI.Save.Set(PLAYER_HEALTH, health)
-    DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, staminaAmount)
-    DCEI.Save.Set(PLAYER_STAMINA_TIMER, staminaTimer)
-    DCEI.Save.Set(PLAYER_GOLD, gold)
+function mod.SavePlayerData(playerData)
+    DCEI.Save.Set(PLAYER_HEALTH, playerData.health)
+    DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, playerData.staminaAmount)
+    DCEI.Save.Set(PLAYER_STAMINA_TIMER, playerData.staminaTimer)
+    DCEI.Save.Set(PLAYER_GOLD, playerData.gold)
+    DCEI.Save.Set(PLAYER_MAX_STAMINA, playerData.maxStamina)
     DCEI.Save.Commit()
 end
 
 function mod.GetPlayerData()
-    local health = DCEI.Save.Get(PLAYER_HEALTH)
-    local staminaAmount = DCEI.Save.Get(PLAYER_STAMINA_AMOUNT)
-    local staminaTimer = DCEI.Save.Get(PLAYER_STAMINA_TIMER)
-    local gold = DCEI.Save.Get(PLAYER_GOLD)
+    local playerData = {}
 
-    return health, staminaAmount, staminaTimer, gold
+    playerData.health = DCEI.Save.Get(PLAYER_HEALTH)
+    playerData.staminaAmount = DCEI.Save.Get(PLAYER_STAMINA_AMOUNT)
+    playerData.staminaTimer = DCEI.Save.Get(PLAYER_STAMINA_TIMER)
+    playerData.gold = DCEI.Save.Get(PLAYER_GOLD)
+    playerData.maxStamina = DCEI.Save.Get(PLAYER_MAX_STAMINA)
+
+    return playerData
 end
 
 function mod.ClearPlayerData()
@@ -106,6 +111,7 @@ function mod.ClearPlayerData()
     DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, nil)
     DCEI.Save.Set(PLAYER_STAMINA_TIMER, nil)
     DCEI.Save.Set(PLAYER_GOLD, nil)
+    DCEI.Save.Set(PLAYER_MAX_STAMINA, nil)
     DCEI.Save.Commit()
 end
 

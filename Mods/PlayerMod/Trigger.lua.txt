@@ -25,7 +25,8 @@ local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 local PLAYER_SLOW_BEHAVIOUR = "_Enemy_Ooze_Slow"
 local SLOWDOWN_BASE_TIMER = 4
 
-local PLAYER_MAX_STAMINA = 5
+local PLAYER_MAX_STAMINA = 6
+local PLAYER_INITIAL_MAX_STAMINA = 3
 local PLAYER_STAMINA_REGEN_RATE = 1
 local PLAYER_STAMINA_REGEN_DELAY = 2
 
@@ -53,6 +54,7 @@ local Player = {
     playerStaminaList = {},
     playerStaminaAmount = 0,
     playerStaminaRegenTimer = 0,
+    playerMaxStamina = 3, -- Initial Start Value. It will increase with upgrade...
 
     healthBarBackground = nil,
     staminaBarHolder = nil,
@@ -100,8 +102,9 @@ function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
     player.lastFramePlayerHealth = DCEI.GetHealthValue(playerUnit)
 
     player.playerStaminaList = {}
-    player.playerStaminaAmount = PLAYER_MAX_STAMINA
+    player.playerStaminaAmount = PLAYER_INITIAL_MAX_STAMINA
     player.playerStaminaRegenTimer = 0
+    player.playerMaxStamina = PLAYER_INITIAL_MAX_STAMINA
 
     player.healthBarBackground = nil
     player.staminaBarHolder = nil
@@ -124,19 +127,28 @@ function Player:SaveData()
     DCEI.LogMessage("Saving Player Data")
 
     local playerHealth = DCEI.GetHealthValue(self.playerUnit)
-    mod.SavePlayerData(
-        playerHealth,
-        self.playerStaminaAmount,
-        self.playerStaminaRegenTimer,
-        self.playerGoldAmount
-    )
+    
+    local playerData = {
+        health = playerHealth,
+        staminaAmount = self.playerStaminaAmount,
+        staminaTimer = self.playerStaminaRegenTimer,
+        gold = self.playerGoldAmount,
+        maxStamina = self.playerMaxStamina
+    }
+    mod.SavePlayerData(playerData)
 end
 function Player:LoadData()
     DCEI.LogMessage("Getting Player Data")
 
-    local playerHealth, playerStaminaAmount, playerStaminaRegenTimer, playerGoldAmount = mod.GetPlayerData()
+    local playerData = mod.GetPlayerData()
 
-    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil then
+    local playerHealth = playerData.health
+    local playerStaminaAmount = playerData.staminaAmount
+    local playerStaminaRegenTimer = playerData.staminaTimer
+    local playerGoldAmount = playerData.gold
+    local playerMaxStamina = playerData.maxStamina
+
+    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil or maxStamina == nil then
         return
     end
 
@@ -149,6 +161,7 @@ function Player:LoadData()
     self.playerStaminaRegenTimer = playerStaminaRegenTimer
 
     self.playerGoldAmount = playerGoldAmount
+    self.playerMaxStamina = playerMaxStamina
 end
 function Player:ClearData()
     DCEI.LogMessage("Clearing Player Data")
@@ -183,7 +196,11 @@ function Player:HandleSkillCallback(skillName)
         DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.SetHealthValue(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.LogMessage("Changing Player Max Health")
-        
+
+    elseif skillName == mod.SkillNames.Endurance then -- Endurance
+        local totalStamina = PLAYER_INITIAL_MAX_STAMINA + value
+        self.playerMaxStamina = totalStamina
+        self:HandleStaminaRegenStart()
     end
 end
 function Player:CreatePlayerUI(uiRoot)
@@ -317,11 +334,11 @@ function Player:CheckAndUpdateKillerInstinct() -- Killer Instinct
     end
 end
 function Player:UpdatePlayerStamina(deltaTime)
-    if self.playerStaminaRegenTimer <= 0 and self.playerStaminaAmount < PLAYER_MAX_STAMINA then
+    if self.playerStaminaRegenTimer <= 0 and self.playerStaminaAmount < self.playerMaxStamina then
         self.playerStaminaAmount = self.playerStaminaAmount + deltaTime * PLAYER_STAMINA_REGEN_RATE
 
-        if self.playerStaminaAmount > PLAYER_MAX_STAMINA then
-            self.playerStaminaAmount = PLAYER_MAX_STAMINA
+        if self.playerStaminaAmount > self.playerMaxStamina then
+            self.playerStaminaAmount = self.playerMaxStamina
         end
     end
     if self.playerStaminaRegenTimer > 0 then
@@ -334,7 +351,7 @@ function Player:UpdatePlayerStaminaUI()
     end
 
     local currentStamina = self.playerStaminaAmount
-    if currentStamina > PLAYER_MAX_STAMINA then
+    if currentStamina > self.playerMaxStamina then
         DCEI.LogError("Invalid Stamina Amount")
         return
     end
@@ -360,6 +377,18 @@ function Player:LookTowardsEnemy(enemy)
         local angle = math.deg(math.atan(direction.x, direction.y))
 
         DCEI.SetUnitRotationEuler(self.playerUnit, 0, angle, 0)
+    end
+end
+function Player:HandleStaminaRegenStart()
+    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+
+    -- Quick Recovery
+    local quickRecovStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.QuickRecovery)
+    if quickRecovStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.QuickRecovery, quickRecovStatus.skillLevel)
+
+        local decreaseRate = self.playerStaminaRegenTimer * value
+        self.playerStaminaRegenTimer = self.playerStaminaRegenTimer - decreaseRate
     end
 end
 function Player:HandleJoystickMoved(axes)
@@ -486,7 +515,7 @@ function Player:LaunchPlayerMeleeHeavyAttack(enemy)
     end
 
     self.playerStaminaAmount = self.playerStaminaAmount - PLAYER_MELEE_HEAVY_ATTACK_STAMINA
-    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+    self:HandleStaminaRegenStart()
 
     local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
     DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, self.playerUnit, playerPosition.x, playerPosition.y)
@@ -525,7 +554,7 @@ function Player:LaunchPlayerRangedHeavyAttack(enemy)
     end
 
     self.playerStaminaAmount = self.playerStaminaAmount - PLAYER_RANGED_HEAVY_ATTACK_STAMINA
-    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+    self:HandleStaminaRegenStart()
 
     if enemy ~= nil then
         local enemyPosition = DCEI.GetUnitPosition2D(enemy)
@@ -572,13 +601,22 @@ function Player:MakePlayerDash()
 
     local updatedStamina = playerStamina - PLAYER_DASH_STAMINA
     self.playerStaminaAmount = updatedStamina
-    self.playerStaminaRegenTimer = PLAYER_STAMINA_REGEN_DELAY
+    self:HandleStaminaRegenStart()
+
+    local dashRange = PLAYER_DASH_RANGE
+
+    -- Bunny Hop
+    local bunnyHopStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.BunnyHop)
+    if bunnyHopStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.BunnyHop, bunnyHopStatus.skillLevel)
+        dashRange = dashRange + dashRange * value
+    end
 
     local playerRotation = DCEI.GetUnitRotationEuler(self.playerUnit)
     local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
     local yRotation = mod.NormalizeUnitRotation(playerRotation)
-    local xPoint = math.sin(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.x
-    local yPoint = math.cos(math.rad(yRotation)) * PLAYER_DASH_RANGE + playerPosition.y
+    local xPoint = math.sin(math.rad(yRotation)) * dashRange + playerPosition.x
+    local yPoint = math.cos(math.rad(yRotation)) * dashRange + playerPosition.y
 
     DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
 
