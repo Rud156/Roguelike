@@ -1262,12 +1262,13 @@ end
 
 local RoomEnemies = {
     roomGenerator = nil,
+    skillDisplay = nil,
 
     enemies = {},
     direction = nil
 }
 RoomEnemies.__index = RoomEnemies
-function RoomEnemies:new(player, roomGenerator, roomLevel, spawnBoss)
+function RoomEnemies:new(player, roomGenerator, skillDisplay, roomLevel, spawnBoss)
     spawnBoss = spawnBoss or false
 
     local roomEnemies = {}
@@ -1287,6 +1288,7 @@ function RoomEnemies:new(player, roomGenerator, roomLevel, spawnBoss)
     end
 
     roomEnemies.roomGenerator = roomGenerator
+    roomEnemies.skillDisplay = skillDisplay
     roomEnemies.enemies = {}
     roomEnemies.direction = direction
 

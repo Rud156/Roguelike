@@ -746,7 +746,15 @@ function Ooze:UpdateAttackAnimTimer(deltaTime)
             self.currentTimer = OOZE_IDLING_TIME
             self:SetEnemyState(4)
         else
-            self.currentTimer = OOZE_ATTACK_TIME
+            local additionalTimer = 0
+            local skillStatus = self.room.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Surefooted)
+            
+            if skillStatus.isUnlocked then
+                local value = mod.GetSkillValue(mod.SkillNames.Surefooted, skillStatus.skillLevel)
+                additionalTimer = value
+            end
+
+            self.currentTimer = OOZE_ATTACK_TIME - OOZE_ATTACK_TIME * additionalTimer
             self:SetEnemyState(3)
         end
     end
@@ -1198,5 +1206,8 @@ mod.NormalizeUnitRotation = nil
 mod.ShuffleTable = nil
 
 mod.WalkableTextureId = nil
+
+mod.GetSkillValue = nil
+mod.SkillNames = nil
 
 return mod
