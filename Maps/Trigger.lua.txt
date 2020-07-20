@@ -437,7 +437,9 @@ function HandleUnitDied()
 
             -- Redemption
             local redemptionSKillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Redemption)
-            if redemptionSKillStatus.isUnlocked then
+            local playerInvincibleCount = DCEI.UnitBehaviorStackCount(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
+
+            if redemptionSKillStatus.isUnlocked and playerInvincibleCount >= 1 then
                 local maxHealth = DCEI.GetMaxHealth(m_player:GetPlayerUnit())
                 local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Redemption, redemptionSKillStatus.skillLevel)
                 local healthIncrease = maxHealth * value
@@ -587,6 +589,7 @@ function SpawnPlayerAndSetPosition()
         DCEI.LogMessage("Beginning Room. Generating Rooms")
 
         m_roomGenerator = RoomGenerator:new(m_randomSeed, m_roomLevel)
+        SkillUnlockedCallback(SkillTreeMod.SkillNames.Preplan)
         m_isBeginningRoom = true
     else
         DCEI.LogMessage("Loading Old Room Data")
@@ -887,6 +890,8 @@ function UpdateCollisionWithExitDoor()
         m_randomSeed = randomSeed
         
         m_roomGenerator = RoomGenerator:new(randomSeed, m_roomLevel)
+        SkillUnlockedCallback(SkillTreeMod.SkillNames.Preplan)
+        m_roomGenerator:SaveRoomStructure()
         
         local roomName = m_roomGenerator:GetRoomFromPlayerPosition()
         local roomPath = RoomMod.GetRoomPath(roomName)
