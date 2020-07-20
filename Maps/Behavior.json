@@ -75,7 +75,7 @@
         },
         "_Enemy_Ooze_Slow": {
             "maxStackCount": 1,
-            "duration": 3,
+            "duration": 0,
             "modifiers": {
                 "flags": {
                     "suppressMovement": false

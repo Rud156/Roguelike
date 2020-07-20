@@ -55,8 +55,8 @@ local SKILL_TREE = {
             skillImage = "icon_catalyst_main_item1_blue_04",
             skillName = "Invulnerability IV",
             skillCost = 20,
-            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.4",
-            value = 0.4
+            skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.5",
+            value = 0.5
         }
     },
     Surefooted = {
@@ -305,7 +305,6 @@ function HexGenerator:GenerateHexMapPositions(hexMatrix)
                 currentX = tempData.x
                 currentY = tempData.y
             end
-
 
             if mod.IsSideValid(lSide, #hexMatrix[i], #hexMatrix) then
                 local xPosition = -mod.GetHexHorizontalSpacing(HEX_SIDE) + currentX
@@ -838,6 +837,7 @@ function SkillDisplay:ShowSkillTree(player)
 
     self.player = player
     self.player:HidePlayerUI()
+    DCEI.HideJoystick(0)
 end
 function SkillDisplay:Hide()
     DCEI.SetActive(self.leftSideStack, false)
@@ -849,6 +849,7 @@ function SkillDisplay:Hide()
     if self.player ~= nil then
         self.player:ShowPlayerUI()
     end
+    DCEI.ShowJoystick(0)
 end
 function SkillDisplay:HandleUnlockButtonClicked(skillName)
     local goldAmount = self.player:GetPlayerGold()

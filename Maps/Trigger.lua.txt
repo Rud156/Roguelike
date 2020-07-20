@@ -524,6 +524,11 @@ function HandleBehaviourAdded()
                 m_inventory:ActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName, COLLECTIBLE_HELM_OF_VALOR_TIMER)
             end
         end
+
+    else
+        if m_player ~= nil then
+            m_player:HandleBehaviourAdded(behaviourName)
+        end
     end
 end
 
@@ -1021,11 +1026,20 @@ function UpdatePlayerHealth(deltaTime)
     local playerHealth = DCEI.GetHealthValue(m_player:GetPlayerUnit())
     local lastFramePlayerHealth = m_player:GetPlayerLastFrameHealth()
 
+    local invincibilityTimer = PlayerInvincibleTimer
+    local skillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Invulnerability)
+
+    if skillStatus.isUnlocked then
+        local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Invulnerability, skillStatus.skillLevel)
+        invincibilityTimer = invincibilityTimer + value
+    end
+
     if lastFramePlayerHealth > playerHealth then
         m_camera:StartShakeWithUnit(1, 0)
         DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
 
-        m_playerInvincibilityTimer = PlayerInvincibleTimer
+        DCEI.LogMessage("Timer: " .. invincibilityTimer)
+        m_playerInvincibilityTimer = invincibilityTimer
         m_playerDamageUiFlashCount = PlayerDamageFlashCount
         m_playerDamageUiIsFlashOn = false
     end

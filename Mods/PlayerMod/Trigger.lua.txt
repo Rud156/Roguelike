@@ -22,6 +22,9 @@ local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
 local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
 
+local PLAYER_SLOW_BEHAVIOUR = "_Enemy_Ooze_Slow"
+local SLOWDOWN_BASE_TIMER = 3
+
 local PLAYER_MAX_STAMINA = 5
 local PLAYER_STAMINA_REGEN_RATE = 1
 local PLAYER_STAMINA_REGEN_DELAY = 2
@@ -53,7 +56,10 @@ local Player = {
     playerGoldAmount = 0,
 
     skillDisplay = nil,
-    delayLoadTimer = 0
+    delayLoadTimer = 0,
+
+    behaviourName = nil,
+    effectsTimer = 0
 }
 Player.__index = Player
 function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
@@ -99,6 +105,9 @@ function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
     player.skillDisplay = skillDisplay
     player.delayLoadTimer = DELAYED_LOAD_TIMER
 
+    player.behaviourName = nil
+    player.effectsTimer = 0
+
     player:CreatePlayerUI(uiRoot)
 
     return player
@@ -137,21 +146,38 @@ function Player:ClearData()
     DCEI.LogMessage("Clearing Player Data")
     mod.ClearPlayerData()
 end
+function Player:HandleBehaviourAdded(behaviourName)
+    if behaviourName == PLAYER_SLOW_BEHAVIOUR then
+        self.behaviourName = behaviourName
+        self.effectsTimer = SLOWDOWN_BASE_TIMER
+
+        local additionalTimer = 0
+        local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Surefooted)
+        
+        if skillStatus.isUnlocked then
+            local value = mod.GetSkillValue(mod.SkillNames.Surefooted, skillStatus.skillLevel)
+            additionalTimer = value
+
+            self.effectsTimer = self.effectsTimer - self.effectsTimer * additionalTimer
+        end
+    end
+end
 function Player:HandleSkillCallback(skillName)
     local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(skillName)
-
     if not skillStatus.isUnlocked then
         return
     end
 
     DCEI.LogMessage("Player Callback. Skill: " .. skillName)
 
+    local value = mod.GetSkillValue(skillName, skillStatus.skillLevel)
     if skillName == mod.SkillNames.Robust then
-        local value = mod.GetSkillValue(skillName, skillStatus.skillLevel)
-
         DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.SetHealthValue(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.LogMessage("Changing Player Max Health")
+        
+    elseif skillName == mod.SkillNames.Surefooted then
+        
     end
 end
 function Player:CreatePlayerUI(uiRoot)
@@ -250,7 +276,14 @@ function Player:Update(deltaTime)
         end
     end
 
-    -- self.lastFramePlayerHealth = DCEI.GetHealthValue(self.playerUnit)
+    if self.effectsTimer > 0 then
+        self.effectsTimer = self.effectsTimer - deltaTime
+
+        if self.effectsTimer <= 0 then
+            DCEI.RemoveBehavior(self.playerUnit, self.behaviourName)
+            self.behaviourName = nil
+        end
+    end
 end
 function Player:UpdatePlayerStamina(deltaTime)
     if self.playerStaminaRegenTimer <= 0 and self.playerStaminaAmount < PLAYER_MAX_STAMINA then
