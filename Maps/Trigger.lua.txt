@@ -232,6 +232,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CreateCollectiblesUI()
 
     m_skillDisplay = SkillDisplay:new(m_uiTopLayer)
+    m_skillDisplay.hexGenerator:AddCallback(SkillUnlockedCallback)
 
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())
@@ -433,6 +434,17 @@ function HandleUnitDied()
         local goldAmount = m_roomEnemies:RemoveDeadEnemy(unit)
         if goldAmount ~= -1 then
             m_player:AddGold(goldAmount)
+
+            -- Redemption
+            local redemptionSKillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Redemption)
+            if redemptionSKillStatus.isUnlocked then
+                local maxHealth = DCEI.GetMaxHealth(m_player:GetPlayerUnit())
+                local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Redemption, redemptionSKillStatus.skillLevel)
+                local healthIncrease = maxHealth * value
+
+                DCEI.AddHealth(m_player:GetPlayerUnit(), healthIncrease)
+            end
+
         end
     end
 end
@@ -974,12 +986,12 @@ function SaveNextRoomData()
         end
 
         SaveMod.SaveMainMapLastDirection(direction)
-        m_roomGenerator:SaveRoomStructure()
     else
         SaveMod.SaveMainMapLastDirection(nil)
     end
 
     -- Only Save when going into the new room
+    m_roomGenerator:SaveRoomStructure()
     m_roomItemDrops:SaveData()
     m_inventory:SaveInventory() 
     m_player:SaveData()
@@ -1028,6 +1040,7 @@ function UpdatePlayerHealth(deltaTime)
     local playerHealth = DCEI.GetHealthValue(m_player:GetPlayerUnit())
     local lastFramePlayerHealth = m_player:GetPlayerLastFrameHealth()
 
+    -- Invulnerability
     local invincibilityTimer = PlayerInvincibleTimer
     local skillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Invulnerability)
 
@@ -1040,10 +1053,30 @@ function UpdatePlayerHealth(deltaTime)
         m_camera:StartShakeWithUnit(1, 0)
         DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
 
-        DCEI.LogMessage("Timer: " .. invincibilityTimer)
         m_playerInvincibilityTimer = invincibilityTimer
         m_playerDamageUiFlashCount = PlayerDamageFlashCount
         m_playerDamageUiIsFlashOn = false
+
+        -- Deflection
+        local deflectionSkill = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Deflection)
+        if deflectionSkill.isUnlocked and m_roomEnemies ~= nil then
+            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Deflection, deflectionSkill.skillLevel)
+            local roomEnemies = m_roomEnemies:GetRoomEnemies()
+            local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+            local damageAmount = (lastFramePlayerHealth - playerHealth) * value
+            
+            for _, enemy in ipairs(roomEnemies) do
+                local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
+                local distanceFromPlayer = ExtensionFunction.VectorDistance(position, playerPosition)
+                local invincibleStack = DCEI.UnitBehaviorStackCount(enemy:GetMainUnit(), EnemyMod.EnemyInvincible)
+
+                if invincibleStack < 1 and distanceFromPlayer <= PlayerMod.PlayerDeflectionDistance then
+                    ArcadeCore.DamageUnit(enemy:GetMainUnit(), damageAmount)
+                    DCEI.ApplyBehaviorWithDuration(enemy:GetMainUnit(), EnemyMod.EnemyFlashBehviour, EnemyMod.EnemyFlashDuration, false)
+                end
+            end
+        end
+
     end
 
     if m_playerInvincibilityTimer > 0 then
@@ -1398,9 +1431,32 @@ end
 
 -- #endregion Inventory Functions
 
+-- #region Skill Tree Functions
+
+function SkillUnlockedCallback(skillName)
+    local skillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(skillName)
+    if not skillStatus.isUnlocked then
+        return
+    end
+
+    DCEI.LogMessage("Main Callback. Skill: " .. skillName)
+    local value = SkillTreeMod.GetSkillValue(skillName, skillStatus.skillLevel)
+
+    if skillName == SkillTreeMod.SkillNames.Preplan then
+        local exitRoomRow = m_roomGenerator.exitRoomRow
+        local exitRoomColumn = m_roomGenerator.exitRoomColumn
+
+        m_roomGenerator:MarkRoomAtPositionVisited(exitRoomRow, exitRoomColumn)
+        m_roomGenerator:PrintRoomVisitedMatrix()
+        DCEI.LogMessage("Exit Room Unlocked")
+    end
+end
+
+-- #endregion Skill Tree Functions
+
 -- #endregion Utility Fuctions
 
--- This function shuold be run before Start...
+-- This function should be run before Start...
 function mod.ActivateMerchantRooms()
     local spawnUnits = DCEI.FindUnits(SPAWN_MARKER_UNIT)
     local row = m_roomGenerator.currentPlayerRow

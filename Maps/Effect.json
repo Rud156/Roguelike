@@ -136,6 +136,11 @@
                         "namedExpression": {
                             "name": "DamageResistance"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_KillerInstinct"
+                        }
                     }
                 ]
             }
@@ -154,6 +159,11 @@
                         "namedExpression": {
                             "name": "_PlayerCharacter_Hammer_Of_Attack"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_KillerInstinct"
+                        }
                     }
                 ]
             }
@@ -166,6 +176,11 @@
                     {
                         "namedExpression": {
                             "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_KillerInstinct"
                         }
                     }
                 ]
@@ -184,6 +199,11 @@
                     {
                         "namedExpression": {
                             "name": "_PlayerCharacter_Hammer_Of_Attack"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_KillerInstinct"
                         }
                     }
                 ]

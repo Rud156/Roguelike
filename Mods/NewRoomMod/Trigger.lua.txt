@@ -92,7 +92,6 @@ local LEVEL_1_ENEMY_SETS = {
     { 2, 2, 2, 2 },
     { 0, 0, 0 },
     { 3, 0, 0 },
-    -- { 4, 4, 4 },
 }
 
 local LEVEL_2_ENEMY_SETS = {
@@ -185,6 +184,7 @@ function RoomGenerator:new(randomSeed, roomLevel)
     roomGenerator:GenerateRoomBase(roomLevel)
     roomGenerator:SaveRoomStructure()
     roomGenerator:PrintRooms()
+    roomGenerator:PrintRoomVisitedMatrix()
     roomGenerator:PrintSpawnAndExit()
 
     return roomGenerator
@@ -275,6 +275,9 @@ function RoomGenerator:MarkRoomAtPlayerPositionVisited()
 end
 function RoomGenerator:GetRoomFromPlayerPosition()
     return self.roomMatrix[self.currentPlayerRow][self.currentPlayerColumn]
+end
+function RoomGenerator:MarkRoomAtPositionVisited(row, column)
+    self.roomVisitedMatrix[row][column] = true
 end
 function RoomGenerator:GenerateRoomBase(roomLevel)
     local spawnRoomRow = 100
@@ -1168,6 +1171,25 @@ function RoomGenerator:PrintRoomCounters()
             if self.roomMatrixCounter[i] ~= nil then
                 if self.roomMatrixCounter[i][j] ~= nil then
                     stringValue = stringValue .. self.roomMatrixCounter[i][j] .. " "
+                else
+                    stringValue = stringValue .. "*** "
+                end
+            end
+        end
+
+        DCEI.LogMessage(stringValue)
+    end
+end
+function RoomGenerator:PrintRoomVisitedMatrix()
+    DCEI.LogMessage("Printing Room Visited Matrix")
+
+    for i = self.minRow, self.maxRow do
+        local stringValue = ""
+
+        for j = self.minColumn, self.maxColumn do
+            if self.roomMatrixCounter[i] ~= nil then
+                if self.roomMatrixCounter[i][j] ~= nil then
+                    stringValue = stringValue .. tostring(self.roomVisitedMatrix[i][j]) .. " "
                 else
                     stringValue = stringValue .. "*** "
                 end

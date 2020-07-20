@@ -103,6 +103,32 @@
                     }
                 ]
             }
+        },
+        "_PlayerCharacter_KillerInstinct": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "tagName": "gt_killer_instinct"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": 0.5
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     }
 }

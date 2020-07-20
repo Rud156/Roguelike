@@ -105,7 +105,9 @@
             "_Enemy_GoblinMiner_Drill_End",
             "_DungeonDoorway_Open",
             "_Enemy_GoblinMiner_Leap_Start",
-            "_Enemy_GoblinMiner_Leap_End"
+            "_Enemy_GoblinMiner_Leap_End",
+            "_PlayerCharacter_KillerInstinct",
+            "_Enemy_Damage_Taken"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"

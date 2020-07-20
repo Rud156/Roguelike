@@ -180,6 +180,15 @@
                     "count": 1
                 }
             ]
+        },
+        "_PlayerCharacter_KillerInstinct": {
+            "maxStackCount": 1,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_killer_instinct",
+                    "count": 1
+                }
+            ]
         }
     }
 }

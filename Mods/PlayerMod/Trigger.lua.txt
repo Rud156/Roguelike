@@ -32,6 +32,10 @@ local PLAYER_STAMINA_REGEN_DELAY = 2
 local PLAYER_BASE_HEALTH = 150
 local DELAYED_LOAD_TIMER = 0.5
 
+local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
+
+local PLAYER_DEFLECTION_DISTANCE = 5
+
 local Player = {
     playerUnit = nil,
     camera = nil,
@@ -59,7 +63,9 @@ local Player = {
     delayLoadTimer = 0,
 
     behaviourName = nil,
-    effectsTimer = 0
+    effectsTimer = 0,
+
+    killerInstinctActive = false
 }
 Player.__index = Player
 function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
@@ -108,6 +114,8 @@ function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
     player.behaviourName = nil
     player.effectsTimer = 0
 
+    player.killerInstinctActive = false
+
     player:CreatePlayerUI(uiRoot)
 
     return player
@@ -147,7 +155,7 @@ function Player:ClearData()
     mod.ClearPlayerData()
 end
 function Player:HandleBehaviourAdded(behaviourName)
-    if behaviourName == PLAYER_SLOW_BEHAVIOUR then
+    if behaviourName == PLAYER_SLOW_BEHAVIOUR then -- Surefooted
         self.behaviourName = behaviourName
         self.effectsTimer = SLOWDOWN_BASE_TIMER
 
@@ -169,9 +177,9 @@ function Player:HandleSkillCallback(skillName)
     end
 
     DCEI.LogMessage("Player Callback. Skill: " .. skillName)
-
     local value = mod.GetSkillValue(skillName, skillStatus.skillLevel)
-    if skillName == mod.SkillNames.Robust then
+
+    if skillName == mod.SkillNames.Robust then -- Robust
         DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.SetHealthValue(self.playerUnit, PLAYER_BASE_HEALTH + value)
         DCEI.LogMessage("Changing Player Max Health")
@@ -238,6 +246,7 @@ function Player:HidePlayerUI()
     DCEI.SetActive(self.staminaBarHolder, false)
 end
 function Player:HandleInitialSkillData()
+    -- Robust
     local healthSkillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Robust)
 
     if healthSkillStatus.isUnlocked then
@@ -281,6 +290,29 @@ function Player:Update(deltaTime)
         if self.effectsTimer <= 0 then
             DCEI.RemoveBehavior(self.playerUnit, self.behaviourName)
             self.behaviourName = nil
+        end
+    end
+
+    self:CheckAndUpdateKillerInstinct()
+end
+function Player:CheckAndUpdateKillerInstinct() -- Killer Instinct
+    local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.KillerInstinct)
+    if not skillStatus.isUnlocked then
+        return
+    end
+
+    local value = mod.GetSkillValue(mod.SkillNames.KillerInstinct, skillStatus.skillLevel)
+
+    if self:HasPercentHP(value) then
+        if not self.killerInstinctActive then
+            self.killerInstinctActive = true
+            DCEI.ApplyBehavior(self.playerUnit, KILLER_INSTINCT_BEHAVIOUR)
+        end
+
+    else
+        if self.killerInstinctActive then
+            self.killerInstinctActive = false
+            DCEI.RemoveBehavior(self.playerUnit, KILLER_INSTINCT_BEHAVIOUR)
         end
     end
 end
@@ -601,6 +633,16 @@ end
 function Player:GetPlayerStamina()
     return self.playerStaminaAmount
 end
+function Player:HasPercentHP(percent)
+    local maxHealth = DCEI.GetMaxHealth(self.playerUnit)
+    local ratio = self.lastFramePlayerHealth / maxHealth
+
+    if ratio <= percent then
+        return true
+    end
+
+    return false
+end
 
 
 mod.Player = Player
@@ -614,5 +656,7 @@ mod.SkillNames = SkillNames
 mod.SavePlayerData = nil
 mod.GetPlayerData = nil
 mod.ClearPlayerData = nil
+
+mod.PlayerDeflectionDistance = PLAYER_DEFLECTION_DISTANCE
 
 return mod

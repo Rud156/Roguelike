@@ -5,6 +5,9 @@ local ArcadeCore = GameModules["Arcade/Core"]
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 local ENEMY_INVINCIBLE = "_Unit_Invincible"
 
+local ENEMY_FLASH_BEHAVIOUR = "_Enemy_Damage_Taken"
+local ENEMY_FLASH_DURATION = 0.15
+
 local GOBLIN_CHEF = "_Enemy_GoblinChef"
 local GOBLIN_CHEF_ATTACK = "_Enemy_GoblinChef_Attack"
 local GOBLIN_CHEF_ATTACK_RANGE = 3
@@ -746,6 +749,7 @@ function Ooze:UpdateAttackAnimTimer(deltaTime)
             self.currentTimer = OOZE_IDLING_TIME
             self:SetEnemyState(4)
         else
+            -- Surefooted
             local additionalTimer = 0
             local skillStatus = self.room.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Surefooted)
             
@@ -1209,5 +1213,9 @@ mod.WalkableTextureId = nil
 
 mod.GetSkillValue = nil
 mod.SkillNames = nil
+
+mod.EnemyInvincible = ENEMY_INVINCIBLE
+mod.EnemyFlashBehviour = ENEMY_FLASH_BEHAVIOUR
+mod.EnemyFlashDuration = ENEMY_FLASH_DURATION
 
 return mod

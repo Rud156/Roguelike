@@ -89,6 +89,27 @@ local SKILL_TREE = {
         skillDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%",
         value = 0.30
     },
+    Deflection = {
+        skillImage = "icon_enhance_iceman_ice_spikes",
+        skillName = "Deflection",
+        skillCost = 20,
+        skillDescription = "When Dwarf Smith takes damage, deflection 20% of that damage to his surrounding enemies",
+        value = 0.2
+    },
+    Redemption = {
+        skillImage = "card_spell_bubbleblast",
+        skillName = "Redemption",
+        skillCost = 20,
+        skillDescription = "When Dwarf Smith kills an enemy during the invulnerability-state heal 5% of the max HP",
+        value = 0.05
+    },
+    Preplan = {
+        skillImage = "icon_enhance_iceman_yodel_taunt",
+        skillName = "Preplan",
+        skillCost = 20,
+        skillDescription = "Level exit room will be revealed on your mini map",
+        value = 0
+    },
     QuickRecovery = {
         {
             skillImage = "icon_catalyst_main_item3_green_01",
@@ -149,6 +170,43 @@ local SKILL_TREE = {
         skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.1 seconds upon landing",
         value = 0.1
     },
+    ImprovedSlam = {
+        {
+            skillImage = "icon_catalyst_main_item4_green_02",
+            skillName = "Improved Slam I",
+            skillCost = 5,
+            skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 10%",
+            value = 0.1
+        },
+        {
+            skillImage = "icon_catalyst_main_item4_green_03",
+            skillName = "Improved Slam II",
+            skillCost = 10,
+            skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 20%",
+            value = 0.2
+        },
+        {
+            skillImage = "icon_catalyst_main_item4_green_04",
+            skillName = "Improved Slam III",
+            skillCost = 15,
+            skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 30%",
+            value = 0.3
+        }
+    },
+    Toughness = {
+        skillImage = "icon_enhance_stoneguard_stoneskin",
+        skillName = "Toughness",
+        skillCost = 20,
+        skillDescription = "The stamina cost of Dwarf Smith’s heavy attack decreases by 1",
+        value = 1
+    },
+    AdenalineRush = {
+        skillImage = "icon_ingame_towerslot_druidtower",
+        skillName = "Adenaline Rush",
+        skillCost = 20,
+        skillDescription = "Killing enemies will instantly regenerate 1 stamina, cooldown 1 second",
+        value = 1
+    },
     WarMachine = {
         {
             skillImage = "icon_catalyst_main_item3_orange_01",
@@ -172,6 +230,29 @@ local SKILL_TREE = {
             value = 10
         }
     },
+    Strength = {
+        {
+            skillImage = "icon_catalyst_main_item1_orange_02",
+            skillName = "Strength I",
+            skillCost = 5,
+            skillDescription = "Increase Dwarf Smith’s heavy attack damage by 1",
+            value = 1
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_orange_03",
+            skillName = "Strength II",
+            skillCost = 10,
+            skillDescription = "Increase Dwarf Smith’s heavy attack damage by 2",
+            value = 2
+        },
+        {
+            skillImage = "icon_catalyst_main_item1_orange_04",
+            skillName = "Strength III",
+            skillCost = 15,
+            skillDescription = "Increase Dwarf Smith’s heavy attack damage by 3",
+            value = 3
+        }
+    },
     Cruelty = {
         skillImage = "icon_enhance_dragoonbarracks_crush",
         skillName = "Cruelty",
@@ -179,12 +260,49 @@ local SKILL_TREE = {
         skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack",
         value = 2
     },
+    LuckyStrike = {
+        {
+            skillImage = "icon_catalyst_main_item4_orange_02",
+            skillName = "Lucky Strike I",
+            skillCost = 5,
+            skillDescription = "Increase Dwarf Smith’s critical strike chance by 2%",
+            value = 0.02
+        },
+        {
+            skillImage = "icon_catalyst_main_item4_orange_03",
+            skillName = "Lucky Strike II",
+            skillCost = 10,
+            skillDescription = "Increase Dwarf Smith’s critical strike chance by 4%",
+            value = 0.04
+        },
+        {
+            skillImage = "icon_catalyst_main_item4_orange_04",
+            skillName = "Lucky Strike III",
+            skillCost = 15,
+            skillDescription = "Increase Dwarf Smith’s critical strike chance by 6%",
+            value = 0.06
+        }
+    },
     ConcussionBlow = {
         skillImage = "icon_enhance_crusader_zeal",
         skillName = "Concussion Blow",
         skillCost = 20,
         skillDescription = "Dwarf Smith’s light attack will now stun normal enemies for 0.1 second",
         value = 0.1
+    },
+    HeavyBlow = {
+        skillImage = "icon_enhance_cannontower_concussiveblast",
+        skillName = "Heavy Blow",
+        skillCost = 20,
+        skillDescription = "Dwarf Smith’s heavy attack now can stun BOSS enemy",
+        value = 0
+    },
+    AggressiveLanding = {
+        skillImage = "icon_enhance_dragoonbarracks_leap",
+        skillName = "Aggressive Landing",
+        skillCost = 20,
+        skillDescription = "Dwarf Smith’s jump/leap will deal 3 damage to the surrounding enemies upon landing",
+        value = 3
     },
     Hero = {
         skillImage = "icon_ingame_hero_tower_smith",
@@ -196,12 +314,13 @@ local SKILL_TREE = {
 }
 
 local SKILL_TREE_MATRIX = {
-    { 0, "ConcussionBlow", 0, 0, 0, 0 },
-    { "Cruelty", "WarMachine", 0, "Endurance", 0, 0 },
-    { 0, 0, "Hero", "QuickRecovery", 0, 0 },
-    { 0, "Invulnerability", "Robust", 0, "BunnyHop", "ForcefulLanding" },
-    { 0, 0, 0, "Surefooted", 0, 0 },
-    { 0, 0, "KillerInstinct", 0, 0, 0 }
+    { "HeavyBlow", "ConcussionBlow", 0, 0, 0, 0, 0 },
+    { "LuckyStrike", "Strength", "AggressiveLanding", 0, 0, 0, 0 },
+    { 0, "Cruelty", "WarMachine", 0, "Endurance", "Toughness", 0 },
+    { 0, 0, 0, "Hero", "QuickRecovery", "ImprovedSlam", "AdenalineRush" },
+    { 0, 0, "Invulnerability", "Robust", 0, "BunnyHop", "ForcefulLanding" },
+    { 0, 0, "Redemption", "Deflection", "Surefooted", 0, 0 },
+    { 0, 0, 0, "KillerInstinct", "Preplan", 0 ,0 }
 }
 
 local CENTER_SKILL = "Hero"
@@ -228,7 +347,7 @@ local SKILL_NAMES = {
     LuckyStrike = "LuckyStrike",
     ConcussionBlow = "ConcussionBlow",
     HeavyBlow = "HeavyBlow",
-    AgressiveLanding = "AgressiveLanding"
+    AggressiveLanding = "AggressiveLanding"
 }
 
 -- #region Hex Generator
@@ -437,6 +556,8 @@ function HexGenerator:CreateInitialSkillMatrix(hexMatrix)
             local skillData = {
                 skillName = hexMatrix[i][j]
             }
+
+            DCEI.LogMessage("Skill Name: " .. skillData.skillName)
 
             if hexMatrix[i][j] == CENTER_SKILL then
                 skillData.skillLevel = 1
