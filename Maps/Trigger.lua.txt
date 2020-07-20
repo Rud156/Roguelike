@@ -147,7 +147,7 @@ local ROOM_LEVEL_MAX = 3
 
 -- Public Variables
 -- Player
-local PlayerInvincibleTimer = 3
+local PlayerInvincibleTimer = 0.5
 local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
 local UseMeleePlayer = true

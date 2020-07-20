@@ -243,6 +243,7 @@ function Player:HandleInitialSkillData()
     if healthSkillStatus.isUnlocked then
         local value = mod.GetSkillValue(mod.SkillNames.Robust, healthSkillStatus.skillLevel)
         DCEI.SetMaxHealth(self.playerUnit, PLAYER_BASE_HEALTH + value)
+        DCEI.SetHealthValue(self.playerUnit, PLAYER_BASE_HEALTH + value)
     end
 end
 function Player:Update(deltaTime)
