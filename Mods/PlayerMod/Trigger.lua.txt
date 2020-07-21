@@ -575,7 +575,7 @@ function Player:LaunchPlayerMeleeHeavyAttack(enemy)
     end
 
     local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
-    DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, self.playerUnit, playerPosition.x, playerPosition.y)
+    DCEI.CastAbilityAtPosition(heavyWeaponName, self.playerUnit, playerPosition.x, playerPosition.y)
 
     self.playerCooldownTimer = PLAYER_MELEE_HEAVY_WEAPON_CD
     self.camera:StartShake(1, 0.3)
