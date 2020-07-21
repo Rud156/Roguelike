@@ -106,12 +106,16 @@ function mod.GetPlayerData()
     return playerData
 end
 
-function mod.ClearPlayerData()
+function mod.ClearPlayerData(keepStamina)
     DCEI.Save.Set(PLAYER_HEALTH, nil)
     DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, nil)
     DCEI.Save.Set(PLAYER_STAMINA_TIMER, nil)
     DCEI.Save.Set(PLAYER_GOLD, nil)
-    DCEI.Save.Set(PLAYER_MAX_STAMINA, nil)
+
+    if not keepStamina then
+        DCEI.Save.Set(PLAYER_MAX_STAMINA, nil)
+    end
+    
     DCEI.Save.Commit()
 end
 
@@ -306,7 +310,7 @@ function mod.ClearAllData()
     mod.ClearAllMainMapData()
     mod.ClearAllInventoryData()
     mod.ClearItemDrops()
-    mod.ClearPlayerData()
+    mod.ClearPlayerData(false)
     mod.ClearRoomData()
     mod.ClearSkillTree()
 end

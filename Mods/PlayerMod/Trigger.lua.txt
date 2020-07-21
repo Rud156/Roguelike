@@ -168,9 +168,9 @@ function Player:LoadData()
 
     self.playerGoldAmount = playerGoldAmount
 end
-function Player:ClearData()
+function Player:ClearData(keepStamina)
     DCEI.LogMessage("Clearing Player Data")
-    mod.ClearPlayerData()
+    mod.ClearPlayerData(keepStamina)
 end
 function Player:HandleBehaviourAdded(behaviourName)
     if behaviourName == PLAYER_SLOW_BEHAVIOUR then -- Surefooted

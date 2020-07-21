@@ -416,7 +416,7 @@ function HandleUnitDied()
 
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE and not m_nextRoomTransitionActive then
-        m_player:ClearData()
+        m_player:ClearData(true)
         m_player:Destroy()
         m_player = nil
 
