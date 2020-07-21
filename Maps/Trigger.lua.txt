@@ -717,7 +717,7 @@ function ActivateDoorOpenAnimations()
     local spawnRoomRow = m_roomGenerator.spawnRoomRow
     local spawnRoomColumn = m_roomGenerator.spawnRoomColumn
 
-    if playerRow ~= spawnRoomRow and playerColumn ~= spawnRoomColumn then
+    if playerRow ~= spawnRoomRow or playerColumn ~= spawnRoomColumn then
         local exitDoors = DCEI.FindUnits(EXIT_DOORWAY)
         for _, door in ipairs(exitDoors) do
             DCEI.ApplyBehavior(door, EXIT_DOORWAY_OPEN)
