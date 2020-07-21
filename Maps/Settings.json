@@ -107,7 +107,14 @@
             "_Enemy_GoblinMiner_Leap_Start",
             "_Enemy_GoblinMiner_Leap_End",
             "_PlayerCharacter_KillerInstinct",
-            "_Enemy_Damage_Taken"
+            "_Enemy_Damage_Taken",
+            "_PlayerCharacter_Strength_I",
+            "_PlayerCharacter_Strength_II",
+            "_PlayerCharacter_Strength_III",
+            "_PlayerCharacter_WarMachine_I",
+            "_PlayerCharacter_WarMachine_II",
+            "_PlayerCharacter_WarMachine_III",
+            "_PlayerCharacter_Cruelty"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"

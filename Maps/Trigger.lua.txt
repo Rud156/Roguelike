@@ -518,16 +518,16 @@ function HandleBehaviourAdded()
 
         if m_roomEnemies ~= nil then
             -- Forceful Landing
-            local forceLandStatus = m_skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ForcefulLanding)
+            local forceLandStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ForcefulLanding)
             if forceLandStatus.isUnlocked then
-                local value = SkillTreeMod.GetSkillValue(mod.SkillNames.ForcefulLanding, forceLandStatus.skillLevel)
+                local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.ForcefulLanding, forceLandStatus.skillLevel)
                 m_roomEnemies:ForceStunEnemies(value, missilePosition, PlayerMod.PlayerLandStunDistance)
             end
 
             -- Aggressive Landing
-            local aggressiveLandingStatus = m_skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.AggressiveLanding)
+            local aggressiveLandingStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.AggressiveLanding)
             if aggressiveLandingStatus.isUnlocked then
-                local value = SkillTreeMod.GetSkillValue(mod.SkillNames.AggressiveLanding, aggressiveLandingStatus.skillLevel)
+                local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.AggressiveLanding, aggressiveLandingStatus.skillLevel)
                 
                 local enemies = m_roomEnemies:GetRoomEnemies()
                 for _, enemy in ipairs(enemies) do
@@ -548,10 +548,10 @@ function HandleBehaviourAdded()
         m_player:SetDashInActive()
 
     elseif behaviourName == PlayerMod.PlayerConcussionBlow then -- Concussion Blow
-        local concussionBlowStatus = m_skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ConcussionBlow)
+        local concussionBlowStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ConcussionBlow)
 
         if m_roomEnemies ~= nil and concussionBlowStatus.isUnlocked then
-            local value = SkillTreeMod.GetSkillValue(mod.SkillNames.ConcussionBlow, concussionBlowStatus.skillLevel)
+            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.ConcussionBlow, concussionBlowStatus.skillLevel)
             local enemies = m_roomEnemies:GetRoomEnemies()
 
             for _, enemy in ipairs(enemies) do

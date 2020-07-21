@@ -644,7 +644,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit DeathAnimation Decay",
-                    "_Enemy_Damage_Effect"
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Stunned_Effect"
                 ],
                 "hostSites": {
                     "SiteCenter": {
@@ -663,6 +664,11 @@
                         "offset": {
                             "forward": -0.5,
                             "up": 1
+                        }
+                    },
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1.2
                         }
                     }
                 }

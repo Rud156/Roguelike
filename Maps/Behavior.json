@@ -191,7 +191,7 @@
             ]
         },
         "_PlayerCharacter_WarMachine_I": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_war_machine",
@@ -200,7 +200,7 @@
             ]
         },
         "_PlayerCharacter_WarMachine_II": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_war_machine",
@@ -209,7 +209,7 @@
             ]
         },
         "_PlayerCharacter_WarMachine_III": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_war_machine",
@@ -218,7 +218,7 @@
             ]
         },
         "_PlayerCharacter_Strength_I": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_strength",
@@ -227,7 +227,7 @@
             ]
         },
         "_PlayerCharacter_Strength_II": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_strength",
@@ -236,7 +236,7 @@
             ]
         },
         "_PlayerCharacter_Strength_III": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_strength",
@@ -245,7 +245,7 @@
             ]
         },
         "_PlayerCharacter_Cruelty": {
-            "duration": 0.3,
+            "duration": 0.5,
             "behaviorTagArray": [
                 {
                     "name": "gt_cruelty",
