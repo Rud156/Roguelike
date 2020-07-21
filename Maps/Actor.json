@@ -668,6 +668,7 @@
                     },
                     "StunnedEffectSite": {
                         "offset": {
+                            "forward": 0.3,
                             "up": 1.2
                         }
                     }
