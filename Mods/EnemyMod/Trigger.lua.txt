@@ -163,6 +163,15 @@ function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
 
     return false
 end
+function GoblinChef:ActivateStunWithTimer(stunTimer)
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+    self.stunTimer = stunTimer
+    self:SetEnemyState(4)
+end
 function GoblinChef:UpdateIdleState(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -364,6 +373,15 @@ function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
 
     return false
 end
+function HobGoblin:ActivateStunWithTimer(stunTimer)
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+    self.stunTimer = stunTimer
+    self:SetEnemyState(4)
+end
 function HobGoblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -498,6 +516,15 @@ function Goblin:CheckAndActivateStunnedState(enemyUnit)
 
     return false
 end
+function Goblin:ActivateStunWithTimer(stunTimer)
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+    self.stunTimer = stunTimer
+    self:SetEnemyState(4)
+end
 function Goblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -621,6 +648,15 @@ function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
 
     return false
 end
+function GoblinSapper:ActivateStunWithTimer(stunTimer)
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+
+    self.stunTimer = stunTimer
+    self:SetEnemyState(4)
+end
 function GoblinSapper:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -705,6 +741,10 @@ function Ooze:Update(deltaTime, playerPosition)
 end
 function Ooze:CheckAndActivateStunnedState(enemyUnit)
     DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+    return false
+end
+function Ooze:ActivateStunWithTimer(stunTimer)
+    -- Do nothing here...
 end
 function Ooze:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then
@@ -858,7 +898,10 @@ local GoblinMiner = {
     -- General
     currentTimer = 0,
     attackCounter = 0,
-    hasSkyAttackLaunched = false
+    hasSkyAttackLaunched = false,
+
+    -- Stun
+    stunTimer = 0
 }
 GoblinMiner.__index = GoblinMiner
 function GoblinMiner:new(room, xPosition, yPosition)
@@ -881,6 +924,8 @@ function GoblinMiner:new(room, xPosition, yPosition)
     goblinMiner.attackCounter = 0
     goblinMiner.hasSkyAttackLaunched = false
 
+    goblinMiner.stunTimer = 0
+
     return goblinMiner
 end
 function GoblinMiner:Update(deltaTime, playerPosition)
@@ -896,10 +941,44 @@ function GoblinMiner:Update(deltaTime, playerPosition)
     elseif self.enemyState == 3 then
         self:UpdateDrillAttack(deltaTime, playerPosition)
 
+    elseif self.enemyState == 4 then
+        self:UpdateEnemyStunned(deltaTime)
     end
 end
 function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
-    DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+    -- Heavy Blow
+    local heavyBlowStatus = self.room.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.HeavyBlow)
+
+    if not heavyBlowStatus.isUnlocked or self.enemyState == 2 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+        return false
+    end
+    
+    if heavyBlowStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.HeavyBlow, heavyBlowStatus.skillLevel)
+        
+        if self.unit == enemyUnit then
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
+    
+            self.stunTimer = value
+            self:SetEnemyState(4)
+    
+            return true
+        end
+    end
+
+    return false
+end
+function GoblinMiner:ActivateStunWithTimer(stunTimer)
+    -- Do nothing here...
+end
+function GoblinMiner:UpdateEnemyStunned(deltaTime)
+    self.stunTimer = self.stunTimer - deltaTime
+    if self.stunTimer <= 0 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+        self:SetEnemyState(0)
+    end
 end
 function GoblinMiner:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then
@@ -914,6 +993,9 @@ function GoblinMiner:UpdateRandomMovement(deltaTime, playerPosition)
     else
         DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
     end
+end
+function GoblinMiner:ActivateStunWithTimer(stunTimer)
+    -- Do nothing here...
 end
 function GoblinMiner:UpdateRocketBarrage(deltaTime, playerPosition)
     self.currentTimer = self.currentTimer - deltaTime

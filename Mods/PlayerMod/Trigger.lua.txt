@@ -16,7 +16,7 @@ local PLAYER_RANGED_HEAVY_WEAPON_RANGE = 7
 -- Player Melee
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
-local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack"
+local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack_Normal"
 local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
 local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
@@ -34,8 +34,11 @@ local PLAYER_BASE_HEALTH = 150
 local DELAYED_LOAD_TIMER = 0.1
 
 local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
-
+local CRUELTY_BEHAVIOUR = "_PlayerCharacter_Cruelty"
+local CONCUSSION_BLOW_BEHAVIOUR = "_PlayerCharacter_LightAttack_Hit"
 local PLAYER_DEFLECTION_DISTANCE = 0.8
+local PLAYER_LAND_STUN_DISTANCE = 1
+local PLAYER_AGGRESSIVE_LAND_DISTANCE = 1
 
 local PLAYER_INVINCIBLE_TIMER = 0.5
 
@@ -490,6 +493,31 @@ function Player:LaunchPlayerHeavyAttack(enemy)
     self.playerMoving = false
 end
 function Player:LaunchPlayerMeleeLightAttack(enemy)
+    -- War Machine
+    local warMahcineStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.WarMachine)
+    if warMahcineStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.WarMachine, warMahcineStatus.skillLevel)
+        DCEI.ApplyBehavior(self.playerUnit, value)
+    end
+
+    -- Cruelty
+    local crueltyStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Cruelty)
+    if crueltyStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.Cruelty, crueltyStatus.skillLevel)
+
+        -- Lucky Strike
+        local  luckyStrikeStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.LuckyStrike)
+        if luckyStrikeStatus.isUnlocked then
+            local luckyStrikePercent = mod.GetSkillValue(mod.SkillNames.LuckyStrike, luckyStrikeStatus.skillLevel)
+            value = value + luckyStrikePercent
+        end
+
+        local randomValue = math.random()
+        if randomValue <= value then
+            DCEI.ApplyBehavior(self.playerUnit, CRUELTY_BEHAVIOUR)
+        end
+    end
+
     if enemy ~= nil then
         local enemyPosition = DCEI.GetUnitPosition2D(enemy)
         local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
@@ -514,13 +542,37 @@ function Player:LaunchPlayerMeleeLightAttack(enemy)
     self.playerCooldownTimer = PLAYER_MELEE_LIGHT_WEAPON_CD
 end
 function Player:LaunchPlayerMeleeHeavyAttack(enemy)
-    if self.playerStaminaAmount < PLAYER_MELEE_HEAVY_ATTACK_STAMINA then
+    local heavyAttackStamina = PLAYER_MELEE_HEAVY_ATTACK_STAMINA
+
+    -- Toughness
+    local toughnessStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Toughness)
+    if toughnessStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.Toughness, toughnessStatus.skillLevel)
+        heavyAttackStamina = heavyAttackStamina - value
+    end
+
+    if self.playerStaminaAmount < heavyAttackStamina then
         DCEI.LogMessage("Not enough stamina for Melee Heavy Attack")
         return
     end
 
-    self.playerStaminaAmount = self.playerStaminaAmount - PLAYER_MELEE_HEAVY_ATTACK_STAMINA
+    -- Strength
+    local strengthStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Strength)
+    if strengthStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.Strength, strengthStatus.skillLevel)
+        DCEI.ApplyBehavior(self.playerUnit, value)
+    end
+
+    self.playerStaminaAmount = self.playerStaminaAmount - heavyAttackStamina
     self:HandleStaminaRegenStart()
+
+    local heavyWeaponName = PLAYER_MELEE_HEAVY_WEAPON
+    -- Forceful Landing
+    local improvedSlamStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ImprovedSlam)
+    if improvedSlamStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.ImprovedSlam, improvedSlamStatus.skillLevel)
+        heavyWeaponName = value
+    end
 
     local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
     DCEI.CastAbilityAtPosition(PLAYER_MELEE_HEAVY_WEAPON, self.playerUnit, playerPosition.x, playerPosition.y)
@@ -529,6 +581,13 @@ function Player:LaunchPlayerMeleeHeavyAttack(enemy)
     self.camera:StartShake(1, 0.3)
 end
 function Player:LaunchPlayerRangedLightAttack(enemy)
+    -- War Machine
+    local warMahcineStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.WarMachine)
+    if warMahcineStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.WarMachine, warMahcineStatus.skillLevel)
+        DCEI.ApplyBehavior(self.playerUnit, value)
+    end
+
     if enemy ~= nil then
         local enemyPosition = DCEI.GetUnitPosition2D(enemy)
         local playerPosition = DCEI.GetUnitPosition2D(self.playerUnit)
@@ -553,12 +612,28 @@ function Player:LaunchPlayerRangedLightAttack(enemy)
     self.playerCooldownTimer = PLAYER_RANGED_LIGHT_WEAPON_CD
 end
 function Player:LaunchPlayerRangedHeavyAttack(enemy)
-    if self.playerStaminaAmount < PLAYER_RANGED_HEAVY_ATTACK_STAMINA then
+    local heavyAttackStamina = PLAYER_RANGED_HEAVY_ATTACK_STAMINA
+
+    -- Toughness
+    local toughnessStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Toughness)
+    if toughnessStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.Toughness, toughnessStatus.skillLevel)
+        heavyAttackStamina = heavyAttackStamina - value
+    end
+
+    if self.playerStaminaAmount < heavyAttackStamina then
         DCEI.LogMessage("Not enough stamina for Ranged Heavy Attack")
         return
     end
 
-    self.playerStaminaAmount = self.playerStaminaAmount - PLAYER_RANGED_HEAVY_ATTACK_STAMINA
+    -- Strength
+    local strengthStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Strength)
+    if strengthStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.Strength, strengthStatus.skillLevel)
+        DCEI.ApplyBehavior(self.playerUnit, value)
+    end
+
+    self.playerStaminaAmount = self.playerStaminaAmount - heavyAttackStamina
     self:HandleStaminaRegenStart()
 
     if enemy ~= nil then
@@ -651,6 +726,24 @@ end
 function Player:GetPlayerGold()
     return self.playerGoldAmount
 end
+function Player:CheckAdenalineRush()
+    -- Adenaline Rush
+    local adenalineRushStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.AdenalineRush)
+
+    if adenalineRushStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.AdenalineRush, adenalineRushStatus.skillLevel)
+
+        if self.playerStaminaAmount < self.playerMaxStamina then
+            self.playerStaminaAmount = self.playerStaminaAmount + value
+
+            if self.playerStaminaAmount > self.playerMaxStamina then
+                self.playerStaminaAmount = self.playerMaxStamina
+            end
+        end
+
+        self.playerStaminaRegenTimer = self.playerStaminaRegenTimer - value
+    end
+end
 function Player:Destroy()
     DCEI.RemoveUnit(self.playerUnit)
 end
@@ -702,5 +795,8 @@ mod.ClearPlayerData = nil
 
 mod.PlayerDeflectionDistance = PLAYER_DEFLECTION_DISTANCE
 mod.PlayerInvincibleTimer = PLAYER_INVINCIBLE_TIMER
+mod.PlayerLandStunDistance = PLAYER_LAND_STUN_DISTANCE
+mod.PlayerAggressiveLandDistance = PLAYER_AGGRESSIVE_LAND_DISTANCE
+mod.PlayerConcussionBlow = CONCUSSION_BLOW_BEHAVIOUR
 
 return mod

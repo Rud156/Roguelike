@@ -189,6 +189,73 @@
                     "count": 1
                 }
             ]
+        },
+        "_PlayerCharacter_WarMachine_I": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_war_machine",
+                    "count": 2
+                }
+            ]
+        },
+        "_PlayerCharacter_WarMachine_II": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_war_machine",
+                    "count": 4
+                }
+            ]
+        },
+        "_PlayerCharacter_WarMachine_III": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_war_machine",
+                    "count": 6
+                }
+            ]
+        },
+        "_PlayerCharacter_Strength_I": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_strength",
+                    "count": 1
+                }
+            ]
+        },
+        "_PlayerCharacter_Strength_II": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_strength",
+                    "count": 2
+                }
+            ]
+        },
+        "_PlayerCharacter_Strength_III": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_strength",
+                    "count": 3
+                }
+            ]
+        },
+        "_PlayerCharacter_Cruelty": {
+            "duration": 0.3,
+            "behaviorTagArray": [
+                {
+                    "name": "gt_cruelty",
+                    "count": 1
+                }
+            ]
+        },
+        "_PlayerCharacter_LightAttack_Hit": {
+            "maxStackCount": 1,
+            "duration": 0.1
         }
     }
 }

@@ -176,21 +176,21 @@ local SKILL_TREE = {
             skillName = "Improved Slam I",
             skillCost = 5,
             skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 10%",
-            value = 0.1
+            value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_I"
         },
         {
             skillImage = "icon_catalyst_main_item4_green_03",
             skillName = "Improved Slam II",
             skillCost = 10,
             skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 20%",
-            value = 0.2
+            value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_II"
         },
         {
             skillImage = "icon_catalyst_main_item4_green_04",
             skillName = "Improved Slam III",
             skillCost = 15,
             skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 30%",
-            value = 0.3
+            value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III"
         }
     },
     Toughness = {
@@ -213,21 +213,21 @@ local SKILL_TREE = {
             skillName = "War Machine I",
             skillCost = 5,
             skillDescription = "Increase Dwarf Smith’s light attack damage by 2",
-            value = 2
+            value = "_PlayerCharacter_WarMachine_I"
         },
         {
             skillImage = "icon_catalyst_main_item3_orange_02",
             skillName = "War Machine II",
             skillCost = 10,
             skillDescription = "Increase Dwarf Smith’s light attack damage by 5",
-            value = 5
+            value = "_PlayerCharacter_WarMachine_II"
         },
         {
             skillImage = "icon_catalyst_main_item3_orange_03",
             skillName = "War Machine III",
             skillCost = 15,
             skillDescription = "Increase Dwarf Smith’s light attack damage by 10",
-            value = 10
+            value =  "_PlayerCharacter_WarMachine_III"
         }
     },
     Strength = {
@@ -236,21 +236,21 @@ local SKILL_TREE = {
             skillName = "Strength I",
             skillCost = 5,
             skillDescription = "Increase Dwarf Smith’s heavy attack damage by 1",
-            value = 1
+            value = "_PlayerCharacter_Strength_I"
         },
         {
             skillImage = "icon_catalyst_main_item1_orange_03",
             skillName = "Strength II",
             skillCost = 10,
             skillDescription = "Increase Dwarf Smith’s heavy attack damage by 2",
-            value = 2
+            value = "_PlayerCharacter_Strength_II"
         },
         {
             skillImage = "icon_catalyst_main_item1_orange_04",
             skillName = "Strength III",
             skillCost = 15,
             skillDescription = "Increase Dwarf Smith’s heavy attack damage by 3",
-            value = 3
+            value = "_PlayerCharacter_Strength_III"
         }
     },
     Cruelty = {
@@ -258,7 +258,7 @@ local SKILL_TREE = {
         skillName = "Cruelty",
         skillCost = 20,
         skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack",
-        value = 2
+        value = 0.05
     },
     LuckyStrike = {
         {
@@ -295,7 +295,7 @@ local SKILL_TREE = {
         skillName = "Heavy Blow",
         skillCost = 20,
         skillDescription = "Dwarf Smith’s heavy attack now can stun BOSS enemy",
-        value = 0
+        value = 3
     },
     AggressiveLanding = {
         skillImage = "icon_enhance_dragoonbarracks_leap",

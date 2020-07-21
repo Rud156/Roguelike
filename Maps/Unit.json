@@ -536,7 +536,7 @@
             "references": {
                 "abilityList": [
                     "_PlayerCharacter_Melee_LightAttack",
-                    "_PlayerCharacter_Melee_HeavyAttack",
+                    "_PlayerCharacter_Melee_HeavyAttack_Normal",
                     "_PlayerCharacter_Melee_Dash"
                 ],
                 "behaviorList": [

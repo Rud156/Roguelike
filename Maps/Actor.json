@@ -2005,7 +2005,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStart": {
-                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack_Normal"
                             }
                         },
                         "actions": [
@@ -2037,7 +2037,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStop": {
-                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack_Normal"
                             }
                         },
                         "actions": [
@@ -2110,7 +2110,7 @@
                     {
                         "actorTerm": {
                             "unitAbilityStop": {
-                                "ability": "_PlayerCharacter_Melee_HeavyAttack"
+                                "ability": "_PlayerCharacter_Melee_HeavyAttack_Normal"
                             }
                         },
                         "actions": [

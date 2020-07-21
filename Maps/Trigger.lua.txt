@@ -446,6 +446,10 @@ function HandleUnitDied()
                 DCEI.AddHealth(m_player:GetPlayerUnit(), healthIncrease)
             end
 
+            -- Adenaline Rush
+            if m_player ~= nil then
+                m_player:CheckAdenalineRush()
+            end
         end
     end
 end
@@ -512,8 +516,50 @@ function HandleBehaviourAdded()
         DCEI.LogMessage("Missile Reached Position")
         local missilePosition = DCEI.GetUnitPosition2D(unit)
 
+        if m_roomEnemies ~= nil then
+            -- Forceful Landing
+            local forceLandStatus = m_skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ForcefulLanding)
+            if forceLandStatus.isUnlocked then
+                local value = SkillTreeMod.GetSkillValue(mod.SkillNames.ForcefulLanding, forceLandStatus.skillLevel)
+                m_roomEnemies:ForceStunEnemies(value, missilePosition, PlayerMod.PlayerLandStunDistance)
+            end
+
+            -- Aggressive Landing
+            local aggressiveLandingStatus = m_skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.AggressiveLanding)
+            if aggressiveLandingStatus.isUnlocked then
+                local value = SkillTreeMod.GetSkillValue(mod.SkillNames.AggressiveLanding, aggressiveLandingStatus.skillLevel)
+                
+                local enemies = m_roomEnemies:GetRoomEnemies()
+                for _, enemy in ipairs(enemies) do
+                    if enemy:IsActive() then
+                        local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
+                        local distanceFromPlayer = ExtensionFunction.VectorDistance(position, missilePosition)
+
+                        if distanceFromPlayer <= PlayerMod.PlayerAggressiveLandDistance then
+                            ArcadeCore.DamageUnit(enemy:GetMainUnit(), value)
+                            DCEI.ApplyBehaviorWithDuration(enemy:GetMainUnit(), EnemyMod.EnemyFlashBehviour, EnemyMod.EnemyFlashDuration, false)
+                        end
+                    end
+                end
+            end
+        end
+        
         m_player:SetPlayerPosition(missilePosition.x, missilePosition.y)
         m_player:SetDashInActive()
+
+    elseif behaviourName == PlayerMod.PlayerConcussionBlow then -- Concussion Blow
+        local concussionBlowStatus = m_skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ConcussionBlow)
+
+        if m_roomEnemies ~= nil and concussionBlowStatus.isUnlocked then
+            local value = SkillTreeMod.GetSkillValue(mod.SkillNames.ConcussionBlow, concussionBlowStatus.skillLevel)
+            local enemies = m_roomEnemies:GetRoomEnemies()
+
+            for _, enemy in ipairs(enemies) do
+                if enemy:IsActive() and enemy:GetMainUnit() == unit then
+                    enemy:ActivateStunWithTimer(value)
+                end
+            end
+        end
 
     elseif behaviourName == GOBLIN_MINER_MISSILE_BEHAVIOUR then
         DCEI.LogMessage("Miner Missile Reached")
@@ -1070,13 +1116,15 @@ function UpdatePlayerHealth(deltaTime)
             local damageAmount = (lastFramePlayerHealth - playerHealth) * value
             
             for _, enemy in ipairs(roomEnemies) do
-                local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
-                local distanceFromPlayer = ExtensionFunction.VectorDistance(position, playerPosition)
-                local invincibleStack = DCEI.UnitBehaviorStackCount(enemy:GetMainUnit(), EnemyMod.EnemyInvincible)
+                if enemy:IsActive() then
+                    local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
+                    local distanceFromPlayer = ExtensionFunction.VectorDistance(position, playerPosition)
+                    local invincibleStack = DCEI.UnitBehaviorStackCount(enemy:GetMainUnit(), EnemyMod.EnemyInvincible)
 
-                if invincibleStack < 1 and distanceFromPlayer <= PlayerMod.PlayerDeflectionDistance then
-                    ArcadeCore.DamageUnit(enemy:GetMainUnit(), damageAmount)
-                    DCEI.ApplyBehaviorWithDuration(enemy:GetMainUnit(), EnemyMod.EnemyFlashBehviour, EnemyMod.EnemyFlashDuration, false)
+                    if invincibleStack < 1 and distanceFromPlayer <= PlayerMod.PlayerDeflectionDistance then
+                        ArcadeCore.DamageUnit(enemy:GetMainUnit(), damageAmount)
+                        DCEI.ApplyBehaviorWithDuration(enemy:GetMainUnit(), EnemyMod.EnemyFlashBehviour, EnemyMod.EnemyFlashDuration, false)
+                    end
                 end
             end
         end

@@ -107,20 +107,6 @@
             },
             "canCastWhileMoving": false
         },
-        "_PlayerCharacter_Melee_HeavyAttack": {
-            "abilityType": 2,
-            "castType": 1,
-            "effect": "_Search_PlayerCharacter_Melee_HeavyAttack",
-            "stats": {
-                "prepTime": 0.3,
-                "finishTime": 0.5,
-                "period": 0
-            },
-            "cost": {
-                "mana": 3
-            },
-            "canCastWhileMoving": false
-        },
         "_PlayerCharacter_Melee_LightAttack": {
             "abilityType": 2,
             "castType": 1,
@@ -203,6 +189,62 @@
                 "prepTime": 0.3,
                 "finishTime": 0.3
             }
+        },
+        "_PlayerCharacter_Melee_HeavyAttack_Normal": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "_Search_PlayerCharacter_Melee_HeavyAttack_Normal",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.5,
+                "period": 0
+            },
+            "cost": {
+                "mana": 3
+            },
+            "canCastWhileMoving": false
+        },
+        "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_I": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "_Search_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_I",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.5,
+                "period": 0
+            },
+            "cost": {
+                "mana": 3
+            },
+            "canCastWhileMoving": false
+        },
+        "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_II": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "_Search_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_II",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.5,
+                "period": 0
+            },
+            "cost": {
+                "mana": 3
+            },
+            "canCastWhileMoving": false
+        },
+        "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III": {
+            "abilityType": 2,
+            "castType": 1,
+            "effect": "_Search_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.5,
+                "period": 0
+            },
+            "cost": {
+                "mana": 3
+            },
+            "canCastWhileMoving": false
         }
     }
 }

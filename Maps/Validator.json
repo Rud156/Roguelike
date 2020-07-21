@@ -129,6 +129,64 @@
                     }
                 ]
             }
+        },
+        "_PlayerCharacter_WarMachine": {
+            "add": {
+                "expressions": [
+                    {
+                        "add": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "tagName": "gt_war_machine"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "_PlayerCharacter_Strength": {
+            "add": {
+                "expressions": [
+                    {
+                        "value": {
+                            "tagCount": {
+                                "tagName": "gt_strength"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "_PlayerCharacter_Cruelty": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "tagName": "gt_cruelty"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": 1
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     }
 }

@@ -87,11 +87,13 @@ local MERCHANT_ROOM_ITEM_COUNT = 3
 local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
 
 local LEVEL_1_ENEMY_SETS = {
-    { 2, 2, 0 },
-    { 3, 3, 3 },
-    { 2, 2, 2, 2 },
-    { 0, 0, 0 },
-    { 3, 0, 0 },
+    -- { 2, 2, 0 },
+    -- { 3, 3, 3 },
+    -- { 2, 2, 2, 2 },
+    -- { 0, 0, 0 },
+    -- { 3, 0, 0 },
+
+    { 4, 4 }
 }
 
 local LEVEL_2_ENEMY_SETS = {
@@ -1513,6 +1515,18 @@ function RoomEnemies:ClearEnemies()
     end
 
     self.enemies = {}
+end
+function RoomEnemies:ForceStunEnemies(stunTimer, playerPosition, stunDistance)
+    for _, enemy in ipairs(self.enemies) do
+        if enemy:IsActive() then
+            local enemyPosition = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
+            local distance = mod.VectorDistance(enemyPosition, playerPosition)
+
+            if distance <= stunDistance then
+                enemy:ActivateStunWithTimer(stunTimer)
+            end
+        end
+    end
 end
 function RoomEnemies:AddChildEnemy(enemy)
     table.insert(self.enemies, enemy)

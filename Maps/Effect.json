@@ -141,6 +141,11 @@
                         "namedExpression": {
                             "name": "_PlayerCharacter_KillerInstinct"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_Strength"
+                        }
                     }
                 ]
             }
@@ -164,6 +169,16 @@
                         "namedExpression": {
                             "name": "_PlayerCharacter_KillerInstinct"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_WarMachine"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_Cruelty"
+                        }
                     }
                 ]
             }
@@ -181,6 +196,11 @@
                     {
                         "namedExpression": {
                             "name": "_PlayerCharacter_KillerInstinct"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_Strength"
                         }
                     }
                 ]
@@ -204,6 +224,16 @@
                     {
                         "namedExpression": {
                             "name": "_PlayerCharacter_KillerInstinct"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_WarMachine"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_Cruelty"
                         }
                     }
                 ]
@@ -514,21 +544,6 @@
                 "effect": "_Set_Behaviour_PlayerCharacter_Collision"
             }
         },
-        "_Search_PlayerCharacter_Melee_HeavyAttack": {
-            "areaSearch": {
-                "debugDraw": false,
-                "areaSearchType": {
-                    "circle": {
-                        "radius": 1
-                    }
-                },
-                "maxUnitCount": 10,
-                "filter": {
-                    "player": 2
-                },
-                "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
-            }
-        },
         "_Search_PlayerCharacter_Melee_LightAttack": {
             "areaSearch": {
                 "debugDraw": false,
@@ -691,7 +706,8 @@
             "set": {
                 "effectList": [
                     "_Damage_PlayerCharacter_Melee_LightAttack",
-                    "_Set_Behaviour_Flash_Enemy"
+                    "_Set_Behaviour_Flash_Enemy",
+                    "_Set_Behaviour_LightAttack_Hit_Enemy"
                 ]
             }
         },
@@ -852,6 +868,73 @@
         "__StopMovement": {
             "stop": {
                 "whichUnit": 1
+            }
+        },
+        "_Set_Behaviour_LightAttack_Hit_Enemy": {
+            "applyBehavior": {
+                "behavior": "_PlayerCharacter_LightAttack_Hit",
+                "target": 1,
+                "duration": 0
+            }
+        },
+        "_Search_PlayerCharacter_Melee_HeavyAttack_Normal": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
+            }
+        },
+        "_Search_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_I": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.1
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
+            }
+        },
+        "_Search_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_II": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.2
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
+            }
+        },
+        "_Search_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III": {
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.3
+                    }
+                },
+                "maxUnitCount": 10,
+                "filter": {
+                    "player": 2
+                },
+                "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
             }
         }
     }
