@@ -149,7 +149,6 @@ local ROOM_LEVEL_MAX = 3
 
 -- Public Variables
 -- Player
-local PlayerInvincibleTimer = 0.5
 local PlayerDamageFlashCount = 1
 local PlayerDamageFlashTimer = 0.15
 local UseMeleePlayer = true
@@ -439,7 +438,7 @@ function HandleUnitDied()
             local redemptionSKillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Redemption)
             local playerInvincibleCount = DCEI.UnitBehaviorStackCount(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
 
-            if redemptionSKillStatus.isUnlocked and playerInvincibleCount >= 1 then
+            if redemptionSKillStatus.isUnlocked and playerInvincibleCount > 0 then
                 local maxHealth = DCEI.GetMaxHealth(m_player:GetPlayerUnit())
                 local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Redemption, redemptionSKillStatus.skillLevel)
                 local healthIncrease = maxHealth * value
@@ -1046,7 +1045,7 @@ function UpdatePlayerHealth(deltaTime)
     local lastFramePlayerHealth = m_player:GetPlayerLastFrameHealth()
 
     -- Invulnerability
-    local invincibilityTimer = PlayerInvincibleTimer
+    local invincibilityTimer = PlayerMod.PlayerInvincibleTimer
     local skillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Invulnerability)
 
     if skillStatus.isUnlocked then

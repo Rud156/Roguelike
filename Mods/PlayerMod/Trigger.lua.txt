@@ -37,6 +37,8 @@ local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
 
 local PLAYER_DEFLECTION_DISTANCE = 0.8
 
+local PLAYER_INVINCIBLE_TIMER = 3
+
 local Player = {
     playerUnit = nil,
     camera = nil,
@@ -146,9 +148,13 @@ function Player:LoadData()
     local playerStaminaAmount = playerData.staminaAmount
     local playerStaminaRegenTimer = playerData.staminaTimer
     local playerGoldAmount = playerData.gold
-    local playerMaxStamina = playerData.maxStamina
 
-    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil or playerMaxStamina == nil then
+    local playerMaxStamina = playerData.maxStamina
+    if playerMaxStamina ~= nil then
+        self.playerMaxStamina = playerMaxStamina
+    end
+
+    if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil then
         return
     end
 
@@ -161,7 +167,6 @@ function Player:LoadData()
     self.playerStaminaRegenTimer = playerStaminaRegenTimer
 
     self.playerGoldAmount = playerGoldAmount
-    self.playerMaxStamina = playerMaxStamina
 end
 function Player:ClearData()
     DCEI.LogMessage("Clearing Player Data")
@@ -696,5 +701,6 @@ mod.GetPlayerData = nil
 mod.ClearPlayerData = nil
 
 mod.PlayerDeflectionDistance = PLAYER_DEFLECTION_DISTANCE
+mod.PlayerInvincibleTimer = PLAYER_INVINCIBLE_TIMER
 
 return mod

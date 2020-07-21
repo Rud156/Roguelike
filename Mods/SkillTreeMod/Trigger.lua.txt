@@ -101,7 +101,7 @@ local SKILL_TREE = {
         skillName = "Redemption",
         skillCost = 20,
         skillDescription = "When Dwarf Smith kills an enemy during the invulnerability-state heal 5% of the max HP",
-        value = 0.05
+        value = 0.5
     },
     Preplan = {
         skillImage = "icon_enhance_iceman_yodel_taunt",
