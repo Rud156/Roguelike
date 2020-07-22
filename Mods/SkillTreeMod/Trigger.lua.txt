@@ -160,15 +160,15 @@ local SKILL_TREE = {
         skillImage = "icon_enhance_druidtower_wilds_shape",
         skillName = "Bunny Hop",
         skillCost = 20,
-        skillDescription = "Increase Dwarf Smith’s jump distance by 50%",
-        value = 0.5
+        skillDescription = "Increase Dwarf Smith’s jump distance by 30%",
+        value = 0.3
     },
     ForcefulLanding = {
         skillImage = "icon_enhance_stoneguard_bash",
         skillName = "Forceful Landing",
         skillCost = 20,
-        skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.1 seconds upon landing",
-        value = 0.1
+        skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.5 seconds upon landing",
+        value = 0.5
     },
     ImprovedSlam = {
         {
@@ -257,8 +257,8 @@ local SKILL_TREE = {
         skillImage = "icon_enhance_dragoonbarracks_crush",
         skillName = "Cruelty",
         skillCost = 20,
-        skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack",
-        value = 0.15
+        skillDescription = "Dwarf Smith will have 10% change to critically strike enemies using light attack",
+        value = 0.1
     },
     LuckyStrike = {
         {
@@ -316,7 +316,7 @@ local SKILL_TREE = {
 local SKILL_TREE_MATRIX = {
     { "HeavyBlow", "ConcussionBlow", 0, 0, 0, 0, 0 },
     { "LuckyStrike", "Strength", "AggressiveLanding", 0, 0, 0, 0 },
-    { 0, "Cruelty", "WarMachine", 0, "Endurance", "Toughness", 0 },
+    { 0, "WarMachine", "Cruelty", 0, "Endurance", "Toughness", 0 },
     { 0, 0, 0, "Hero", "QuickRecovery", "ImprovedSlam", "AdenalineRush" },
     { 0, 0, "Invulnerability", "Robust", 0, "BunnyHop", "ForcefulLanding" },
     { 0, 0, "Redemption", "Deflection", "Surefooted", 0, 0 },
