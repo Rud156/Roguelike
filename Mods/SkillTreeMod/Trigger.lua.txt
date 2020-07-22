@@ -258,7 +258,7 @@ local SKILL_TREE = {
         skillName = "Cruelty",
         skillCost = 20,
         skillDescription = "Dwarf Smith will have 15% change to critically strike enemies using light attack",
-        value = 0.05
+        value = 0.15
     },
     LuckyStrike = {
         {

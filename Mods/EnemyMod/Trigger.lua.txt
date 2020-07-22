@@ -151,6 +151,10 @@ function GoblinChef:Update(deltaTime, playerPosition)
     end
 end
 function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
+    if self.enemyState == 4 then
+        return false
+    end
+
     if self.unit == enemyUnit then
         local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
         DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
@@ -164,13 +168,13 @@ function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
     return false
 end
 function GoblinChef:ActivateStunWithTimer(stunTimer)
-    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
-
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
     self.stunTimer = stunTimer
     self:SetEnemyState(4)
+
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
 function GoblinChef:UpdateIdleState(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -361,6 +365,10 @@ function HobGoblin:Update(deltaTime, playerPosition)
     end
 end
 function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
+    if self.enemyState == 2 then
+        return false
+    end
+
     if self.unit == enemyUnit then
         local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
         DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
@@ -374,13 +382,13 @@ function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
     return false
 end
 function HobGoblin:ActivateStunWithTimer(stunTimer)
-    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
-
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
     self.stunTimer = stunTimer
-    self:SetEnemyState(4)
+    self:SetEnemyState(2)
+
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
 function HobGoblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -504,6 +512,10 @@ function Goblin:Update(deltaTime, playerPosition)
     end
 end
 function Goblin:CheckAndActivateStunnedState(enemyUnit)
+    if self.enemyState == 2 then
+        return false
+    end
+
     if self.unit == enemyUnit then
         local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
         DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
@@ -517,13 +529,13 @@ function Goblin:CheckAndActivateStunnedState(enemyUnit)
     return false
 end
 function Goblin:ActivateStunWithTimer(stunTimer)
-    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
-
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
     self.stunTimer = stunTimer
-    self:SetEnemyState(4)
+    self:SetEnemyState(2)
+
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
 function Goblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -636,6 +648,10 @@ function GoblinSapper:Update(deltaTime, playerPosition)
     end
 end
 function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
+    if self.enemyState == 2 then
+        return false
+    end
+
     if self.unit == enemyUnit then
         local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
         DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
@@ -649,13 +665,13 @@ function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
     return false
 end
 function GoblinSapper:ActivateStunWithTimer(stunTimer)
-    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
-
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
     self.stunTimer = stunTimer
-    self:SetEnemyState(4)
+    self:SetEnemyState(2)
+
+    DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
 function GoblinSapper:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
@@ -946,6 +962,10 @@ function GoblinMiner:Update(deltaTime, playerPosition)
     end
 end
 function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
+    if self.enemyState == 4 then
+        return false
+    end
+
     -- Heavy Blow
     local heavyBlowStatus = self.room.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.HeavyBlow)
 

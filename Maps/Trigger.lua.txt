@@ -557,6 +557,7 @@ function HandleBehaviourAdded()
             for _, enemy in ipairs(enemies) do
                 if enemy:IsActive() and enemy:GetMainUnit() == unit then
                     enemy:ActivateStunWithTimer(value)
+                    break
                 end
             end
         end
