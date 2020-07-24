@@ -117,7 +117,8 @@
             "_PlayerCharacter_WarMachine_III",
             "_PlayerCharacter_Cruelty",
             "_PlayerCharacter_MeatShield",
-            "_PlayerCharacter_SwiftHands"
+            "_PlayerCharacter_SwiftHands",
+            "_Perks_PoisonOrb"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",

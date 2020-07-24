@@ -270,7 +270,6 @@
                 }
             ]
         },
-        "_Enemy_Poisoned": {},
         "_PlayerCharacter_MeatShield": {
             "behaviorTagArray": [
                 {
@@ -278,6 +277,12 @@
                     "count": 1
                 }
             ]
+        },
+        "_Perks_PoisonOrb": {
+            "refreshStack": true,
+            "duration": 4,
+            "periodicInterval": 1,
+            "periodicEffect": "_Damage_PoisonOrb"
         }
     }
 }

@@ -5,7 +5,7 @@ local PERKS = {
         perkImage = "guild_badge_icons20",
         perkDescription = "Increases character attack speed by 30% but also character will 30% more damage",
         perkName = "Swift Hands",
-        value = 0
+        value = "_PlayerCharacter_SwiftHands"
     },
     OldCustomer = {
         perkImage = "guild_badge_icons11",
@@ -17,7 +17,8 @@ local PERKS = {
         perkImage = "guild_badge_icons12",
         perkDescription = "Helm of Valor will block 1 incoming attack for the character every 10 seconds",
         perkName = "Helm Of Valor",
-        value = 10
+        value = 10,
+        valueAlt = "_Collectible_Helm_Of_Valor"
     },
     Alchemist = {
         perkImage = "icon_goblinchef_skill_secret_ingredient",
@@ -29,13 +30,13 @@ local PERKS = {
         perkImage = "talent_bonus_damage_poison",
         perkDescription = "Grants player the ability to add one layer of POISON effect on target unit when hit by light attack",
         perkName = "Poison Orb",
-        value = 1
+        value = "_Perks_PoisonOrb"
     },
     MeatShield = {
         perkImage = "icon_avalanchesurfer_skill_earthward",
         perkDescription = "Sacrifice 50 Max HP, but each of your stamina bar can block 5 damage",
         perkName = "Meat Shield",
-        value = 5
+        value = 50
     }
 }
 
@@ -44,8 +45,8 @@ local PERK_NAMES = {
     OldCustomer = "OldCustomer",
     HelmOfValor = "HelmOfValor",
     Alchemist = "Alchemist",
-    PoisonOrb = "PoisonOrb",
-    MeatShield = "MeatShield"
+    PoisonOrb = "PoisonOrb"
+    -- MeatShield = "MeatShield"
 }
 
 local PerkDisplay = {
@@ -57,10 +58,12 @@ local PerkDisplay = {
     mainFrame = nil,
 
     player = nil,
-    perkDisplayedInRound = false
+    perkDisplayedInRound = false,
+
+    callbacks = {}
 }
 PerkDisplay.__index = PerkDisplay
-function PerkDisplay:new(uiLayer)
+function PerkDisplay:new(uiLayerTop)
     local perkDisplay = {}
     setmetatable(perkDisplay, PerkDisplay)
 
@@ -74,7 +77,7 @@ function PerkDisplay:new(uiLayer)
     perkDisplay.player = nil
     perkDisplay.perkDisplayedInRound = false
 
-    perkDisplay:CreateUI(uiLayer)
+    perkDisplay:CreateUI(uiLayerTop)
     perkDisplay:HidePerks()
     perkDisplay:Load()
 
@@ -94,6 +97,9 @@ function PerkDisplay:Load()
 end
 function PerkDisplay:Clear()
     mod.ClearPerks()
+end
+function PerkDisplay:AddCallback(callback)
+    table.insert(self.callbacks, callback)
 end
 function PerkDisplay:HasPerk(perkName)
     return mod.ArrayHasValue(self.currentPerks, perkName)
@@ -198,14 +204,15 @@ function PerkDisplay:HandleButtonClicked(index, perkName)
         DCEI.AnimateAlpha(button.perkButton, 1, 0, 1, "InOutExpo")
     end
 
+    self:ActivatePerk(perkName)
+    self:MarkPerkDisplayed()
+
     DCEI.TriggerAddTimerEventElapsed(
         function()
             self:HidePerks()
         end,
         2
     )
-    self:ActivatePerk(perkName)
-    self:MarkPerkDisplayed()
 end
 function PerkDisplay:ShowRandomPerks(player)
     local notActivePerks = {}
@@ -270,10 +277,11 @@ function PerkDisplay:GetDisplayedInRound()
     return self.perkDisplayedInRound
 end
 function PerkDisplay:ActivatePerk(perkName)
-    -- table.insert(self.currentPerks, perkName)
+    table.insert(self.currentPerks, perkName)
 
-    -- local perk = PERKS[perkName]
-
+    for _, callback in ipairs(self.callbacks) do
+        callback(perkName)
+    end
 end
 
 
@@ -298,7 +306,7 @@ function mod.ConvertStringToPerks(stringValue)
     return array
 end
 
-
+mod.Perks = PERKS
 mod.PerkNames = PERK_NAMES
 mod.PerkDisplay = PerkDisplay
 

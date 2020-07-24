@@ -310,6 +310,17 @@ end
 local PERK_NAME = "Perks"
 local PERK_ALREADY_SHOWN = "PerkAlreadyShown"
 
+local HELM_OF_VALOR_TIMER = "HelmOfValorTimer"
+
+function mod.SaveHelmOfValorTimer(timeLeft)
+    DCEI.Save.Set(HELM_OF_VALOR_TIMER, timeLeft)
+    DCEI.Save.Commit()
+end
+
+function mod.GetHelmOfValorTimer()
+    return DCEI.Save.Get(HELM_OF_VALOR_TIMER)
+end
+
 function mod.SavePerks(stringValue, perkShown)
     DCEI.Save.Set(PERK_NAME, stringValue)
     DCEI.Save.Set(PERK_ALREADY_SHOWN, tostring(perkShown))
@@ -326,6 +337,7 @@ end
 function mod.ClearPerks()
     DCEI.Save.Set(PERK_NAME, nil)
     DCEI.Save.Set(PERK_ALREADY_SHOWN, nil)
+    DCEI.Save.Set(HELM_OF_VALOR_TIMER, nil)
     DCEI.Save.Commit()
 end
 

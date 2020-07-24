@@ -766,6 +766,9 @@ end
 function Player:GetPlayerLastFrameHealth()
     return self.lastFramePlayerHealth
 end
+function Player:ForceSetLastFrameHealth(healthAmount)
+    self.lastFramePlayerHealth = healthAmount
+end
 function Player:GetPlayerStamina()
     return self.playerStaminaAmount
 end

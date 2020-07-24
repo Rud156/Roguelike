@@ -25,17 +25,6 @@ local COLLECTIBLES_TABLE = {
         itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage",
         itemSmallDescription = "Attack Buff.\nNo Stacking"
     },
-    _Collectible_Helm_Of_Valor = {
-        itemName = "_Collectible_Helm_Of_Valor",
-        itemDisplayName = "Helm Of Valor",
-        itemImage = "icon_enhance_lighthouse_guardian",
-        itemStackable = -1,
-        itemType = 0,
-        itemCost = 25,
-        itemBehaviourName = "_Collectible_Helm_Of_Valor",
-        itemDescription = "When placed in the inventory and active, Helm of Valor will block 1 incoming attack for the Hero. After blocking the damage, Helm of Valor will become inactive, becoming active after 10 seconds",
-        itemSmallDescription = "Blocks 1 attack"
-    },
     _Collectible_Potion = {
         itemName = "_Collectible_Potion",
         itemDisplayName = "Potion",
@@ -64,7 +53,6 @@ local COLLECTIBLES_TABLE = {
 local COLLECTIBLES = {
     "_Collectible_Boots_Of_Speed",
     "_Collectible_Hammer_Of_Attack",
-    "_Collectible_Helm_Of_Valor",
     "_Collectible_Potion",
     "_Collectible_Bomb"
 }
@@ -459,7 +447,10 @@ end
 local CollectiblesUI = {
     unit = nil,
     displayHolder = nil,
-    priceHolder = nil
+    priceHolder = nil,
+
+    priceText = nil,
+    originalPrice = 0
 }
 CollectiblesUI.__index = CollectiblesUI
 function CollectiblesUI:new(uiRoot, unit, itemName)
@@ -469,6 +460,9 @@ function CollectiblesUI:new(uiRoot, unit, itemName)
     collectiblesUi.unit = unit
     collectiblesUi.displayHolder = nil
     collectiblesUi.priceHolder = nil
+
+    collectiblesUi.priceText = nil
+    collectiblesUi.originalPrice = 0
 
     collectiblesUi:CreateUI(uiRoot, unit, itemName)
 
@@ -501,7 +495,7 @@ function CollectiblesUI:CreateUI(uiRoot, unit, itemName)
     DCEI.SetMinSize(itemPriceImage, 30, 30)
     local itemPrice = DCEI.NewText(itemPriceFrame)
     DCEI.SetText(itemPrice, COLLECTIBLES_TABLE[itemName].itemCost)
-
+    
     local itemDestription = DCEI.NewText(infoFrame)
     DCEI.SetText(itemDestription, COLLECTIBLES_TABLE[itemName].itemSmallDescription)
 
@@ -509,6 +503,10 @@ function CollectiblesUI:CreateUI(uiRoot, unit, itemName)
     self.displayHolder = mainFrame
     self.priceHolder = itemPriceFrame
 
+    self.priceText = itemPrice
+    self.originalPrice = COLLECTIBLES_TABLE[itemName].itemCost
+
+    DCEI.SetActive(self.displayHolder, false)
     DCEI.TriggerAddUnitRemovedEvent(
         self.unit,
         function()
@@ -516,7 +514,7 @@ function CollectiblesUI:CreateUI(uiRoot, unit, itemName)
         end
     )
 end
-function CollectiblesUI:Update(deltaTime, playerPosition)
+function CollectiblesUI:Update(deltaTime, perkDisplay, playerPosition)
     if not self:IsValid() then
         return
     end
@@ -525,6 +523,14 @@ function CollectiblesUI:Update(deltaTime, playerPosition)
     local distance = mod.VectorDistance(unitPosition, playerPosition)
 
     if distance <= COLLECTIBLES_UI_DISPLAY_DIST then
+        if perkDisplay:HasPerk(mod.PerkNames.OldCustomer) then
+            local value = mod.Perks[mod.PerkNames.OldCustomer].value
+            local discount = self.originalPrice * value
+
+            local newPrice = self.originalPrice - math.floor(discount)
+            DCEI.SetText(self.priceText, newPrice)
+        end
+
         DCEI.SetActive(self.displayHolder, true)
     else
         DCEI.SetActive(self.displayHolder, false)
@@ -563,12 +569,12 @@ function CollectiblesUIManager:new(uiRoot)
 
     return collectiblesUiManager
 end
-function CollectiblesUIManager:Update(deltaTime, playerPosition)
+function CollectiblesUIManager:Update(deltaTime, perkDisplay, playerPosition)
     local removalIndex = -1
 
     for i, collectible in ipairs(self.collectiblesUi) do
         if collectible:IsValid() then
-            collectible:Update(deltaTime, playerPosition)
+            collectible:Update(deltaTime, perkDisplay, playerPosition)
         else
             removalIndex = i
         end
@@ -583,7 +589,6 @@ function CollectiblesUIManager:AddNewUI(uiRoot, unit, itemName)
     table.insert(self.collectiblesUi, itemDisplay)
 end
 
-
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
 mod.CollectiblesUIManager = CollectiblesUIManager
@@ -591,6 +596,9 @@ mod.InventoryCollectibles = COLLECTIBLES_TABLE
 mod.InventoryCollectiblesName = COLLECTIBLES
 
 mod.VectorDistance = nil
+
+mod.Perks = nil
+mod.PerkNames = nil
 
 mod.SaveInventorySlotData = nil
 mod.GetInventorySlotData = nil

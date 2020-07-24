@@ -16,6 +16,8 @@ InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
 InventoryMod.SaveInventorySlotData = SaveMod.SaveInventorySlotData
 InventoryMod.GetInventorySlotData = SaveMod.GetInventorySlotData
 InventoryMod.ClearInventorySlotData = SaveMod.ClearInventorySlotData
+InventoryMod.Perks = PerksMod.Perks
+InventoryMod.PerkNames = PerksMod.PerkNames
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryCollectibles = InventoryMod.InventoryCollectibles
@@ -141,9 +143,6 @@ local COLLECTIBLE_POTION = "_Collectible_Potion"
 local COLLECTIBLE_BOMB = "_Collectible_Bomb"
 local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
-local COLLECTIBLE_HELM_OF_VALOR = "_Collectible_Helm_Of_Valor"
-local COLLECTIBLE_HELM_OF_VALOR_TIMER = 10
-
 -- Rooms
 local BEGINNING_ROOM_NAME = "StartingBase"
 local BEGINNING_ROOM_MARKER = -1
@@ -188,7 +187,7 @@ local m_playerDamageUiIsFlashOn = false
 -- Helm Of Valor
 local m_helmOfValorTimeRemaining = 0
 local m_helmOfValorActive = false
-local m_helmOfValorInInventory = false
+local m_playerHasHelmOfValor = false
 -- Camera
 local m_camera
 -- UI
@@ -359,7 +358,7 @@ function Update()
         DCEI.SetText(m_playerGoldDisplay,  tostring(playerGoldAmount))
 
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-        m_collectiblesUi:Update(GAME_LOOP_RATE, playerPosition)
+        m_collectiblesUi:Update(GAME_LOOP_RATE, m_perkDisplay, playerPosition)
     end
 
     if m_roomEnemies ~= nil and m_player ~= nil then
@@ -376,13 +375,13 @@ function Update()
         m_camera:Update(GAME_LOOP_RATE)
     end
 
-    if m_helmOfValorInInventory then
+    if m_playerHasHelmOfValor then
         if not m_helmOfValorActive then
             m_helmOfValorTimeRemaining = m_helmOfValorTimeRemaining - GAME_LOOP_RATE
 
             if m_helmOfValorTimeRemaining <= 0 then
                 m_helmOfValorActive = true
-                DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
+                DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.HelmOfValor].valueAlt)
             end
         end
     end
@@ -560,7 +559,9 @@ function HandleBehaviourAdded()
         m_player:SetPlayerPosition(missilePosition.x, missilePosition.y)
         m_player:SetDashInActive()
 
-    elseif behaviourName == PlayerMod.PlayerConcussionBlow then -- Concussion Blow
+    elseif behaviourName == PlayerMod.PlayerConcussionBlow then  -- This behaviour can also be used to detect which enemy was hit
+        
+        -- Concussion Blow
         local concussionBlowStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ConcussionBlow)
 
         if m_roomEnemies ~= nil and concussionBlowStatus.isUnlocked then
@@ -573,6 +574,11 @@ function HandleBehaviourAdded()
                     break
                 end
             end
+        end
+
+        -- Poison Orb
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.PoisonOrb) then
+            DCEI.ApplyBehavior(unit, PerksMod.Perks[PerksMod.PerkNames.PoisonOrb].value)
         end
 
     elseif behaviourName == GOBLIN_MINER_MISSILE_BEHAVIOUR then
@@ -591,12 +597,10 @@ function HandleBehaviourAdded()
 
     elseif behaviourName == PLAYERCHARACTER_DAMAGED then
         if unitName == PLAYER_NAME_MELEE or unitName == PLAYER_NAME_RANGED then
-            if m_helmOfValorActive and m_helmOfValorInInventory then
-                DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemBehaviourName)
+            if m_helmOfValorActive and m_playerHasHelmOfValor then
+                DCEI.RemoveBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.HelmOfValor].valueAlt)
                 m_helmOfValorActive = false
-                m_helmOfValorTimeRemaining = COLLECTIBLE_HELM_OF_VALOR_TIMER
-            
-                m_inventory:ActivateInventorySlotRecharge(InventoryCollectibles[COLLECTIBLE_HELM_OF_VALOR].itemName, COLLECTIBLE_HELM_OF_VALOR_TIMER)
+                m_helmOfValorTimeRemaining = PerksMod.Perks[PerksMod.PerkNames.HelmOfValor].value
             end
         end
 
@@ -745,18 +749,6 @@ function SpawnEnemiesAndCloseDoors()
             m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_skillDisplay, m_roomLevel, false)
         end
         ActivateDoorCloseAnimations()
-    end
-end
-
-function CheckAndSpawnPerks()
-    m_perkDisplay = PerkDisplay:new(m_uiTopLayer)
-    if m_isBeginningRoom then
-        m_perkDisplay:MarkPerkDisplayed()
-        m_perkDisplay:Save()
-    end
-
-    if not m_perkDisplay:GetDisplayedInRound() then
-        m_perkDisplay:ShowRandomPerks(m_player)
     end
 end
 
@@ -955,7 +947,11 @@ function UpdateCollisionWithExitDoor()
 
     else
         m_perkDisplay:ClearPerkMark()
+
         m_perkDisplay:Save()
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.HelmOfValor) then
+            SaveMod.SaveHelmOfValorTimer(m_helmOfValorTimeRemaining)
+        end
 
         m_roomGenerator:ClearSaveData()
         SaveMod.ClearItemDrops()
@@ -1076,7 +1072,11 @@ function SaveNextRoomData()
     m_inventory:SaveInventory() 
     m_player:SaveData()
     m_skillDisplay:SaveSkillTree()
+
     m_perkDisplay:Save()
+    if m_perkDisplay:HasPerk(PerksMod.PerkNames.HelmOfValor) then
+        SaveMod.SaveHelmOfValorTimer(m_helmOfValorTimeRemaining)
+    end
 end
 
 function DisplayGameOverSequence(playerWon)
@@ -1348,6 +1348,14 @@ function HandleInventoryUnitClicked(unit, unitName)
         local playerGold = m_player:GetPlayerGold()
         local itemCost = InventoryCollectibles[unitName].itemCost
 
+        -- Old Customer
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.OldCustomer) then
+            local value = PerksMod.Perks[PerksMod.PerkNames.OldCustomer].value
+            local discountAmount = itemCost * value
+
+            itemCost = itemCost - math.floor(discountAmount)
+        end
+
         if playerGold < itemCost then
             DCEI.LogMessage("Item Name: " .. unitName .. ", Item Gold: " .. itemCost)
             DCEI.LogMessage("Not enough gold to buy!!!")
@@ -1422,10 +1430,6 @@ function ApplyInventoryBehaviours()
     for i, slot in ipairs(slots) do
         local itemName = slot:GetInventoryItemName()
         ApplyInventoryItemBehaviour(itemName)
-        
-        if itemName == COLLECTIBLE_HELM_OF_VALOR then
-            m_helmOfValorTimeRemaining = slot.currentRechargeTime    
-        end
     end
 end
 
@@ -1442,10 +1446,6 @@ function ApplyInventoryItemBehaviour(itemName)
         DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
         DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
-    elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
-        m_helmOfValorInInventory = true
-        m_helmOfValorActive = false
-        m_helmOfValorTimeRemaining = 0
     end
 end
 
@@ -1453,12 +1453,6 @@ function RemoveInventoryItemBehaviour(itemName)
     if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
         DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
-        DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
-    elseif itemName == COLLECTIBLE_HELM_OF_VALOR then
-        m_helmOfValorInInventory = false
-        m_helmOfValorActive = false
-        m_helmOfValorTimeRemaining = 0
-
         DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     end
 end
@@ -1485,6 +1479,14 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
     if itemName == COLLECTIBLE_POTION then
         local healthAmount = InventoryCollectibles[itemName].itemPotionHealth
         local potionBehaviour = InventoryCollectibles[itemName].itemBehaviourName
+
+        -- Alchemist (Health Potion)
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.Alchemist) then
+            local value = PerksMod.Perks[PerksMod.PerkNames.Alchemist].value
+            local buffedAmount = healthAmount * value
+
+            healthAmount = healthAmount + buffedAmount
+        end
 
         DCEI.LogMessage("Adding Player Health: " .. healthAmount)
         DCEI.AddHealth(m_player:GetPlayerUnit(), healthAmount)
@@ -1554,6 +1556,76 @@ function SkillUnlockedCallback(skillName)
 end
 
 -- #endregion Skill Tree Functions
+
+-- #region Perk Functions
+
+function CheckAndSpawnPerks()
+    m_perkDisplay = PerkDisplay:new(m_uiTopLayer)
+    m_perkDisplay:AddCallback(HandlePerkActivatedCallback)
+
+    if m_isBeginningRoom then
+        m_perkDisplay:MarkPerkDisplayed()
+
+        m_perkDisplay:Save()
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.HelmOfValor) then
+            SaveMod.SaveHelmOfValorTimer(m_helmOfValorTimeRemaining)
+        end
+    end
+
+    if not m_perkDisplay:GetDisplayedInRound() then
+        m_perkDisplay:ShowRandomPerks(m_player)
+    end
+
+    if m_player == nil then
+        return
+    end
+
+    for _, perkName in pairs(PerksMod.PerkNames) do
+        if not m_perkDisplay:HasPerk(perkName) then
+            goto continue
+        end
+
+        -- Swift Hands
+        if perkName == PerksMod.PerkNames.SwiftHands then
+            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[perkName].value)
+
+        -- Helm Of Valor
+        elseif perkName == PerksMod.PerkNames.HelmOfValor then
+            m_playerHasHelmOfValor = true
+            m_helmOfValorActive = false
+
+            local helmOfValorTimer = SaveMod.GetHelmOfValorTimer()
+            if helmOfValorTimer ~= nil then
+                m_helmOfValorTimeRemaining = helmOfValorTimer
+            else
+                m_helmOfValorTimeRemaining = 0
+            end
+
+        end
+
+        ::continue::
+    end
+end
+
+function HandlePerkActivatedCallback(perkName)
+    if m_player == nil then
+        return
+    end
+
+    -- Swift Hands
+    if perkName == PerksMod.PerkNames.SwiftHands then
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[perkName].value)
+
+    -- Helm of Valor
+    elseif perkName == PerksMod.PerkNames.HelmOfValor then
+        m_playerHasHelmOfValor = true
+        m_helmOfValorActive = false
+        m_helmOfValorTimeRemaining = 0
+
+    end
+end
+
+-- #endregion Perk Functions
 
 -- #endregion Utility Fuctions
 
