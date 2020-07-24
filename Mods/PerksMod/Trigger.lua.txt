@@ -1,0 +1,313 @@
+local mod = {}
+
+local PERKS = {
+    SwiftHands = {
+        perkImage = "guild_badge_icons20",
+        perkDescription = "Increases character attack speed by 30% but also character will 30% more damage",
+        perkName = "Swift Hands",
+        value = 0
+    },
+    OldCustomer = {
+        perkImage = "guild_badge_icons11",
+        perkDescription = "50% discount on all products in shop!!!",
+        perkName = "Old Customer",
+        value = 0.5
+    },
+    HelmOfValor = {
+        perkImage = "guild_badge_icons12",
+        perkDescription = "Helm of Valor will block 1 incoming attack for the character every 10 seconds",
+        perkName = "Helm Of Valor",
+        value = 10
+    },
+    Alchemist = {
+        perkImage = "icon_goblinchef_skill_secret_ingredient",
+        perkDescription = "Increase all potion effectiveness by 50%",
+        perkName = "Alchemist",
+        value = 0.5
+    },
+    PoisonOrb = {
+        perkImage = "talent_bonus_damage_poison",
+        perkDescription = "Grants player the ability to add one layer of POISON effect on target unit when hit by light attack",
+        perkName = "Poison Orb",
+        value = 1
+    },
+    MeatShield = {
+        perkImage = "icon_avalanchesurfer_skill_earthward",
+        perkDescription = "Sacrifice 50 Max HP, but each of your stamina bar can block 5 damage",
+        perkName = "Meat Shield",
+        value = 5
+    }
+}
+
+local PERK_NAMES = {
+    SwiftHands = "SwiftHands",
+    OldCustomer = "OldCustomer",
+    HelmOfValor = "HelmOfValor",
+    Alchemist = "Alchemist",
+    PoisonOrb = "PoisonOrb",
+    MeatShield = "MeatShield"
+}
+
+local PerkDisplay = {
+    currentPerks = {},
+    displayedPerks = {},
+
+    topLayerButtons = {},
+    bottomLayerButtons = {},
+    mainFrame = nil,
+
+    player = nil,
+    perkDisplayedInRound = false
+}
+PerkDisplay.__index = PerkDisplay
+function PerkDisplay:new(uiLayer)
+    local perkDisplay = {}
+    setmetatable(perkDisplay, PerkDisplay)
+
+    perkDisplay.currentPerks = {}
+    perkDisplay.displayedPerks = {}
+
+    perkDisplay.topLayerButtons = {}
+    perkDisplay.bottomLayerButtons = {}
+    perkDisplay.mainFrame = nil
+
+    perkDisplay.player = nil
+    perkDisplay.perkDisplayedInRound = false
+
+    perkDisplay:CreateUI(uiLayer)
+    perkDisplay:HidePerks()
+    perkDisplay:Load()
+
+    return perkDisplay
+end
+function PerkDisplay:Save()
+    mod.SavePerks(mod.ConvertPerksToString(self.currentPerks), self.perkDisplayedInRound)
+end
+function PerkDisplay:Load()
+    local stringValue, perkDisplayed = mod.LoadPerks()
+    if stringValue == nil or perkDisplayed == nil then
+        return
+    end
+
+    self.currentPerks = mod.ConvertStringToPerks(stringValue)
+    self.perkDisplayedInRound = mod.ToBoolean(perkDisplayed)
+end
+function PerkDisplay:Clear()
+    mod.ClearPerks()
+end
+function PerkDisplay:HasPerk(perkName)
+    return mod.ArrayHasValue(self.currentPerks, perkName)
+end
+function PerkDisplay:CreateUI(uiLayer)
+    local canvasSize = DCEI.GetUiCanvasSize()
+    local bottomButtonHeight = 100
+
+    local mainFrame = DCEI.NewFrame(uiLayer)
+    DCEI.SetMatchParent(mainFrame, true, true)
+    self.mainFrame = mainFrame
+
+    local vStack = DCEI.NewVStack(mainFrame)
+
+    -- Top Buttons
+    local hTopFrame = DCEI.NewFrame(vStack)
+    DCEI.SetMinSize(hTopFrame, canvasSize.x, canvasSize.y - bottomButtonHeight)
+    for i = 1, 3 do
+        local button = DCEI.NewButton(hTopFrame)
+        DCEI.SetMinSize(button, canvasSize.x / 3, canvasSize.y - bottomButtonHeight)
+        DCEI.SetMaxSize(button, canvasSize.x / 3, canvasSize.y - bottomButtonHeight)
+        DCEI.SetBackgroundImage(button, "btn_yellow_invert")
+        DCEI.SetLeftAlignmentInParent(button)
+        DCEI.SetHorizontalOffsetInParent(button, (i - 1) * (canvasSize.x  / 3))
+
+        local buttonFrame = DCEI.NewVStack(button)
+        DCEI.SetSpacing(buttonFrame, 21)
+
+        local perkIcon = DCEI.NewFrame(buttonFrame)
+        DCEI.SetMinSize(perkIcon, 100, 100)
+        DCEI.SetBackgroundImage(perkIcon, "icon_catalyst_main_item3_green_0" .. i)
+
+        local perkTextName = DCEI.NewText(buttonFrame)
+        
+        local perkTextDescription = DCEI.NewText(buttonFrame)
+        DCEI.SetMaxSize(perkTextDescription, canvasSize.x / 3 - 21, 250)
+
+        local perkDisplayButton = {
+            perkName = "",
+            perkImage = perkIcon,
+            perkNameDisplay = perkTextName,
+            perkDescription = perkTextDescription,
+            perkButton = button
+        }
+
+        DCEI.SetOnClickCallback(
+            button,
+            function()
+                self:HandleButtonClicked(i, perkDisplayButton.perkName)
+            end
+        )
+
+        table.insert(self.topLayerButtons, perkDisplayButton)
+    end
+
+    -- Bottom Buttons
+    local hBottomStack = DCEI.NewHStack(vStack)
+    for i = 1, 3 do
+        local button = DCEI.NewButton(hBottomStack)
+        DCEI.SetMinSize(button, canvasSize.x / 3, bottomButtonHeight)
+        DCEI.SetMaxSize(button, canvasSize.x / 3, bottomButtonHeight)
+        DCEI.SetBackgroundImage(button, "btn_yellow_invert")
+
+        local buttonText = DCEI.NewText(button)
+        DCEI.SetText(buttonText, "Perk: " .. i)
+
+        local perkDisplayButton = {
+            perkName = "",
+            perkNameDisplay = buttonText,
+            perkButton = button
+        }
+
+        DCEI.SetOnClickCallback(
+            button,
+            function()
+                self:HandleButtonClicked(i, perkDisplayButton.perkName)
+            end
+        )
+        
+        table.insert(self.bottomLayerButtons, perkDisplayButton)
+    end
+end
+function PerkDisplay:HandleButtonClicked(index, perkName)
+    local canvasSize = DCEI.GetUiCanvasSize()
+    local buttonSize = canvasSize.x / 3
+
+    for i, button in ipairs(self.topLayerButtons) do
+        if i == index then
+            DCEI.AnimateScale(button.perkButton, { x = 1, y = 1, z = 1 }, { x = 0.5, y = 0.5, z = 0.5 }, 1, "InOutExpo")
+            DCEI.TriggerAddTimerEventElapsed(
+                function()
+                    DCEI.AnimateAlpha(button.perkButton, 1, 0, 0.5, "InOutExpo")
+                end,
+                1.1
+            )
+        else
+            DCEI.AnimateAlpha(button.perkButton, 1, 0, 1, "InOutExpo")
+        end
+    end
+
+    for _, button in ipairs(self.bottomLayerButtons) do
+        DCEI.AnimateAlpha(button.perkButton, 1, 0, 1, "InOutExpo")
+    end
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            self:HidePerks()
+        end,
+        2
+    )
+    self:ActivatePerk(perkName)
+    self:MarkPerkDisplayed()
+end
+function PerkDisplay:ShowRandomPerks(player)
+    local notActivePerks = {}
+
+    for _, perk in pairs(PERK_NAMES) do
+        if not mod.ArrayHasValue(self.currentPerks, perk) then
+            table.insert(notActivePerks, perk)
+        end
+    end
+
+    notActivePerks = mod.ShuffleTable(notActivePerks)
+
+    for i = 1, 3 do
+        local perk = PERKS[notActivePerks[i]]
+
+        local topButton = self.topLayerButtons[i]
+        topButton.perkName = notActivePerks[i]
+        DCEI.SetBackgroundImage(topButton.perkImage, perk.perkImage)
+        DCEI.SetText(topButton.perkNameDisplay, perk.perkName)
+        DCEI.SetText(topButton.perkDescription, perk.perkDescription)
+
+        local bottomButton = self.bottomLayerButtons[i]
+        bottomButton.perkName = notActivePerks[i]
+        DCEI.SetText(bottomButton.perkNameDisplay, perk.perkName)
+    end
+
+    self:DisplayPerks(player)
+end
+function PerkDisplay:DisplayPerks(player)
+    DCEI.SetActive(self.mainFrame, true)
+
+    for _, button in ipairs(self.topLayerButtons) do
+        DCEI.AnimateScale(button.perkButton, { x = 0, y = 0, z = 0 }, { x = 1, y = 1, z = 1 }, 1, "InOutExpo")
+        DCEI.AnimateAlpha(button.perkButton, 0, 1, 1, "InOutExpo")
+    end
+
+    for _, button in ipairs(self.bottomLayerButtons) do
+        DCEI.AnimateAlpha(button.perkButton, 0, 1, 1, "InOutExpo")
+    end
+
+    self.player = player
+    self.player:HidePlayerUI()
+    DCEI.HideJoystick(0)
+end
+function PerkDisplay:HidePerks()
+    DCEI.SetActive(self.mainFrame, false)
+
+    if self.player ~= nil then
+        self.player:ShowPlayerUI()
+        self.player = nil
+    end
+    DCEI.ShowJoystick(0)
+end
+function PerkDisplay:MarkPerkDisplayed()
+    self.perkDisplayedInRound = true
+end
+function PerkDisplay:ClearPerkMark()
+    self.perkDisplayedInRound = false
+end
+function PerkDisplay:GetDisplayedInRound()
+    return self.perkDisplayedInRound
+end
+function PerkDisplay:ActivatePerk(perkName)
+    -- table.insert(self.currentPerks, perkName)
+
+    -- local perk = PERKS[perkName]
+
+end
+
+
+function mod.ConvertPerksToString(perks)
+    local stringValue = ""
+
+    for _, perk in ipairs(perks) do
+        stringValue = stringValue .. perk .. ","
+    end
+
+    return stringValue
+end
+
+function mod.ConvertStringToPerks(stringValue)
+    local perks = mod.split(stringValue, ",")
+    local array = {}
+
+    for _, data in pairs(perks) do
+        table.insert(array, data)
+    end
+
+    return array
+end
+
+
+mod.PerkNames = PERK_NAMES
+mod.PerkDisplay = PerkDisplay
+
+mod.SavePerks = nil
+mod.LoadPerks = nil
+mod.ClearPerks = nil
+
+mod.split = nil
+mod.ArrayHasValue = nil
+mod.ShuffleTable = nil
+mod.ToBoolean = nil
+
+return mod
