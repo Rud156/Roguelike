@@ -248,6 +248,7 @@ function PerkDisplay:DisplayPerks(player)
 
     self.player = player
     self.player:HidePlayerUI()
+    
     DCEI.HideJoystick(0)
 end
 function PerkDisplay:HidePerks()
