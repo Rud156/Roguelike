@@ -32,6 +32,16 @@
                         "namedExpression": {
                             "name": "DamageResistance"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
+                        }
                     }
                 ]
             }
@@ -44,6 +54,16 @@
                     {
                         "namedExpression": {
                             "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
                         }
                     }
                 ]
@@ -58,6 +78,16 @@
                         "namedExpression": {
                             "name": "DamageResistance"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
+                        }
                     }
                 ]
             }
@@ -70,6 +100,16 @@
                     {
                         "namedExpression": {
                             "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
                         }
                     }
                 ]
@@ -84,6 +124,16 @@
                         "namedExpression": {
                             "name": "DamageResistance"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
+                        }
                     }
                 ]
             }
@@ -96,6 +146,16 @@
                     {
                         "namedExpression": {
                             "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
                         }
                     }
                 ]
@@ -110,6 +170,16 @@
                         "namedExpression": {
                             "name": "DamageResistance"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
+                        }
                     }
                 ]
             }
@@ -122,6 +192,16 @@
                     {
                         "namedExpression": {
                             "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_MeatShield"
                         }
                     }
                 ]

@@ -187,6 +187,60 @@
                     }
                 ]
             }
+        },
+        "_PlayerCharacter_SwiftHands": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "unit": 2,
+                                            "tagName": "gt_swift_hands"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": 0.3
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "_PlayerCharacter_MeatShield": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "unit": 2,
+                                            "tagName": "gt_meat_shield"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "constant": {
+                                            "int32Value": -5
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     }
 }

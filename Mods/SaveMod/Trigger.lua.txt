@@ -305,6 +305,32 @@ end
 
 -- #endregion Skill Tree
 
+-- #region Perks
+
+local PERK_NAME = "Perks"
+local PERK_ALREADY_SHOWN = "PerkAlreadyShown"
+
+function mod.SavePerks(stringValue, perkShown)
+    DCEI.Save.Set(PERK_NAME, stringValue)
+    DCEI.Save.Set(PERK_ALREADY_SHOWN, tostring(perkShown))
+    DCEI.Save.Commit()
+end
+
+function mod.LoadPerks()
+    local stringValue = DCEI.Save.Get(PERK_NAME)
+    local perkShown = DCEI.Save.Get(PERK_ALREADY_SHOWN)
+
+    return stringValue, perkShown
+end
+
+function mod.ClearPerks()
+    DCEI.Save.Set(PERK_NAME, nil)
+    DCEI.Save.Set(PERK_ALREADY_SHOWN, nil)
+    DCEI.Save.Commit()
+end
+
+-- #endregion Perks
+
 
 function mod.ClearAllData()
     mod.ClearAllMainMapData()
@@ -313,6 +339,7 @@ function mod.ClearAllData()
     mod.ClearPlayerData(false)
     mod.ClearRoomData()
     mod.ClearSkillTree()
+    mod.ClearPerks()
 end
 
 return mod

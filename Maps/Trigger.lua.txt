@@ -9,6 +9,7 @@ local UtilClassMod = GameModules["Mods/UtilClassMod"]
 local PlayerMod = GameModules["Mods/PlayerMod"]
 local UiUtilMod = GameModules["Mods/UiUtilMod"]
 local SkillTreeMod = GameModules["Mods/SkillTreeMod"]
+local PerksMod = GameModules["Mods/PerksMod"]
 local SaveMod = GameModules["Mods/SaveMod"]
 
 InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
@@ -71,6 +72,15 @@ SkillTreeMod.SaveSkillTree = SaveMod.SaveSkillTree
 SkillTreeMod.GetSkillTree = SaveMod.GetSkillTree
 SkillTreeMod.ClearSkillTree = SaveMod.ClearSkillTree
 local SkillDisplay = SkillTreeMod.SkillDisplay
+
+PerksMod.SavePerks = SaveMod.SavePerks
+PerksMod.LoadPerks = SaveMod.LoadPerks
+PerksMod.ClearPerks = SaveMod.ClearPerks
+PerksMod.split = ExtensionFunction.split
+PerksMod.ArrayHasValue = ExtensionFunction.ArrayHasValue
+PerksMod.ShuffleTable = ExtensionFunction.ShuffleTable
+PerksMod.ToBoolean = ExtensionFunction.ToBoolean
+local PerkDisplay = PerksMod.PerkDisplay
 
 PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
@@ -198,6 +208,8 @@ local m_fader
 local m_sceneTransitionActive = false
 -- Skill Tree
 local m_skillDisplay
+-- Perks
+local m_perkDisplay
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
@@ -240,6 +252,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CheckAndSpawnEntryDoor() -- This should be done later as the Player is required to be moved on the doorway
     CheckAndSpawnExitDoor()
     SpawnEnemiesAndCloseDoors()
+    CheckAndSpawnPerks()
 
     m_miniMap = MiniMap:new(m_uiMiddleLayer, m_roomGenerator)
     if m_isBeginningRoom then
@@ -735,6 +748,18 @@ function SpawnEnemiesAndCloseDoors()
     end
 end
 
+function CheckAndSpawnPerks()
+    m_perkDisplay = PerkDisplay:new(m_uiTopLayer)
+    if m_isBeginningRoom then
+        m_perkDisplay:MarkPerkDisplayed()
+        m_perkDisplay:Save()
+    end
+
+    if not m_perkDisplay:GetDisplayedInRound() then
+        m_perkDisplay:ShowRandomPerks(m_player)
+    end
+end
+
 function ActivateDoorCloseAnimations()
     DCEI.LogMessage("Playing Close Door Animations")
 
@@ -922,12 +947,16 @@ function UpdateCollisionWithExitDoor()
     m_roomLevel = m_roomLevel + 1
     if m_roomLevel > ROOM_LEVEL_MAX then
         m_roomGenerator:ClearSaveData()
+        m_perkDisplay:Clear()
 
         SaveMod.ClearAllMainMapData()
         DCEI.Wait(1)
         DCEI.PlayLevel(BEGINNING_ROOM_PATH, BEGINNING_ROOM_NAME)
 
     else
+        m_perkDisplay:ClearPerkMark()
+        m_perkDisplay:Save()
+
         m_roomGenerator:ClearSaveData()
         SaveMod.ClearItemDrops()
         
@@ -1047,6 +1076,7 @@ function SaveNextRoomData()
     m_inventory:SaveInventory() 
     m_player:SaveData()
     m_skillDisplay:SaveSkillTree()
+    m_perkDisplay:Save()
 end
 
 function DisplayGameOverSequence(playerWon)
@@ -1068,6 +1098,7 @@ function DisplayGameOverSequence(playerWon)
         m_roomGenerator:ClearSaveData()
         m_inventory:ClearInventorySave()
         m_roomItemDrops:ClearData()
+        m_perkDisplay:Clear()
 
         SaveMod.ClearAllMainMapData()
         DCEI.Wait(1)
@@ -1211,6 +1242,7 @@ function CreateDebugUI()
 
     local roomType = SaveMod.GetRoomName()
     if roomType == nil then
+        -- Skill Tree
         local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
         DCEI.SetMinSize(skillTreeButton, 50, 50)
         DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
@@ -1219,6 +1251,16 @@ function CreateDebugUI()
         DCEI.SetTopAlignmentInParent(skillTreeButton)
         DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
         DCEI.SetVerticalOffsetInParent(skillTreeButton, -100)
+
+        -- Perks
+        local perkButton = DCEI.NewButton(m_uiMiddleLayer)
+        DCEI.SetMinSize(perkButton, 50, 50)
+        DCEI.SetBackgroundImage(perkButton, "icon_enhance_leviathan_water_spout")
+        DCEI.SetOnClickCallback(perkButton, HandlePerkButtonClicked)
+        DCEI.SetLeftAlignmentInParent(perkButton)
+        DCEI.SetTopAlignmentInParent(perkButton)
+        DCEI.SetHorizontalOffsetInParent(perkButton, 100)
+        DCEI.SetVerticalOffsetInParent(perkButton, -100)
     end
 end
 
@@ -1280,6 +1322,12 @@ end
 function HandleSkillTreeClick()
     if m_skillDisplay ~= nil then
         m_skillDisplay:ShowSkillTree(m_player)
+    end
+end
+
+function HandlePerkButtonClicked()
+    if m_perkDisplay ~= nil then
+        m_perkDisplay:ShowRandomPerks(m_player)
     end
 end
 

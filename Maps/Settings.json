@@ -14,7 +14,8 @@
             "Mods/NewRoomMod",
             "Mods/UiUtilMod",
             "Mods/SaveMod",
-            "Mods/SkillTreeMod"
+            "Mods/SkillTreeMod",
+            "Mods/PerksMod"
         ],
         "transitionMaps": [
             "Mods/RoomTemplates/CommonRoom/CR_BL_0",
@@ -114,10 +115,18 @@
             "_PlayerCharacter_WarMachine_I",
             "_PlayerCharacter_WarMachine_II",
             "_PlayerCharacter_WarMachine_III",
-            "_PlayerCharacter_Cruelty"
+            "_PlayerCharacter_Cruelty",
+            "_PlayerCharacter_MeatShield",
+            "_PlayerCharacter_SwiftHands"
         ],
         "usedAtlasAssets": [
-            "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas"
+            "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/ItemAtlas00.spriteatlas",
+            "Assets/Bundles/UI/Atlas/InGameUIAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/CardAtlas00.spriteatlas",
+            "Assets/Bundles/UI/Atlas/GuildlAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/CardInfo00.spriteatlas",
+            "Assets/Bundles/UI/Atlas/WildCastle00.spriteatlas"
         ]
     }
 }
