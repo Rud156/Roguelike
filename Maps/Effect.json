@@ -40,7 +40,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -63,7 +63,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -109,7 +109,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -132,7 +132,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -155,7 +155,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -178,7 +178,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -201,7 +201,7 @@
                     },
                     {
                         "namedExpression": {
-                            "name": "_PlayerCharacter_MeatShield"
+                            "name": "_Collectible_CatalystPotion_Target"
                         }
                     }
                 ]
@@ -225,6 +225,11 @@
                     {
                         "namedExpression": {
                             "name": "_PlayerCharacter_Strength"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Collectible_CatalystPotion_Self"
                         }
                     }
                 ]
@@ -259,6 +264,11 @@
                         "namedExpression": {
                             "name": "_PlayerCharacter_Cruelty"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Collectible_CatalystPotion_Self"
+                        }
                     }
                 ]
             }
@@ -281,6 +291,11 @@
                     {
                         "namedExpression": {
                             "name": "_PlayerCharacter_Strength"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Collectible_CatalystPotion_Self"
                         }
                     }
                 ]
@@ -314,6 +329,11 @@
                     {
                         "namedExpression": {
                             "name": "_PlayerCharacter_Cruelty"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Collectible_CatalystPotion_Self"
                         }
                     }
                 ]

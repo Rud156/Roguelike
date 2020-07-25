@@ -139,8 +139,9 @@ local GOBLIN_MINER_MISSILE_BEHAVIOUR = "_Enemy_GoblinMiner_Missile_Reached"
 
 -- Collectibles
 local COLLECTIBLE_STRING = "_Collectible"
-local COLLECTIBLE_BOOTS_OF_SPEED = "_Collectible_Boots_Of_Speed"
+local COLLECTIBLE_SPEED_POTION = "_Collectible_Speed_Potion"
 local COLLECTIBLE_HAMMER_OF_ATTACK = "_Collectible_Hammer_Of_Attack"
+local COLLECTIBLE_CATALYST_POTION = "_Collectible_Catalyst_Potion"
 local COLLECTIBLE_POTION = "_Collectible_Potion"
 local COLLECTIBLE_BOMB = "_Collectible_Bomb"
 local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
@@ -1447,17 +1448,13 @@ function RemoveInventoryBehaviours()
 end
 
 function ApplyInventoryItemBehaviour(itemName)
-    if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
-        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
-    elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
+    if itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
         DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     end
 end
 
 function RemoveInventoryItemBehaviour(itemName)
-    if itemName == COLLECTIBLE_BOOTS_OF_SPEED then
-        DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
-    elseif itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
+    if itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
         DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
     end
 end
@@ -1482,7 +1479,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
     DCEI.LogMessage("Selected Item: " .. itemName)
 
     if itemName == COLLECTIBLE_POTION then
-        local healthAmount = InventoryCollectibles[itemName].itemPotionHealth
+        local healthAmount = InventoryCollectibles[itemName].value
         local potionBehaviour = InventoryCollectibles[itemName].itemBehaviourName
 
         -- Alchemist (Health Potion)
@@ -1505,6 +1502,38 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 
         DCEI.LogMessage("Deploying Bomb...")
         DCEI.CreateUnit(0, 0, bombUnitName, playerPosition.x, playerPosition.y)
+
+        inventorySlot:UseItem()
+
+    elseif itemName == COLLECTIBLE_CATALYST_POTION then
+        local duration = InventoryCollectibles[itemName].value
+        local behaviourName = InventoryCollectibles[itemName].itemBehaviourName
+
+        -- Alchemist (Catalyst Potion)
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.Alchemist) then
+            local value = PerksMod.Perks[PerksMod.PerkNames.Alchemist].value
+            local buffedAmount = duration * value
+
+            duration = duration + buffedAmount
+        end
+
+        DCEI.ApplyBehaviorWithDuration(m_player:GetPlayerUnit(), behaviourName, duration, false)
+
+        inventorySlot:UseItem()
+
+    elseif itemName == COLLECTIBLE_SPEED_POTION then
+        local duration = InventoryCollectibles[itemName].value
+        local behaviourName = InventoryCollectibles[itemName].itemBehaviourName
+
+        -- Alchemist (Catalyst Potion)
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.Alchemist) then
+            local value = PerksMod.Perks[PerksMod.PerkNames.Alchemist].value
+            local buffedAmount = duration * value
+
+            duration = duration + buffedAmount
+        end
+
+        DCEI.ApplyBehaviorWithDuration(m_player:GetPlayerUnit(), behaviourName, duration, false)
 
         inventorySlot:UseItem()
 

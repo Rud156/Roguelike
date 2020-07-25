@@ -3,27 +3,29 @@ local ArcadeCore = GameModules["Arcade/Core"]
 local mod = {}
 
 local COLLECTIBLES_TABLE = {
-    _Collectible_Boots_Of_Speed = {
-        itemName = "_Collectible_Boots_Of_Speed",
-        itemDisplayName = "Boots Of Speed",
-        itemImage = "icon_enhance_frosttower_tempestaura",
+    _Collectible_Speed_Potion = {
+        itemName = "_Collectible_Speed_Potion",
+        itemDisplayName = "Speed Potion",
+        itemImage = "icon_catalyst_main_item5_blue_03",
         itemStackable = -1,
-        itemType = 0,
+        itemType = 1,
         itemCost = 35,
-        itemBehaviourName = "_Collectible_Boots_Of_Speed",
-        itemDescription = "Increases the movement speed of the Hero by 30% when placed in inventory. Boots of Speed do not stack. Two boots of speed will make a Hero just as fast as one",
-        itemSmallDescription = "Movement Speed Buff.\nNo Stacking"
+        itemBehaviourName = "_Collectible_Speed_Potion",
+        itemDescription = "Consume to increases the movement speed of the Hero by 30% for 10 seconds",
+        itemSmallDescription = "Movement Speed Buff",
+        value = 10
     },
-    _Collectible_Hammer_Of_Attack = {
-        itemName = "_Collectible_Hammer_Of_Attack",
-        itemDisplayName = "Hammer Of Attack",
-        itemImage = "icon_enhance_crusader_blessed_hammer",
+    _Collectible_Catalyst_Potion = {
+        itemName = "_Collectible_Catalyst_Potion",
+        itemDisplayName = "Catalyst Potion",
+        itemImage = "icon_catalyst_main_item5_blue_01",
         itemStackable = -1,
-        itemType = 0,
-        itemCost = 50,
-        itemBehaviourName = "_Collectible_Hammer_Of_Attack",
-        itemDescription = "Increases the light attack damage of the Hero by 50% when placed in inventory. Hammer of Attack does not stack. Two Hammer of Attack will still make a Hero’s light attack deals 50% more damage",
-        itemSmallDescription = "Attack Buff.\nNo Stacking"
+        itemType = 1,
+        itemCost = 35,
+        itemDescription = "Consume to enter Berserk Mode for 10 seconds",
+        itemSmallDescription = "consume to enter Berserk Mode\nfor 10 seconds",
+        itemBehaviourName = "_Collectible_Catalyst_Potion",
+        value = 10
     },
     _Collectible_Potion = {
         itemName = "_Collectible_Potion",
@@ -35,7 +37,7 @@ local COLLECTIBLES_TABLE = {
         itemDescription = "Consume to instantly regenerate 50 HP",
         itemSmallDescription = "Consume to instantly\nregenerate 50 HP",
         itemBehaviourName = "_Collectible_Potion",
-        itemPotionHealth = 50
+        value = 50
     },
     _Collectible_Bomb = {
         itemName = "_Collectible_Bomb",
@@ -51,10 +53,10 @@ local COLLECTIBLES_TABLE = {
 }
 
 local COLLECTIBLES = {
-    "_Collectible_Boots_Of_Speed",
-    "_Collectible_Hammer_Of_Attack",
+    "_Collectible_Speed_Potion",
     "_Collectible_Potion",
-    "_Collectible_Bomb"
+    "_Collectible_Bomb",
+    "_Collectible_Catalyst_Potion"
 }
 
 local COLLECTIBLES_UI_DISPLAY_DIST = 1

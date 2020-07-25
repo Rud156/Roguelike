@@ -74,9 +74,8 @@
             "_Wall_Doorway",
             "_Wall_SolidWall",
             "_Collectible_Bomb",
-            "_Collectible_Boots_Of_Speed",
+            "_Collectible_Speed_Potion",
             "_Collectible_Hammer_Of_Attack",
-            "_Collectible_Helm_Of_Valor",
             "_Collectible_Potion",
             "_Collectible_Bomb_Unit",
             "_Enemy_GoblinSapper",
@@ -86,7 +85,8 @@
             "_Enemy_GoblinMiner",
             "_DungeonDoorway",
             "_Missile_Enemy_GoblinMiner_Leap_Static_Model",
-            "_Enemy_GoblinMiner_Leap_AirStrafe"
+            "_Enemy_GoblinMiner_Leap_AirStrafe",
+            "_Collectible_Catalyst_Potion"
         ],
         "usedEffects": [
             "__StopMovement",
@@ -95,7 +95,7 @@
         ],
         "usedBehaviors": [
             "_PlayerCharacter_Damage_Invincible",
-            "_Collectible_Boots_Of_Speed",
+            "_Collectible_Speed_Potion",
             "_Collectible_Hammer_Of_Attack",
             "_Collectible_Helm_Of_Valor",
             "_Unit_Invincible",
@@ -118,7 +118,9 @@
             "_PlayerCharacter_Cruelty",
             "_PlayerCharacter_MeatShield",
             "_PlayerCharacter_SwiftHands",
-            "_Perks_PoisonOrb"
+            "_Perks_PoisonOrb",
+            "_Collectible_Speed_Potion",
+            "_Collectible_Catalyst_Potion"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",

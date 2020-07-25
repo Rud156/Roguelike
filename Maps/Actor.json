@@ -185,22 +185,6 @@
                 "modelScale": 2
             }
         },
-        "_Collectible_Boots_Of_Speed": {
-            "parent": "",
-            "unitActor": {
-                "resource": {
-                    "type": "GpuAnimation",
-                    "name": "chest_golden"
-                },
-                "preserveOnUnitRemove": true,
-                "eventMacros": [
-                    "Events StandardUnit AttackAnimation",
-                    "Events StandardUnit DeathAnimation",
-                    "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
-                ]
-            }
-        },
         "_Collectible_Hammer_Of_Attack": {
             "parent": "",
             "unitActor": {
@@ -1108,63 +1092,6 @@
                         ]
                     }
                 ]
-            }
-        },
-        "_FX_Collectible_Boots_Of_Speed": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_boarbarian_runner_speedaura"
-                }
-            }
-        },
-        "_FX_Collectible_Boots_Of_Speed_Equip": {
-            "modelActor": {
-                "resource": {
-                    "type": "ParticleAnimation",
-                    "name": "vfx_tower_barracks_troop_boost"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            },
-                            {
-                                "createTimer": {
-                                    "name": "FailsafeRemove",
-                                    "duration": 5
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "onTimer": {
-                                "name": "FailsafeRemove"
-                            }
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ],
-                "modelScale": 1.5
             }
         },
         "_FX_Collectible_Hammer_Of_Attack": {
@@ -2285,10 +2212,11 @@
                     "_PlayerCharacter_Damage_Flash",
                     "_PlayerCharacter_Helm_Of_Valor",
                     "_PlayerCharacter_Health_Potion",
-                    "_PlayerCharacter_Boots_Of_Speed",
+                    "_PlayerCharacter_Speed_Potion",
                     "_PlayerCharacter_Hammer_Of_Attack",
                     "_PlayerCharacter_DeadEffect",
-                    "_PlayerCharacter_Enemy_Ooze_Slow"
+                    "_PlayerCharacter_Enemy_Ooze_Slow",
+                    "_PlayerCharacter_Catalyst_Potion"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -2439,10 +2367,11 @@
                     "_PlayerCharacter_Damage_Flash",
                     "_PlayerCharacter_Helm_Of_Valor",
                     "_PlayerCharacter_Health_Potion",
-                    "_PlayerCharacter_Boots_Of_Speed",
+                    "_PlayerCharacter_Speed_Potion",
                     "_PlayerCharacter_Hammer_Of_Attack",
                     "_PlayerCharacter_DeadEffect",
-                    "_PlayerCharacter_Enemy_Ooze_Slow"
+                    "_PlayerCharacter_Enemy_Ooze_Slow",
+                    "_PlayerCharacter_Catalyst_Potion"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -2617,36 +2546,6 @@
                 "resource": {
                     "type": "Sound",
                     "name": "bfrocket_hit"
-                },
-                "events": [
-                    {
-                        "actorTerm": {
-                            "actorCreate": {}
-                        },
-                        "actions": [
-                            {
-                                "playAnimation": {}
-                            }
-                        ]
-                    },
-                    {
-                        "actorTerm": {
-                            "animationFinish": {}
-                        },
-                        "actions": [
-                            {
-                                "destroy": {}
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "_SFX_Collectible_Boots_Of_Speed_Equip": {
-            "modelActor": {
-                "resource": {
-                    "type": "Sound",
-                    "name": "boarbarian_speed_up"
                 },
                 "events": [
                     {
@@ -3426,6 +3325,163 @@
                 },
                 "modelScale": 1
             }
+        },
+        "_Collectible_Speed_Potion": {
+            "parent": "",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "chest_golden"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
+                ]
+            }
+        },
+        "_FX_Collectible_Catalyst_Potion": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_whelp_red_missile"
+                }
+            }
+        },
+        "_SFX_Collectible_Catalyst_Potion": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "ramhammer_soulburn_on"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_Collectible_Catalyst_Potion": {
+            "parent": "",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "chest_golden"
+                },
+                "preserveOnUnitRemove": true,
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Events StandardUnit Selectable",
+                    "Event Destroy Immediate"
+                ]
+            }
+        },
+        "_FX_Collectible_Speed_Potion": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_boarbarian_runner_speedaura"
+                }
+            }
+        },
+        "_FX_Collectible_Speed_Potion_Equip": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_barracks_troop_boost"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.5
+            }
+        },
+        "_SFX_Collectible_Speed_Potion_Equip": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "boarbarian_speed_up"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     },
     "actorEventMacros": {
@@ -3555,49 +3611,6 @@
                 }
             ]
         },
-        "_PlayerCharacter_Boots_Of_Speed": {
-            "events": [
-                {
-                    "actorTerm": {
-                        "behaviorOn": {
-                            "behavior": "_Collectible_Boots_Of_Speed"
-                        }
-                    },
-                    "actions": [
-                        {
-                            "create": {
-                                "actor": "_FX_Collectible_Boots_Of_Speed_Equip",
-                                "hostSite": "UnitCenter"
-                            }
-                        },
-                        {
-                            "create": {
-                                "actor": "_SFX_Collectible_Boots_Of_Speed_Equip"
-                            }
-                        },
-                        {
-                            "create": {
-                                "actor": "_FX_Collectible_Boots_Of_Speed"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "actorTerm": {
-                        "behaviorOff": {
-                            "behavior": "_Collectible_Boots_Of_Speed"
-                        }
-                    },
-                    "actions": [
-                        {
-                            "destroy": {
-                                "actor": "_FX_Collectible_Boots_Of_Speed"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
         "_PlayerCharacter_Damage_Flash": {
             "events": [
                 {
@@ -3716,7 +3729,7 @@
                         },
                         {
                             "destroy": {
-                                "actor": "_FX_Collectible_Boots_Of_Speed"
+                                "actor": "_FX_Collectible_Speed_Potion"
                             }
                         }
                     ]
@@ -3855,6 +3868,87 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Helm_Of_Valor"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Speed_Potion": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Collectible_Speed_Potion"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Speed_Potion_Equip",
+                                "hostSite": "UnitCenter"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Collectible_Speed_Potion_Equip"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Speed_Potion"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Collectible_Speed_Potion"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Speed_Potion"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Catalyst_Potion": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Collectible_Catalyst_Potion"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Collectible_Catalyst_Potion",
+                                "hostSite": "UnitCenter"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_Collectible_Catalyst_Potion"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Collectible_Catalyst_Potion"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Collectible_Catalyst_Potion"
                             }
                         }
                     ]

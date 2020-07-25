@@ -241,6 +241,59 @@
                     }
                 ]
             }
+        },
+        "_Collectible_CatalystPotion_Self": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "tagName": "gt_catalyst_potion"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": 1
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "_Collectible_CatalystPotion_Target": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "unit": 2,
+                                            "tagName": "gt_catalyst_potion"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": 1
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     }
 }
