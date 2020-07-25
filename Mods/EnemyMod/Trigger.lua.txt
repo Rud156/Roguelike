@@ -109,7 +109,10 @@ local GoblinChef = {
     currentShotCount = 0,
 
     -- Stunned
-    stunTimer = 0
+    stunTimer = 0,
+
+    -- Poisoned
+    poisonTimer = 0
 }
 GoblinChef.__index = GoblinChef
 function GoblinChef:new(room, xPosition, yPosition)
@@ -130,6 +133,8 @@ function GoblinChef:new(room, xPosition, yPosition)
 
     goblinChef.stunTimer = 0
 
+    goblinChef.poisonTimer = 0
+
     return goblinChef
 end
 function GoblinChef:Update(deltaTime, playerPosition)
@@ -148,6 +153,24 @@ function GoblinChef:Update(deltaTime, playerPosition)
 
     if self.enemyState ~= 3 then
         self.attackCooldownTimer = self.attackCooldownTimer - deltaTime
+    end
+
+    self:UpdatePoisonedState(deltaTime)
+end
+function GoblinChef:UpdatePoisonedState(deltaTime)
+    self.poisonTimer = self.poisonTimer - deltaTime
+
+    if self.poisonTimer <= 0 then
+        local perk = mod.Perks[mod.PerkNames.PoisonOrb]
+        local poisonedStack = DCEI.UnitBehaviorStackCount(self.unit, perk.value)
+
+        if poisonedStack > 0 then
+            local damageAmount = perk.valueAlt * poisonedStack
+            DCEI.LogMessage("Poison Damage: " .. damageAmount)
+            
+            ArcadeCore.DamageUnit(self.unit, damageAmount)
+            self.poisonTimer = perk.valueAlt
+        end
     end
 end
 function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
@@ -334,7 +357,10 @@ local HobGoblin = {
     isMoving = false,
 
     -- Stunned
-    stunTimer = 0
+    stunTimer = 0,
+
+    -- Poisoned
+    poisonTimer = 0,
 }
 HobGoblin.__index = HobGoblin
 function HobGoblin:new(room, xPosition, yPosition)
@@ -353,6 +379,8 @@ function HobGoblin:new(room, xPosition, yPosition)
 
     hobGoblin.stunTimer = 0
 
+    hobGoblin.poisonTimer = 0
+
     return hobGoblin
 end
 function HobGoblin:Update(deltaTime, playerPosition)
@@ -362,6 +390,24 @@ function HobGoblin:Update(deltaTime, playerPosition)
         self:WaitAfterAttack(deltaTime, playerPosition)
     elseif self.enemyState == 2 then
         self:UpdateEnemyStunned(deltaTime)
+    end
+
+    self:UpdatePoisonedState(deltaTime)
+end
+function HobGoblin:UpdatePoisonedState(deltaTime)
+    self.poisonTimer = self.poisonTimer - deltaTime
+
+    if self.poisonTimer <= 0 then
+        local perk = mod.Perks[mod.PerkNames.PoisonOrb]
+        local poisonedStack = DCEI.UnitBehaviorStackCount(self.unit, perk.value)
+
+        if poisonedStack > 0 then
+            local damageAmount = perk.valueAlt * poisonedStack
+            DCEI.LogMessage("Poison Damage: " .. damageAmount)
+            
+            ArcadeCore.DamageUnit(self.unit, damageAmount)
+            self.poisonTimer = perk.valueAlt
+        end
     end
 end
 function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
@@ -481,7 +527,10 @@ local Goblin = {
     isMoving = false,
 
     -- Stunned
-    stunTimer = 0
+    stunTimer = 0,
+
+    -- Poisoned
+    poisonTimer = 0
 }
 Goblin.__index = Goblin
 function Goblin:new(room, xPosition, yPosition)
@@ -500,6 +549,8 @@ function Goblin:new(room, xPosition, yPosition)
 
     goblin.stunTimer = 0
 
+    goblin.poisonTimer = 0
+
     return goblin
 end
 function Goblin:Update(deltaTime, playerPosition)
@@ -509,6 +560,24 @@ function Goblin:Update(deltaTime, playerPosition)
         self:WaitAfterAttack(deltaTime, playerPosition)
     elseif self.enemyState == 2 then
         self:UpdateEnemyStunned(deltaTime)
+    end
+
+    self:UpdatePoisonedState(deltaTime)
+end
+function Goblin:UpdatePoisonedState(deltaTime)
+    self.poisonTimer = self.poisonTimer - deltaTime
+
+    if self.poisonTimer <= 0 then
+        local perk = mod.Perks[mod.PerkNames.PoisonOrb]
+        local poisonedStack = DCEI.UnitBehaviorStackCount(self.unit, perk.value)
+
+        if poisonedStack > 0 then
+            local damageAmount = perk.valueAlt * poisonedStack
+            DCEI.LogMessage("Poison Damage: " .. damageAmount)
+
+            ArcadeCore.DamageUnit(self.unit, damageAmount)
+            self.poisonTimer = perk.valueAlt
+        end
     end
 end
 function Goblin:CheckAndActivateStunnedState(enemyUnit)
@@ -621,7 +690,10 @@ local GoblinSapper = {
     
     enemyState = 0, -- 0: Targetting Movement, 1: Attack Waiting, 2: Stunned
 
-    stunTimer = 0
+    stunTimer = 0,
+
+    -- Poisoned
+    poisonTimer = 0,
 }
 GoblinSapper.__index = GoblinSapper
 function GoblinSapper:new(room, xPosition, yPosition)
@@ -636,6 +708,8 @@ function GoblinSapper:new(room, xPosition, yPosition)
 
     goblinSapper.stunTimer = 0
 
+    goblinSapper.poisonTimer = 0
+
     return goblinSapper
 end
 function GoblinSapper:Update(deltaTime, playerPosition)
@@ -645,6 +719,24 @@ function GoblinSapper:Update(deltaTime, playerPosition)
         -- Do nothing here...
     elseif self.enemyState == 2 then
         self:UpdateEnemyStunned(deltaTime)
+    end
+
+    self:UpdatePoisonedState(deltaTime)
+end
+function GoblinSapper:UpdatePoisonedState(deltaTime)
+    self.poisonTimer = self.poisonTimer - deltaTime
+
+    if self.poisonTimer <= 0 then
+        local perk = mod.Perks[mod.PerkNames.PoisonOrb]
+        local poisonedStack = DCEI.UnitBehaviorStackCount(self.unit, perk.value)
+
+        if poisonedStack > 0 then
+            local damageAmount = perk.valueAlt * poisonedStack
+            DCEI.LogMessage("Poison Damage: " .. damageAmount)
+            
+            ArcadeCore.DamageUnit(self.unit, damageAmount)
+            self.poisonTimer = perk.valueAlt
+        end
     end
 end
 function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
@@ -725,6 +817,9 @@ local Ooze = {
 
     -- General
     currentTimer = 0,
+
+    -- Poisoned
+    poisonTimer = 0,
 }
 Ooze.__index = Ooze
 function Ooze:new(room, xPosition, yPosition)
@@ -740,6 +835,8 @@ function Ooze:new(room, xPosition, yPosition)
     ooze.targetPosition = nil
     ooze.currentTimer = 0
 
+    ooze.poisonTimer = 0
+
     return ooze
 end
 function Ooze:Update(deltaTime, playerPosition)
@@ -753,6 +850,24 @@ function Ooze:Update(deltaTime, playerPosition)
         self:UpdateAttackWaitingState(deltaTime, playerPosition)
     elseif self.enemyState == 4 then
         self:UpdateIdlingState(deltaTime)
+    end
+
+    self:UpdatePoisonedState(deltaTime)
+end
+function Ooze:UpdatePoisonedState(deltaTime)
+    self.poisonTimer = self.poisonTimer - deltaTime
+
+    if self.poisonTimer <= 0 then
+        local perk = mod.Perks[mod.PerkNames.PoisonOrb]
+        local poisonedStack = DCEI.UnitBehaviorStackCount(self.unit, perk.value)
+
+        if poisonedStack > 0 then
+            local damageAmount = perk.valueAlt * poisonedStack
+            DCEI.LogMessage("Poison Damage: " .. damageAmount)
+            
+            ArcadeCore.DamageUnit(self.unit, damageAmount)
+            self.poisonTimer = perk.valueAlt
+        end
     end
 end
 function Ooze:CheckAndActivateStunnedState(enemyUnit)
@@ -917,7 +1032,10 @@ local GoblinMiner = {
     hasSkyAttackLaunched = false,
 
     -- Stun
-    stunTimer = 0
+    stunTimer = 0,
+
+    -- Poisoned
+    poisonTimer = 0,
 }
 GoblinMiner.__index = GoblinMiner
 function GoblinMiner:new(room, xPosition, yPosition)
@@ -942,6 +1060,8 @@ function GoblinMiner:new(room, xPosition, yPosition)
 
     goblinMiner.stunTimer = 0
 
+    goblinMiner.poisonTimer = 0
+
     return goblinMiner
 end
 function GoblinMiner:Update(deltaTime, playerPosition)
@@ -959,6 +1079,24 @@ function GoblinMiner:Update(deltaTime, playerPosition)
 
     elseif self.enemyState == 4 then
         self:UpdateEnemyStunned(deltaTime)
+    end
+
+    self:UpdatePoisonedState(deltaTime)
+end
+function GoblinMiner:UpdatePoisonedState(deltaTime)
+    self.poisonTimer = self.poisonTimer - deltaTime
+
+    if self.poisonTimer <= 0 then
+        local perk = mod.Perks[mod.PerkNames.PoisonOrb]
+        local poisonedStack = DCEI.UnitBehaviorStackCount(self.unit, perk.value)
+
+        if poisonedStack > 0 then
+            local damageAmount = perk.valueAlt * poisonedStack
+            DCEI.LogMessage("Poison Damage: " .. damageAmount)
+            
+            ArcadeCore.DamageUnit(self.unit, damageAmount)
+            self.poisonTimer = perk.valueAlt
+        end
     end
 end
 function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
@@ -1315,6 +1453,9 @@ mod.WalkableTextureId = nil
 
 mod.GetSkillValue = nil
 mod.SkillNames = nil
+
+mod.Perks = nil
+mod.PerkNames = nil
 
 mod.EnemyInvincible = ENEMY_INVINCIBLE
 mod.EnemyFlashBehviour = ENEMY_FLASH_BEHAVIOUR

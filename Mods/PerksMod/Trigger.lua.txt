@@ -30,7 +30,8 @@ local PERKS = {
         perkImage = "talent_bonus_damage_poison",
         perkDescription = "Grants player the ability to add one layer of POISON effect on target unit when hit by light attack",
         perkName = "Poison Orb",
-        value = "_Perks_PoisonOrb"
+        value = "_Perks_PoisonOrb",
+        valueAlt = 1
     },
     MeatShield = {
         perkImage = "icon_avalanchesurfer_skill_earthward",
@@ -46,7 +47,6 @@ local PERK_NAMES = {
     HelmOfValor = "HelmOfValor",
     Alchemist = "Alchemist",
     PoisonOrb = "PoisonOrb"
-    -- MeatShield = "MeatShield"
 }
 
 local PerkIconDisplay = {

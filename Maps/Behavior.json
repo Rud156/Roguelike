@@ -281,8 +281,8 @@
         "_Perks_PoisonOrb": {
             "refreshStack": true,
             "duration": 4,
-            "periodicInterval": 1,
-            "periodicEffect": "_Damage_PoisonOrb"
+            "periodicInterval": 0,
+            "periodicEffect": ""
         }
     }
 }

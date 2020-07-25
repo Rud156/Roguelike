@@ -1017,19 +1017,6 @@
                 "effect": "_Set_Damage_PlayerCharacter_Melee_HeavyAttack"
             }
         },
-        "_Damage_PoisonOrb": {
-            "damage": {
-                "whichUnit": 2,
-                "damageAmount": 1,
-                "expressions": [
-                    {
-                        "namedExpression": {
-                            "name": "DamageResistance"
-                        }
-                    }
-                ]
-            }
-        },
         "_PlayerCharacter_MeatShield_Damage_Response": {
             "removeBehavior": {
                 "behavior": "_PlayerCharacter_MeatShield",
