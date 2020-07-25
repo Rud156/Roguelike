@@ -1600,6 +1600,7 @@ function CheckAndSpawnPerks()
             local helmOfValorTimer = SaveMod.GetHelmOfValorTimer()
             if helmOfValorTimer ~= nil then
                 m_helmOfValorTimeRemaining = helmOfValorTimer
+                m_perkDisplay:ActivatePerkRecharge(perkName, m_helmOfValorTimeRemaining)
             else
                 m_helmOfValorTimeRemaining = 0
             end
