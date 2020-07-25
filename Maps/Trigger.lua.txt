@@ -21,7 +21,10 @@ InventoryMod.PerkNames = PerksMod.PerkNames
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryCollectibles = InventoryMod.InventoryCollectibles
-local InventoryCollectiblesName = InventoryMod.InventoryCollectiblesName
+local InventoryCollectiblesList = InventoryMod.InventoryCollectiblesList
+local InventoryCollectibleNames = InventoryMod.InventoryCollectibleNames
+local CollectibleDropped = InventoryMod.CollectibleDropped
+local InventoryCollectibleBaseString = InventoryMod.InventoryCollectibleBaseString
 local CollectiblesUIManager = InventoryMod.CollectiblesUIManager
 
 EnemyMod.VectorDistance = ExtensionFunction.VectorDistance
@@ -48,7 +51,7 @@ RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
 RoomMod.EnemyGoblinMiner = EnemyGoblinMiner
-RoomMod.InventoryCollectiblesName = InventoryCollectiblesName
+RoomMod.InventoryCollectiblesList = InventoryCollectiblesList
 RoomMod.split = ExtensionFunction.split
 RoomMod.IsEqual = ExtensionFunction.IsEqual
 RoomMod.ToBoolean = ExtensionFunction.ToBoolean
@@ -136,15 +139,6 @@ local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 -- Enemy
 local ENEMY_STUNNED_BEHAVIOUR = "_Enemy_Stunned"
 local GOBLIN_MINER_MISSILE_BEHAVIOUR = "_Enemy_GoblinMiner_Missile_Reached"
-
--- Collectibles
-local COLLECTIBLE_STRING = "_Collectible"
-local COLLECTIBLE_SPEED_POTION = "_Collectible_Speed_Potion"
-local COLLECTIBLE_HAMMER_OF_ATTACK = "_Collectible_Hammer_Of_Attack"
-local COLLECTIBLE_CATALYST_POTION = "_Collectible_Catalyst_Potion"
-local COLLECTIBLE_POTION = "_Collectible_Potion"
-local COLLECTIBLE_BOMB = "_Collectible_Bomb"
-local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
 -- Rooms
 local BEGINNING_ROOM_NAME = "StartingBase"
@@ -629,7 +623,7 @@ function HandleUnitSelected()
 
     -- Add Collectibles to Inventory if successful
     -- Then destroy the unit
-    if string.match(unitName, COLLECTIBLE_STRING) then
+    if string.match(unitName, InventoryCollectibleBaseString) then
         HandleInventoryUnitClicked(unit, unitName)
     end
 
@@ -730,7 +724,7 @@ function SpawnItemDrops()
         local itemName = item.itemName
 
         local item = DCEI.CreateUnit(1, 1, itemName, xPosition, yPosition)
-        DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+        DCEI.ApplyBehavior(item, CollectibleDropped)
         m_collectiblesUi:AddNewUI(m_uiRoot, item, itemName)
     end
 end
@@ -1347,7 +1341,7 @@ function HandleInventoryUnitClicked(unit, unitName)
         return
     end
 
-    local behaviourStack = DCEI.UnitBehaviorStackCount(unit, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    local behaviourStack = DCEI.UnitBehaviorStackCount(unit, CollectibleDropped)
     local usedGold = false
 
     if behaviourStack == 0 then
@@ -1448,15 +1442,9 @@ function RemoveInventoryBehaviours()
 end
 
 function ApplyInventoryItemBehaviour(itemName)
-    if itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
-        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
-    end
 end
 
 function RemoveInventoryItemBehaviour(itemName)
-    if itemName == COLLECTIBLE_HAMMER_OF_ATTACK then
-        DCEI.RemoveBehavior(m_player:GetPlayerUnit(), InventoryCollectibles[itemName].itemBehaviourName)
-    end
 end
 
 function HandleInventoryItemDropped(itemName, inventorySlot)
@@ -1478,7 +1466,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 
     DCEI.LogMessage("Selected Item: " .. itemName)
 
-    if itemName == COLLECTIBLE_POTION then
+    if itemName == InventoryCollectibleNames.HealthPotion then
         local healthAmount = InventoryCollectibles[itemName].value
         local potionBehaviour = InventoryCollectibles[itemName].itemBehaviourName
 
@@ -1496,7 +1484,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         
         inventorySlot:UseItem()
         
-    elseif itemName == COLLECTIBLE_BOMB then
+    elseif itemName == InventoryCollectibleNames.Bomb then
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         local bombUnitName = InventoryCollectibles[itemName].itemBombName
 
@@ -1505,7 +1493,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 
         inventorySlot:UseItem()
 
-    elseif itemName == COLLECTIBLE_CATALYST_POTION then
+    elseif itemName == InventoryCollectibleNames.CatalystPotion then
         local duration = InventoryCollectibles[itemName].value
         local behaviourName = InventoryCollectibles[itemName].itemBehaviourName
 
@@ -1521,7 +1509,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 
         inventorySlot:UseItem()
 
-    elseif itemName == COLLECTIBLE_SPEED_POTION then
+    elseif itemName == InventoryCollectibleNames.SpeedPotion then
         local duration = InventoryCollectibles[itemName].value
         local behaviourName = InventoryCollectibles[itemName].itemBehaviourName
 
@@ -1548,7 +1536,7 @@ end
 function DropInventoryItemToWorld(itemName)
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
     local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
-    DCEI.ApplyBehavior(item, COLLECTIBLE_DROPPED_BEHAVIOUR)
+    DCEI.ApplyBehavior(item, CollectibleDropped)
 
     local roomName
     local playerRow = BEGINNING_ROOM_MARKER

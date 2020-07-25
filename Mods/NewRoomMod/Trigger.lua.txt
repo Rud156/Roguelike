@@ -662,7 +662,7 @@ function RoomGenerator:SpawnMerchantRoomItems()
     for i = self.minRow, self.maxRow do
         for j = self.minColumn, self.maxColumn do
             if self.roomMatrix[i][j] ~= nil and mod.IsMerchantRoom(self.roomMatrix[i][j]) then
-                local shuffledCollectibles = mod.ShuffleTable(mod.InventoryCollectiblesName)
+                local shuffledCollectibles = mod.ShuffleTable(mod.InventoryCollectiblesList)
                 local items = {}
 
                 for i = 1, MERCHANT_ROOM_ITEM_COUNT do
@@ -2222,7 +2222,7 @@ mod.RoomSize = ROOM_SIZE
 
 mod.WalkableTextureId = WALKABLE_TEXTURE_ID
 
-mod.InventoryCollectiblesName = nil
+mod.InventoryCollectiblesList = nil
 
 mod.EnemyHobGoblin = nil
 mod.EnemyGoblinChef = nil

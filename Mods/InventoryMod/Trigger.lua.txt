@@ -52,12 +52,21 @@ local COLLECTIBLES_TABLE = {
     }
 }
 
-local COLLECTIBLES = {
+local COLLECTIBLES_LIST = {
     "_Collectible_Speed_Potion",
     "_Collectible_Potion",
-    "_Collectible_Bomb",
+    "_Collectible_Potion",
     "_Collectible_Catalyst_Potion"
 }
+
+local COLLECTIBLE_NAMES = {
+    SpeedPotion = "_Collectible_Speed_Potion",
+    HealthPotion = "_Collectible_Potion",
+    Bomb = "_Collectible_Potion",
+    CatalystPotion = "_Collectible_Catalyst_Potion"
+}
+
+local COLLECTIBLE_BASE_STRING = "_Collectible"
 
 local COLLECTIBLES_UI_DISPLAY_DIST = 1
 local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
@@ -560,7 +569,7 @@ function CollectiblesUIManager:new(uiRoot)
 
     collectiblesUiManager.collectiblesUi = {}
 
-    for _, itemName in ipairs(COLLECTIBLES) do
+    for _, itemName in ipairs(COLLECTIBLES_LIST) do
         local units = DCEI.FindUnits(itemName)
 
         for _, item in ipairs(units) do
@@ -595,7 +604,10 @@ mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
 mod.CollectiblesUIManager = CollectiblesUIManager
 mod.InventoryCollectibles = COLLECTIBLES_TABLE
-mod.InventoryCollectiblesName = COLLECTIBLES
+mod.InventoryCollectiblesList = COLLECTIBLES_LIST
+mod.InventoryCollectibleNames = COLLECTIBLE_NAMES
+mod.InventoryCollectibleBaseString = COLLECTIBLE_BASE_STRING
+mod.CollectibleDropped = COLLECTIBLE_DROPPED_BEHAVIOUR
 
 mod.VectorDistance = nil
 
