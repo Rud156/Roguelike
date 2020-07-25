@@ -370,6 +370,7 @@ function Update()
 
     UpdatePlayerDamageUI(GAME_LOOP_RATE)
     m_inventory:UpdateSlots(GAME_LOOP_RATE)
+    m_perkDisplay:Update(GAME_LOOP_RATE)
 
     if m_player ~= nil and m_player:GetPlayerUnit() ~= nil then
         m_camera:Update(GAME_LOOP_RATE)
@@ -601,6 +602,8 @@ function HandleBehaviourAdded()
                 DCEI.RemoveBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.HelmOfValor].valueAlt)
                 m_helmOfValorActive = false
                 m_helmOfValorTimeRemaining = PerksMod.Perks[PerksMod.PerkNames.HelmOfValor].value
+
+                m_perkDisplay:ActivatePerkRecharge(PerksMod.PerkNames.HelmOfValor, m_helmOfValorTimeRemaining)
             end
         end
 
@@ -1250,7 +1253,7 @@ function CreateDebugUI()
         DCEI.SetLeftAlignmentInParent(skillTreeButton)
         DCEI.SetTopAlignmentInParent(skillTreeButton)
         DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
-        DCEI.SetVerticalOffsetInParent(skillTreeButton, -100)
+        DCEI.SetVerticalOffsetInParent(skillTreeButton, -250)
 
         -- Perks
         local perkButton = DCEI.NewButton(m_uiMiddleLayer)
@@ -1260,7 +1263,7 @@ function CreateDebugUI()
         DCEI.SetLeftAlignmentInParent(perkButton)
         DCEI.SetTopAlignmentInParent(perkButton)
         DCEI.SetHorizontalOffsetInParent(perkButton, 100)
-        DCEI.SetVerticalOffsetInParent(perkButton, -100)
+        DCEI.SetVerticalOffsetInParent(perkButton, -250)
     end
 end
 
@@ -1560,7 +1563,7 @@ end
 -- #region Perk Functions
 
 function CheckAndSpawnPerks()
-    m_perkDisplay = PerkDisplay:new(m_uiTopLayer)
+    m_perkDisplay = PerkDisplay:new(m_uiTopLayer, m_uiMiddleLayer)
     m_perkDisplay:AddCallback(HandlePerkActivatedCallback)
 
     if m_isBeginningRoom then

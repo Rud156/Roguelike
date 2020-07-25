@@ -49,9 +49,84 @@ local PERK_NAMES = {
     -- MeatShield = "MeatShield"
 }
 
+local PerkIconDisplay = {
+    perkName = "",
+
+    perkImage = nil,
+    perkRecharge = nil,
+
+    isPerkRechargeActive = false,
+    maxRechargeTime = 0,
+    currentRechargeTime = 0
+}
+PerkIconDisplay.__index = PerkIconDisplay
+function PerkIconDisplay:new(uiLayer, perkName)
+    local perkIconDisplay = {}
+    setmetatable(perkIconDisplay, PerkIconDisplay)
+
+    perkIconDisplay.perkName = perkName
+
+    perkIconDisplay.perkImage = nil
+    perkIconDisplay.perkRecharge = nil
+
+    perkIconDisplay.isPerkRechargeActive = false
+    perkIconDisplay.maxRechargeTime = 0
+    perkIconDisplay.currentRechargeTime = 0
+
+    perkIconDisplay:CreateUI(uiLayer, perkName)
+
+    return perkIconDisplay
+end
+function PerkIconDisplay:CreateUI(uiLayer, perkName)
+    local baseFrame = DCEI.NewFrame(uiLayer)
+    DCEI.SetMinSize(baseFrame, 50, 50)
+    DCEI.SetMaxSize(baseFrame, 50, 50)
+
+    local imageName = PERKS[perkName].perkImage
+    DCEI.SetBackgroundImage(baseFrame, imageName)
+    
+    local overlay = DCEI.NewFrame(baseFrame)
+    DCEI.SetMinSize(overlay, 50, 50)
+    DCEI.SetBackgroundImage(overlay, "ui_squareround")
+    DCEI.SetBackgroundImageColor(overlay, 0, 0, 0, 0)
+
+    self.perkImage = baseFrame
+    self.perkRecharge = overlay
+end
+function PerkIconDisplay:UpdateRecharge(deltaTime)
+    if not self.isPerkRechargeActive then
+        return
+    end
+
+    self.currentRechargeTime = self.currentRechargeTime - deltaTime
+
+    if self.currentRechargeTime <= 0 then
+        self.isPerkRechargeActive = false
+        DCEI.SetBackgroundImageColor(self.perkRecharge, 0, 0, 0, 0)
+        
+    else
+        local rechargeRatio = self.currentRechargeTime / self.maxRechargeTime
+        DCEI.SetBackgroundImageFillAmount(self.perkRecharge, rechargeRatio)
+    end
+end
+function PerkIconDisplay:ActivateRecharge(maxRechargeTime)
+    self.isPerkRechargeActive = true
+    self.maxRechargeTime = maxRechargeTime
+    self.currentRechargeTime = maxRechargeTime
+
+    DCEI.SetBackgroundImageColor(self.perkRecharge, 0, 0, 0, 0.5)
+end
+function PerkIconDisplay:GetPerkName()
+    return self.perkName
+end
+
+
 local PerkDisplay = {
     currentPerks = {},
     displayedPerks = {},
+
+    currentPerksUIContainer = nil,
+    currentPerksUI = {},
 
     topLayerButtons = {},
     bottomLayerButtons = {},
@@ -63,12 +138,15 @@ local PerkDisplay = {
     callbacks = {}
 }
 PerkDisplay.__index = PerkDisplay
-function PerkDisplay:new(uiLayerTop)
+function PerkDisplay:new(uiLayerTop, uiLayerBottom)
     local perkDisplay = {}
     setmetatable(perkDisplay, PerkDisplay)
 
     perkDisplay.currentPerks = {}
     perkDisplay.displayedPerks = {}
+
+    perkDisplay.currentPerksUIContainer = nil
+    perkDisplay.currentPerksUI = {}
 
     perkDisplay.topLayerButtons = {}
     perkDisplay.bottomLayerButtons = {}
@@ -80,6 +158,8 @@ function PerkDisplay:new(uiLayerTop)
     perkDisplay:CreateUI(uiLayerTop)
     perkDisplay:HidePerks()
     perkDisplay:Load()
+
+    perkDisplay:CreateBaseDisplayUI(uiLayerBottom) -- Create this at the end so that all UI is displayed
 
     return perkDisplay
 end
@@ -103,6 +183,11 @@ function PerkDisplay:AddCallback(callback)
 end
 function PerkDisplay:HasPerk(perkName)
     return mod.ArrayHasValue(self.currentPerks, perkName)
+end
+function PerkDisplay:Update(deltaTime)
+    for _, icon in ipairs(self.currentPerksUI) do
+        icon:UpdateRecharge(deltaTime)
+    end
 end
 function PerkDisplay:CreateUI(uiLayer)
     local canvasSize = DCEI.GetUiCanvasSize()
@@ -182,7 +267,28 @@ function PerkDisplay:CreateUI(uiLayer)
         table.insert(self.bottomLayerButtons, perkDisplayButton)
     end
 end
+function PerkDisplay:CreateBaseDisplayUI(uiLayer)
+    -- Base Frame
+    local baseFrame = DCEI.NewHStack(uiLayer)
+    DCEI.SetSpacing(baseFrame, 7)
+    DCEI.SetLeftAlignmentInParent(baseFrame)
+    DCEI.SetTopAlignmentInParent(baseFrame)
+    DCEI.SetHorizontalOffsetInParent(baseFrame, 21)
+    DCEI.SetVerticalOffsetInParent(baseFrame, -100)
+
+    self.currentPerksUIContainer = baseFrame
+
+    -- UI List
+    self.currentPerksUI = {}
+
+    for _, perkName in ipairs(self.currentPerks) do
+        local iconUI = PerkIconDisplay:new(baseFrame, perkName)
+        table.insert(self.currentPerksUI, iconUI)
+    end
+end
 function PerkDisplay:HandleButtonClicked(index, perkName)
+    self:DisableButtons()
+
     local canvasSize = DCEI.GetUiCanvasSize()
     local buttonSize = canvasSize.x / 3
 
@@ -242,6 +348,7 @@ function PerkDisplay:ShowRandomPerks(player)
     self:DisplayPerks(player)
 end
 function PerkDisplay:DisplayPerks(player)
+    self:EnableButtons()
     DCEI.SetActive(self.mainFrame, true)
 
     for _, button in ipairs(self.topLayerButtons) do
@@ -267,6 +374,24 @@ function PerkDisplay:HidePerks()
     end
     DCEI.ShowJoystick(0)
 end
+function PerkDisplay:EnableButtons()
+    for _, button in ipairs(self.topLayerButtons) do
+        DCEI.EnableButton(button.perkButton, true)
+    end
+
+    for _, button in ipairs(self.bottomLayerButtons) do
+        DCEI.EnableButton(button.perkButton, true)
+    end
+end
+function PerkDisplay:DisableButtons()
+    for _, button in ipairs(self.topLayerButtons) do
+        DCEI.EnableButton(button.perkButton, false)
+    end
+
+    for _, button in ipairs(self.bottomLayerButtons) do
+        DCEI.EnableButton(button.perkButton, false)
+    end
+end
 function PerkDisplay:MarkPerkDisplayed()
     self.perkDisplayedInRound = true
 end
@@ -277,10 +402,23 @@ function PerkDisplay:GetDisplayedInRound()
     return self.perkDisplayedInRound
 end
 function PerkDisplay:ActivatePerk(perkName)
+    DCEI.LogMessage("Perk Activated: " .. perkName)
+
     table.insert(self.currentPerks, perkName)
+
+    local perkIcon = PerkIconDisplay:new(self.currentPerksUIContainer, perkName)
+    table.insert(self.currentPerksUI, perkIcon)
 
     for _, callback in ipairs(self.callbacks) do
         callback(perkName)
+    end
+end
+function PerkDisplay:ActivatePerkRecharge(perkName, maxRechargeTime)
+    for _, icon in ipairs(self.currentPerksUI) do
+        if icon.perkName == perkName then
+            icon:ActivateRecharge(maxRechargeTime)
+            break
+        end
     end
 end
 
