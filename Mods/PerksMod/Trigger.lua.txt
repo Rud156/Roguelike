@@ -273,8 +273,8 @@ function PerkDisplay:CreateBaseDisplayUI(uiLayer)
     DCEI.SetSpacing(baseFrame, 7)
     DCEI.SetLeftAlignmentInParent(baseFrame)
     DCEI.SetTopAlignmentInParent(baseFrame)
-    DCEI.SetHorizontalOffsetInParent(baseFrame, 250)
-    DCEI.SetVerticalOffsetInParent(baseFrame, -25)
+    DCEI.SetHorizontalOffsetInParent(baseFrame, 170)
+    DCEI.SetVerticalOffsetInParent(baseFrame, -21)
 
     self.currentPerksUIContainer = baseFrame
 

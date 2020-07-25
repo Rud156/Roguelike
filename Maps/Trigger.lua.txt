@@ -116,9 +116,6 @@ local TOP = "T"
 local BOTTOM = "B"
 local LAST_DIRECTION = "LastDirection"
 
-local MERCHANT_MALE = "__SpawnMerchantMaleUnit"
-local MERCHANT_FEMALE = "__SpawnMerchantFemaleUnit"
-
 local DEBUG_UNIT = "__DebugMarkerUnit"
 local SPAWN_MARKER_UNIT = "__SpawnMarkerUnit"
 
@@ -621,10 +618,12 @@ function HandleUnitSelected()
 
     DCEI.LogMessage("Selected Unit: " .. unitName)
 
-    -- Add Collectibles to Inventory if successful
-    -- Then destroy the unit
+    -- Add Collectibles to Inventory if successful. Then destroy the unit
     if string.match(unitName, InventoryCollectibleBaseString) then
         HandleInventoryUnitClicked(unit, unitName)
+
+    elseif string.match(unitName, SkillTreeMod.MerchantMale) or string.match(unitName, SkillTreeMod.MerchantFemale) then
+        HandleSkillTreeClick()
     end
 
     DCEI.DeselectUnit(unit)
@@ -1210,7 +1209,7 @@ function CreatePlayerGoldDisplay()
     DCEI.SetTopAlignmentInParent(playerGoldStack)
     DCEI.SetLeftAlignmentInParent(playerGoldStack)
     DCEI.SetPaddingTop(playerGoldStack, 21)
-    DCEI.SetPaddingLeft(playerGoldStack, 140)
+    DCEI.SetPaddingLeft(playerGoldStack, 21)
     DCEI.SetSpacing(playerGoldStack, 14)
     
     local playerGoldImage = DCEI.NewFrame(playerGoldStack)
@@ -1230,38 +1229,38 @@ function CreateDebugUI()
     DCEI.SetPaddingLeft(horizontalStack, 21)
     DCEI.SetSpacing(horizontalStack, 14)
 
-    local characterButton = DCEI.NewButton(horizontalStack)
-    DCEI.SetMinSize(characterButton, 50, 50)
-    DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
-    DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
+    -- local characterButton = DCEI.NewButton(horizontalStack)
+    -- DCEI.SetMinSize(characterButton, 50, 50)
+    -- DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
+    -- DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
 
-    local goldButton = DCEI.NewButton(horizontalStack)
-    DCEI.SetMinSize(goldButton, 50, 54)
-    DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
-    DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
+    -- local goldButton = DCEI.NewButton(horizontalStack)
+    -- DCEI.SetMinSize(goldButton, 50, 54)
+    -- DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
+    -- DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
 
-    local roomType = SaveMod.GetRoomName()
-    if roomType == nil then
-        -- Skill Tree
-        local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
-        DCEI.SetMinSize(skillTreeButton, 50, 50)
-        DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
-        DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
-        DCEI.SetLeftAlignmentInParent(skillTreeButton)
-        DCEI.SetTopAlignmentInParent(skillTreeButton)
-        DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
-        DCEI.SetVerticalOffsetInParent(skillTreeButton, -250)
+    -- local roomType = SaveMod.GetRoomName()
+    -- if roomType == nil then
+    --     -- Skill Tree
+    --     local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
+    --     DCEI.SetMinSize(skillTreeButton, 50, 50)
+    --     DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
+    --     DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
+    --     DCEI.SetLeftAlignmentInParent(skillTreeButton)
+    --     DCEI.SetTopAlignmentInParent(skillTreeButton)
+    --     DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
+    --     DCEI.SetVerticalOffsetInParent(skillTreeButton, -250)
 
-        -- Perks
-        local perkButton = DCEI.NewButton(m_uiMiddleLayer)
-        DCEI.SetMinSize(perkButton, 50, 50)
-        DCEI.SetBackgroundImage(perkButton, "icon_enhance_leviathan_water_spout")
-        DCEI.SetOnClickCallback(perkButton, HandlePerkButtonClicked)
-        DCEI.SetLeftAlignmentInParent(perkButton)
-        DCEI.SetTopAlignmentInParent(perkButton)
-        DCEI.SetHorizontalOffsetInParent(perkButton, 100)
-        DCEI.SetVerticalOffsetInParent(perkButton, -250)
-    end
+    --     -- Perks
+    --     local perkButton = DCEI.NewButton(m_uiMiddleLayer)
+    --     DCEI.SetMinSize(perkButton, 50, 50)
+    --     DCEI.SetBackgroundImage(perkButton, "icon_enhance_leviathan_water_spout")
+    --     DCEI.SetOnClickCallback(perkButton, HandlePerkButtonClicked)
+    --     DCEI.SetLeftAlignmentInParent(perkButton)
+    --     DCEI.SetTopAlignmentInParent(perkButton)
+    --     DCEI.SetHorizontalOffsetInParent(perkButton, 100)
+    --     DCEI.SetVerticalOffsetInParent(perkButton, -250)
+    -- end
 end
 
 function UpdatePlayerDamageUI(deltaTime)
@@ -1399,8 +1398,8 @@ end
 
 function CreateInventoryUI()
     local horizontalStack = DCEI.NewHStack(m_uiMiddleLayer)
-    DCEI.SetTopAlignmentInParent(horizontalStack)
-    DCEI.SetPaddingTop(horizontalStack, 21)
+    DCEI.SetBottomAlignmentInParent(horizontalStack)
+    DCEI.SetPaddingBottom(horizontalStack, 21)
 
     local inventoryItems = {}
     

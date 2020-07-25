@@ -350,6 +350,9 @@ local SKILL_NAMES = {
     AggressiveLanding = "AggressiveLanding"
 }
 
+local MERCHANT_MALE = "__SpawnMerchantMaleUnit"
+local MERCHANT_FEMALE = "__SpawnMerchantFemaleUnit"
+
 -- #region Hex Generator
 
 local HexGenerator = {
@@ -1122,6 +1125,8 @@ end
 
 mod.SkillDisplay = SkillDisplay
 mod.SkillNames = SKILL_NAMES
+mod.MerchantMale = MERCHANT_MALE
+mod.MerchantFemale = MERCHANT_FEMALE
 
 mod.IsEqual = nil
 mod.split = nil
