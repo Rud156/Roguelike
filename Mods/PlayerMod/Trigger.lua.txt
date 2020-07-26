@@ -152,11 +152,15 @@ function Player:LoadData()
     local playerHealth = playerData.health
     local playerStaminaAmount = playerData.staminaAmount
     local playerStaminaRegenTimer = playerData.staminaTimer
-    local playerGoldAmount = playerData.gold
 
     local playerMaxStamina = playerData.maxStamina
     if playerMaxStamina ~= nil then
         self.playerMaxStamina = playerMaxStamina
+    end
+
+    local playerGoldAmount = playerData.gold
+    if playerGoldAmount ~= nil then
+        self.playerGoldAmount = playerGoldAmount
     end
 
     if playerHealth == nil or playerHealth == 0 or playerStaminaAmount == nil or playerStaminaRegenTimer == nil then
@@ -170,12 +174,10 @@ function Player:LoadData()
 
     self.playerStaminaAmount = playerStaminaAmount
     self.playerStaminaRegenTimer = playerStaminaRegenTimer
-
-    self.playerGoldAmount = playerGoldAmount
 end
-function Player:ClearData(keepStamina)
+function Player:ClearData(keepRunData)
     DCEI.LogMessage("Clearing Player Data")
-    mod.ClearPlayerData(keepStamina)
+    mod.ClearPlayerData(keepRunData)
 end
 function Player:HandleBehaviourAdded(behaviourName)
     if behaviourName == PLAYER_SLOW_BEHAVIOUR then -- Surefooted

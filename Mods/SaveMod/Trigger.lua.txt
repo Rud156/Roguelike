@@ -106,14 +106,14 @@ function mod.GetPlayerData()
     return playerData
 end
 
-function mod.ClearPlayerData(keepStamina)
+function mod.ClearPlayerData(keepRunData)
     DCEI.Save.Set(PLAYER_HEALTH, nil)
     DCEI.Save.Set(PLAYER_STAMINA_AMOUNT, nil)
     DCEI.Save.Set(PLAYER_STAMINA_TIMER, nil)
-    DCEI.Save.Set(PLAYER_GOLD, nil)
-
-    if not keepStamina then
+    
+    if not keepRunData then
         DCEI.Save.Set(PLAYER_MAX_STAMINA, nil)
+        DCEI.Save.Set(PLAYER_GOLD, nil)
     end
     
     DCEI.Save.Commit()

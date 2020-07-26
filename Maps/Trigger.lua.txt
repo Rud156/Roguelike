@@ -1225,6 +1225,7 @@ function CreatePlayerGoldDisplay()
 
     local playerGoldText = DCEI.NewText(playerGoldStack)
     DCEI.SetTextFontSize(playerGoldText, 30)
+    DCEI.SetText(playerGoldText, 0)
     m_playerGoldDisplay = playerGoldText
 end
 
@@ -1241,10 +1242,10 @@ function CreateDebugUI()
     -- DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
     -- DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
 
-    local goldButton = DCEI.NewButton(horizontalStack)
-    DCEI.SetMinSize(goldButton, 50, 54)
-    DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
-    DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
+    -- local goldButton = DCEI.NewButton(horizontalStack)
+    -- DCEI.SetMinSize(goldButton, 50, 54)
+    -- DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
+    -- DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
 
     -- local roomType = SaveMod.GetRoomName()
     -- if roomType == nil then
