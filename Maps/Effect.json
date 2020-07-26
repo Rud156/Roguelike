@@ -49,7 +49,7 @@
         "_Damage_Enemy_Goblin": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 15,
+                "damageAmount": 20,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -72,7 +72,7 @@
         "_Damage_Enemy_GoblinChef": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 15,
+                "damageAmount": 30,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -187,7 +187,7 @@
         "_Damage_Enemy_Hobgoblin": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 30,
+                "damageAmount": 40,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -488,12 +488,12 @@
         },
         "_Search_Enemy_Goblin": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circleSector": {
                         "outerRadius": 0.7,
-                        "innerRadius": 0.2,
-                        "angle": 45
+                        "innerRadius": 0.1,
+                        "angle": 60
                     }
                 },
                 "maxUnitCount": 10,
@@ -577,10 +577,10 @@
         },
         "_Search_Enemy_GoblinSapper_Bomb": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circle": {
-                        "radius": 1
+                        "radius": 1.2
                     }
                 },
                 "maxUnitCount": 10,
@@ -593,12 +593,12 @@
         },
         "_Search_Enemy_Hobgoblin": {
             "areaSearch": {
-                "debugDraw": false,
+                "debugDraw": true,
                 "areaSearchType": {
                     "circleSector": {
-                        "outerRadius": 0.9,
-                        "innerRadius": 0.2,
-                        "angle": 60
+                        "outerRadius": 1,
+                        "innerRadius": 0.1,
+                        "angle": 75
                     }
                 },
                 "maxUnitCount": 10,

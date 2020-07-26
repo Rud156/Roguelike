@@ -73,7 +73,7 @@
                     "suppressMovement": false
                 },
                 "moveSpeedModifier": {
-                    "scaled": -0.6,
+                    "scaled": -0.8,
                     "unscaled": 0,
                     "additiveFactor": 0,
                     "multiplierFactor": 0

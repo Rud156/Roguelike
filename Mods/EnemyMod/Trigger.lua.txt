@@ -68,7 +68,7 @@ local GOBLIN_MINER_LEAP = "_Enemy_GoblinMiner_Leap"
 local GOBLIN_MINER_LEAP_EFFECT = "_Launch_Enemy_GoblinMiner_Leap"
 local GOBLIN_MINER_RANDOM_MOVEMENT_TIMER = 3
 local GOBLIN_MINER_GOBLIN_SPAWN_RADIUS = 5
-local GOBLIN_MINER_GOBLIN_COUNT = 3
+local GOBLIN_MINER_GOBLIN_COUNT = 4
 local GOBLIN_MINER_ROCKET_DELAY = 0.7
 local GOBLIN_MINER_MIN_ROCKETS = 4
 local GOBLIN_MINER_MAX_ROCKETS = 5
@@ -84,9 +84,9 @@ local GOBLIN_MINER_LEAP_SKY_DELAY = 2 -- How long it takes to go up
 local GOBLIN_MINER_LEAP_AIRSTRAFE_TIME = 1 -- How long it tracks the player when in air
 local GOBLIN_MINER_LEAP_LAND_TIME = 2.8 -- How it takes to come down. So that the enemy is displayed again
 -- Attack Ranges
-local GOBLIN_MINER_ROCKET_RANGE = { min = 4 }
-local GOBLIN_MINER_DRILL_RANGE = { min = 1, max = 5 }
-local GOBLIN_MINER_LEAP_RANGE = { min = 0 } 
+local GOBLIN_MINER_ROCKET_RANGE = { min = 3 }
+local GOBLIN_MINER_DRILL_RANGE = { min = 1, max = 3 }
+local GOBLIN_MINER_LEAP_RANGE = { min = 2 } 
 local GOBLIN_MINER_GOBLIN_RANGE = {}
 
 local mod = {}

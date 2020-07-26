@@ -1376,7 +1376,8 @@
                 "resource": {
                     "type": "ParticleAnimation",
                     "name": "vfx_shared_explosion_small"
-                }
+                },
+                "modelScale": 1.2
             }
         },
         "_FX_Enemy_GoblinSapper_Explosion_Actor": {
