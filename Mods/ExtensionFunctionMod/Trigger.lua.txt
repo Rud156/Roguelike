@@ -52,12 +52,12 @@ function mod.NormalizeUnitRotation(unitRotation)
 end
 
 function mod.ToBoolean(stringValue)
-    if stringValue == "true" then
+    if stringValue == "true" or stringValue == true then
         return true
-    elseif stringValue == "false" then
+    elseif stringValue == "false" or stringValue == false then
         return false
     else
-        DCIE.LogError("Invalid String Value")
+        DCEI.LogError("Invalid String Value")
         return false
     end
 end
