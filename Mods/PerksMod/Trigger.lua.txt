@@ -109,10 +109,10 @@ function PerkIconDisplay:UpdateRecharge(deltaTime)
         DCEI.SetBackgroundImageFillAmount(self.perkRecharge, rechargeRatio)
     end
 end
-function PerkIconDisplay:ActivateRecharge(maxRechargeTime)
+function PerkIconDisplay:ActivateRecharge(currentRechargeTime, maxRechargeTime)
     self.isPerkRechargeActive = true
     self.maxRechargeTime = maxRechargeTime
-    self.currentRechargeTime = maxRechargeTime
+    self.currentRechargeTime = currentRechargeTime
 
     DCEI.SetBackgroundImageColor(self.perkRecharge, 0, 0, 0, 0.5)
 end
@@ -182,7 +182,13 @@ function PerkDisplay:AddCallback(callback)
     table.insert(self.callbacks, callback)
 end
 function PerkDisplay:HasPerk(perkName)
-    return mod.ArrayHasValue(self.currentPerks, perkName)
+    for _, perk in ipairs(self.currentPerks) do
+        if perk.perkName == perkName then
+            return true
+        end
+    end
+
+    return false
 end
 function PerkDisplay:Update(deltaTime)
     for _, icon in ipairs(self.currentPerksUI) do
@@ -281,8 +287,8 @@ function PerkDisplay:CreateBaseDisplayUI(uiLayer)
     -- UI List
     self.currentPerksUI = {}
 
-    for _, perkName in ipairs(self.currentPerks) do
-        local iconUI = PerkIconDisplay:new(baseFrame, perkName)
+    for _, perk in ipairs(self.currentPerks) do
+        local iconUI = PerkIconDisplay:new(baseFrame, perk.perkName)
         table.insert(self.currentPerksUI, iconUI)
     end
 end
@@ -324,7 +330,16 @@ function PerkDisplay:ShowRandomPerks(player)
     local notActivePerks = {}
 
     for _, perk in pairs(PERK_NAMES) do
-        if not mod.ArrayHasValue(self.currentPerks, perk) then
+        local hasPerk = false
+
+        for _, currentPerk in ipairs(self.currentPerks) do
+            if currentPerk.perkName == perk then
+                hasPerk = true
+                break
+            end
+        end
+
+        if not hasPerk then
             table.insert(notActivePerks, perk)
         end
     end
@@ -401,10 +416,36 @@ end
 function PerkDisplay:GetDisplayedInRound()
     return self.perkDisplayedInRound
 end
+function PerkDisplay:SetPerkValue(perkName, value)
+    for i = 1, #self.currentPerks do
+        if self.currentPerks[i].perkName == perkName then
+            self.currentPerks[i].value = value
+        end
+    end
+end
+function PerkDisplay:GetPerkValue(perkName)
+    for _, perk in ipairs(self.currentPerks) do
+        if perk.perkName == perkName then
+            return perk.value
+        end
+    end
+
+    return nil
+end
 function PerkDisplay:ActivatePerk(perkName)
     DCEI.LogMessage("Perk Activated: " .. perkName)
 
-    table.insert(self.currentPerks, perkName)
+    local perk = {
+        perkName = perkName,
+        value = tonumber(PERKS[perkName].value) -- Don't care if it is astring or not. Just the number values are required
+    }
+
+    -- Set value to 0 in case of timers as these need to be instantly activated
+    if perkName == PERK_NAMES.HelmOfValor then
+        perk.value = 0
+    end
+
+    table.insert(self.currentPerks, perk)
 
     local perkIcon = PerkIconDisplay:new(self.currentPerksUIContainer, perkName)
     table.insert(self.currentPerksUI, perkIcon)
@@ -413,35 +454,44 @@ function PerkDisplay:ActivatePerk(perkName)
         callback(perkName)
     end
 end
-function PerkDisplay:ActivatePerkRecharge(perkName, maxRechargeTime)
+function PerkDisplay:ActivatePerkRecharge(perkName, currentRechargeTime, maxRechargeTime)
     for _, icon in ipairs(self.currentPerksUI) do
         if icon.perkName == perkName then
-            icon:ActivateRecharge(maxRechargeTime)
+            icon:ActivateRecharge(currentRechargeTime, maxRechargeTime)
             break
         end
     end
 end
 
 
-function mod.ConvertPerksToString(perks)
+function mod.ConvertPerksToString(currentPerks)
     local stringValue = ""
 
-    for _, perk in ipairs(perks) do
-        stringValue = stringValue .. perk .. ","
+    for _, perk in ipairs(currentPerks) do
+        stringValue = stringValue .. perk.perkName .. "," .. perk.value
+        stringValue = stringValue .. ":"
     end
 
     return stringValue
 end
 
 function mod.ConvertStringToPerks(stringValue)
-    local perks = mod.split(stringValue, ",")
-    local array = {}
+    local perks = mod.split(stringValue, ":")
+    local currentPerks = {}
 
-    for _, data in pairs(perks) do
-        table.insert(array, data)
+    for _, value in pairs(perks) do
+        local data = mod.split(value, ",")
+
+        table.insert(
+            currentPerks, 
+            {  
+                perkName = data[1],
+                value = tonumber(data[2])
+            }
+        )
     end
 
-    return array
+    return currentPerks
 end
 
 mod.Perks = PERKS
@@ -453,7 +503,6 @@ mod.LoadPerks = nil
 mod.ClearPerks = nil
 
 mod.split = nil
-mod.ArrayHasValue = nil
 mod.ShuffleTable = nil
 mod.ToBoolean = nil
 
