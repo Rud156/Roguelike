@@ -468,7 +468,7 @@ function mod.ConvertPerksToString(currentPerks)
     local stringValue = ""
 
     for _, perk in ipairs(currentPerks) do
-        stringValue = stringValue .. perk.perkName .. "," .. perk.value
+        stringValue = stringValue .. perk.perkName .. "," .. tostring(perk.value)
         stringValue = stringValue .. ":"
     end
 
