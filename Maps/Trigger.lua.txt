@@ -748,6 +748,9 @@ function SpawnEnemiesAndCloseDoors()
             m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_skillDisplay, m_roomLevel, false)
         end
         ActivateDoorCloseAnimations()
+
+    elseif not m_isBeginningRoom and m_roomGenerator:IsPlayerRoomCleared() then
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PlayerMod.PlayerOutOfCombatSpeed)
     end
 end
 
@@ -1585,15 +1588,12 @@ function CheckAndSpawnPerks()
     m_perkDisplay:AddCallback(HandlePerkActivatedCallback)
 
     if m_isBeginningRoom then
-        m_perkDisplay:MarkPerkDisplayed()
-
-        m_perkDisplay:Save()
         if m_perkDisplay:HasPerk(PerksMod.PerkNames.HelmOfValor) then
             SaveMod.SaveHelmOfValorTimer(m_helmOfValorTimeRemaining)
         end
     end
 
-    if not m_perkDisplay:GetDisplayedInRound() then
+    if not m_isBeginningRoom and not m_perkDisplay:GetDisplayedInRound() then
         m_perkDisplay:ShowRandomPerks(m_player)
     end
 

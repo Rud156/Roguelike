@@ -33,6 +33,8 @@ local PLAYER_STAMINA_REGEN_DELAY = 3
 local PLAYER_BASE_HEALTH = 150
 local DELAYED_LOAD_TIMER = 0.1
 
+local PLAYER_OUT_OF_COMBAT_SPEED = "_PlayerCharacter_OutOfCombat_Speed"
+
 local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
 local CRUELTY_BEHAVIOUR = "_PlayerCharacter_Cruelty"
 local CONCUSSION_BLOW_BEHAVIOUR = "_PlayerCharacter_LightAttack_Hit"
@@ -795,6 +797,8 @@ mod.SkillNames = SkillNames
 mod.SavePlayerData = nil
 mod.GetPlayerData = nil
 mod.ClearPlayerData = nil
+
+mod.PlayerOutOfCombatSpeed = PLAYER_OUT_OF_COMBAT_SPEED
 
 mod.PlayerDeflectionDistance = PLAYER_DEFLECTION_DISTANCE
 mod.PlayerInvincibleTimer = PLAYER_INVINCIBLE_TIMER

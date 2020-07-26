@@ -120,7 +120,8 @@
             "_PlayerCharacter_SwiftHands",
             "_Perks_PoisonOrb",
             "_Collectible_Speed_Potion",
-            "_Collectible_Catalyst_Potion"
+            "_Collectible_Catalyst_Potion",
+            "_PlayerCharacter_OutOfCombat_Speed"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",

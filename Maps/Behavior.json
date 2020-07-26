@@ -291,6 +291,13 @@
                     "count": 1
                 }
             ]
+        },
+        "_PlayerCharacter_OutOfCombat_Speed": {
+            "modifiers": {
+                "moveSpeedModifier": {
+                    "scaled": 1.3
+                }
+            }
         }
     }
 }
