@@ -16,11 +16,16 @@ InventoryMod.VectorDistance = ExtensionFunction.VectorDistance
 InventoryMod.SaveInventorySlotData = SaveMod.SaveInventorySlotData
 InventoryMod.GetInventorySlotData = SaveMod.GetInventorySlotData
 InventoryMod.ClearInventorySlotData = SaveMod.ClearInventorySlotData
+InventoryMod.SaveInventoryIcon = SaveMod.SaveInventoryIcon
+InventoryMod.GetInventoryIcon = SaveMod.GetInventoryIcon
+InventoryMod.ClearInventoryIcon = SaveMod.ClearInventoryIcon
+InventoryMod.HasInventoryIconData = SaveMod.HasInventoryIconData
 InventoryMod.Perks = PerksMod.Perks
 InventoryMod.PerkNames = PerksMod.PerkNames
 local Inventory = InventoryMod.Inventory
 local InventorySlot = InventoryMod.InventorySlot
 local InventoryCollectibles = InventoryMod.InventoryCollectibles
+local InventoryIconDisplay = InventoryMod.InventoryIconDisplay
 local InventoryCollectiblesList = InventoryMod.InventoryCollectiblesList
 local InventoryCollectibleNames = InventoryMod.InventoryCollectibleNames
 local CollectibleDropped = InventoryMod.CollectibleDropped
@@ -188,11 +193,13 @@ local m_uiRoot
 local m_uiBottomLayer
 local m_uiMiddleLayer
 local m_uiTopLayer
-local m_inventory
 local m_damageDisplay
 local m_playerGoldDisplay
 local m_miniMap
+-- Inventory
+local m_inventory
 local m_collectiblesUi
+local m_inventoryIconDisplay
 -- Random
 local m_randomSeed
 -- Scene Transition
@@ -363,6 +370,7 @@ function Update()
 
     UpdatePlayerDamageUI(GAME_LOOP_RATE)
     m_inventory:UpdateSlots(GAME_LOOP_RATE)
+    m_inventoryIconDisplay:Update(GAME_LOOP_RATE)
     m_perkDisplay:Update(GAME_LOOP_RATE)
 
     if m_player ~= nil and m_player:GetPlayerUnit() ~= nil then
@@ -698,7 +706,6 @@ function SpawnPlayerAndSetPosition()
     -- Spawn Player
 
     SpawnItemDrops()
-    ApplyInventoryBehaviours()
 end
 
 function SpawnItemDrops()
@@ -934,6 +941,7 @@ end
 
 function UpdateCollisionWithExitDoor()
     m_inventory:SaveInventory()
+    m_inventoryIconDisplay:Save()
     m_player:SaveData()
     m_roomItemDrops:ClearData() -- Clear the data for the older dungeon
 
@@ -1068,6 +1076,7 @@ function SaveNextRoomData()
     m_roomGenerator:SaveRoomStructure()
     m_roomItemDrops:SaveData()
     m_inventory:SaveInventory() 
+    m_inventoryIconDisplay:Save()
     m_player:SaveData()
     m_skillDisplay:SaveSkillTree()
 
@@ -1093,6 +1102,7 @@ function DisplayGameOverSequence(playerWon)
     else
         m_roomGenerator:ClearSaveData()
         m_inventory:ClearInventorySave()
+        m_inventoryIconDisplay:Clear()
         m_roomItemDrops:ClearData()
         m_perkDisplay:Clear()
 
@@ -1231,10 +1241,10 @@ function CreateDebugUI()
     -- DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
     -- DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
 
-    -- local goldButton = DCEI.NewButton(horizontalStack)
-    -- DCEI.SetMinSize(goldButton, 50, 54)
-    -- DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
-    -- DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
+    local goldButton = DCEI.NewButton(horizontalStack)
+    DCEI.SetMinSize(goldButton, 50, 54)
+    DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
+    DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
 
     -- local roomType = SaveMod.GetRoomName()
     -- if roomType == nil then
@@ -1283,8 +1293,7 @@ end
 
 function HandleCharacterSwitch()
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
-    RemoveInventoryBehaviours()
-
+    
     m_player:Destroy()
     m_player = nil
 
@@ -1299,8 +1308,6 @@ function HandleCharacterSwitch()
     m_player:ShowPlayerUI()
 
     UseMeleePlayer = not UseMeleePlayer
-
-    ApplyInventoryBehaviours()
 
     m_camera:UpdateTarget(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
@@ -1389,8 +1396,6 @@ function HandleInventoryUnitClicked(unit, unitName)
     else
         DCEI.LogError("Inventory is full!!!")
     end
-
-    ApplyInventoryItemBehaviour(unitName)
 end
 
 function CreateInventoryUI()
@@ -1418,29 +1423,23 @@ end
 function LoadInventoryFromSave()
     -- This must be done after the player is created as the behaviours will be added to the player
     m_inventory:LoadInventory()
-    ApplyInventoryBehaviours()
-end
+    
+    m_inventoryIconDisplay = InventoryIconDisplay:new(m_uiMiddleLayer)
+    local inventoryIcons = m_inventoryIconDisplay:GetCurrentIcons()
 
-function ApplyInventoryBehaviours()
-    local slots = m_inventory:GetInventorySlots()
-    for i, slot in ipairs(slots) do
-        local itemName = slot:GetInventoryItemName()
-        ApplyInventoryItemBehaviour(itemName)
+    for _, item in ipairs(inventoryIcons) do
+        local itemName = item.itemName
+        
+        if itemName == InventoryCollectibleNames.CatalystPotion then
+            local behaviourName = InventoryCollectibles[itemName].itemBehaviourName
+            DCEI.ApplyBehaviorWithDuration(m_player:GetPlayerUnit(), behaviourName, item.currentRechargeTime, false)
+
+        elseif itemName == InventoryCollectibleNames.SpeedPotion then
+            local behaviourName = InventoryCollectibles[itemName].itemBehaviourName
+            DCEI.ApplyBehaviorWithDuration(m_player:GetPlayerUnit(), behaviourName, item.currentRechargeTime, false)
+
+        end
     end
-end
-
-function RemoveInventoryBehaviours()
-    local slots = m_inventory:GetInventorySlots()
-    for i, slot in ipairs(slots) do
-        local itemName = slot:GetInventoryItemName()
-        RemoveInventoryItemBehaviour(itemName)
-    end
-end
-
-function ApplyInventoryItemBehaviour(itemName)
-end
-
-function RemoveInventoryItemBehaviour(itemName)
 end
 
 function HandleInventoryItemDropped(itemName, inventorySlot)
@@ -1502,6 +1501,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         end
 
         DCEI.ApplyBehaviorWithDuration(m_player:GetPlayerUnit(), behaviourName, duration, false)
+        m_inventoryIconDisplay:AddIconDisplay(itemName, duration, duration)
 
         inventorySlot:UseItem()
 
@@ -1518,6 +1518,7 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         end
 
         DCEI.ApplyBehaviorWithDuration(m_player:GetPlayerUnit(), behaviourName, duration, false)
+        m_inventoryIconDisplay:AddIconDisplay(itemName, duration, duration)
 
         inventorySlot:UseItem()
 

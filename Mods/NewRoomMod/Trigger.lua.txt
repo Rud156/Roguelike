@@ -871,6 +871,7 @@ function RoomGenerator:FindPathToSpawnRoom(spawnRoomNumber, startRoomNumber)
         if node == ARRAY_NIL then
             pathLength = pathLength + 1
             table.insert(queue, ARRAY_NIL)
+            
         elseif not mod.ArrayHasValue(explored, node) then
             local adjacentRooms = self.roomAdjacencyList[node]
             for i, room in ipairs(adjacentRooms) do

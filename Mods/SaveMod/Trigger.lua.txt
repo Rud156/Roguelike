@@ -130,8 +130,11 @@ local SLOT_RECHARGE_ACTIVE = "_RechargeActive"
 local SLOT_MAX_RECHARGE_TIME = "_MaxRechargeTime"
 local SLOT_CURRENT_RECHARGE_TIME = "_CurrentRechargeTime"
 
+local ICON_BASE = "Icon_"
+
 local MIN_SLOT_COUNT = 1
 local MAX_SLOT_COUNT = 4
+local MAX_ICON_COUNT = 10
 
 function mod.SaveInventorySlotData(index, slotName, slotStack, slotRechargeActive, slotMaxRecharge, slotCurrentRechargeTime)
     DCEI.Save.Set(SLOT_BASE .. index .. SLOT_NAME, slotName)
@@ -164,6 +167,39 @@ end
 function mod.ClearAllInventoryData()
     for i = MIN_SLOT_COUNT, MAX_SLOT_COUNT do
         mod.ClearInventorySlotData(i)
+    end
+end
+
+function mod.SaveInventoryIcon(itemName, index, currentRechargeTime, maxRechargeTime)
+    DCEI.Save.Set(ICON_BASE .. index .. SLOT_NAME, itemName)
+    DCEI.Save.Set(ICON_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME, currentRechargeTime)
+    DCEI.Save.Set(ICON_BASE .. index .. SLOT_MAX_RECHARGE_TIME, maxRechargeTime)
+    DCEI.Save.Commit()
+end
+
+function mod.GetInventoryIcon(index)
+    local itemName = DCEI.Save.Get(ICON_BASE .. index .. SLOT_NAME)
+    local currentRechargeTime = DCEI.Save.Get(ICON_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME)
+    local maxRechargeTime = DCEI.Save.Get(ICON_BASE .. index .. SLOT_MAX_RECHARGE_TIME)
+
+    return itemName, currentRechargeTime, maxRechargeTime
+end
+
+function mod.ClearInventoryIcon(index)
+    DCEI.Save.Set(ICON_BASE .. index .. SLOT_NAME, nil)
+    DCEI.Save.Set(ICON_BASE .. index .. SLOT_CURRENT_RECHARGE_TIME, nil)
+    DCEI.Save.Set(ICON_BASE .. index .. SLOT_MAX_RECHARGE_TIME, nil)
+    DCEI.Save.Commit()
+end
+
+function mod.HasInventoryIconData(index)
+    local itemName = DCEI.Save.Get(ICON_BASE .. index .. SLOT_NAME)
+    return itemName ~= nil or itemName ~= ""
+end
+
+function mod.ClearAllInventoryIconData()
+    for i = 1, MAX_ICON_COUNT do
+        mod.ClearInventoryIcon(i)
     end
 end
 
@@ -335,6 +371,7 @@ end
 function mod.ClearAllData()
     mod.ClearAllMainMapData()
     mod.ClearAllInventoryData()
+    mod.ClearAllInventoryIconData()
     mod.ClearItemDrops()
     mod.ClearPlayerData(false)
     mod.ClearRoomData()

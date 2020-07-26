@@ -71,6 +71,8 @@ local COLLECTIBLE_BASE_STRING = "_Collectible"
 local COLLECTIBLES_UI_DISPLAY_DIST = 1
 local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
+local MAX_TIMER_SLOTS = 10
+
 -- Item  Type
 -- -1: Empty
 -- 0: Gear
@@ -455,6 +457,168 @@ function Inventory:GetInventorySlots()
 end
 
 
+local InventoryIconTimer = {
+    itemName = "",
+
+    itemImage = nil,
+    itemRecharge = nil,
+
+    maxRechargeTime = 0,
+    currentRechargeTime = 0
+}
+InventoryIconTimer.__index = InventoryIconTimer
+function InventoryIconTimer:new(uiLayer, itemName, currentRechargeTime, maxRechargeTime)
+    local inventoryIconTimer = {}
+    setmetatable(inventoryIconTimer, InventoryIconTimer)
+
+    inventoryIconTimer.itemName = itemName
+ 
+    inventoryIconTimer.itemImage = nil
+    inventoryIconTimer.itemRecharge = nil
+
+    inventoryIconTimer.maxRechargeTime = maxRechargeTime
+    inventoryIconTimer.currentRechargeTime = currentRechargeTime
+
+    inventoryIconTimer:CreateUI(uiLayer, itemName)
+
+    return inventoryIconTimer
+end
+function InventoryIconTimer:Save(index)
+    mod.SaveInventoryIcon(self.itemName, index, self.currentRechargeTime, self.maxRechargeTime)
+end
+function InventoryIconTimer:Load(uiLayer, index)
+    local itemName, currentRechargeTime, maxRechargeTime = mod.GetInventoryIcon(index)
+    if itemName == nil or currentRechargeTime == nil or maxRechargeTime == nil then
+        return nil
+    end
+
+    local inventoryIconTimer = {}
+    setmetatable(inventoryIconTimer, InventoryIconTimer)
+
+    inventoryIconTimer.itemName = itemName
+    
+    inventoryIconTimer.itemImage = nil
+    inventoryIconTimer.itemRecharge = nil
+
+    inventoryIconTimer.currentRechargeTime = currentRechargeTime
+    inventoryIconTimer.maxRechargeTime = maxRechargeTime
+
+    inventoryIconTimer:CreateUI(uiLayer, itemName)
+
+    return inventoryIconTimer
+end
+function InventoryIconTimer:Clear(index)
+    mod.ClearInventoryIcon(index)
+end
+function InventoryIconTimer:CreateUI(uiLayer, itemName)
+    local baseFrame = DCEI.NewFrame(uiLayer)
+    DCEI.SetMinSize(baseFrame, 50, 50)
+    DCEI.SetMaxSize(baseFrame, 50, 50)
+
+    local imageName = COLLECTIBLES_TABLE[itemName].itemImage
+    DCEI.SetBackgroundImage(baseFrame, imageName)
+    
+    local overlay = DCEI.NewFrame(baseFrame)
+    DCEI.SetMinSize(overlay, 50, 50)
+    DCEI.SetBackgroundImage(overlay, "ui_squareround")
+    DCEI.SetBackgroundImageColor(overlay, 0, 0, 0, 0.5)
+
+    self.itemImage = baseFrame
+    self.itemRecharge = overlay
+end
+function InventoryIconTimer:Update(deltaTime)
+    self.currentRechargeTime = self.currentRechargeTime - deltaTime
+
+    if self.currentRechargeTime <= 0 then
+        DCEI.SetBackgroundImageColor(self.itemRecharge, 0, 0, 0, 0)
+        
+    else
+        local rechargeRatio = self.currentRechargeTime / self.maxRechargeTime
+        DCEI.SetBackgroundImageFillAmount(self.itemRecharge, rechargeRatio)
+    end
+end
+function InventoryIconTimer:IsComplete()
+    return self.currentRechargeTime <= 0
+end
+function InventoryIconTimer:Destroy()
+    DCEI.Destroy(self.itemImage)
+end
+
+
+local InventoryIconDisplay = {
+    currentInventoryIconsContainer = nil,
+    currentInventoryIcons = {}
+}
+InventoryIconDisplay.__index = InventoryIconDisplay
+function InventoryIconDisplay:new(uiLayer)
+    local inventoryIconDisplay = {}
+    setmetatable(inventoryIconDisplay, InventoryIconDisplay)
+
+    inventoryIconDisplay.currentInventoryIconsContainer = nil
+    inventoryIconDisplay.currentInventoryIcons = {}
+
+    inventoryIconDisplay:Load(uiLayer)
+
+    return inventoryIconDisplay
+end
+function InventoryIconDisplay:Load(uiLayer)
+    local baseStack = DCEI.NewHStack(uiLayer)
+    DCEI.SetSpacing(baseStack, 7)
+    DCEI.SetLeftAlignmentInParent(baseStack)
+    DCEI.SetTopAlignmentInParent(baseStack)
+    DCEI.SetHorizontalOffsetInParent(baseStack, 21)
+    DCEI.SetVerticalOffsetInParent(baseStack, -140)
+
+    -- Arbitary Start and End
+    for i = 1, MAX_TIMER_SLOTS do
+        if mod.HasInventoryIconData(i) then
+            local inventoryIcon = InventoryIconTimer:Load(baseStack, i)
+            table.insert(self.currentInventoryIcons, inventoryIcon)
+        end
+    end
+
+    self.currentInventoryIconsContainer = baseStack
+end
+function InventoryIconDisplay:Save()
+    for i = 1, MAX_TIMER_SLOTS do
+        mod.ClearInventoryIcon(i)
+    end
+
+    for i = 1, #self.currentInventoryIcons do
+        self.currentInventoryIcons[i]:Save(i)
+    end
+end
+function InventoryIconDisplay:Clear()
+    for i = 1, MAX_TIMER_SLOTS do
+        mod.ClearInventoryIcon(i)
+    end
+end
+function InventoryIconDisplay:AddIconDisplay(itemName, currentRechargeTime, maxRechargeTime)
+    local iconDisplay = InventoryIconTimer:new(self.currentInventoryIconsContainer, itemName, currentRechargeTime, maxRechargeTime)
+    table.insert(self.currentInventoryIcons, iconDisplay)
+end
+function InventoryIconDisplay:Update(deltaTime)
+    local indexToRemove = -1
+
+    for i = 1, #self.currentInventoryIcons do
+        if self.currentInventoryIcons[i]:IsComplete() then
+            indexToRemove = i
+
+        else
+            self.currentInventoryIcons[i]:Update(deltaTime)
+        end
+    end
+
+    if indexToRemove ~= -1 then
+        self.currentInventoryIcons[indexToRemove]:Destroy()
+        table.remove(self.currentInventoryIcons, indexToRemove)
+    end
+end
+function InventoryIconDisplay:GetCurrentIcons()
+    return self.currentInventoryIcons
+end
+
+
 local CollectiblesUI = {
     unit = nil,
     displayHolder = nil,
@@ -603,6 +767,8 @@ end
 mod.Inventory = Inventory
 mod.InventorySlot = InventorySlot
 mod.CollectiblesUIManager = CollectiblesUIManager
+mod.InventoryIconDisplay = InventoryIconDisplay
+
 mod.InventoryCollectibles = COLLECTIBLES_TABLE
 mod.InventoryCollectiblesList = COLLECTIBLES_LIST
 mod.InventoryCollectibleNames = COLLECTIBLE_NAMES
@@ -617,5 +783,10 @@ mod.PerkNames = nil
 mod.SaveInventorySlotData = nil
 mod.GetInventorySlotData = nil
 mod.ClearInventorySlotData = nil
+
+mod.SaveInventoryIcon = nil
+mod.GetInventoryIcon = nil
+mod.ClearInventoryIcon = nil
+mod.HasInventoryIconData = nil
 
 return mod
