@@ -138,7 +138,7 @@ local PerkDisplay = {
     callbacks = {}
 }
 PerkDisplay.__index = PerkDisplay
-function PerkDisplay:new(uiLayerTop, uiLayerBottom)
+function PerkDisplay:new(uiLayerTop, uiStack)
     local perkDisplay = {}
     setmetatable(perkDisplay, PerkDisplay)
 
@@ -159,7 +159,7 @@ function PerkDisplay:new(uiLayerTop, uiLayerBottom)
     perkDisplay:HidePerks()
     perkDisplay:Load()
 
-    perkDisplay:CreateBaseDisplayUI(uiLayerBottom) -- Create this at the end so that all UI is displayed
+    perkDisplay:CreateBaseDisplayUI(uiStack) -- Create this at the end so that all UI is displayed
 
     return perkDisplay
 end
@@ -273,22 +273,14 @@ function PerkDisplay:CreateUI(uiLayer)
         table.insert(self.bottomLayerButtons, perkDisplayButton)
     end
 end
-function PerkDisplay:CreateBaseDisplayUI(uiLayer)
-    -- Base Frame
-    local baseFrame = DCEI.NewHStack(uiLayer)
-    DCEI.SetSpacing(baseFrame, 7)
-    DCEI.SetLeftAlignmentInParent(baseFrame)
-    DCEI.SetTopAlignmentInParent(baseFrame)
-    DCEI.SetHorizontalOffsetInParent(baseFrame, 170)
-    DCEI.SetVerticalOffsetInParent(baseFrame, -21)
-
-    self.currentPerksUIContainer = baseFrame
+function PerkDisplay:CreateBaseDisplayUI(uiStack)
+    self.currentPerksUIContainer = uiStack
 
     -- UI List
     self.currentPerksUI = {}
 
     for _, perk in ipairs(self.currentPerks) do
-        local iconUI = PerkIconDisplay:new(baseFrame, perk.perkName)
+        local iconUI = PerkIconDisplay:new(uiStack, perk.perkName)
         table.insert(self.currentPerksUI, iconUI)
     end
 end

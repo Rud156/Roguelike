@@ -534,7 +534,7 @@ function InventoryIconTimer:Update(deltaTime)
         
     else
         local rechargeRatio = self.currentRechargeTime / self.maxRechargeTime
-        DCEI.SetBackgroundImageFillAmount(self.itemRecharge, rechargeRatio)
+        DCEI.SetBackgroundImageFillAmount(self.itemRecharge,  1 - rechargeRatio)
     end
 end
 function InventoryIconTimer:IsComplete()
@@ -550,34 +550,27 @@ local InventoryIconDisplay = {
     currentInventoryIcons = {}
 }
 InventoryIconDisplay.__index = InventoryIconDisplay
-function InventoryIconDisplay:new(uiLayer)
+function InventoryIconDisplay:new(uiStack)
     local inventoryIconDisplay = {}
     setmetatable(inventoryIconDisplay, InventoryIconDisplay)
 
     inventoryIconDisplay.currentInventoryIconsContainer = nil
     inventoryIconDisplay.currentInventoryIcons = {}
 
-    inventoryIconDisplay:Load(uiLayer)
+    inventoryIconDisplay:Load(uiStack)
 
     return inventoryIconDisplay
 end
-function InventoryIconDisplay:Load(uiLayer)
-    local baseStack = DCEI.NewHStack(uiLayer)
-    DCEI.SetSpacing(baseStack, 7)
-    DCEI.SetLeftAlignmentInParent(baseStack)
-    DCEI.SetTopAlignmentInParent(baseStack)
-    DCEI.SetHorizontalOffsetInParent(baseStack, 21)
-    DCEI.SetVerticalOffsetInParent(baseStack, -140)
-
-    -- Arbitary Start and End
+function InventoryIconDisplay:Load(uiStack)
+     -- Arbitary Start and End
     for i = 1, MAX_TIMER_SLOTS do
         if mod.HasInventoryIconData(i) then
-            local inventoryIcon = InventoryIconTimer:Load(baseStack, i)
+            local inventoryIcon = InventoryIconTimer:Load(uiStack, i)
             table.insert(self.currentInventoryIcons, inventoryIcon)
         end
     end
 
-    self.currentInventoryIconsContainer = baseStack
+    self.currentInventoryIconsContainer = uiStack
 end
 function InventoryIconDisplay:Save()
     for i = 1, MAX_TIMER_SLOTS do

@@ -193,6 +193,7 @@ local m_uiRoot
 local m_uiBottomLayer
 local m_uiMiddleLayer
 local m_uiTopLayer
+local m_topStackUi
 local m_damageDisplay
 local m_playerGoldDisplay
 local m_miniMap
@@ -1196,6 +1197,15 @@ function CreateBaseUIElements()
     m_uiBottomLayer = bottomFrame
     m_uiMiddleLayer = middleFrame
     m_uiTopLayer = topFrame
+
+    local baseFrame = DCEI.NewHStack(m_uiMiddleLayer)
+    DCEI.SetSpacing(baseFrame, 7)
+    DCEI.SetLeftAlignmentInParent(baseFrame)
+    DCEI.SetTopAlignmentInParent(baseFrame)
+    DCEI.SetHorizontalOffsetInParent(baseFrame, 170)
+    DCEI.SetVerticalOffsetInParent(baseFrame, -21)
+
+    m_topStackUi = baseFrame
 end
 
 function CreateCollectiblesUI()
@@ -1425,7 +1435,7 @@ function LoadInventoryFromSave()
     -- This must be done after the player is created as the behaviours will be added to the player
     m_inventory:LoadInventory()
     
-    m_inventoryIconDisplay = InventoryIconDisplay:new(m_uiMiddleLayer)
+    m_inventoryIconDisplay = InventoryIconDisplay:new(m_topStackUi)
     local inventoryIcons = m_inventoryIconDisplay:GetCurrentIcons()
 
     for _, item in ipairs(inventoryIcons) do
@@ -1580,7 +1590,7 @@ end
 -- #region Perk Functions
 
 function CheckAndSpawnPerks()
-    m_perkDisplay = PerkDisplay:new(m_uiTopLayer, m_uiMiddleLayer)
+    m_perkDisplay = PerkDisplay:new(m_uiTopLayer, m_topStackUi)
     m_perkDisplay:AddCallback(HandlePerkActivatedCallback)
 
     if m_isBeginningRoom then
