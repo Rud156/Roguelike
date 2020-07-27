@@ -522,6 +522,7 @@ function InventoryIconTimer:CreateUI(uiLayer, itemName)
     DCEI.SetMinSize(overlay, 50, 50)
     DCEI.SetBackgroundImage(overlay, "ui_squareround")
     DCEI.SetBackgroundImageColor(overlay, 0, 0, 0, 0.5)
+    DCEI.SetBackgroundImageFillOrigin(overlay, 1)
 
     self.itemImage = baseFrame
     self.itemRecharge = overlay

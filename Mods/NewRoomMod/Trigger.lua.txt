@@ -1399,22 +1399,22 @@ function RoomEnemies:GetRandomValidPointInRoom()
             if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID and DCEI.IsPointOnNavMesh(i, j) then
                 
                 if self.direction == LEFT then
-                    if i > mod.GetMinDirectionPosition(true) then
+                    if i > mod.GetMinDirectionForSpawn(true) then
                         table.insert(validPositions, { x = i, y = j })
                     end
 
                 elseif self.direction == RIGHT then
-                    if i < mod.GetMaxDirectionPosition(true) then
+                    if i < mod.GetMaxDirectionForSpawn(true) then
                         table.insert(validPositions, { x = i, y = j })
                     end 
                 
                 elseif self.direction == TOP then
-                    if j < mod.GetMaxDirectionPosition(false) then
+                    if j < mod.GetMaxDirectionForSpawn(false) then
                         table.insert(validPositions, { x = i, y = j })
                     end
 
                 else
-                    if j > mod.GetMinDirectionPosition(false) then
+                    if j > mod.GetMinDirectionForSpawn(false) then
                         table.insert(validPositions, { x = i, y = j })
                     end
 
@@ -2189,6 +2189,28 @@ end
 
 function mod.IsGoblinForestBossRoom(value)
     return string.find(value, "GFBR")
+end
+
+function mod.GetMinDirectionForSpawn(isXAxis)
+    local worldSize = DCEI.GetMapSize()
+    local worldCenter = DCEI.GetMapCenterPoint()
+
+    if isXAxis then
+        return worldCenter.x - (worldSize.x / 8)
+    else
+        return worldCenter.y - (worldSize.x / 8)
+    end
+end
+
+function mod.GetMaxDirectionForSpawn(isXAxis)
+    local worldSize = DCEI.GetMapSize()
+    local worldCenter = DCEI.GetMapCenterPoint()
+
+    if isXAxis then
+        return worldCenter.x + (worldSize.y / 8)
+    else
+        return worldCenter.y + (worldSize.y / 8)
+    end
 end
 
 function mod.GetMinDirectionPosition(isXAxis)
