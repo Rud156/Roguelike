@@ -257,7 +257,7 @@ local SKILL_TREE = {
         skillImage = "icon_enhance_dragoonbarracks_crush",
         skillName = "Cruelty",
         skillCost = 20,
-        skillDescription = "Dwarf Smith will have 10% change to critically strike enemies using light attack",
+        skillDescription = "Dwarf Smith will have 10% chance to critically strike enemies, using light attack",
         value = 0.1
     },
     LuckyStrike = {
