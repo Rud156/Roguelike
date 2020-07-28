@@ -509,7 +509,8 @@
                     "_PlayerCharacter_Melee_Dash",
                     "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_I",
                     "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_II",
-                    "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III"
+                    "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III",
+                    "_PlayerCharacter_Dash"
                 ],
                 "behaviorList": [
                     "_Search_PlayerCharacter"
@@ -543,7 +544,8 @@
                 "abilityList": [
                     "_PlayerCharacter_Ranged_LightAttack",
                     "_PlayerCharacter_Ranged_HeavyAttack",
-                    "_PlayerCharacter_Ranged_Dash"
+                    "_PlayerCharacter_Ranged_Dash",
+                    "_PlayerCharacter_Dash"
                 ],
                 "behaviorList": [
                     "_Search_PlayerCharacter"

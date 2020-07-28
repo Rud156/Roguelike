@@ -1043,6 +1043,16 @@
                 "target": 2,
                 "stackCount": 1
             }
+        },
+        "_Launch_PlayerCharacter_Dash": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileDeathType": 1,
+                "launchLocation": 4,
+                "impactLocation": 2,
+                "useMissileHeightAtDestination": true,
+                "mover": "_PlayerCharacter_Dash"
+            }
         }
     }
 }

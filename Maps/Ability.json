@@ -245,6 +245,23 @@
                 "mana": 3
             },
             "canCastWhileMoving": false
+        },
+        "_PlayerCharacter_Dash": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_PlayerCharacter_Dash",
+            "stats": {
+                "prepTime": 0,
+                "finishTime": 0.5,
+                "period": 0,
+                "range": 2.5,
+                "arc": 60
+            },
+            "cost": {
+                "mana": 0
+            },
+            "canCastWhileMoving": false
         }
     }
 }

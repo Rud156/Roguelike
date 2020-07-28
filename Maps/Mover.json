@@ -44,6 +44,7 @@
                 "speed": 0,
                 "gravity": 12
             },
+            "noRotation": false,
             "stayOnNavMesh": true
         },
         "_PlayerCharacter_Ranged": {
@@ -53,7 +54,15 @@
                 "speed": 0,
                 "gravity": 12
             },
+            "noRotation": false,
             "stayOnNavMesh": true
+        },
+        "_PlayerCharacter_Dash": {
+            "ballistic": {
+                "flightTime": 0.5,
+                "gravity": 12
+            },
+            "noRotation": true
         }
     }
 }

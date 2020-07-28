@@ -1,13 +1,9 @@
 local mod = {}
 
-local PLAYER_DASH_STAMINA = 1
-local PLAYER_DASH_CD = 0.3
-local PLAYER_DASH_RANGE = 2.5
 -- Player Ranged
 local PLAYER_NAME_RANGED = "_PlayerCharacter_Ranged"
 local PLAYER_RANGED_LIGHT_WEAPON = "_PlayerCharacter_Ranged_LightAttack"
 local PLAYER_RANGED_HEAVY_WEAPON = "_PlayerCharacter_Ranged_HeavyAttack"
-local PLAYER_RANGED_DASH_ABILITY = "_PlayerCharacter_Ranged_Dash"
 local PLAYER_RANGED_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_RANGED_LIGHT_WEAPON_CD = 0.6
 local PLAYER_RANGED_HEAVY_WEAPON_CD = 0.6
@@ -17,10 +13,14 @@ local PLAYER_RANGED_HEAVY_WEAPON_RANGE = 7
 local PLAYER_NAME_MELEE = "_PlayerCharacter_Melee"
 local PLAYER_MELEE_LIGHT_WEAPON = "_PlayerCharacter_Melee_LightAttack"
 local PLAYER_MELEE_HEAVY_WEAPON = "_PlayerCharacter_Melee_HeavyAttack_Normal"
-local PLAYER_MELEE_DASH_ABILITY = "_PlayerCharacter_Melee_Dash"
 local PLAYER_MELEE_HEAVY_ATTACK_STAMINA = 3
 local PLAYER_MELEE_LIGHT_WEAPON_CD = 0.6
 local PLAYER_MELEE_HEAVY_WEAPON_CD = 0.8
+-- Player Dash
+local PLAYER_DASH_ABILITY = "_PlayerCharacter_Dash"
+local PLAYER_DASH_STAMINA = 1
+local PLAYER_DASH_RANGE = 2.5
+local PLAYER_DASH_TIMER = 0.55
 
 local PLAYER_SLOW_BEHAVIOUR = "_Enemy_Ooze_Slow"
 local SLOWDOWN_BASE_TIMER = 4
@@ -51,7 +51,8 @@ local Player = {
     playerType = 0, -- PlayerType: 0: Melee, 1: Ranged
 
     playerDashActive = false,
-    playerDashCoolDownTimer = 0,
+    playerDashTimer = 0,
+    playerDashCallbacks = {},
 
     playerMoving = false,
     playerCooldownTimer = 0,
@@ -101,7 +102,8 @@ function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
     player.playerType = playerType
 
     player.playerDashActive = false
-    player.playerDashCoolDownTimer = 0
+    player.playerDashTimer = 0
+    player.playerDashCallbacks = {}
 
     player.playerMoving = false
     player.playerCooldownTimer = 0
@@ -178,6 +180,9 @@ end
 function Player:ClearData(keepRunData)
     DCEI.LogMessage("Clearing Player Data")
     mod.ClearPlayerData(keepRunData)
+end
+function Player:AddDashCallback(dashCallback)
+    table.insert(self.playerDashCallbacks, dashCallback)
 end
 function Player:HandleBehaviourAdded(behaviourName)
     if behaviourName == PLAYER_SLOW_BEHAVIOUR then -- Surefooted
@@ -301,16 +306,16 @@ function Player:Update(deltaTime)
     self:UpdatePlayerStamina(deltaTime)
     self:UpdatePlayerStaminaUI()
 
-    if self.playerDashCoolDownTimer > 0 then
-        self.playerDashCoolDownTimer = self.playerDashCoolDownTimer - deltaTime
+    if self.playerDashTimer > 0 then
+        self.playerDashTimer = self.playerDashTimer - deltaTime
+
+        if self.playerDashTimer <= 0 then
+            self.playerDashActive = false
+        end
     end
 
     if self.playerCooldownTimer > 0 then
         self.playerCooldownTimer = self.playerCooldownTimer - deltaTime
-        
-        if self.playerCooldownTimer <= 0 then
-            self.playerDashCoolDownTimer = PLAYER_DASH_CD
-        end
     end
 
     if self.effectsTimer > 0 then
@@ -664,7 +669,7 @@ function Player:LaunchPlayerRangedHeavyAttack(enemy)
     self.camera:StartShake(1, 0)
 end
 function Player:MakePlayerDash()
-    if self.playerUnit == nil or self.playerDashCoolDownTimer > 0 or self.playerCooldownTimer > 0 then
+    if self.playerUnit == nil or self.playerDashTimer > 0 or self.playerCooldownTimer > 0 then
         DCEI.LogMessage("Player Died/Dash/Attack on CoolDown")
         return
     end
@@ -680,7 +685,6 @@ function Player:MakePlayerDash()
         return
     end
 
-    DCEI.LogMessage("Making Player Dash: " .. self.playerDashCoolDownTimer)
     DCEI.LogMessage("Attack Cooldown Timer: " .. self.playerCooldownTimer)
 
     local updatedStamina = playerStamina - PLAYER_DASH_STAMINA
@@ -702,15 +706,10 @@ function Player:MakePlayerDash()
     local xPoint = math.sin(math.rad(yRotation)) * dashRange + playerPosition.x
     local yPoint = math.cos(math.rad(yRotation)) * dashRange + playerPosition.y
 
-    DCEI.Move(self.playerUnit, playerPosition.x, playerPosition.y)
-
-    if self.playerType == 0 then
-        DCEI.CastAbilityAtPosition(PLAYER_MELEE_DASH_ABILITY, self.playerUnit, xPoint, yPoint)
-    else
-        DCEI.CastAbilityAtPosition(PLAYER_RANGED_DASH_ABILITY, self.playerUnit, xPoint, yPoint)
-    end
+    DCEI.CastAbilityAtPosition(PLAYER_DASH_ABILITY, self.playerUnit, xPoint, yPoint)
 
     self.playerDashActive = true
+    self.playerDashTimer = PLAYER_DASH_TIMER
     self.playerMoving = false
 end
 function Player:AddGold(goldAmount)
@@ -757,9 +756,6 @@ function Player:SetPlayerPosition(xPosition, yPosition)
 end
 function Player:SetPlayerCamera(camera)
     self.camera = camera
-end
-function Player:SetDashCooldown()
-    self.playerDashCoolDownTimer = PLAYER_DASH_CD
 end
 function Player:SetDashInActive()
     self.playerDashActive = false

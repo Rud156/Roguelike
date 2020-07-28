@@ -527,41 +527,6 @@ function HandleBehaviourAdded()
             end
         end
 
-    elseif behaviourName == PLAYERCHARACTER_MISSILE_REACHED then
-        DCEI.LogMessage("Missile Reached Position")
-        local missilePosition = DCEI.GetUnitPosition2D(unit)
-
-        if m_roomEnemies ~= nil then
-            -- Forceful Landing
-            local forceLandStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ForcefulLanding)
-            if forceLandStatus.isUnlocked then
-                local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.ForcefulLanding, forceLandStatus.skillLevel)
-                m_roomEnemies:ForceStunEnemies(value, missilePosition, PlayerMod.PlayerLandStunDistance)
-            end
-
-            -- Aggressive Landing
-            local aggressiveLandingStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.AggressiveLanding)
-            if aggressiveLandingStatus.isUnlocked then
-                local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.AggressiveLanding, aggressiveLandingStatus.skillLevel)
-                
-                local enemies = m_roomEnemies:GetRoomEnemies()
-                for _, enemy in ipairs(enemies) do
-                    if enemy:IsActive() then
-                        local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
-                        local distanceFromPlayer = ExtensionFunction.VectorDistance(position, missilePosition)
-
-                        if distanceFromPlayer <= PlayerMod.PlayerAggressiveLandDistance then
-                            ArcadeCore.DamageUnit(enemy:GetMainUnit(), value)
-                            DCEI.ApplyBehaviorWithDuration(enemy:GetMainUnit(), EnemyMod.EnemyFlashBehviour, EnemyMod.EnemyFlashDuration, false)
-                        end
-                    end
-                end
-            end
-        end
-        
-        m_player:SetPlayerPosition(missilePosition.x, missilePosition.y)
-        m_player:SetDashInActive()
-
     elseif behaviourName == PlayerMod.PlayerConcussionBlow then  -- This behaviour can also be used to detect which enemy was hit
         
         -- Concussion Blow
@@ -704,6 +669,7 @@ function SpawnPlayerAndSetPosition()
     end
 
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot, m_skillDisplay)
+    m_player:AddDashCallback(HandleDashTimerEnded)
     -- Spawn Player
 
     SpawnItemDrops()
@@ -1179,6 +1145,38 @@ function UpdatePlayerHealth(deltaTime)
     end
 end
 
+function HandleDashTimerEnded()
+    local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+
+    if m_roomEnemies ~= nil then
+        -- Forceful Landing
+        local forceLandStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ForcefulLanding)
+        if forceLandStatus.isUnlocked then
+            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.ForcefulLanding, forceLandStatus.skillLevel)
+            m_roomEnemies:ForceStunEnemies(value, playerPosition, PlayerMod.PlayerLandStunDistance)
+        end
+
+        -- Aggressive Landing
+        local aggressiveLandingStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.AggressiveLanding)
+        if aggressiveLandingStatus.isUnlocked then
+            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.AggressiveLanding, aggressiveLandingStatus.skillLevel)
+            
+            local enemies = m_roomEnemies:GetRoomEnemies()
+            for _, enemy in ipairs(enemies) do
+                if enemy:IsActive() then
+                    local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
+                    local distanceFromPlayer = ExtensionFunction.VectorDistance(position, playerPosition)
+
+                    if distanceFromPlayer <= PlayerMod.PlayerAggressiveLandDistance then
+                        ArcadeCore.DamageUnit(enemy:GetMainUnit(), value)
+                        DCEI.ApplyBehaviorWithDuration(enemy:GetMainUnit(), EnemyMod.EnemyFlashBehviour, EnemyMod.EnemyFlashDuration, false)
+                    end
+                end
+            end
+        end
+    end
+end
+
 -- #endregion Player Functions
 
 -- #region UI Functions
@@ -1316,6 +1314,7 @@ function HandleCharacterSwitch()
     end
     
     m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot, m_skillDisplay)
+    m_player:AddDashCallback(HandleDashTimerEnded)
     m_player:ShowPlayerUI()
 
     UseMeleePlayer = not UseMeleePlayer
