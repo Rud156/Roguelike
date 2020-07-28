@@ -786,6 +786,37 @@
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Coin": {
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
         }
     }
 }

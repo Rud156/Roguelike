@@ -152,6 +152,11 @@ local ROOM_NAME = "RoomName"
 local ROOM_LEVEL_STRING = "RoomLevel"
 local ROOM_LEVEL_MAX = 3
 
+-- Coins
+local COIN_COLLECTION_TIME = 0.75
+local COIN_SPAWN_RADIUS = 0.5
+local COIN_UNIT = "_Coin"
+
 -- #endregion Constants
 
 -- Public Variables
@@ -210,6 +215,9 @@ local m_sceneTransitionActive = false
 local m_skillDisplay
 -- Perks
 local m_perkDisplay
+-- Room Coins
+local m_droppedCoins = {}
+local m_coinTimer = 0
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
@@ -351,6 +359,7 @@ function Update()
         return
     end
 
+    UpdateCoinsCollection(GAME_LOOP_RATE)
     UpdatePlayerHealth(GAME_LOOP_RATE) -- Update Health first otherwise the Player will have current health as LastFramePlayerHealth
     
     if m_player ~= nil then
@@ -399,6 +408,7 @@ function Update()
                     m_roomGenerator:MarkRoomAtPlayerPositionClear()
                 end
                 ActivateDoorOpenAnimations()
+                CollectCoins()
             end
         else
             -- This will generally trigger on Merchant Rooms
@@ -445,9 +455,23 @@ function HandleUnitDied()
         )
 
     elseif m_roomEnemies ~= nil then
+        local unitPosition = DCEI.GetUnitPosition2D(unit)
         local goldAmount = m_roomEnemies:RemoveDeadEnemy(unit)
+
         if goldAmount ~= -1 then
-            m_player:AddGold(goldAmount)
+            for i = 1, goldAmount do
+                local randomRadius = math.random() * COIN_SPAWN_RADIUS
+                local randomAngle = math.random(0, 360)
+
+                local xPosition = math.sin(math.rad(randomAngle)) * randomRadius + unitPosition.x
+                local yPosition = math.cos(math.rad(randomAngle)) * randomRadius + unitPosition.y
+
+                local coinUnit = DCEI.CreateUnit(1, 1, COIN_UNIT, xPosition, yPosition)
+                table.insert(m_droppedCoins, coinUnit)
+
+                DCEI.LogMessage("Creating Coin")
+            end
+
 
             -- Redemption
             local redemptionSKillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Redemption)
@@ -1173,6 +1197,40 @@ function HandleDashTimerEnded()
                     end
                 end
             end
+        end
+    end
+end
+
+function CollectCoins()
+    DCEI.LogMessage("Activating Coin Collection")
+
+    -- If something else is required
+    m_coinTimer = COIN_COLLECTION_TIME
+end
+
+function UpdateCoinsCollection(deltaTime)
+    if m_coinTimer > 0 then
+        m_coinTimer = m_coinTimer - deltaTime
+        local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+        local timerRatio = m_coinTimer / COIN_COLLECTION_TIME
+        local inversedTimer = 1 - timerRatio
+
+        for _, unit in ipairs(m_droppedCoins) do
+            local unitPosition = DCEI.GetUnitPosition2D(unit)
+            local newPosition = ExtensionFunction.VectorLerp(unitPosition, playerPosition, inversedTimer)
+
+            DCEI.SetUnitPosition2D(unit, newPosition.x, newPosition.y)
+        end
+
+        if m_coinTimer <= 0 then
+            for _, oldUnits in ipairs(m_droppedCoins) do
+                DCEI.RemoveUnit(oldUnits)
+            end
+
+            m_player:AddGold(#m_droppedCoins)
+            m_droppedCoins = {}
+
+            DCEI.LogMessage("Destroyed Coin Units")
         end
     end
 end

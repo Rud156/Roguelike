@@ -3483,6 +3483,15 @@
                     }
                 ]
             }
+        },
+        "_Coin": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "evt_merfolkfighter_golden_egg"
+                },
+                "modelScale": 1
+            }
         }
     },
     "actorEventMacros": {

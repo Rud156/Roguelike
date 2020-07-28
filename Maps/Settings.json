@@ -86,7 +86,8 @@
             "_DungeonDoorway",
             "_Missile_Enemy_GoblinMiner_Leap_Static_Model",
             "_Enemy_GoblinMiner_Leap_AirStrafe",
-            "_Collectible_Catalyst_Potion"
+            "_Collectible_Catalyst_Potion",
+            "_Coin"
         ],
         "usedEffects": [
             "__StopMovement",
