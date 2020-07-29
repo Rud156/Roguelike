@@ -1,0 +1,6 @@
+local ArcadeCore = GameModules["Arcade/Core"]
+local MainMap = GameModules["Maps"]
+
+local SPAWN_POINT_RIGHT = { x = 16, y = 8 }
+
+MainMap.Start(nil, SPAWN_POINT_RIGHT, nil, nil)
