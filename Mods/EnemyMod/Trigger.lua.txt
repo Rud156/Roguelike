@@ -1247,9 +1247,10 @@ function GoblinSiegeTower:ForceSetPosition(position)
     return false
 end
 
--- #endregion Goblin Siege Tower
+-- #endregion
 
 -- #region Goblin Miner
+
 local GoblinMiner = {
     -- Units
     room = nil,
@@ -1672,6 +1673,7 @@ function GoblinMiner:ForceSetPosition(position)
     DCEI.Move(self.unit, position.x, position.y)
     return true
 end
+
 -- #endregion
 
 mod.EnemyGoblinChef = GoblinChef 
