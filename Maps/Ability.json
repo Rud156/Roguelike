@@ -262,6 +262,15 @@
                 "mana": 0
             },
             "canCastWhileMoving": false
+        },
+        "_CoinCollect": {
+            "abilityType": 1,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_CoinCollect",
+            "stats": {
+                "range": 30
+            }
         }
     }
 }

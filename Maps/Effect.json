@@ -1053,6 +1053,16 @@
                 "useMissileHeightAtDestination": true,
                 "mover": "_PlayerCharacter_Dash"
             }
+        },
+        "_Launch_CoinCollect": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileDeathType": 1,
+                "launchLocation": 4,
+                "impactLocation": 1,
+                "useMissileHeightAtDestination": true,
+                "mover": "_CoinCollect"
+            }
         }
     }
 }

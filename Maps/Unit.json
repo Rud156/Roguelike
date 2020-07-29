@@ -812,6 +812,9 @@
                 }
             },
             "references": {
+                "abilityList": [
+                    "_CoinCollect"
+                ],
                 "behaviorList": [
                     "_Unit_Invincible"
                 ]

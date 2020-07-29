@@ -63,6 +63,11 @@
                 "gravity": 12
             },
             "noRotation": true
+        },
+        "_CoinCollect": {
+            "ballistic": {
+                "flightTime": 0.75
+            }
         }
     }
 }
