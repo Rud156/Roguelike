@@ -156,6 +156,7 @@ local ROOM_LEVEL_MAX = 3
 local COIN_COLLECTION_TIME = 0.75
 local COIN_SPAWN_RADIUS = 0.5
 local COIN_UNIT = "_Coin"
+local COIN_COLLECT_BEHAVIOUR = "_PlayerCharacter_CollectGold"
 
 -- #endregion Constants
 
@@ -1213,11 +1214,10 @@ function UpdateCoinsCollection(deltaTime)
         m_coinTimer = m_coinTimer - deltaTime
         local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
         local timerRatio = m_coinTimer / COIN_COLLECTION_TIME
-        local inversedTimer = 1 - timerRatio
-
+        
         for _, unit in ipairs(m_droppedCoins) do
             local unitPosition = DCEI.GetUnitPosition2D(unit)
-            local newPosition = ExtensionFunction.VectorLerp(unitPosition, playerPosition, inversedTimer)
+            local newPosition = ExtensionFunction.VectorLerp(unitPosition, playerPosition, 1 - timerRatio^deltaTime)
 
             DCEI.SetUnitPosition2D(unit, newPosition.x, newPosition.y)
         end
@@ -1228,6 +1228,7 @@ function UpdateCoinsCollection(deltaTime)
             end
 
             m_player:AddGold(#m_droppedCoins)
+            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), COIN_COLLECT_BEHAVIOUR)
             m_droppedCoins = {}
 
             DCEI.LogMessage("Destroyed Coin Units")

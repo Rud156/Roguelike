@@ -122,7 +122,8 @@
             "_Perks_PoisonOrb",
             "_Collectible_Speed_Potion",
             "_Collectible_Catalyst_Potion",
-            "_PlayerCharacter_OutOfCombat_Speed"
+            "_PlayerCharacter_OutOfCombat_Speed",
+            "_PlayerCharacter_CollectGold"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",

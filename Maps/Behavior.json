@@ -298,6 +298,9 @@
                     "scaled": 1.3
                 }
             }
+        },
+        "_PlayerCharacter_CollectGold": {
+            "duration": 0.01
         }
     }
 }

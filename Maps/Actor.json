@@ -2217,7 +2217,8 @@
                     "_PlayerCharacter_Hammer_Of_Attack",
                     "_PlayerCharacter_DeadEffect",
                     "_PlayerCharacter_Enemy_Ooze_Slow",
-                    "_PlayerCharacter_Catalyst_Potion"
+                    "_PlayerCharacter_Catalyst_Potion",
+                    "_PlayerCharacter_CollectGold"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -2372,7 +2373,8 @@
                     "_PlayerCharacter_Hammer_Of_Attack",
                     "_PlayerCharacter_DeadEffect",
                     "_PlayerCharacter_Enemy_Ooze_Slow",
-                    "_PlayerCharacter_Catalyst_Potion"
+                    "_PlayerCharacter_Catalyst_Potion",
+                    "_PlayerCharacter_CollectGold"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -3487,10 +3489,10 @@
         "_Coin": {
             "unitActor": {
                 "resource": {
-                    "type": "GpuAnimation",
-                    "name": "evt_merfolkfighter_golden_egg"
+                    "type": "ParticleAnimation",
+                    "name": "vfx_gear_drop"
                 },
-                "modelScale": 1
+                "modelScale": 0.35
             }
         }
     },
@@ -3572,11 +3574,6 @@
                         {
                             "create": {
                                 "actor": "_FX_Enemy_Gold_Drop"
-                            }
-                        },
-                        {
-                            "create": {
-                                "actor": "_SFX_Enemy_Gold_Drop"
                             }
                         }
                     ]
@@ -3959,6 +3956,24 @@
                         {
                             "destroy": {
                                 "actor": "_FX_Collectible_Catalyst_Potion"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_CollectGold": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_CollectGold"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_SFX_Enemy_Gold_Drop"
                             }
                         }
                     ]
