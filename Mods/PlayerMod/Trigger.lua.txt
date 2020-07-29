@@ -33,6 +33,8 @@ local PLAYER_STAMINA_REGEN_DELAY = 3
 local PLAYER_BASE_HEALTH = 150
 local DELAYED_LOAD_TIMER = 0.1
 
+local PLAYER_COIN_COLLECT = "_PlayerCharacter_CollectGold"
+
 local PLAYER_OUT_OF_COMBAT_SPEED = "_PlayerCharacter_OutOfCombat_Speed"
 
 local KILLER_INSTINCT_BEHAVIOUR = "_PlayerCharacter_KillerInstinct"
@@ -797,6 +799,7 @@ mod.GetPlayerData = nil
 mod.ClearPlayerData = nil
 
 mod.PlayerOutOfCombatSpeed = PLAYER_OUT_OF_COMBAT_SPEED
+mod.PlayerCoinCollect = PLAYER_COIN_COLLECT
 
 mod.PlayerDeflectionDistance = PLAYER_DEFLECTION_DISTANCE
 mod.PlayerInvincibleTimer = PLAYER_INVINCIBLE_TIMER

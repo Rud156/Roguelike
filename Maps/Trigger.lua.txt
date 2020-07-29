@@ -157,7 +157,6 @@ local COIN_COLLECTION_TIME = 0.75
 local COIN_SPAWN_RADIUS = 0.5
 local COIN_UNIT = "_Coin"
 local COIN_COLLECT_ABILITY = "_CoinCollect"
-local COIN_COLLECT_BEHAVIOUR = "_PlayerCharacter_CollectGold"
 
 -- #endregion Constants
 
@@ -1224,7 +1223,7 @@ function UpdateCoinsCollection(deltaTime)
             end
 
             m_player:AddGold(#m_droppedCoins)
-            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), COIN_COLLECT_BEHAVIOUR)
+            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PlayerMod.PlayerCoinCollect)
             m_droppedCoins = {}
 
             DCEI.LogMessage("Destroyed Coin Units")
