@@ -1086,7 +1086,7 @@
                 "launchLocation": 2,
                 "impactLocation": 2,
                 "launchOffset": {
-                    "up": 20
+                    "up": 40
                 },
                 "mover": "_Enemy_GoblinSiegeTower_Attack"
             }

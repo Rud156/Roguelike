@@ -3566,7 +3566,8 @@
                             "up": 1
                         }
                     }
-                }
+                },
+                "modelScale": 1.2
             }
         },
         "_FX_Enemy_GoblinSiegeTower_Up_Actor": {
@@ -3579,9 +3580,9 @@
             "unitActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_goblinchef_cookinwithfire_buff"
+                    "name": "vfx_flamethrower_river_of_fire_burning_radius"
                 },
-                "modelScale": 2.5
+                "modelScale": 1.1
             }
         },
         "_Enemy_GoblinSiegeTower_AirStrafe": {
