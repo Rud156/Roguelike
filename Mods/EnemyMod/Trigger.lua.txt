@@ -1136,9 +1136,10 @@ function GoblinSiegeTower:UpdateRandomMovement(deltaTime, playerPosition)
     self.currentTimer = self.currentTimer - deltaTime
     if self.currentTimer <= 0 then
         self:AttackPlayer(deltaTime, playerPosition)
-    end
 
-    DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
+    else
+        DCEI.Move(self.unit, self.targetPosition.x, self.targetPosition.y)
+    end
 end
 function GoblinSiegeTower:UpdateAttackState(deltaTime, playerPosition)
     self.currentTimer = self.currentTimer - deltaTime
@@ -1234,6 +1235,10 @@ function GoblinSiegeTower:CleanupEnemyDied()
     if self.fakeMarkerUnit ~= nil then
         DCEI.RemoveUnit(self.fakeMarkerUnit)
     end
+
+    local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+    local goblin = Goblin:new(self.room, enemyPosition.x, enemyPosition.y)
+    self.room:AddChildEnemy(goblin)
 end
 function GoblinSiegeTower:IsActive()
     return true
