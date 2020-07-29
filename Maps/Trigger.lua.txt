@@ -48,6 +48,7 @@ local EnemyGoblinChef = EnemyMod.EnemyGoblinChef
 local EnemyGoblin = EnemyMod.EnemyGoblin
 local EnemyGoblinSapper = EnemyMod.EnemyGoblinSapper
 local EnemyOoze = EnemyMod.EnemyOoze
+local EnemySiegeTower = EnemyMod.EnemySiegeTower
 local EnemyGoblinMiner = EnemyMod.EnemyGoblinMiner
 
 RoomMod.EnemyHobGoblin = EnemyHobGoblin
@@ -55,6 +56,7 @@ RoomMod.EnemyGoblinChef = EnemyGoblinChef
 RoomMod.EnemyGoblin = EnemyGoblin
 RoomMod.EnemyGoblinSapper = EnemyGoblinSapper
 RoomMod.EnemyOoze = EnemyOoze
+RoomMod.EnemySiegeTower = EnemySiegeTower
 RoomMod.EnemyGoblinMiner = EnemyGoblinMiner
 RoomMod.InventoryCollectiblesList = InventoryCollectiblesList
 RoomMod.split = ExtensionFunction.split

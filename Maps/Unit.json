@@ -820,6 +820,68 @@
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Enemy_GoblinSiegeTower": {
+            "components": {
+                "unitStats": {
+                    "radius": 0.3,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 50
+                },
+                "movement": {
+                    "moveSpeed": 0.5
+                },
+                "turning": {
+                    "turningSpeed": 900
+                },
+                "behavior": {
+                    "behaviorType": 1
+                },
+                "unitBattleData": {
+                    "enemySearchRange": 3,
+                    "resetRadius": 2
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "_Enemy_GoblinSiegeTower_Attack"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_Enemy_GoblinSiegeTower_Fire": {
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false,
+                    "ignoreCollision": true
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible",
+                    "_Search_GoblinSiegeTower_Fire"
+                ]
+            }
+        },
+        "_Enemy_GoblinSiegeTower_AirStrafe": {
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false,
+                    "ignoreCollision": true
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "_Unit_Invincible"
+                ]
+            }
+        },
+        "_Missile_Enemy_GoblinSiegeTower": {
+            "baseUnit": "_CMissile"
         }
     }
 }

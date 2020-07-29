@@ -83,15 +83,17 @@ local ROOM_SIZE = 30
 local MERCHANT_ROOM_SPAWN_RATE = 1
 local MERCHANT_ROOM_ITEM_COUNT = 3
 
--- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin, 3: Goblin Sapper, 4: Slime
-local ENEMY_PREFABS = { 0, 1, 2, 3, 4 }
+-- 0: Goblin Chef, 1: Hob Goblin, 2: Goblin, 3: Goblin Sapper, 4: Slime, 5: Siege Tower
+local ENEMY_PREFABS = { 0, 1, 2, 3, 4, 5 }
 
 local LEVEL_1_ENEMY_SETS = {
-    { 2, 2, 0 },
-    { 3, 3, 3, 4 },
-    { 2, 2, 2, 2 },
-    { 0, 0, 0 },
-    { 3, 0, 0 }
+    -- { 2, 2, 0 },
+    -- { 3, 3, 3, 4 },
+    -- { 2, 2, 2, 2 },
+    -- { 0, 0, 0 },
+    -- { 3, 0, 0 },
+
+    { 5 }
 }
 
 local LEVEL_2_ENEMY_SETS = {
@@ -1362,6 +1364,8 @@ function RoomEnemies:SpawnEnemies(player, roomLevel)
             enemy = mod.EnemyGoblinSapper:new(self, xPosition, yPosition)
         elseif enemyType == 4 then
             enemy = mod.EnemyOoze:new(self, xPosition, yPosition)
+        elseif enemyType == 5 then
+            enemy = mod.EnemySiegeTower:new(self, xPosition, yPosition)
         end
 
         table.insert(self.enemies, enemy)
@@ -2252,6 +2256,7 @@ mod.EnemyGoblinChef = nil
 mod.EnemyGoblin = nil
 mod.EnemyGoblinSapper = nil
 mod.EnemyOoze = nil
+mod.EnemySiegeTower = nil
 mod.EnemyGoblinMiner = nil
 
 mod.SaveRoomData = nil

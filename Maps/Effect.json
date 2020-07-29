@@ -373,7 +373,7 @@
         "_Launch_Enemy_GoblinMiner_RocketBarrage": {
             "launchMissile": {
                 "targetType": 0,
-                "missileUnit": "_Missile_Enemy_GoblinMiner_RocketBarrage",
+                "missileUnit": "_Missile_Enemy_GoblinSiegeTower",
                 "effect": "_Search_Enemy_GoblinMiner_RocketBarrage",
                 "launchLocation": 2,
                 "impactLocation": 2,
@@ -841,6 +841,7 @@
             "set": {
                 "effectList": [
                     "_Damage_Enemy_GoblinMiner_RocketBarrage",
+                    "_Set_Behaviour_Flash_Enemy",
                     "_Set_Behaviour_PlayerCharacter_Damaged"
                 ]
             }
@@ -1062,6 +1063,117 @@
                 "impactLocation": 1,
                 "useMissileHeightAtDestination": true,
                 "mover": "_CoinCollect"
+            }
+        },
+        "_Launch_Up_GoblinSiegeTower_Attack": {
+            "launchMissile": {
+                "targetType": 2,
+                "missileUnit": "_Missile_Enemy_GoblinSiegeTower",
+                "effect": "DoNothing",
+                "launchLocation": 2,
+                "impactLocation": 2,
+                "impactOffset": {
+                    "up": 30
+                },
+                "mover": "_Enemy_GoblinSiegeTower_Attack"
+            }
+        },
+        "_Launch_Enemy_GoblinSiegeTower_Attack": {
+            "launchMissile": {
+                "targetType": 0,
+                "missileUnit": "_Missile_Enemy_GoblinSiegeTower",
+                "effect": "_Search_Enemy_GoblinMiner_RocketBarrage",
+                "launchLocation": 2,
+                "impactLocation": 2,
+                "launchOffset": {
+                    "up": 20
+                },
+                "mover": "_Enemy_GoblinSiegeTower_Attack"
+            }
+        },
+        "_Search_Enemy_GoblinSiegeTower_Attack": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "effect": "_Set_Enemy_GoblinSiegeTower_Attack"
+            }
+        },
+        "_Set_Enemy_GoblinSiegeTower_Attack": {
+            "set": {
+                "effectList": [
+                    "_Damage_Enemy_GoblinSiegeTower_Attack",
+                    "_Set_Behaviour_Flash_Enemy",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
+        "_Damage_Enemy_GoblinSiegeTower_Attack": {
+            "damage": {
+                "whichUnit": 1,
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Collectible_CatalystPotion_Target"
+                        }
+                    }
+                ]
+            }
+        },
+        "_Search_GoblinSiegeTower_Fire": {
+            "areaSearch": {
+                "debugDraw": true,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "effect": "_Set_Enemy_GoblinSiegeTower_Fire"
+            }
+        },
+        "_Set_Enemy_GoblinSiegeTower_Fire": {
+            "set": {
+                "effectList": [
+                    "_Damage_GoblinSiegeTower_Fire",
+                    "_Set_Behaviour_Flash_Enemy",
+                    "_Set_Behaviour_PlayerCharacter_Damaged"
+                ]
+            }
+        },
+        "_Damage_GoblinSiegeTower_Fire": {
+            "damage": {
+                "damageAmount": 3,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "DamageResistance"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_PlayerCharacter_SwiftHands"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Collectible_CatalystPotion_Target"
+                        }
+                    }
+                ]
             }
         }
     }

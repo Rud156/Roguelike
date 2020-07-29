@@ -68,6 +68,14 @@
             "ballistic": {
                 "flightTime": 0.75
             }
+        },
+        "_Enemy_GoblinSiegeTower_Attack": {
+            "guidance": {
+                "acceleration": 20,
+                "speed": 20,
+                "minSpeed": 0,
+                "maxSpeed": 24
+            }
         }
     }
 }

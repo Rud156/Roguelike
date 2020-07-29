@@ -781,6 +781,11 @@
                         "offset": {
                             "up": 0.75
                         }
+                    },
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1
+                        }
                     }
                 },
                 "walkAnimationSpeed": 1
@@ -3493,6 +3498,145 @@
                     "name": "vfx_gear_drop"
                 },
                 "modelScale": 0.35
+            }
+        },
+        "_Enemy_GoblinSiegeTower": {
+            "parent": "_StandardUnit DecayOnDeath",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_siege_tower"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Enemy_GoblinSiegeTower_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitAbilityStop": {
+                                "ability": "_Enemy_GoblinSiegeTower_Attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "stopAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "_Enemy_Spawn",
+                    "_Enemy_Damage_Effect",
+                    "_Enemy_Stunned_Effect",
+                    "_Enemy_Spawn_Gold"
+                ],
+                "hostSites": {
+                    "SiteAttack": {
+                        "offset": {
+                            "up": 1
+                        }
+                    },
+                    "StunnedEffectSite": {
+                        "offset": {
+                            "up": 1
+                        }
+                    }
+                }
+            }
+        },
+        "_FX_Enemy_GoblinSiegeTower_Up_Actor": {
+            "actionActor": {
+                "effect": "_Launch_Up_GoblinSiegeTower_Attack",
+                "launchSite": "SiteAttack"
+            }
+        },
+        "_Enemy_GoblinSiegeTower_Fire": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_goblinchef_cookinwithfire_buff"
+                },
+                "modelScale": 2.5
+            }
+        },
+        "_Enemy_GoblinSiegeTower_AirStrafe": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_indicator_white"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitSpawn": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 255
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1
+            }
+        },
+        "_Missile_Enemy_GoblinSiegeTower": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_goblin_miner_drill_missile"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "_FX_Enemy_GoblinMiner_RocketTrail",
+                                    "hostSite": "Trail"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "Trail": {
+                        "offset": {
+                            "forward": -0.5
+                        }
+                    }
+                }
             }
         }
     },

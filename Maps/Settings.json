@@ -87,12 +87,16 @@
             "_Missile_Enemy_GoblinMiner_Leap_Static_Model",
             "_Enemy_GoblinMiner_Leap_AirStrafe",
             "_Collectible_Catalyst_Potion",
-            "_Coin"
+            "_Coin",
+            "_Enemy_GoblinSiegeTower",
+            "_Enemy_GoblinSiegeTower_Fire",
+            "_Enemy_GoblinSiegeTower_AirStrafe"
         ],
         "usedEffects": [
             "__StopMovement",
             "_Launch_Enemy_GoblinMiner_RocketBarrage",
-            "_Launch_Enemy_GoblinMiner_Leap"
+            "_Launch_Enemy_GoblinMiner_Leap",
+            "_Launch_Enemy_GoblinSiegeTower_Attack"
         ],
         "usedBehaviors": [
             "_PlayerCharacter_Damage_Invincible",

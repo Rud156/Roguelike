@@ -301,6 +301,12 @@
         },
         "_PlayerCharacter_CollectGold": {
             "duration": 0.01
+        },
+        "_Search_GoblinSiegeTower_Fire": {
+            "duration": 5,
+            "finalEffect": "Remove Source",
+            "periodicInterval": 1,
+            "periodicEffect": "_Search_GoblinSiegeTower_Fire"
         }
     }
 }

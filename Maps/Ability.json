@@ -271,6 +271,17 @@
             "stats": {
                 "range": 30
             }
+        },
+        "_Enemy_GoblinSiegeTower_Attack": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 2,
+            "effect": "_Launch_Up_GoblinSiegeTower_Attack",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3,
+                "range": 1
+            }
         }
     }
 }
