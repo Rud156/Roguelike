@@ -291,9 +291,10 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
     local i = spawnRoomRow -- Row
     local j = spawnRoomColumn -- Column
 
-    local randomCommonRoom = math.random(1, #COMMON_ROOMS)
+    local validSpawnRooms = mod.GetRoomsWithNonSingleExit(COMMON_ROOMS)
+    local randomCommonRoom = math.random(1, #validSpawnRooms)
     self.roomMatrix[i] = {}
-    self.roomMatrix[i][j] = COMMON_ROOMS[randomCommonRoom]
+    self.roomMatrix[i][j] = validSpawnRooms[randomCommonRoom]
 
     local randomEntryExit = self:SelectRandomExit(self.roomMatrix[i][j])
     self.spawnRoomDoorDirection = randomEntryExit
@@ -2070,6 +2071,36 @@ end
 
 function mod.ConvertRoomToRoom(initialRoom, fromInitials, toInitials)
     return string.gsub(initialRoom, fromInitials, toInitials) -- Maybe make this more complicated later if required...
+end
+
+function mod.GetRoomsWithNonSingleExit(rooms)
+    local validRooms = {}
+
+    for _, room in ipairs(rooms) do
+        local hasLeft = mod.RoomHasLeftExit(room)
+        local hasRight = mod.RoomHasRightExit(room)
+        local hasTop = mod.RoomHasTopExit(room)
+        local hasBottom = mod.RoomHasBottomExit(room)
+
+        local tempArray = { 0, 0, 0, 0 }
+        if hasLeft then tempArray[1] = 1 end
+        if hasRight then tempArray[2] = 1 end
+        if hasTop then tempArray[3] = 1 end
+        if hasBottom then tempArray[4] = 1 end
+
+        local totalSides = 0
+        for _, element in ipairs(tempArray) do
+            if element == 1 then
+                totalSides = totalSides + 1
+            end
+        end
+
+        if totalSides ~= 1 then
+            table.insert(validRooms, room)
+        end
+    end
+
+    return validRooms
 end
 
 -- #region String Conversions

@@ -59,8 +59,8 @@ local GOBLIN_SIEGE_TOWER_FIRE = "_Enemy_GoblinSiegeTower_Fire"
 local GOBLIN_SIEGE_TOWER_AIR_STRAFE = "_Enemy_GoblinSiegeTower_AirStrafe"
 local GOBLIN_SIEGE_TOWER_ATTACK = "_Enemy_GoblinSiegeTower_Attack"
 local GOBLIN_SIEGE_TOWER_LAUNCH = "_Launch_Enemy_GoblinSiegeTower_Attack"
+local GOBLIN_SIEGE_TOWER_TARGETTING_TIME = 1
 local GOBLIN_SIEGE_TOWER_SKY_DELAY = 0.5
-local GOBLIN_SIEGE_TOWER_AIR_STRAFE_TIME = 1.5
 local GOBLIN_SIEGE_TOWER_DROP_DELAY = 2
 local GOBLIN_SIEGE_TOWER_STUN_TIMER = 3
 local GOBLIN_SIEGE_TOWER_RANDOM_MOVEMENT_TIMER = 3
@@ -1037,7 +1037,7 @@ local GoblinSiegeTower = {
 
     -- Attack
     fakeMarkerUnit = nil,
-    attackState = 0, -- 0: Going Up, 1: Air Strafe, 2: Coming Down
+    attackState = 0, -- 0: Targetting Player, 1: Going Up, 3: Coming Down
     siegePosition = nil,
 
     -- General
@@ -1151,17 +1151,17 @@ function GoblinSiegeTower:UpdateAttackState(deltaTime, playerPosition)
 
     if self.currentTimer <= 0 then
         if self.attackState == 0 then
-            self.fakeMarkerUnit = DCEI.CreateUnit(1, 1, GOBLIN_SIEGE_TOWER_AIR_STRAFE, playerPosition.x, playerPosition.y)
-            DCEI.SetUnitPosition2D(self.fakeMarkerUnit, playerPosition.x, playerPosition.y)
+            local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
+            DCEI.CastAbilityAtPosition(GOBLIN_SIEGE_TOWER_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
 
             self:SetEnemyAttackState(1)
-            self.currentTimer = GOBLIN_SIEGE_TOWER_AIR_STRAFE_TIME
+            self.siegePosition = playerPosition
+            self.currentTimer = GOBLIN_SIEGE_TOWER_SKY_DELAY
 
         elseif self.attackState == 1 then
-            DCEI.CreateEffect(GOBLIN_SIEGE_TOWER_LAUNCH, self.unit, playerPosition.x, playerPosition.y)
+            DCEI.CreateEffect(GOBLIN_SIEGE_TOWER_LAUNCH, self.unit, self.siegePosition.x, self.siegePosition.y)
             
             self.currentTimer = GOBLIN_SIEGE_TOWER_DROP_DELAY
-            self.siegePosition = playerPosition
             self:SetEnemyAttackState(2)
 
         elseif self.attackState == 2 then
@@ -1173,12 +1173,14 @@ function GoblinSiegeTower:UpdateAttackState(deltaTime, playerPosition)
         end
     end
 
-    if self.attackState == 1 then
+    if self.attackState == 0 then
+        self:LookAtPlayer(deltaTime, playerPosition)
+
         local position = DCEI.GetUnitPosition2D(self.fakeMarkerUnit)
         local targetPosition = mod.VectorLerp(position, playerPosition, GOBLIN_MINER_AIR_STRAFE_LERP * deltaTime)
         DCEI.SetUnitPosition2D(self.fakeMarkerUnit, targetPosition.x, targetPosition.y)
 
-    elseif self.attackState == 2 then
+    elseif self.attackState == 1 then
         local position = DCEI.GetUnitPosition2D(self.fakeMarkerUnit)
         local targetPosition = mod.VectorLerp(position, self.siegePosition, GOBLIN_MINER_AIR_STRAFE_LERP * deltaTime)
         DCEI.SetUnitPosition2D(self.fakeMarkerUnit, targetPosition.x, targetPosition.y)
@@ -1194,15 +1196,14 @@ function GoblinSiegeTower:UpdateEnemyStunned(deltaTime)
     end
 end
 function GoblinSiegeTower:AttackPlayer(deltaTime, playerPosition)
-    self:LookAtPlayer(deltaTime, playerPosition) -- This is probably not required
-
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
-    DCEI.CastAbilityAtPosition(GOBLIN_SIEGE_TOWER_ATTACK, self.unit, enemyPosition.x, enemyPosition.y)
-
     self.targetPosition = nil
-    self.currentTimer = GOBLIN_SIEGE_TOWER_SKY_DELAY
+    self.currentTimer = GOBLIN_SIEGE_TOWER_TARGETTING_TIME
+
+    self.fakeMarkerUnit = DCEI.CreateUnit(1, 1, GOBLIN_SIEGE_TOWER_AIR_STRAFE, playerPosition.x, playerPosition.y)
+    DCEI.SetUnitPosition2D(self.fakeMarkerUnit, playerPosition.x, playerPosition.y)
     
     self:SetEnemyAttackState(0)
     self:SetEnemyState(1)
