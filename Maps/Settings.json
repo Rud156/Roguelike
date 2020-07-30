@@ -59,7 +59,11 @@
             "Mods/RoomTemplates/GoblinForest_BossRoom/GFBR_TBR_0",
             "Mods/RoomTemplates/GoblinForest_BossRoom/GFBR_TL_0",
             "Mods/RoomTemplates/GoblinForest_BossRoom/GFBR_TLR_0",
-            "Mods/RoomTemplates/GoblinForest_BossRoom/GFBR_TR_0"
+            "Mods/RoomTemplates/GoblinForest_BossRoom/GFBR_TR_0",
+            "Mods/RoomTemplates/CommonRoom/CR_B_0",
+            "Mods/RoomTemplates/CommonRoom/CR_L_0",
+            "Mods/RoomTemplates/CommonRoom/CR_R_0",
+            "Mods/RoomTemplates/CommonRoom/CR_T_0"
         ]
     },
     "triggerSettings": {

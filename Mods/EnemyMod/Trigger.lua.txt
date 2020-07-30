@@ -1102,7 +1102,8 @@ function GoblinSiegeTower:UpdatePoisonedState(deltaTime)
     end
 end
 function GoblinSiegeTower:CheckAndActivateStunnedState(enemyUnit)
-    if self.enemyState == 2 then
+    if self.enemyState == 2 or self.enemyState == 1 then
+        DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
         return false
     end
 
@@ -1119,6 +1120,10 @@ function GoblinSiegeTower:CheckAndActivateStunnedState(enemyUnit)
     return false
 end
 function GoblinSiegeTower:ActivateStunWithTimer(stunTimer)
+    if self.enemyState == 2 or self.enemyState == 1 then
+        return
+    end
+    
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     DCEI.Move(self.unit, enemyPosition.x, enemyPosition.y)
 
@@ -1179,7 +1184,7 @@ function GoblinSiegeTower:UpdateAttackState(deltaTime, playerPosition)
         DCEI.SetUnitPosition2D(self.fakeMarkerUnit, targetPosition.x, targetPosition.y)
     end
 end
-function Goblin:UpdateEnemyStunned(deltaTime)
+function GoblinSiegeTower:UpdateEnemyStunned(deltaTime)
     self.stunTimer = self.stunTimer - deltaTime
     if self.stunTimer <= 0 then
         DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)

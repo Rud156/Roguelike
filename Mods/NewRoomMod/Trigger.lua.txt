@@ -31,9 +31,6 @@ local COMMON_ROOMS = {
     "CR_TL_1",
     "CR_TLR_1",
     "CR_TR_1",
-}
-
-local FAKE_COMMON_ROOMS = {
     "CR_B_0",
     "CR_L_0",
     "CR_R_0",
@@ -321,9 +318,6 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
     if spawnHasBottom then spawnHasBottom = 1 else spawnHasBottom = -1 end
  
     local fakeSpawnRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, spawnHasLeft, spawnHasRight, spawnHasTop, spawnHasBottom)
-    if not fakeSpawnRoom then
-        fakeSpawnRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, spawnHasLeft, spawnHasRight, spawnHasTop, spawnHasBottom)
-    end
     self.roomMatrix[i][j] = fakeSpawnRoom
 
     self:UpdateMinMaxRowColumn(i, j)
@@ -395,13 +389,15 @@ function RoomGenerator:GenerateRoomBase(roomLevel)
 
     self:PlaceSecretRooms()
     self:MergeCommonSecretRooms()
-    self:SpawnMerchantRooms()
-    self:SpawnMerchantRoomItems()
-    self:SetupClearMatrix()
-
+    
     -- Replace it with the actual room
     self.roomMatrix[spawnRoomRow][spawnRoomColumn] = actualSpawnRoom
     self.roomMatrix[self.exitRoomRow][self.exitRoomColumn] = actualExitRoom
+
+    self:SpawnMerchantAndChallengeRooms()
+    self:AdjustRoomEdges()
+    self:SpawnMerchantRoomItems()
+    self:SetupClearMatrix()
     self:CheckAndEnableBossRoom(roomLevel)
 end
 function RoomGenerator:GetFakeExitRoom()
@@ -479,30 +475,18 @@ function RoomGenerator:GetFakeExitRoom()
     
     if validSide == 1 then -- Left
         fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, -1, exitRight, exitTop, exitBottom)
-        if not fakeExitRoom then
-            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, -1, exitRight, exitTop, exitBottom)
-        end
         self.exitRoomDoorDirection = LEFT
 
     elseif validSide == 2 then -- Right
         fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, -1, exitTop, exitBottom)
-        if not fakeExitRoom then
-            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, exitLeft, -1, exitTop, exitBottom)
-        end
         self.exitRoomDoorDirection = RIGHT
 
     elseif validSide == 3 then -- Top
         fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, exitRight, -1, exitBottom)
-        if not fakeExitRoom then
-            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, exitLeft, exitRight, -1, exitBottom)
-        end
         self.exitRoomDoorDirection = TOP
 
     else -- Bottom
         fakeExitRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, exitLeft, exitRight, exitTop, -1)
-        if not fakeExitRoom then
-            fakeExitRoom = self:GetRoomWithSpecificExits(FAKE_COMMON_ROOMS, exitLeft, exitRight, exitTop, -1)
-        end
         self.exitRoomDoorDirection = BOTTOM
 
     end
@@ -638,24 +622,137 @@ function RoomGenerator:MergeCommonSecretRooms()
         end
     end
 end
-function RoomGenerator:SpawnMerchantRooms()
-    local secretRoomGroup = {}
+function RoomGenerator:SpawnMerchantAndChallengeRooms()
+    local secretRooms = {}
 
     for i = self.minRow, self.maxRow do
         for j = self.minColumn, self.maxColumn do
             if self.roomMatrix[i][j] ~= nil and mod.IsSecretRoom(self.roomMatrix[i][j]) then
-                table.insert(secretRoomGroup, { x = i, y = j })
-                
-                if #secretRoomGroup == MERCHANT_ROOM_SPAWN_RATE then
-                    local randomIndex = math.random(1, #secretRoomGroup)
-                    local position = secretRoomGroup[randomIndex]
-                    local secretRoom = self.roomMatrix[position.x][position.y]
-
-                    self.roomMatrix[position.x][position.y] = mod.ConvertRoomToRoom(secretRoom, "SR", "MR")
-                    secretRoomGroup = {}
-                end
+                table.insert(secretRooms, { row = i, column = j })
             end
         end
+    end
+
+    if #secretRooms <= 0 then
+        return
+    end
+
+    -- Merchant Room
+    local randomSecretRoomIndex = math.random(1, #secretRooms)
+    local secretRoomPosition = secretRooms[randomSecretRoomIndex]
+    local secretRoom = self.roomMatrix[secretRoomPosition.row][secretRoomPosition.column]
+    self.roomMatrix[secretRoomPosition.row][secretRoomPosition.column] = mod.ConvertRoomToRoom(secretRoom, "SR", "MR")
+    table.remove(secretRooms, randomSecretRoomIndex)
+
+    -- Challenge Room
+    if #secretRooms > 0 then
+        local challengeRoomIndex = math.random(1, #secretRooms)
+        local challengeRoom = secretRooms[challengeRoomIndex]
+        table.remove(secretRooms, challengeRoomIndex)
+
+        DCEI.LogMessage("Challenge Room Position. X: " .. challengeRoom.row .. ", Y: " .. challengeRoom.column)
+    end
+
+    -- Remove Rest Secret Rooms
+    for _, roomPosition in ipairs(secretRooms) do
+        local secretRoomOld = self.roomMatrix[roomPosition.row][roomPosition.column]
+        self.roomMatrix[roomPosition.row][roomPosition.column] = nil -- Clear the old Secret Room
+
+        local row = roomPosition.row
+        local column = roomPosition.column
+        local direction
+
+        if mod.RoomHasLeftExit(secretRoomOld) then
+            column = column - 1
+            direction = RIGHT
+        elseif mod.RoomHasRightExit(secretRoomOld) then
+            column = column + 1
+            direction = LEFT
+        elseif mod.RoomHasTopExit(secretRoomOld) then
+            row = row - 1
+            direction = BOTTOM
+        else
+            row = row + 1
+            direction = TOP
+        end
+
+        local room = self.roomMatrix[row][column]
+
+        local hasLeft = mod.RoomHasLeftExit(room)
+        local hasRight = mod.RoomHasRightExit(room)
+        local hasTop = mod.RoomHasTopExit(room)
+        local hasBottom = mod.RoomHasBottomExit(room)
+
+        if direction == LEFT then
+            hasLeft = false
+        elseif direction == RIGHT then
+            hasRight = false
+        elseif direction == TOP then
+            hasTop = false
+        else
+            hasBottom = false
+        end
+
+        if hasLeft then hasLeft = 1 else hasLeft = -1 end
+        if hasRight then hasRight = 1 else hasRight = -1 end
+        if hasTop then hasTop = 1 else hasTop = -1 end
+        if hasBottom then hasBottom = 1 else hasBottom = -1 end
+
+        local finalRoom = self:GetRoomWithSpecificExits(COMMON_ROOMS, hasLeft, hasRight, hasTop, hasBottom)
+        DCEI.LogMessage("Old Room: " .. room .. ", New Room: " .. finalRoom)
+        self.roomMatrix[row][column] = finalRoom
+    end
+end
+function RoomGenerator:AdjustRoomEdges()
+    local allEmpty = true
+
+    -- Top Row
+    for i = self.minColumn, self.maxColumn do
+        if self.roomMatrix[self.minRow][i] ~= nil then
+            allEmpty = false
+            break
+        end
+    end
+    if allEmpty then
+        self.roomMatrix[self.minRow] = nil
+        self.minRow = self.minRow + 1
+    end
+
+    -- Bottom Row
+    allEmpty = true
+    for i = self.minColumn, self.maxColumn do
+        if self.roomMatrix[self.maxRow][i] ~= nil then
+            allEmpty = false
+            break
+        end
+    end
+    if allEmpty then
+        self.roomMatrix[self.maxRow] = nil
+        self.maxRow = self.maxRow - 1
+    end
+
+    -- Left Column
+    allEmpty = true
+    for i = self.minRow, self.maxRow do
+        if self.roomMatrix[i][self.minColumn] ~= nil then
+            allEmpty = false
+            break
+        end
+    end
+    if allEmpty then
+        self.minColumn = self.minColumn + 1
+    end
+
+    -- Right Column
+    allEmpty = true
+    for i = self.minRow, self.maxRow do
+        if self.roomMatrix[i][self.maxColumn] ~= nil then
+            allEmpty = false
+            break
+        end
+    end
+    if allEmpty then
+        self.maxColumn = self.maxColumn - 1
     end
 end
 function RoomGenerator:SpawnMerchantRoomItems()
@@ -1154,10 +1251,12 @@ function RoomGenerator:PrintRooms()
         local stringValue = ""
         
         for j = self.minColumn, self.maxColumn do
-            if self.roomMatrix[i][j] ~= nil then
-                stringValue = stringValue .. self.roomMatrix[i][j] .. " "
-            else
-                stringValue = stringValue .. "*** "
+            if self.roomMatrix[i] ~= nil then
+                if self.roomMatrix[i][j] ~= nil then
+                    stringValue = stringValue .. self.roomMatrix[i][j] .. " "
+                else
+                    stringValue = stringValue .. "*** "
+                end
             end
         end
 
