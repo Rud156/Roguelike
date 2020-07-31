@@ -38,6 +38,56 @@ local PERKS = {
         perkDescription = "Sacrifice 50 Max HP, but each of your stamina bar can block 5 damage",
         perkName = "Meat Shield",
         value = 50
+    },
+    AdenalineRush = {
+        perkImage = "icon_reinforce_skill_spearthrow",
+        perkName = "Adenaline Rush",
+        perkDescription = "Killing enemies will instantly regenerate 1 stamina, cooldown 1 second",
+        value = 1
+    },
+    KillerInstinct = {
+        perkImage = "icon_chosen_skill_smite",
+        perkName = "Killer Instinct",
+        perkDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%",
+        value = 0.30
+    },
+    Deflection = {
+        perkImage = "icon_skill_dragoon_whirlwind",
+        perkName = "Deflection",
+        perkDescription = "When Dwarf Smith takes damage, deflection 20% of that damage to his surrounding enemies",
+        value = 0.2
+    },
+    Redemption = {
+        perkImage = "icon_skill_charm",
+        perkName = "Redemption",
+        perkDescription = "When Dwarf Smith kills an enemy during the invulnerability-state heal 5% of the max HP",
+        value = 0.05
+    },
+    ForcefulLanding = {
+        perkImage = "icon_icemage_skill_supernova",
+        perkName = "Forceful Landing",
+        perkDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.5 seconds upon landing",
+        value = 0.5
+    },
+    AggressiveLanding = {
+        perkImage = "icon_blastrune_skill_blastforce",
+        perkName = "Aggressive Landing",
+        perkDescription = "Dwarf Smith’s jump/leap will deal 3 damage to the surrounding enemies upon landing",
+        value = 3
+    },
+    Toughness = {
+        perkImage = "icon_skill_vigor",
+        perkName = "Toughness",
+        perkDescription = "The stamina cost of Dwarf Smith’s heavy attack decreases by 1",
+        value = 1
+    },
+    Knockback = {
+        perkImage = "icon_dwarfsmith_skill_hammercrash",
+        perkDescription = "Light attack will now knock light enemies (not heavy enemies or BOSS) back",
+        value = "_Enemy_Knockback",
+        valueValidation = "_Enemy_CanHaveKnockback",
+        valueAlt = 2,
+        valueTime = 0.3
     }
 }
 
@@ -46,7 +96,15 @@ local PERK_NAMES = {
     OldCustomer = "OldCustomer",
     HelmOfValor = "HelmOfValor",
     Alchemist = "Alchemist",
-    PoisonOrb = "PoisonOrb"
+    PoisonOrb = "PoisonOrb",
+    AdenalineRush = "AdenalineRush",
+    KillerInstinct = "KillerInstinct",
+    Deflection = "Deflection",
+    Redemption = "Redemption",
+    ForcefulLanding = "ForcefulLanding",
+    AggressiveLanding = "AggressiveLanding",
+    Toughness = "Toughness",
+    Knockback = "Knockback"
 }
 
 local PerkIconDisplay = {

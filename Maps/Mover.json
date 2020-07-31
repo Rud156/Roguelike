@@ -76,6 +76,14 @@
                 "minSpeed": 0,
                 "maxSpeed": 24
             }
+        },
+        "_Knockback_Launch": {
+            "ballistic": {
+                "flightTime": 0.3,
+                "speed": 0,
+                "gravity": 2
+            },
+            "noRotation": true
         }
     }
 }

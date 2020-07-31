@@ -73,6 +73,9 @@ local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
 local MAX_TIMER_SLOTS = 10
 
+local INVENTORY_BASE_COUNT = 3
+local INVENTORY_TOTAL_COUNT = 4
+
 -- Item  Type
 -- -1: Empty
 -- 0: Gear
@@ -322,17 +325,55 @@ end
 function InventorySlot:Destroy()
     DCEI.Destroy(self.inventoryUi)
 end
+function InventorySlot:HideSlot()
+    self:Clear()
+    DCEI.SetActive(self.inventoryBackground, false)
+end
+function InventorySlot:ShowSlot()
+    DCEI.SetActive(self.inventoryBackground, true)
+end
 
 
-local Inventory = { inventorySlots = {} }
+local Inventory = { 
+    inventorySlots = {},
+
+    skillDisplay = nil,
+    currentSlots = 0 
+}
 Inventory.__index = Inventory
-function Inventory:new(inventorySlots)
+function Inventory:new(inventorySlots, skillDisplay)
     local inventory = {}
     setmetatable(inventory, Inventory)
 
     inventory.inventorySlots = inventorySlots
 
+    inventory.skillDisplay = skillDisplay
+    inventory.currentSlots = INVENTORY_BASE_COUNT
+
+    skillDisplay.hexGenerator:AddCallback(
+        function(skillName)
+            inventory:HandleSkillCallback(skillName)
+        end
+    )
+
+    inventory:AcitvateSlots()
+
     return inventory
+end
+function Inventory:AcitvateSlots()
+    local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ExtraSpace)
+    if skillStatus.isUnlocked then
+        local value = mod.GetSkillValue(mod.SkillNames.ExtraSpace, skillStatus.skillLevel)
+        self.currentSlots = self.currentSlots + 1
+    end
+
+    for i = 1, INVENTORY_TOTAL_COUNT do
+        if i <= self.currentSlots then
+            self.inventorySlots[i]:ShowSlot()
+        else
+            self.inventorySlots[i]:HideSlot()
+        end
+    end
 end
 function Inventory:SaveInventory()
     for i, slot in ipairs(self.inventorySlots) do
@@ -370,9 +411,22 @@ function Inventory:DeActivateInventorySlotRecharge(itemName)
         end
     end
 end
+function Inventory:HandleSkillCallback(skillName)
+    local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(skillName)
+    if not skillStatus.isUnlocked then
+        return
+    end
+
+    DCEI.LogMessage("Inventory Callback. Skill: " .. skillName)
+    local value = mod.GetSkillValue(skillName, skillStatus.skillLevel)
+
+    if skillName == mod.SkillNames.ExtraSpace then
+        self:AcitvateSlots()
+    end
+end
 function Inventory:IsFull()
-    for i, slot in ipairs(self.inventorySlots) do
-        if slot:IsEmpty() then
+    for i = 1, self.currentSlots do
+        if self.inventorySlots[i]:IsEmpty() then
             return false
         end
     end
@@ -380,8 +434,8 @@ function Inventory:IsFull()
     return true
 end
 function Inventory:GetEmptySlotIndex()
-    for i, slot in ipairs(self.inventorySlots) do
-        if slot:IsEmpty() then
+    for i = 1, self.currentSlots do
+        if self.inventorySlots[i]:IsEmpty() then
             return i
         end
     end
@@ -394,6 +448,10 @@ function Inventory:GetInventorySlotByName(itemName)
 end
 function Inventory:GetItemInInventoryIndex(itemName)
     for i, slot in ipairs(self.inventorySlots) do
+        if i > self.currentSlots then
+            break
+        end
+
         local slotItemName = slot:GetInventoryItemName()
         if slotItemName == itemName then
             return i
@@ -769,7 +827,13 @@ mod.InventoryCollectibleNames = COLLECTIBLE_NAMES
 mod.InventoryCollectibleBaseString = COLLECTIBLE_BASE_STRING
 mod.CollectibleDropped = COLLECTIBLE_DROPPED_BEHAVIOUR
 
+mod.InventoryBaseSlots = INVENTORY_BASE_COUNT
+mod.InventoryMaxSlots = INVENTORY_TOTAL_COUNT
+
 mod.VectorDistance = nil
+
+mod.GetSkillValue = nil
+mod.SkillNames = nil
 
 mod.Perks = nil
 mod.PerkNames = nil

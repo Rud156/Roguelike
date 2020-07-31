@@ -211,6 +211,10 @@ function GoblinChef:ActivateStunWithTimer(stunTimer)
 
     DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
+function GoblinChef:FakeStunTimer(stunTimer)
+    self.stunTimer = stunTimer
+    self:SetEnemyState(4)
+end
 function GoblinChef:UpdateIdleState(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -448,6 +452,9 @@ function HobGoblin:ActivateStunWithTimer(stunTimer)
 
     DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
+function HobGoblin:FakeStunTimer(stunTimer)
+    DCEI.RemoveBehavior(self.unit, mod.Perks[mod.PerkNames.Knockback].value)
+end
 function HobGoblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -618,6 +625,10 @@ function Goblin:ActivateStunWithTimer(stunTimer)
 
     DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
+function Goblin:FakeStunTimer(stunTimer)
+    self.stunTimer = stunTimer
+    self:SetEnemyState(2)
+end
 function Goblin:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -778,6 +789,10 @@ function GoblinSapper:ActivateStunWithTimer(stunTimer)
 
     DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
 end
+function GoblinSapper:FakeStunTimer(stunTimer)
+    self.stunTimer = stunTimer
+    self:SetEnemyState(2)
+end
 function GoblinSapper:TargetPlayer(deltaTime, playerPosition)
     local enemyPosition = DCEI.GetUnitPosition2D(self.unit)
     local distanceFromPlayer = mod.VectorDistance(enemyPosition, playerPosition)
@@ -889,6 +904,9 @@ function Ooze:CheckAndActivateStunnedState(enemyUnit)
 end
 function Ooze:ActivateStunWithTimer(stunTimer)
     -- Do nothing here...
+end
+function Ooze:FakeStunTimer(stunTimer)
+    DCEI.RemoveBehavior(self.unit, mod.Perks[mod.PerkNames.Knockback].value)
 end
 function Ooze:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then
@@ -1131,6 +1149,9 @@ function GoblinSiegeTower:ActivateStunWithTimer(stunTimer)
     self:SetEnemyState(2)
 
     DCEI.ApplyBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
+end
+function GoblinSiegeTower:FakeStunTimer(stunTimer)
+    DCEI.RemoveBehavior(self.unit, mod.Perks[mod.PerkNames.Knockback].value)
 end
 function GoblinSiegeTower:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then
@@ -1383,6 +1404,9 @@ function GoblinMiner:UpdateEnemyStunned(deltaTime)
         DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
         self:SetEnemyState(0)
     end
+end
+function GoblinMiner:FakeStunTimer(stunTimer)
+    DCEI.RemoveBehavior(self.unit, mod.Perks[mod.PerkNames.Knockback].value)
 end
 function GoblinMiner:UpdateRandomMovement(deltaTime, playerPosition)
     if self.targetPosition == nil then

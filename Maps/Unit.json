@@ -223,7 +223,11 @@
             },
             "references": {
                 "abilityList": [
-                    "_Enemy_Goblin_Attack"
+                    "_Enemy_Goblin_Attack",
+                    "_Enemy_Knockback"
+                ],
+                "behaviorList": [
+                    "_Enemy_CanHaveKnockback"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -250,7 +254,11 @@
             },
             "references": {
                 "abilityList": [
-                    "_Enemy_GoblinChef_Attack"
+                    "_Enemy_GoblinChef_Attack",
+                    "_Enemy_Knockback"
+                ],
+                "behaviorList": [
+                    "_Enemy_CanHaveKnockback"
                 ]
             }
         },
@@ -325,7 +333,11 @@
             },
             "references": {
                 "abilityList": [
-                    "_Enemy_GoblinSapper_Attack"
+                    "_Enemy_GoblinSapper_Attack",
+                    "_Enemy_Knockback"
+                ],
+                "behaviorList": [
+                    "_Enemy_CanHaveKnockback"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -386,7 +398,11 @@
             },
             "references": {
                 "abilityList": [
-                    "_Enemy_Ooze_Attack"
+                    "_Enemy_Ooze_Attack",
+                    "_Enemy_Knockback"
+                ],
+                "behaviorList": [
+                    "_Enemy_CanHaveKnockback"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"

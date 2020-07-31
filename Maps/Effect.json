@@ -1175,6 +1175,30 @@
                     }
                 ]
             }
+        },
+        "_Launch_Knockback": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileDeathType": 1,
+                "launchLocation": 4,
+                "impactLocation": 2,
+                "useMissileHeightAtDestination": true,
+                "mover": "_Knockback_Launch"
+            }
+        },
+        "_Set_Behaviour_Enemy_Knockback": {
+            "applyBehavior": {
+                "behavior": "_Enemy_Knockback",
+                "target": 3
+            }
+        },
+        "_Set_Enemy_Knockback_Ability": {
+            "set": {
+                "effectList": [
+                    "_Set_Behaviour_Enemy_Knockback",
+                    "_Launch_Knockback"
+                ]
+            }
         }
     }
 }

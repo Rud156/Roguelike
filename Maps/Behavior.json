@@ -307,6 +307,18 @@
             "finalEffect": "Remove Source",
             "periodicInterval": 1,
             "periodicEffect": "_Search_GoblinSiegeTower_Fire"
+        },
+        "_Enemy_CanHaveKnockback": {},
+        "_Enemy_Knockback": {
+            "duration": 0.1,
+            "modifiers": {
+                "flags": {
+                    "suppressMovement": false,
+                    "suppressWeapon": true,
+                    "suppressAbility": true,
+                    "suppressTurning": false
+                }
+            }
         }
     }
 }

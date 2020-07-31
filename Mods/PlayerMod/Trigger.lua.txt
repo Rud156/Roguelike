@@ -72,6 +72,7 @@ local Player = {
     playerGoldAmount = 0,
 
     skillDisplay = nil,
+    perkDisplay = nil,
     delayLoadTimer = 0,
 
     behaviourName = nil,
@@ -80,7 +81,7 @@ local Player = {
     killerInstinctActive = false
 }
 Player.__index = Player
-function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
+function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay, perkDisplay)
     local player = {}
     setmetatable(player, Player)
 
@@ -123,6 +124,7 @@ function Player:new(xPosition, yPosition, playerType, uiRoot, skillDisplay)
     player.playerGoldAmount = 0
     
     player.skillDisplay = skillDisplay
+    player.perkDisplay = perkDisplay
     player.delayLoadTimer = DELAYED_LOAD_TIMER
 
     player.behaviourName = nil
@@ -332,12 +334,12 @@ function Player:Update(deltaTime)
     self:CheckAndUpdateKillerInstinct()
 end
 function Player:CheckAndUpdateKillerInstinct() -- Killer Instinct
-    local skillStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.KillerInstinct)
-    if not skillStatus.isUnlocked then
+    local hasSkillStatus = self.perkDisplay:HasPerk(mod.PerkNames.KillerInstinct)
+    if not hasSkillStatus then
         return
     end
 
-    local value = mod.GetSkillValue(mod.SkillNames.KillerInstinct, skillStatus.skillLevel)
+    local value = mod.Perks[mod.PerkNames.KillerInstinct].value
 
     if self:HasPercentHP(value) then
         if not self.killerInstinctActive then
@@ -556,9 +558,9 @@ function Player:LaunchPlayerMeleeHeavyAttack(enemy)
     local heavyAttackStamina = PLAYER_MELEE_HEAVY_ATTACK_STAMINA
 
     -- Toughness
-    local toughnessStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.Toughness)
-    if toughnessStatus.isUnlocked then
-        local value = mod.GetSkillValue(mod.SkillNames.Toughness, toughnessStatus.skillLevel)
+    local hasToughness = self.perkDisplay:HasPerk(mod.PerkNames.Toughness)
+    if hasToughness then
+        local value = mod.Perks[mod.PerkNames.Toughness].value
         heavyAttackStamina = heavyAttackStamina - value
     end
 
@@ -733,10 +735,10 @@ function Player:GetPlayerGold()
 end
 function Player:CheckAdenalineRush()
     -- Adenaline Rush
-    local adenalineRushStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.AdenalineRush)
+    local hasAdenalineRush = self.perkDisplay:HasPerk(mod.PerkNames.AdenalineRush)
 
-    if adenalineRushStatus.isUnlocked then
-        local value = mod.GetSkillValue(mod.SkillNames.AdenalineRush, adenalineRushStatus.skillLevel)
+    if hasAdenalineRush then
+        local value = mod.Perks[mod.PerkNames.AdenalineRush].value
 
         if self.playerStaminaAmount < self.playerMaxStamina then
             self.playerStaminaAmount = self.playerStaminaAmount + value
@@ -792,7 +794,10 @@ mod.NormalizeUnitRotation = nil
 mod.VectorSubtract = nil
 
 mod.GetSkillValue = nil
-mod.SkillNames = SkillNames
+mod.SkillNames = nil
+
+mod.Perks = nil
+mod.PerkNames = nil
 
 mod.SavePlayerData = nil
 mod.GetPlayerData = nil

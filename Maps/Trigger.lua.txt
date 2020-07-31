@@ -20,6 +20,8 @@ InventoryMod.SaveInventoryIcon = SaveMod.SaveInventoryIcon
 InventoryMod.GetInventoryIcon = SaveMod.GetInventoryIcon
 InventoryMod.ClearInventoryIcon = SaveMod.ClearInventoryIcon
 InventoryMod.HasInventoryIconData = SaveMod.HasInventoryIconData
+InventoryMod.GetSkillValue = SkillTreeMod.GetSkillValue
+InventoryMod.SkillNames = SkillTreeMod.SkillNames
 InventoryMod.Perks = PerksMod.Perks
 InventoryMod.PerkNames = PerksMod.PerkNames
 local Inventory = InventoryMod.Inventory
@@ -99,6 +101,8 @@ PlayerMod.VectorSubtract = ExtensionFunction.VectorSubtract
 PlayerMod.NormalizeUnitRotation = ExtensionFunction.NormalizeUnitRotation
 PlayerMod.GetSkillValue = SkillTreeMod.GetSkillValue
 PlayerMod.SkillNames = SkillTreeMod.SkillNames
+PlayerMod.Perks = PerksMod.Perks
+PlayerMod.PerkNames = PerksMod.PerkNames
 PlayerMod.SavePlayerData = SaveMod.SavePlayerData
 PlayerMod.GetPlayerData = SaveMod.GetPlayerData
 PlayerMod.ClearPlayerData = SaveMod.ClearPlayerData
@@ -249,13 +253,15 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CreatePlayerDamageDisplay()
     CreatePlayerGoldDisplay()
     ArcadeCore.HideDefaultUi()
-    CreateInventoryUI()
     CreateDebugUI()
     CreateCollectiblesUI()
 
+    -- This must be called before Perks as Perks depends on Skills
     m_skillDisplay = SkillDisplay:new(m_uiTopLayer)
     m_skillDisplay.hexGenerator:AddCallback(SkillUnlockedCallback)
 
+    CreateInventoryUI() -- Inventory depends on Skill Tree
+    LoadAndSetupPerks() -- Perks depends on Skill Tree
     SpawnPlayerAndSetPosition()
     m_camera = Camera:new(m_player:GetPlayerUnit())
     m_player:SetPlayerCamera(m_camera)
@@ -477,12 +483,12 @@ function HandleUnitDied()
 
 
             -- Redemption
-            local redemptionSKillStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Redemption)
+            local hasRedemptionPerk = m_perkDisplay:HasPerk(PerksMod.PerkNames.Redemption)
             local playerInvincibleCount = DCEI.UnitBehaviorStackCount(m_player:GetPlayerUnit(), PLAYER_INVINCIBLE_BEHAVIOUR)
 
-            if redemptionSKillStatus.isUnlocked and playerInvincibleCount > 0 then
+            if hasRedemptionPerk and playerInvincibleCount > 0 then
                 local maxHealth = DCEI.GetMaxHealth(m_player:GetPlayerUnit())
-                local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Redemption, redemptionSKillStatus.skillLevel)
+                local value = PerksMod.Perks[PerksMod.PerkNames.Redemption].value
                 local healthIncrease = maxHealth * value
 
                 DCEI.AddHealth(m_player:GetPlayerUnit(), healthIncrease)
@@ -556,24 +562,35 @@ function HandleBehaviourAdded()
 
     elseif behaviourName == PlayerMod.PlayerConcussionBlow then  -- This behaviour can also be used to detect which enemy was hit
         
-        -- Concussion Blow
-        local concussionBlowStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ConcussionBlow)
-
-        if m_roomEnemies ~= nil and concussionBlowStatus.isUnlocked then
-            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.ConcussionBlow, concussionBlowStatus.skillLevel)
-            local enemies = m_roomEnemies:GetRoomEnemies()
-
-            for _, enemy in ipairs(enemies) do
-                if enemy:IsActive() and enemy:GetMainUnit() == unit then
-                    enemy:ActivateStunWithTimer(value)
-                    break
-                end
-            end
-        end
-
         -- Poison Orb
         if m_perkDisplay:HasPerk(PerksMod.PerkNames.PoisonOrb) then
             DCEI.ApplyBehavior(unit, PerksMod.Perks[PerksMod.PerkNames.PoisonOrb].value)
+        end
+
+        -- Knockback
+        if m_perkDisplay:HasPerk(PerksMod.PerkNames.Knockback) and m_roomEnemies ~= nil then
+            local perk = PerksMod.Perks[PerksMod.PerkNames.Knockback]
+            local canHaveKnockback = DCEI.UnitBehaviorStackCount(unit, perk.valueValidation)
+            
+            if canHaveKnockback > 0 then
+                DCEI.LogMessage("Has Knockback Behaviour")
+                local playerRotation = DCEI.GetUnitRotationEuler(m_player:GetPlayerUnit())
+                local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+                local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
+
+                local xPosition = math.sin(math.rad(yRotation)) * perk.valueAlt + playerPosition.x
+                local yPosition = math.cos(math.rad(yRotation)) * perk.valueAlt + playerPosition.y
+
+                DCEI.CastAbilityAtPosition(perk.value, unit, xPosition, yPosition)
+
+                local enemies = m_roomEnemies:GetRoomEnemies()
+                for _, enemy in ipairs(enemies) do
+                    if enemy:IsActive() and enemy:GetMainUnit() == unit then
+                        enemy:FakeStunTimer(perk.valueTime)
+                        break
+                    end
+                end
+            end
         end
 
     elseif behaviourName == GOBLIN_MINER_MISSILE_BEHAVIOUR then
@@ -695,7 +712,7 @@ function SpawnPlayerAndSetPosition()
         end
     end
 
-    m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot, m_skillDisplay)
+    m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot, m_skillDisplay, m_perkDisplay)
     m_player:AddDashCallback(HandleDashTimerEnded)
     -- Spawn Player
 
@@ -1140,9 +1157,9 @@ function UpdatePlayerHealth(deltaTime)
         m_playerDamageUiIsFlashOn = false
 
         -- Deflection
-        local deflectionSkill = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Deflection)
-        if deflectionSkill.isUnlocked and m_roomEnemies ~= nil then
-            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.Deflection, deflectionSkill.skillLevel)
+        local hasDeflectionPerk = m_perkDisplay:HasPerk(PerksMod.PerkNames.Deflection)
+        if hasDeflectionPerk and m_roomEnemies ~= nil then
+            local value = PerksMod.Perks[PerksMod.PerkNames.Deflection].value
             local roomEnemies = m_roomEnemies:GetRoomEnemies()
             local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
             local damageAmount = (lastFramePlayerHealth - playerHealth) * value
@@ -1177,16 +1194,16 @@ function HandleDashTimerEnded()
 
     if m_roomEnemies ~= nil then
         -- Forceful Landing
-        local forceLandStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.ForcefulLanding)
-        if forceLandStatus.isUnlocked then
-            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.ForcefulLanding, forceLandStatus.skillLevel)
+        local hasForcefulLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.ForcefulLanding)
+        if hasForcefulLanding then
+            local value = PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].value
             m_roomEnemies:ForceStunEnemies(value, playerPosition, PlayerMod.PlayerLandStunDistance)
         end
 
         -- Aggressive Landing
-        local aggressiveLandingStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.AggressiveLanding)
-        if aggressiveLandingStatus.isUnlocked then
-            local value = SkillTreeMod.GetSkillValue(SkillTreeMod.SkillNames.AggressiveLanding, aggressiveLandingStatus.skillLevel)
+        local hasAgressiveLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.AggressiveLanding)
+        if hasAgressiveLanding then
+            local value = PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].value
             
             local enemies = m_roomEnemies:GetRoomEnemies()
             for _, enemy in ipairs(enemies) do
@@ -1306,32 +1323,32 @@ function CreateDebugUI()
     -- DCEI.SetBackgroundImage(characterButton, "icon_enhance_crusader_punish")
     -- DCEI.SetOnClickCallback(characterButton, HandleCharacterSwitch)
 
-    -- local goldButton = DCEI.NewButton(horizontalStack)
-    -- DCEI.SetMinSize(goldButton, 50, 54)
-    -- DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
-    -- DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
+    local goldButton = DCEI.NewButton(horizontalStack)
+    DCEI.SetMinSize(goldButton, 50, 54)
+    DCEI.SetBackgroundImage(goldButton, "icon_affinity_gold")
+    DCEI.SetOnClickCallback(goldButton, HandleGoldButtonClicked)
 
     -- local roomType = SaveMod.GetRoomName()
     -- if roomType == nil then
-    --     -- Skill Tree
-    --     local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
-    --     DCEI.SetMinSize(skillTreeButton, 50, 50)
-    --     DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
-    --     DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
-    --     DCEI.SetLeftAlignmentInParent(skillTreeButton)
-    --     DCEI.SetTopAlignmentInParent(skillTreeButton)
-    --     DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
-    --     DCEI.SetVerticalOffsetInParent(skillTreeButton, -250)
+        -- Skill Tree
+        local skillTreeButton = DCEI.NewButton(m_uiMiddleLayer)
+        DCEI.SetMinSize(skillTreeButton, 50, 50)
+        DCEI.SetBackgroundImage(skillTreeButton, "icon_enhance_repeater_bolashot")
+        DCEI.SetOnClickCallback(skillTreeButton, HandleSkillTreeClick)
+        DCEI.SetLeftAlignmentInParent(skillTreeButton)
+        DCEI.SetTopAlignmentInParent(skillTreeButton)
+        DCEI.SetHorizontalOffsetInParent(skillTreeButton, 21)
+        DCEI.SetVerticalOffsetInParent(skillTreeButton, -250)
 
-    --     -- Perks
-    --     local perkButton = DCEI.NewButton(m_uiMiddleLayer)
-    --     DCEI.SetMinSize(perkButton, 50, 50)
-    --     DCEI.SetBackgroundImage(perkButton, "icon_enhance_leviathan_water_spout")
-    --     DCEI.SetOnClickCallback(perkButton, HandlePerkButtonClicked)
-    --     DCEI.SetLeftAlignmentInParent(perkButton)
-    --     DCEI.SetTopAlignmentInParent(perkButton)
-    --     DCEI.SetHorizontalOffsetInParent(perkButton, 100)
-    --     DCEI.SetVerticalOffsetInParent(perkButton, -250)
+        -- Perks
+        local perkButton = DCEI.NewButton(m_uiMiddleLayer)
+        DCEI.SetMinSize(perkButton, 50, 50)
+        DCEI.SetBackgroundImage(perkButton, "icon_enhance_leviathan_water_spout")
+        DCEI.SetOnClickCallback(perkButton, HandlePerkButtonClicked)
+        DCEI.SetLeftAlignmentInParent(perkButton)
+        DCEI.SetTopAlignmentInParent(perkButton)
+        DCEI.SetHorizontalOffsetInParent(perkButton, 100)
+        DCEI.SetVerticalOffsetInParent(perkButton, -250)
     -- end
 end
 
@@ -1369,7 +1386,7 @@ function HandleCharacterSwitch()
         playerType = 1
     end
     
-    m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot, m_skillDisplay)
+    m_player = Player:new(playerPosition.x, playerPosition.y, playerType, m_uiRoot, m_skillDisplay, m_perkDisplay)
     m_player:AddDashCallback(HandleDashTimerEnded)
     m_player:ShowPlayerUI()
 
@@ -1471,7 +1488,7 @@ function CreateInventoryUI()
 
     local inventoryItems = {}
     
-    for i = 0, 3 do
+    for i = 1, InventoryMod.InventoryMaxSlots do
         local inventoryItem = InventorySlot:new(
             "btn_yellow_invert", 
             "btn_grey_invert", 
@@ -1482,7 +1499,7 @@ function CreateInventoryUI()
         table.insert(inventoryItems, inventoryItem)
     end
 
-    local inventory = Inventory:new(inventoryItems)
+    local inventory = Inventory:new(inventoryItems, m_skillDisplay)
     m_inventory = inventory
 end
 
@@ -1637,6 +1654,10 @@ function SkillUnlockedCallback(skillName)
         m_roomGenerator:MarkRoomAtPositionVisited(exitRoomRow, exitRoomColumn)
         m_roomGenerator:PrintRoomVisitedMatrix()
         DCEI.LogMessage("Exit Room Unlocked")
+
+    elseif skillName == SkillTreeMod.SkillNames.Arsenal then
+        m_perkDisplay:ClearPerkMark()
+        m_perkDisplay:Save()
     end
 end
 
@@ -1644,11 +1665,20 @@ end
 
 -- #region Perk Functions
 
-function CheckAndSpawnPerks()
+function LoadAndSetupPerks()
     m_perkDisplay = PerkDisplay:new(m_uiTopLayer, m_topStackUi)
     m_perkDisplay:AddCallback(HandlePerkActivatedCallback)
+end
 
+function CheckAndSpawnPerks()
     if m_isBeginningRoom then
+        -- Arsenal
+        local arsenalStatus = m_skillDisplay.hexGenerator:GetSkillStatus(SkillTreeMod.SkillNames.Arsenal)
+        if not arsenalStatus.isUnlocked then
+            m_perkDisplay:MarkPerkDisplayed()
+            m_perkDisplay:Save()
+        end
+
         m_perkDisplay:SetPerkValue(PerksMod.PerkNames.HelmOfValor, m_helmOfValorTimeRemaining)
     end
 

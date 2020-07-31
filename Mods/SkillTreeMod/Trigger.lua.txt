@@ -82,26 +82,12 @@ local SKILL_TREE = {
             value = 0.30
         }
     },
-    KillerInstinct = {
+    Arsenal = {
         skillImage = "icon_enhance_frosttower_shatter",
-        skillName = "Killer Instinct",
+        skillName = "Arsenal",
         skillCost = 20,
-        skillDescription = "When Dwarf Smith falls below 30% HP, all attack damage increased by 50%",
-        value = 0.30
-    },
-    Deflection = {
-        skillImage = "icon_enhance_iceman_ice_spikes",
-        skillName = "Deflection",
-        skillCost = 20,
-        skillDescription = "When Dwarf Smith takes damage, deflection 20% of that damage to his surrounding enemies",
-        value = 0.2
-    },
-    Redemption = {
-        skillImage = "card_spell_bubbleblast",
-        skillName = "Redemption",
-        skillCost = 20,
-        skillDescription = "When Dwarf Smith kills an enemy during the invulnerability-state heal 5% of the max HP",
-        value = 0.05
+        skillDescription = "Able to pick a Perk at the beginning of a run",
+        value = 0
     },
     Preplan = {
         skillImage = "icon_enhance_iceman_yodel_taunt",
@@ -163,13 +149,6 @@ local SKILL_TREE = {
         skillDescription = "Increase Dwarf Smith’s jump distance by 30%",
         value = 0.3
     },
-    ForcefulLanding = {
-        skillImage = "icon_enhance_stoneguard_bash",
-        skillName = "Forceful Landing",
-        skillCost = 20,
-        skillDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.5 seconds upon landing",
-        value = 0.5
-    },
     ImprovedSlam = {
         {
             skillImage = "icon_catalyst_main_item4_green_02",
@@ -193,18 +172,11 @@ local SKILL_TREE = {
             value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III"
         }
     },
-    Toughness = {
-        skillImage = "icon_enhance_stoneguard_stoneskin",
-        skillName = "Toughness",
-        skillCost = 20,
-        skillDescription = "The stamina cost of Dwarf Smith’s heavy attack decreases by 1",
-        value = 1
-    },
-    AdenalineRush = {
+    ExtraSpace = {
         skillImage = "icon_ingame_towerslot_druidtower",
-        skillName = "Adenaline Rush",
+        skillName = "Extra Space",
         skillCost = 20,
-        skillDescription = "Killing enemies will instantly regenerate 1 stamina, cooldown 1 second",
+        skillDescription = "Increase Inventory Slot by 1",
         value = 1
     },
     WarMachine = {
@@ -297,13 +269,6 @@ local SKILL_TREE = {
         skillDescription = "Dwarf Smith’s heavy attack now can stun BOSS enemy",
         value = 3
     },
-    AggressiveLanding = {
-        skillImage = "icon_enhance_dragoonbarracks_leap",
-        skillName = "Aggressive Landing",
-        skillCost = 20,
-        skillDescription = "Dwarf Smith’s jump/leap will deal 3 damage to the surrounding enemies upon landing",
-        value = 3
-    },
     Hero = {
         skillImage = "icon_ingame_hero_tower_smith",
         skillName = "Hero",
@@ -314,13 +279,13 @@ local SKILL_TREE = {
 }
 
 local SKILL_TREE_MATRIX = {
-    { "HeavyBlow", "ConcussionBlow", 0, 0, 0, 0, 0 },
-    { "LuckyStrike", "Strength", "AggressiveLanding", 0, 0, 0, 0 },
-    { 0, "WarMachine", "Cruelty", 0, "Endurance", "Toughness", 0 },
-    { 0, 0, 0, "Hero", "QuickRecovery", "ImprovedSlam", "AdenalineRush" },
-    { 0, 0, "Invulnerability", "Robust", 0, "BunnyHop", "ForcefulLanding" },
-    { 0, 0, "Redemption", "Deflection", "Surefooted", 0, 0 },
-    { 0, 0, 0, "KillerInstinct", "Preplan", 0 ,0 }
+    { "HeavyBlow", 0, 0, 0, 0, 0, 0 },
+    { 0, "Strength", "LuckyStrike", 0, 0, 0, 0 },
+    { 0, "WarMachine", "Cruelty", 0, "Endurance", 0, 0 },
+    { 0, 0, 0, "Hero", "QuickRecovery", "ImprovedSlam", "ExtraSpace" },
+    { 0, 0, "Invulnerability", "Robust", 0, "BunnyHop", 0 },
+    { 0, 0, 0, "Preplan", "Surefooted", 0, 0 },
+    { 0, 0, 0, "Arsenal", 0, 0, 0 }
 }
 
 local CENTER_SKILL = "Hero"
@@ -330,24 +295,19 @@ local SKILL_NAMES = {
     Robust = "Robust",
     Invulnerability = "Invulnerability",
     Surefooted = "Surefooted",
-    KillerInstinct = "KillerInstinct",
-    Deflection = "Deflection",
-    Redemption = "Redemption",
+    Arsenal = "Arsenal",
     Preplan = "Preplan",
     QuickRecovery = "QuickRecovery",
     Endurance = "Endurance",
     BunnyHop = "BunnyHop",
-    ForcefulLanding = "ForcefulLanding",
     ImprovedSlam = "ImprovedSlam",
-    Toughness = "Toughness",
-    AdenalineRush = "AdenalineRush",
+    ExtraSpace = "ExtraSpace",
     WarMachine = "WarMachine",
     Strength = "Strength",
     Cruelty = "Cruelty",
     LuckyStrike = "LuckyStrike",
     ConcussionBlow = "ConcussionBlow",
-    HeavyBlow = "HeavyBlow",
-    AggressiveLanding = "AggressiveLanding"
+    HeavyBlow = "HeavyBlow"
 }
 
 local MERCHANT_MALE = "__SpawnMerchantMaleUnit"
@@ -671,6 +631,7 @@ function HexGenerator:UpdateSkillDisplay()
                 DCEI.SetActive(self.hexUiDisplay[i][j].button, true)
 
                 local skillStatus = self.skillStatusMatrix[i][j]
+                DCEI.LogMessage("Skill Name: " .. skillStatus.skillName)
                 
                 if skillStatus.maxSkillLevel ~= 1 then
                     DCEI.SetBackgroundImage(
