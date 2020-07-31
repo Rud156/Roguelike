@@ -49,7 +49,7 @@
         "_Damage_Enemy_Goblin": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 20,
+                "damageAmount": 30,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -187,7 +187,7 @@
         "_Damage_Enemy_Hobgoblin": {
             "damage": {
                 "whichUnit": 1,
-                "damageAmount": 40,
+                "damageAmount": 50,
                 "expressions": [
                     {
                         "namedExpression": {
@@ -500,7 +500,7 @@
                 "filter": {
                     "player": 2
                 },
-                "effect": "_Set_Enemy_Hobgoblin_Attack",
+                "effect": "_Set_Enemy_Goblin_Attack",
                 "offset": {
                     "forward": 0.2
                 }
