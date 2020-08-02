@@ -101,7 +101,8 @@
             "__StopMovement",
             "_Launch_Enemy_GoblinMiner_RocketBarrage",
             "_Launch_Enemy_GoblinMiner_Leap",
-            "_Launch_Enemy_GoblinSiegeTower_Attack"
+            "_Launch_Enemy_GoblinSiegeTower_Attack",
+            "_Launch_Knockback"
         ],
         "usedBehaviors": [
             "_PlayerCharacter_Damage_Invincible",
@@ -132,7 +133,8 @@
             "_Collectible_Speed_Potion",
             "_Collectible_Catalyst_Potion",
             "_PlayerCharacter_OutOfCombat_Speed",
-            "_PlayerCharacter_CollectGold"
+            "_PlayerCharacter_CollectGold",
+            "_Enemy_Knockback"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",

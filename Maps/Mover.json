@@ -81,7 +81,7 @@
             "ballistic": {
                 "flightTime": 0.3,
                 "speed": 0,
-                "gravity": 2
+                "gravity": 12
             },
             "noRotation": true
         }

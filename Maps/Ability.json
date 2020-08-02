@@ -282,15 +282,6 @@
                 "finishTime": 0.3,
                 "range": 1
             }
-        },
-        "_Enemy_Knockback": {
-            "abilityType": 1,
-            "castType": 1,
-            "targetRangeMode": 0,
-            "effect": "_Set_Enemy_Knockback_Ability",
-            "stats": {
-                "range": 2
-            }
         }
     }
 }

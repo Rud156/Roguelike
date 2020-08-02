@@ -597,15 +597,18 @@ function HandleBehaviourAdded()
             
             if canHaveKnockback > 0 then
                 DCEI.LogMessage("Has Knockback Behaviour")
+                DCEI.ApplyBehavior(unit, perk.value)
+
+                local unitPosition = DCEI.GetUnitPosition2D(unit)
+
                 local playerRotation = DCEI.GetUnitRotationEuler(m_player:GetPlayerUnit())
                 local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
                 local yRotation = ExtensionFunction.NormalizeUnitRotation(playerRotation)
 
-                local xPosition = math.sin(math.rad(yRotation)) * perk.valueAlt + playerPosition.x
-                local yPosition = math.cos(math.rad(yRotation)) * perk.valueAlt + playerPosition.y
+                local xPosition = math.sin(math.rad(yRotation)) * perk.valueAlt + unitPosition.x
+                local yPosition = math.cos(math.rad(yRotation)) * perk.valueAlt + unitPosition.y
 
-                DCEI.ApplyBehavior(unit, perk.value)
-                DCEI.CastAbilityAtPosition(perk.value, unit, xPosition, yPosition)
+                DCEI.CreateEffect(perk.valueLaunch, unit, xPosition, yPosition)
 
                 local enemies = m_roomEnemies:GetRoomEnemies()
                 for _, enemy in ipairs(enemies) do

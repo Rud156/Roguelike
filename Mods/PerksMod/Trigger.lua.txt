@@ -85,8 +85,9 @@ local PERKS = {
         perkImage = "icon_dwarfsmith_skill_hammercrash",
         perkDescription = "Light attack will now knock light enemies (not heavy enemies or BOSS) back",
         value = "_Enemy_Knockback",
+        valueLaunch = "_Launch_Knockback",
         valueValidation = "_Enemy_CanHaveKnockback",
-        valueAlt = 2,
+        valueAlt = 1,
         valueTime = 0.3
     }
 }

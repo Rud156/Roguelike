@@ -247,7 +247,7 @@
         },
         "_PlayerCharacter_LightAttack_Hit": {
             "maxStackCount": 1,
-            "duration": 0.1
+            "duration": 0.01
         },
         "_PlayerCharacter_SwiftHands": {
             "modifiers": {
@@ -310,14 +310,15 @@
         },
         "_Enemy_CanHaveKnockback": {},
         "_Enemy_Knockback": {
+            "refreshStack": true,
             "maxStackCount": 1,
-            "duration": 0.4,
+            "duration": 0.3,
             "modifiers": {
                 "flags": {
-                    "suppressMovement": false,
+                    "suppressMovement": true,
                     "suppressWeapon": true,
                     "suppressAbility": true,
-                    "suppressTurning": false
+                    "suppressTurning": true
                 }
             }
         }
