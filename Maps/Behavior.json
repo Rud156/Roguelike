@@ -310,6 +310,7 @@
         },
         "_Enemy_CanHaveKnockback": {},
         "_Enemy_Knockback": {
+            "maxStackCount": 1,
             "duration": 0.4,
             "modifiers": {
                 "flags": {

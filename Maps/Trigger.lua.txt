@@ -467,6 +467,8 @@ function HandleUnitDied()
 
     local unitName = DCEI.UnitName(unit)
     if unitName == PLAYER_NAME_RANGED or unitName == PLAYER_NAME_MELEE and not m_nextRoomTransitionActive then
+        UpdatePlayerBaseGold()
+        
         m_player:ClearData(true)
         m_player:Destroy()
         m_player = nil
@@ -602,6 +604,7 @@ function HandleBehaviourAdded()
                 local xPosition = math.sin(math.rad(yRotation)) * perk.valueAlt + playerPosition.x
                 local yPosition = math.cos(math.rad(yRotation)) * perk.valueAlt + playerPosition.y
 
+                DCEI.ApplyBehavior(unit, perk.value)
                 DCEI.CastAbilityAtPosition(perk.value, unit, xPosition, yPosition)
 
                 local enemies = m_roomEnemies:GetRoomEnemies()
@@ -983,15 +986,7 @@ function UpdateCollisionWithExitDoor()
 
     m_roomLevel = m_roomLevel + 1
     if m_roomLevel > ROOM_LEVEL_MAX then
-        local goldAmount = m_player:GetPlayerGold()
-        local baseGold = SaveMod.GetBaseGold()
-
-        if baseGold ~= nil then
-            goldAmount = goldAmount + baseGold
-        end
-
-        SaveMod.SaveBaseGold(goldAmount)
-        SaveMod.ForceClearPlayerGold()
+        UpdatePlayerBaseGold()
 
         m_roomGenerator:ClearSaveData()
         m_perkDisplay:Clear()
@@ -1283,6 +1278,18 @@ function UpdateCoinsCollection(deltaTime)
             DCEI.LogMessage("Destroyed Coin Units")
         end
     end
+end
+
+function UpdatePlayerBaseGold()
+    local goldAmount = m_player:GetPlayerGold()
+    local baseGold = SaveMod.GetBaseGold()
+
+    if baseGold ~= nil then
+        goldAmount = goldAmount + baseGold
+    end
+
+    SaveMod.SaveBaseGold(goldAmount)
+    SaveMod.ForceClearPlayerGold()
 end
 
 -- #endregion Player Functions

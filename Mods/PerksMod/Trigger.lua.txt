@@ -86,7 +86,7 @@ local PERKS = {
         perkDescription = "Light attack will now knock light enemies (not heavy enemies or BOSS) back",
         value = "_Enemy_Knockback",
         valueValidation = "_Enemy_CanHaveKnockback",
-        valueAlt = 1.2,
+        valueAlt = 2,
         valueTime = 0.3
     }
 }
