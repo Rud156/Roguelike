@@ -3639,6 +3639,14 @@
                     }
                 }
             }
+        },
+        "_Collectible_Perk": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "chest_sliver"
+                }
+            }
         }
     },
     "actorEventMacros": {

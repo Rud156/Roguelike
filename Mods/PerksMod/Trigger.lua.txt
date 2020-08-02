@@ -86,7 +86,7 @@ local PERKS = {
         perkDescription = "Light attack will now knock light enemies (not heavy enemies or BOSS) back",
         value = "_Enemy_Knockback",
         valueValidation = "_Enemy_CanHaveKnockback",
-        valueAlt = 2,
+        valueAlt = 1.2,
         valueTime = 0.3
     }
 }
@@ -106,6 +106,8 @@ local PERK_NAMES = {
     Toughness = "Toughness",
     Knockback = "Knockback"
 }
+
+local PERK_CHEST = "_Collectible_Perk"
 
 local PerkIconDisplay = {
     perkName = "",
@@ -546,6 +548,7 @@ end
 
 mod.Perks = PERKS
 mod.PerkNames = PERK_NAMES
+mod.PerkChest = PERK_CHEST
 mod.PerkDisplay = PerkDisplay
 
 mod.SavePerks = nil

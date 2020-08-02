@@ -222,6 +222,7 @@ local m_sceneTransitionActive = false
 local m_skillDisplay
 -- Perks
 local m_perkDisplay
+local m_perkSelecting = false
 -- Room Coins
 local m_droppedCoins = {}
 local m_coinTimer = 0
@@ -270,6 +271,7 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     CheckAndSpawnExitDoor()
     SpawnEnemiesAndCloseDoors()
     CheckAndSpawnPerks()
+    CheckAndActivatePerkRoom()
 
     m_miniMap = MiniMap:new(m_uiMiddleLayer, m_roomGenerator)
     if m_isBeginningRoom then
@@ -416,6 +418,11 @@ function Update()
                 if not m_isBeginningRoom then
                     m_roomGenerator:MarkRoomAtPlayerPositionClear()
                 end
+
+                if m_perkSelecting then
+                    m_roomGenerator:MarkChallengeRoomCleared()
+                end
+
                 ActivateDoorOpenAnimations()
                 CollectCoins()
             end
@@ -636,11 +643,15 @@ function HandleUnitSelected()
     DCEI.LogMessage("Selected Unit: " .. unitName)
 
     -- Add Collectibles to Inventory if successful. Then destroy the unit
-    if string.match(unitName, InventoryCollectibleBaseString) then
+    if unitName == PerksMod.PerkChest then
+        HandlePerkChestClicked(unit)
+
+    elseif string.match(unitName, InventoryCollectibleBaseString) then
         HandleInventoryUnitClicked(unit, unitName)
 
     elseif string.match(unitName, SkillTreeMod.MerchantMale) or string.match(unitName, SkillTreeMod.MerchantFemale) then
         HandleSkillTreeClick()
+
     end
 
     DCEI.DeselectUnit(unit)
@@ -1718,6 +1729,16 @@ function CheckAndSpawnPerks()
     end
 end
 
+function CheckAndActivatePerkRoom()
+    local roomName = SaveMod.GetRoomName()
+
+    if RoomMod.IsSecretRoom(roomName) and not m_roomGenerator.challengeRoomCleared then
+        local spawnUnit = DCEI.FindUnit(SPAWN_MARKER_UNIT)
+        local spawnPosition = DCEI.GetUnitPosition2D(spawnUnit)
+        DCEI.CreateUnit(1, 1, PerksMod.PerkChest, spawnPosition.x, spawnPosition.y)
+    end
+end
+
 function HandlePerkActivatedCallback(perkName)
     if m_player == nil then
         return
@@ -1734,6 +1755,32 @@ function HandlePerkActivatedCallback(perkName)
         m_helmOfValorTimeRemaining = 0
 
     end
+
+    if m_perkSelecting then
+        ActivateChallengeRoom()
+    end
+end
+
+function HandlePerkChestClicked(unit)
+    if m_perkDisplay ~= nil then
+        m_perkDisplay:ShowRandomPerks(m_player)
+        DCEI.RemoveUnit(unit)
+
+        m_perkSelecting = true
+
+    else
+        DCEI.LogError("Perk Display Not Initialized!!!")
+    end
+end
+
+function ActivateChallengeRoom()
+    ActivateDoorCloseAnimations()
+
+    DCEI.RemoveBehavior(m_player:GetPlayerUnit(), PlayerMod.PlayerOutOfCombatSpeed)
+    m_roomEnemies = RoomEnemies:newChallengeRoom(m_player:GetPlayerUnit(), m_roomGenerator, m_skillDisplay, m_roomLevel)
+    
+    m_doorOpenAnimPlayed = false
+    m_roomEnemiesCleared = false
 end
 
 -- #endregion Perk Functions

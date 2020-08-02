@@ -107,6 +107,32 @@ local LEVEL_3_ENEMY_SETS = {
     { 1, 1, 2, 2, 4, 4 },
 }
 
+local CHALLEGE_LEVEL_1_ENEMY_SETS = {
+    { 2, 2, 0 },
+    { 3, 3, 3, 4 },
+    { 2, 2, 2, 2 },
+    { 0, 0, 0 },
+    { 3, 0, 0 }
+}
+
+local CHALLEGE_LEVEL_2_ENEMY_SETS = {
+    { 2, 2, 0 },
+    { 3, 3, 3, 4 },
+    { 2, 2, 2, 2 },
+    { 0, 0, 0 },
+    { 3, 0, 0 }
+}
+
+local CHALLEGE_LEVEL_3_ENEMY_SETS = {
+    { 2, 2, 0 },
+    { 3, 3, 3, 4 },
+    { 2, 2, 2, 2 },
+    { 0, 0, 0 },
+    { 3, 0, 0 }
+}
+
+local CHALLENGE_DISTANCE_FROM_PLAYER = 3
+
 local MAP_SQUARE_SIZE = 20
 local MAP_CONNECTOR_WIDTH = 10
 local MAP_CONNECTOR_HEIGHT = 6
@@ -145,6 +171,8 @@ local RoomGenerator  = {
     currentPlayerRow = -1,
     currentPlayerColumn = -1,
 
+    challengeRoomCleared = false,
+
     randomSeed = -1
 }
 RoomGenerator.__index = RoomGenerator
@@ -175,6 +203,8 @@ function RoomGenerator:new(randomSeed, roomLevel)
 
     roomGenerator.currentPlayerRow = -1
     roomGenerator.currentPlayerColumn = -1
+
+    roomGenerator.challengeRoomCleared = false
 
     roomGenerator.randomSeed = randomSeed
     
@@ -214,6 +244,8 @@ function RoomGenerator:SaveRoomStructure()
         playerRow = self.currentPlayerRow,
         playerColumn = self.currentPlayerColumn,
 
+        challengeRoomCleared = self.challengeRoomCleared,
+
         randomSeed = self.randomSeed
     })
 end
@@ -249,6 +281,8 @@ function RoomGenerator:LoadRoomStructure()
     roomGenerator.currentPlayerRow = dataInstance.playerRow
     roomGenerator.currentPlayerColumn = dataInstance.playerColumn
 
+    roomGenerator.challengeRoomCleared = dataInstance.challengeRoomCleared
+
     roomGenerator.randomSeed = dataInstance.randomSeed
     
     roomGenerator:PrintRooms()
@@ -275,6 +309,9 @@ function RoomGenerator:GetRoomFromPlayerPosition()
 end
 function RoomGenerator:MarkRoomAtPositionVisited(row, column)
     self.roomVisitedMatrix[row][column] = true
+end
+function RoomGenerator:MarkChallengeRoomCleared()
+    self.challengeRoomCleared = true
 end
 function RoomGenerator:GenerateRoomBase(roomLevel)
     local spawnRoomRow = 100
@@ -1423,6 +1460,61 @@ function RoomEnemies:new(player, roomGenerator, skillDisplay, roomLevel, spawnBo
 
     return roomEnemies
 end
+function RoomEnemies:newChallengeRoom(player, roomGenerator, skillDisplay, roomLevel)
+    local roomEnemies = {}
+    setmetatable(roomEnemies, RoomEnemies)
+
+    local playerPosition = DCEI.GetUnitPosition2D(player)
+
+    roomEnemies.roomGenerator = roomGenerator
+    roomEnemies.skillDisplay = skillDisplay
+    roomEnemies.enemies = {}
+    roomEnemies.direction = ""
+
+    roomEnemies:SpawnChallengeRoomEnemies(playerPosition)
+
+    return roomEnemies
+end
+function RoomEnemies:SpawnChallengeRoomEnemies(playerPosition, roomLevel)
+    local lastActiveSeed = self.roomGenerator:GetRandomSeed()
+    math.randomseed(os.time())
+
+    local enemySet
+
+    if roomLevel == 1 then
+        enemySet = CHALLEGE_LEVEL_1_ENEMY_SETS
+    elseif roomLevel == 2 then
+        enemySet = CHALLEGE_LEVEL_2_ENEMY_SETS
+    else
+        enemySet = CHALLEGE_LEVEL_3_ENEMY_SETS
+    end
+
+    local randomEnemySet = math.random(1, #enemySet)
+
+    for _, enemyType in ipairs(enemySet[randomEnemySet]) do
+        local position = self:GetRandomChallengeValidPointInRoom(playerPosition)
+        local xPosition = position.x
+        local yPosition = position.y
+
+        if enemyType == 0 then
+            enemy = mod.EnemyGoblinChef:new(self, xPosition, yPosition)
+        elseif enemyType == 1 then
+            enemy = mod.EnemyHobGoblin:new(self, xPosition, yPosition)
+        elseif enemyType == 2 then
+            enemy = mod.EnemyGoblin:new(self, xPosition, yPosition)
+        elseif enemyType == 3 then
+            enemy = mod.EnemyGoblinSapper:new(self, xPosition, yPosition)
+        elseif enemyType == 4 then
+            enemy = mod.EnemyOoze:new(self, xPosition, yPosition)
+        elseif enemyType == 5 then
+            enemy = mod.EnemySiegeTower:new(self, xPosition, yPosition)
+        end
+
+        table.insert(self.enemies, enemy)
+    end
+
+    math.randomseed(lastActiveSeed)
+end
 function RoomEnemies:SpawnBossEnemy()
     local position = self:GetRandomValidPointInRoom()
     local enemy = mod.EnemyGoblinMiner:new(self, position.x, position.y)
@@ -1520,6 +1612,25 @@ function RoomEnemies:GetRandomValidPointInRoom()
                         table.insert(validPositions, { x = i, y = j })
                     end
 
+                end
+            end
+        end
+    end
+
+    local randomPosition = math.random(1, #validPositions)
+    return validPositions[randomPosition]
+end
+function RoomEnemies:GetRandomChallengeValidPointInRoom(playerPosition)
+    local validPositions = {}
+
+    for i = 1, ROOM_SIZE do
+        for j = 1, ROOM_SIZE do
+            if DCEI.GetTerrainTypeAtPoint(i, j) == WALKABLE_TEXTURE_ID and DCEI.IsPointOnNavMesh(i, j) then
+                local position = { x = i, y = j }
+                local distanceFromPlayer = mod.VectorDistance(position, playerPosition)
+
+                if distanceFromPlayer >= CHALLENGE_DISTANCE_FROM_PLAYER then
+                    table.insert(validPositions, position)
                 end
             end
         end

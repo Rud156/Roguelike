@@ -94,7 +94,8 @@
             "_Coin",
             "_Enemy_GoblinSiegeTower",
             "_Enemy_GoblinSiegeTower_Fire",
-            "_Enemy_GoblinSiegeTower_AirStrafe"
+            "_Enemy_GoblinSiegeTower_AirStrafe",
+            "_Collectible_Perk"
         ],
         "usedEffects": [
             "__StopMovement",

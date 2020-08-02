@@ -225,6 +225,7 @@ local MIN_COLUMN = "MinColumn"
 local MAX_COLUMN = "MaxColumn"
 local PLAYER_ROW = "PlayerRow"
 local PLAYER_COLUMN = "PlayerColumn"
+local CHALLENGE_ROOM_CLEARED = "ChallengeCleared"
 local RANDOM_SEED = "RandomSeed"
 
 function mod.SaveRoomData(roomInstance)
@@ -251,6 +252,8 @@ function mod.SaveRoomData(roomInstance)
 
     DCEI.Save.Set(PLAYER_ROW, roomInstance.playerRow)
     DCEI.Save.Set(PLAYER_COLUMN, roomInstance.playerColumn)
+
+    DCEI.Save.Set(CHALLENGE_ROOM_CLEARED, roomInstance.challengeRoomCleared)
 
     DCEI.Save.Set(RANDOM_SEED, roomInstance.randomSeed)
 
@@ -284,6 +287,8 @@ function mod.GetRoomData()
     roomInstance.playerRow = DCEI.Save.Get(PLAYER_ROW)
     roomInstance.playerColumn = DCEI.Save.Get(PLAYER_COLUMN)
 
+    roomInstance.challengeRoomCleared = DCEI.Save.Get(CHALLENGE_ROOM_CLEARED)
+
      roomInstance.randomSeed = DCEI.Save.Get(RANDOM_SEED)
 
     return roomInstance
@@ -313,6 +318,8 @@ function mod.ClearRoomData()
 
     DCEI.Save.Set(PLAYER_ROW, nil)
     DCEI.Save.Set(PLAYER_COLUMN, nil)
+
+    DCEI.Save.Set(CHALLENGE_ROOM_CLEARED, nil)
 
     DCEI.Save.Set(RANDOM_SEED, nil)
 
