@@ -314,6 +314,9 @@ function Player:Update(deltaTime)
         self.playerDashTimer = self.playerDashTimer - deltaTime
 
         if self.playerDashTimer <= 0 then
+            for _, dashCallback in ipairs(self.playerDashCallbacks) do
+                dashCallback()
+            end
             self.playerDashActive = false
         end
     end
@@ -580,7 +583,7 @@ function Player:LaunchPlayerMeleeHeavyAttack(enemy)
     self:HandleStaminaRegenStart()
 
     local heavyWeaponName = PLAYER_MELEE_HEAVY_WEAPON
-    -- Forceful Landing
+    -- Improved Slam
     local improvedSlamStatus = self.skillDisplay.hexGenerator:GetSkillStatus(mod.SkillNames.ImprovedSlam)
     if improvedSlamStatus.isUnlocked then
         local value = mod.GetSkillValue(mod.SkillNames.ImprovedSlam, improvedSlamStatus.skillLevel)

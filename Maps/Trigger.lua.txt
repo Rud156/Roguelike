@@ -712,10 +712,10 @@ function SpawnPlayerAndSetPosition()
         end
     end
 
+    -- Spawn Player
     m_player = Player:new(spawnPosition.x, spawnPosition.y, playerType, m_uiRoot, m_skillDisplay, m_perkDisplay)
     m_player:AddDashCallback(HandleDashTimerEnded)
-    -- Spawn Player
-
+    
     SpawnItemDrops()
 end
 

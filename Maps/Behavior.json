@@ -310,7 +310,7 @@
         },
         "_Enemy_CanHaveKnockback": {},
         "_Enemy_Knockback": {
-            "duration": 0.1,
+            "duration": 0.4,
             "modifiers": {
                 "flags": {
                     "suppressMovement": false,

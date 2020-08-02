@@ -1189,7 +1189,7 @@
         "_Set_Behaviour_Enemy_Knockback": {
             "applyBehavior": {
                 "behavior": "_Enemy_Knockback",
-                "target": 3
+                "target": 2
             }
         },
         "_Set_Enemy_Knockback_Ability": {
