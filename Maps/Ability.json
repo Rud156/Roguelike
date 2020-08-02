@@ -114,7 +114,7 @@
             "effect": "_Search_PlayerCharacter_Melee_LightAttack",
             "stats": {
                 "prepTime": 0.3,
-                "finishTime": 0.3,
+                "finishTime": 0.1,
                 "period": 0,
                 "range": 0
             },
