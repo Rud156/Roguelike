@@ -124,7 +124,9 @@ local GoblinChef = {
     stunTimer = 0,
 
     -- Poisoned
-    poisonTimer = 0
+    poisonTimer = 0,
+
+    lastFrameHealth = 0,
 }
 GoblinChef.__index = GoblinChef
 function GoblinChef:new(room, xPosition, yPosition)
@@ -147,6 +149,8 @@ function GoblinChef:new(room, xPosition, yPosition)
 
     goblinChef.poisonTimer = 0
 
+    goblinChef.lastFrameHealth = 0
+
     return goblinChef
 end
 function GoblinChef:Update(deltaTime, playerPosition)
@@ -168,6 +172,7 @@ function GoblinChef:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function GoblinChef:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -184,6 +189,38 @@ function GoblinChef:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function GoblinChef:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function GoblinChef:CheckAndActivateStunnedState(enemyUnit)
     if self.enemyState == 4 then
@@ -377,6 +414,8 @@ local HobGoblin = {
 
     -- Poisoned
     poisonTimer = 0,
+
+    lastFrameHealth = 0,
 }
 HobGoblin.__index = HobGoblin
 function HobGoblin:new(room, xPosition, yPosition)
@@ -397,6 +436,8 @@ function HobGoblin:new(room, xPosition, yPosition)
 
     hobGoblin.poisonTimer = 0
 
+    hobGoblin.lastFrameHealth = 0
+
     return hobGoblin
 end
 function HobGoblin:Update(deltaTime, playerPosition)
@@ -409,6 +450,7 @@ function HobGoblin:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function HobGoblin:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -425,6 +467,38 @@ function HobGoblin:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function HobGoblin:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function HobGoblin:CheckAndActivateStunnedState(enemyUnit)
     if self.enemyState == 2 then
@@ -549,7 +623,9 @@ local Goblin = {
     stunTimer = 0,
 
     -- Poisoned
-    poisonTimer = 0
+    poisonTimer = 0,
+
+    lastFrameHealth = 0
 }
 Goblin.__index = Goblin
 function Goblin:new(room, xPosition, yPosition)
@@ -570,6 +646,8 @@ function Goblin:new(room, xPosition, yPosition)
 
     goblin.poisonTimer = 0
 
+    goblin.lastFrameHealth = 0
+
     return goblin
 end
 function Goblin:Update(deltaTime, playerPosition)
@@ -582,6 +660,7 @@ function Goblin:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function Goblin:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -598,6 +677,38 @@ function Goblin:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function Goblin:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function Goblin:CheckAndActivateStunnedState(enemyUnit)
     if self.enemyState == 2 then
@@ -718,6 +829,8 @@ local GoblinSapper = {
 
     -- Poisoned
     poisonTimer = 0,
+
+    lastFrameHealth = 0
 }
 GoblinSapper.__index = GoblinSapper
 function GoblinSapper:new(room, xPosition, yPosition)
@@ -734,6 +847,8 @@ function GoblinSapper:new(room, xPosition, yPosition)
 
     goblinSapper.poisonTimer = 0
 
+    goblinSapper.lastFrameHealth = 0
+
     return goblinSapper
 end
 function GoblinSapper:Update(deltaTime, playerPosition)
@@ -746,6 +861,7 @@ function GoblinSapper:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function GoblinSapper:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -762,6 +878,38 @@ function GoblinSapper:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function GoblinSapper:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function GoblinSapper:CheckAndActivateStunnedState(enemyUnit)
     if self.enemyState == 2 then
@@ -848,6 +996,8 @@ local Ooze = {
 
     -- Poisoned
     poisonTimer = 0,
+
+    lastFrameHealth = 0
 }
 Ooze.__index = Ooze
 function Ooze:new(room, xPosition, yPosition)
@@ -865,6 +1015,8 @@ function Ooze:new(room, xPosition, yPosition)
 
     ooze.poisonTimer = 0
 
+    ooze.lastFrameHealth = 0
+
     return ooze
 end
 function Ooze:Update(deltaTime, playerPosition)
@@ -881,6 +1033,7 @@ function Ooze:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function Ooze:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -897,6 +1050,38 @@ function Ooze:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function Ooze:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function Ooze:CheckAndActivateStunnedState(enemyUnit)
     DCEI.RemoveBehavior(self.unit, ENEMY_STUNNED_BEHAVIOUR)
@@ -1042,7 +1227,6 @@ end
 -- #endregion
 
 -- #region Goblin Siege Tower
-
 local GoblinSiegeTower = {
     --Units
     room = nil,
@@ -1066,6 +1250,8 @@ local GoblinSiegeTower = {
 
     -- Poison
     poisonTimer = 0,
+
+    lastFrameHealth = 0
 }
 GoblinSiegeTower.__index = GoblinSiegeTower
 function GoblinSiegeTower:new(room, xPosition, yPosition)
@@ -1090,6 +1276,8 @@ function GoblinSiegeTower:new(room, xPosition, yPosition)
 
     goblinSiegeTower.poisonTimer = 0
 
+    goblinSiegeTower.lastFrameHealth = 0
+
     return goblinSiegeTower
 end
 function GoblinSiegeTower:Update(deltaTime, playerPosition)
@@ -1102,6 +1290,7 @@ function GoblinSiegeTower:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function GoblinSiegeTower:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -1118,6 +1307,38 @@ function GoblinSiegeTower:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function GoblinSiegeTower:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function GoblinSiegeTower:CheckAndActivateStunnedState(enemyUnit)
     if self.enemyState == 2 or self.enemyState == 1 then
@@ -1273,11 +1494,9 @@ end
 function GoblinSiegeTower:ForceSetPosition(position)
     return false
 end
-
 -- #endregion
 
 -- #region Goblin Miner
-
 local GoblinMiner = {
     -- Units
     room = nil,
@@ -1303,6 +1522,8 @@ local GoblinMiner = {
 
     -- Poisoned
     poisonTimer = 0,
+
+    lastFrameHealth = 0
 }
 GoblinMiner.__index = GoblinMiner
 function GoblinMiner:new(room, xPosition, yPosition)
@@ -1329,6 +1550,8 @@ function GoblinMiner:new(room, xPosition, yPosition)
 
     goblinMiner.poisonTimer = 0
 
+    goblinMiner.lastFrameHealth = 0
+
     return goblinMiner
 end
 function GoblinMiner:Update(deltaTime, playerPosition)
@@ -1349,6 +1572,7 @@ function GoblinMiner:Update(deltaTime, playerPosition)
     end
 
     self:UpdatePoisonedState(deltaTime)
+    self:UpdateHealthDisplay()
 end
 function GoblinMiner:UpdatePoisonedState(deltaTime)
     self.poisonTimer = self.poisonTimer - deltaTime
@@ -1365,6 +1589,38 @@ function GoblinMiner:UpdatePoisonedState(deltaTime)
             self.poisonTimer = perk.valueAlt
         end
     end
+end
+function GoblinMiner:UpdateHealthDisplay()
+    local maxHealth = DCEI.GetMaxHealth(self.unit)
+    local currentHealth = DCEI.GetHealthValue(self.unit)
+
+    if maxHealth == currentHealth then
+        self.lastFrameHealth = maxHealth
+        return
+    end
+
+    local healthDiff = self.lastFrameHealth - currentHealth
+    
+    if healthDiff ~= 0 then
+        local position = DCEI.GetUnitPosition3D(self.unit)
+
+        DCEI.ShowFloatingText(
+            position, 
+            tostring(math.floor(healthDiff)), 
+            0.5, 0, 0.5, 
+            {
+                offset = {
+                    up = 1.25,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
+        DCEI.LogMessage("Took Damage")
+    end
+
+    self.lastFrameHealth = currentHealth
 end
 function GoblinMiner:CheckAndActivateStunnedState(enemyUnit)
     if self.enemyState == 4 then
