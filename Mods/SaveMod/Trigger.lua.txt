@@ -5,6 +5,7 @@ local mod = {}
 local ROOM_NAME = "RoomName"
 local ROOM_LEVEL = "RoomLevel"
 local LAST_DIRECTION = "LastDirection"
+local BASE_GOLD = "BaseGold"
 
 function mod.SaveAllMainMapData(roomName, roomLevel, lastDirection)
     DCEI.Save.Set(ROOM_NAME, roomName)
@@ -28,6 +29,11 @@ function mod.SaveMainMapLastDirection(lastDirection)
     DCEI.Save.Commit()
 end
 
+function mod.SaveBaseGold(baseGold)
+    DCEI.Save.Set(BASE_GOLD, baseGold)
+    DCEI.Save.Commit()
+end
+
 function mod.GetAllMainMapData()
     local roomName = DCEI.Save.Get(ROOM_NAME)
     local roomLevel = DCEI.Save.Get(ROOM_LEVEL)
@@ -46,6 +52,10 @@ end
 
 function mod.GetRoomLastDirection()
     return DCEI.Save.Get(LAST_DIRECTION)
+end
+
+function mod.GetBaseGold()
+    return DCEI.Save.Get(BASE_GOLD)
 end
 
 function mod.ClearAllMainMapData()
@@ -116,6 +126,11 @@ function mod.ClearPlayerData(keepRunData)
         DCEI.Save.Set(PLAYER_GOLD, nil)
     end
     
+    DCEI.Save.Commit()
+end
+
+function mod.ForceClearPlayerGold()
+    DCEI.Save.Set(PLAYER_GOLD, nil)
     DCEI.Save.Commit()
 end
 
@@ -377,6 +392,7 @@ end
 
 function mod.ClearAllData()
     mod.ClearAllMainMapData()
+    mod.SaveBaseGold(nil)
     mod.ClearAllInventoryData()
     mod.ClearAllInventoryIconData()
     mod.ClearItemDrops()

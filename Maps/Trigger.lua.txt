@@ -279,6 +279,16 @@ function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spaw
     else
         m_miniMap:UpdateMiniMap()
     end
+
+    if m_isBeginningRoom then
+        local goldAmount = SaveMod.GetBaseGold()
+
+        if goldAmount == nil then
+            goldAmount = 0
+        end
+
+        m_player:ForceSetPlayerGold(goldAmount)
+    end
     
     -- Add Triggers At The End...
     DCEI.TriggerAddJoystickEvent(
@@ -544,6 +554,10 @@ function HandleBehaviourAdded()
             m_nextRoomTransitionActive = true
             m_sceneTransitionActive = true
             m_player:HidePlayerUI()
+
+            local playerGold = m_player:GetPlayerGold()
+            SaveMod.SaveBaseGold(playerGold)
+            m_player:ForceSetPlayerGold(0)
 
             SaveNextRoomData()
             m_fader:StartFadeIn(
@@ -969,6 +983,16 @@ function UpdateCollisionWithExitDoor()
 
     m_roomLevel = m_roomLevel + 1
     if m_roomLevel > ROOM_LEVEL_MAX then
+        local goldAmount = m_player:GetPlayerGold()
+        local baseGold = SaveMod.GetBaseGold()
+
+        if baseGold ~= nil then
+            goldAmount = goldAmount + baseGold
+        end
+
+        SaveMod.SaveBaseGold(goldAmount)
+        SaveMod.ForceClearPlayerGold()
+
         m_roomGenerator:ClearSaveData()
         m_perkDisplay:Clear()
 
@@ -1408,7 +1432,6 @@ function HandleCharacterSwitch()
 end
 
 function HandleGoldButtonClicked()
-    -- TODO: Remove this later on...
     if m_player ~= nil then
         m_player:AddGold(10)
         local maxHealth = DCEI.GetMaxHealth(m_player:GetPlayerUnit())
@@ -1730,6 +1753,10 @@ function CheckAndSpawnPerks()
 end
 
 function CheckAndActivatePerkRoom()
+    if m_isBeginningRoom then
+        return
+    end
+
     local roomName = SaveMod.GetRoomName()
 
     if RoomMod.IsSecretRoom(roomName) and not m_roomGenerator.challengeRoomCleared then

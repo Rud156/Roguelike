@@ -733,6 +733,9 @@ function Player:UseGold(goldAmount)
 
     return false
 end
+function Player:ForceSetPlayerGold(goldAmount)
+    self.playerGoldAmount = goldAmount
+end
 function Player:GetPlayerGold()
     return self.playerGoldAmount
 end
