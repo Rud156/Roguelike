@@ -694,7 +694,8 @@
             "components": {
                 "unitStats": {
                     "immortal": true,
-                    "selectable": false
+                    "selectable": false,
+                    "ignoreCollision": true
                 },
                 "behavior": {
                     "behaviorType": 0
