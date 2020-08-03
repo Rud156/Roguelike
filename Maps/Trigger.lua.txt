@@ -1246,25 +1246,28 @@ end
 function HandleDashTimerEnded()
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
 
-    if m_roomEnemies ~= nil then
-        -- Forceful Landing
-        local hasForcefulLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.ForcefulLanding)
-        if hasForcefulLanding then
-            local value = PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].value
+    
+    -- Forceful Landing
+    local hasForcefulLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.ForcefulLanding)
+    if hasForcefulLanding then
+        local value = PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].value
 
+        if m_roomEnemies ~= nil then
             m_roomEnemies:ForceStunEnemies(value, playerPosition, PlayerMod.PlayerLandStunDistance)
-            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].valueAlt)
         end
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].valueAlt)
+    end
 
-        -- Aggressive Landing
-        local hasAgressiveLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.AggressiveLanding)
-        if hasAgressiveLanding then
-            local value = PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].value
-            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].valueAlt)
-            
+    -- Aggressive Landing
+    local hasAgressiveLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.AggressiveLanding)
+    if hasAgressiveLanding then
+        local value = PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].value
+        DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].valueAlt)
+        
+        if m_roomEnemies ~= nil then
             local enemies = m_roomEnemies:GetRoomEnemies()
             for _, enemy in ipairs(enemies) do
-                if enemy:IsActive() then
+                if enemy:IsActive() and ArcadeCore.UnitIsAlive(enemy:GetMainUnit()) then
                     local position = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
                     local distanceFromPlayer = ExtensionFunction.VectorDistance(position, playerPosition)
 
