@@ -1246,7 +1246,6 @@ end
 function HandleDashTimerEnded()
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
 
-    
     -- Forceful Landing
     local hasForcefulLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.ForcefulLanding)
     if hasForcefulLanding then
