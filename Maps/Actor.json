@@ -3712,7 +3712,7 @@
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_event_buff_blue"
+                    "name": "vfx_drow_mage_damage_aura_buff"
                 },
                 "modelScale": 2
             }
@@ -3721,7 +3721,7 @@
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_chosen_weapon_impact"
+                    "name": "vfx_flamethrower_billow_sweep_launch"
                 },
                 "events": [
                     {
@@ -3801,7 +3801,7 @@
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_arcade_missile_impact_red"
+                    "name": "vfx_chosen_smite_impact_aoe"
                 }
             }
         },
@@ -3936,7 +3936,7 @@
             "modelActor": {
                 "resource": {
                     "type": "ParticleAnimation",
-                    "name": "vfx_alchemist_transmute_impact_aoe"
+                    "name": "vfx_dragoon_whirlwind"
                 },
                 "events": [
                     {
@@ -3950,7 +3950,7 @@
                             {
                                 "createTimer": {
                                     "name": "FailsafeRemove",
-                                    "duration": 5
+                                    "duration": 0.2
                                 }
                             }
                         ]
