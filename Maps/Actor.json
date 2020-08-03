@@ -3809,7 +3809,7 @@
             "modelActor": {
                 "resource": {
                     "type": "Sound",
-                    "name": "coralwarden_pufferfish_explode"
+                    "name": "ship_weapon_impact"
                 },
                 "events": [
                     {
