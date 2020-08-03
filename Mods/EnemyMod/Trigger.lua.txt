@@ -207,7 +207,7 @@ function GoblinChef:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,
@@ -485,7 +485,7 @@ function HobGoblin:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,
@@ -695,7 +695,7 @@ function Goblin:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,
@@ -896,7 +896,7 @@ function GoblinSapper:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,
@@ -1068,7 +1068,7 @@ function Ooze:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,
@@ -1325,7 +1325,7 @@ function GoblinSiegeTower:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,
@@ -1607,7 +1607,7 @@ function GoblinMiner:UpdateHealthDisplay()
         DCEI.ShowFloatingText(
             position, 
             tostring(math.floor(healthDiff)), 
-            0.5, 0, 0.5, 
+            0.5, 1, 0.5, 
             {
                 offset = {
                     up = 1.25,

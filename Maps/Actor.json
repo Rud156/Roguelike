@@ -359,7 +359,8 @@
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect",
-                    "_Enemy_Spawn_Gold"
+                    "_Enemy_Spawn_Gold",
+                    "_Enemy_Poisoned"
                 ],
                 "hostSites": {
                     "Attack Host Site": {
@@ -371,6 +372,11 @@
                     "StunnedEffectSite": {
                         "offset": {
                             "up": 1
+                        }
+                    },
+                    "SiteCenter": {
+                        "offset": {
+                            "up": 0.5
                         }
                     }
                 },
@@ -435,12 +441,18 @@
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect",
-                    "_Enemy_Spawn_Gold"
+                    "_Enemy_Spawn_Gold",
+                    "_Enemy_Poisoned"
                 ],
                 "hostSites": {
                     "StunnedEffectSite": {
                         "offset": {
                             "up": 1
+                        }
+                    },
+                    "SiteCenter": {
+                        "offset": {
+                            "up": 0.5
                         }
                     }
                 },
@@ -629,7 +641,8 @@
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit DeathAnimation Decay",
                     "_Enemy_Damage_Effect",
-                    "_Enemy_Stunned_Effect"
+                    "_Enemy_Stunned_Effect",
+                    "_Enemy_Poisoned"
                 ],
                 "hostSites": {
                     "SiteCenter": {
@@ -768,7 +781,8 @@
                     "Events StandardUnit DeathAnimation Decay",
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
-                    "_Enemy_Stunned_Effect"
+                    "_Enemy_Stunned_Effect",
+                    "_Enemy_Poisoned"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -785,6 +799,11 @@
                     "StunnedEffectSite": {
                         "offset": {
                             "up": 1
+                        }
+                    },
+                    "SiteCenter": {
+                        "offset": {
+                            "up": 0.5
                         }
                     }
                 },
@@ -883,7 +902,8 @@
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect",
-                    "_Enemy_Spawn_Gold"
+                    "_Enemy_Spawn_Gold",
+                    "_Enemy_Poisoned"
                 ],
                 "hostSites": {
                     "Attack Host Site": {
@@ -895,6 +915,11 @@
                     "StunnedEffectSite": {
                         "offset": {
                             "up": 1
+                        }
+                    },
+                    "SiteCenter": {
+                        "offset": {
+                            "up": 0.5
                         }
                     }
                 },
@@ -998,8 +1023,16 @@
                 "eventMacros": [
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
-                    "_Enemy_Spawn_Gold"
+                    "_Enemy_Spawn_Gold",
+                    "_Enemy_Poisoned"
                 ],
+                "hostSites": {
+                    "SiteCenter": {
+                        "offset": {
+                            "up": 0.3
+                        }
+                    }
+                },
                 "modelScale": 1.2
             }
         },
@@ -2223,7 +2256,13 @@
                     "_PlayerCharacter_DeadEffect",
                     "_PlayerCharacter_Enemy_Ooze_Slow",
                     "_PlayerCharacter_Catalyst_Potion",
-                    "_PlayerCharacter_CollectGold"
+                    "_PlayerCharacter_CollectGold",
+                    "_PlayerCharacter_KillerInstinct",
+                    "_PlayerCharacter_Cruelty",
+                    "_PlayerCharacter_AgressiveJump",
+                    "_PlayerCharacter_AdrenalineRush",
+                    "_PlayerCharacter_Redemption",
+                    "_PlayerCharacter_Deflection"
                 ],
                 "hostSites": {
                     "Melee Attack Host Site": {
@@ -2379,7 +2418,13 @@
                     "_PlayerCharacter_DeadEffect",
                     "_PlayerCharacter_Enemy_Ooze_Slow",
                     "_PlayerCharacter_Catalyst_Potion",
-                    "_PlayerCharacter_CollectGold"
+                    "_PlayerCharacter_CollectGold",
+                    "_PlayerCharacter_KillerInstinct",
+                    "_PlayerCharacter_Cruelty",
+                    "_PlayerCharacter_AgressiveJump",
+                    "_PlayerCharacter_AdrenalineRush",
+                    "_PlayerCharacter_Redemption",
+                    "_PlayerCharacter_Deflection"
                 ],
                 "hostSites": {
                     "SiteHit": {
@@ -3553,7 +3598,8 @@
                     "_Enemy_Spawn",
                     "_Enemy_Damage_Effect",
                     "_Enemy_Stunned_Effect",
-                    "_Enemy_Spawn_Gold"
+                    "_Enemy_Spawn_Gold",
+                    "_Enemy_Poisoned"
                 ],
                 "hostSites": {
                     "SiteAttack": {
@@ -3564,6 +3610,11 @@
                     "StunnedEffectSite": {
                         "offset": {
                             "up": 1
+                        }
+                    },
+                    "SiteCenter": {
+                        "offset": {
+                            "up": 0.5
                         }
                     }
                 },
@@ -3646,6 +3697,287 @@
                     "type": "GpuAnimation",
                     "name": "chest_sliver"
                 }
+            }
+        },
+        "_FX_Enemy_Poisoned": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_dryad_pollen_debuff"
+                },
+                "modelScale": 1.5
+            }
+        },
+        "_FX_PlayerCharacter_KillerInstinct": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_event_buff_blue"
+                },
+                "modelScale": 2
+            }
+        },
+        "_FX_PlayerCharacter_Cruelty": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_weapon_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.2
+            }
+        },
+        "_SFX_PlayerCharacter_Cruelty": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "flamethrower_death_explode"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_PlayerCharacter_AgressiveJump": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arcade_missile_impact_red"
+                }
+            }
+        },
+        "_SFX_PlayerCharacter_AgressiveJump": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "coralwarden_pufferfish_explode"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_PlayerCharacter_AdrenalineRush": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_lighthouse_heal_launch"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_PlayerCharacter_Redemption": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_boarbarian_caster_heal_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.2
+            }
+        },
+        "_FX_PlayerCharacter_Deflection": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_alchemist_transmute_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
             }
         }
     },
@@ -4127,6 +4459,193 @@
                         {
                             "create": {
                                 "actor": "_SFX_Enemy_Gold_Drop"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Enemy_Poisoned": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_Perks_PoisonOrb"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_Enemy_Poisoned",
+                                "hostSite": "UnitCenter"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_Perks_PoisonOrb"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_Enemy_Poisoned"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_KillerInstinct": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_KillerInstinct"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_PlayerCharacter_KillerInstinct",
+                                "hostSite": "UnitCenter"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "behaviorOff": {
+                            "behavior": "_PlayerCharacter_KillerInstinct"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {
+                                "actor": "_FX_PlayerCharacter_KillerInstinct"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Cruelty": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_Cruelty"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "createTimer": {
+                                "name": "DelayedEffect",
+                                "duration": 0.3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "DelayedEffect"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_PlayerCharacter_Cruelty",
+                                "hostSite": "UnitCenter"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_PlayerCharacter_Cruelty"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_AgressiveJump": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_AgressiveJump"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_PlayerCharacter_AgressiveJump",
+                                "hostSiteOperations": [
+                                    "SOp HoldPosition"
+                                ]
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "_SFX_PlayerCharacter_AgressiveJump"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_AdrenalineRush": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_AdrenalineRush"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_PlayerCharacter_AdrenalineRush",
+                                "hostSite": "UnitCenter"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Redemption": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_Redemption"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_PlayerCharacter_Redemption",
+                                "hostSite": "UnitCenter"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_PlayerCharacter_Deflection": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "_PlayerCharacter_Deflection"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "_FX_PlayerCharacter_Deflection"
                             }
                         }
                     ]

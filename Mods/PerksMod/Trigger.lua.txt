@@ -43,7 +43,8 @@ local PERKS = {
         perkImage = "icon_reinforce_skill_spearthrow",
         perkName = "Adenaline Rush",
         perkDescription = "Killing enemies will instantly regenerate 1 stamina, cooldown 1 second",
-        value = 1
+        value = 1,
+        valueAlt = "_PlayerCharacter_AdrenalineRush"
     },
     KillerInstinct = {
         perkImage = "icon_chosen_skill_smite",
@@ -55,25 +56,29 @@ local PERKS = {
         perkImage = "icon_skill_dragoon_whirlwind",
         perkName = "Deflection",
         perkDescription = "When Dwarf Smith takes damage, deflection 20% of that damage to his surrounding enemies",
-        value = 0.2
+        value = 0.2,
+        valueAlt = "_PlayerCharacter_Deflection"
     },
     Redemption = {
         perkImage = "icon_skill_charm",
         perkName = "Redemption",
         perkDescription = "When Dwarf Smith kills an enemy during the invulnerability-state heal 5% of the max HP",
-        value = 0.05
+        value = 0.05,
+        valueAlt = "_PlayerCharacter_Redemption"
     },
     ForcefulLanding = {
         perkImage = "icon_icemage_skill_supernova",
         perkName = "Forceful Landing",
         perkDescription = "Dwarf Smith’s jump/leap will stun the surrounding enemies for 0.5 seconds upon landing",
-        value = 0.5
+        value = 0.5,
+        valueAlt = "_PlayerCharacter_AgressiveJump"
     },
     AggressiveLanding = {
         perkImage = "icon_blastrune_skill_blastforce",
         perkName = "Aggressive Landing",
         perkDescription = "Dwarf Smith’s jump/leap will deal 3 damage to the surrounding enemies upon landing",
-        value = 3
+        value = 3,
+        valueAlt = "_PlayerCharacter_AgressiveJump"
     },
     Toughness = {
         perkImage = "icon_skill_vigor",

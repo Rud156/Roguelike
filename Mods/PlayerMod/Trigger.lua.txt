@@ -568,6 +568,20 @@ function Player:LaunchPlayerMeleeHeavyAttack(enemy)
     end
 
     if self.playerStaminaAmount < heavyAttackStamina then
+        local position3d = DCEI.GetUnitPosition3D(self.playerUnit)
+        DCEI.ShowFloatingText(
+            position3d, 
+            "<color=orange><size=75%>Not Enough Stamina</size></color>",
+            0.5, 1, 0.5, 
+            {
+                offset = {
+                    up = 1.5,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
         DCEI.LogMessage("Not enough stamina for Melee Heavy Attack")
         return
     end
@@ -638,6 +652,20 @@ function Player:LaunchPlayerRangedHeavyAttack(enemy)
     end
 
     if self.playerStaminaAmount < heavyAttackStamina then
+        local position3d = DCEI.GetUnitPosition3D(self.playerUnit)
+        DCEI.ShowFloatingText(
+            position3d, 
+            "<color=orange><size=75%>Not Enough Stamina</size></color>",
+            0.5, 1, 0.5, 
+            {
+                offset = {
+                    up = 1.5,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
         DCEI.LogMessage("Not enough stamina for Ranged Heavy Attack")
         return
     end
@@ -688,6 +716,20 @@ function Player:MakePlayerDash()
 
     local playerStamina = self.playerStaminaAmount
     if playerStamina < PLAYER_DASH_STAMINA then
+        local position3d = DCEI.GetUnitPosition3D(self.playerUnit)
+        DCEI.ShowFloatingText(
+            position3d, 
+            "<color=orange><size=75%>Not Enough Stamina</size></color>",
+            0.5, 1, 0.5, 
+            {
+                offset = {
+                    up = 1.5,
+                    right = 0,
+                    front = 0
+                }
+            }
+        )
+
         DCEI.LogMessage("Not enough stamina for dash")
         return
     end
@@ -755,6 +797,7 @@ function Player:CheckAdenalineRush()
         end
 
         self.playerStaminaRegenTimer = self.playerStaminaRegenTimer - value
+        DCEI.ApplyBehavior(self.playerUnit, mod.Perks[mod.PerkNames.AdenalineRush].valueAlt)
     end
 end
 function Player:Destroy()

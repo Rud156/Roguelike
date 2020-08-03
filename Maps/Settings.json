@@ -134,7 +134,11 @@
             "_Collectible_Catalyst_Potion",
             "_PlayerCharacter_OutOfCombat_Speed",
             "_PlayerCharacter_CollectGold",
-            "_Enemy_Knockback"
+            "_Enemy_Knockback",
+            "_PlayerCharacter_AgressiveJump",
+            "_PlayerCharacter_AdrenalineRush",
+            "_PlayerCharacter_Redemption",
+            "_PlayerCharacter_Deflection"
         ],
         "usedAtlasAssets": [
             "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",

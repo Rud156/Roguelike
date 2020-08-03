@@ -511,6 +511,7 @@ function HandleUnitDied()
                 local healthIncrease = maxHealth * value
 
                 DCEI.AddHealth(m_player:GetPlayerUnit(), healthIncrease)
+                DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.Redemption].valueAlt)
             end
 
             -- Adenaline Rush
@@ -1209,6 +1210,8 @@ function UpdatePlayerHealth(deltaTime)
                     end
                 end
             end
+
+            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.Deflection].valueAlt)
         end
 
         -- Health Popup
@@ -1248,13 +1251,16 @@ function HandleDashTimerEnded()
         local hasForcefulLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.ForcefulLanding)
         if hasForcefulLanding then
             local value = PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].value
+
             m_roomEnemies:ForceStunEnemies(value, playerPosition, PlayerMod.PlayerLandStunDistance)
+            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.ForcefulLanding].valueAlt)
         end
 
         -- Aggressive Landing
         local hasAgressiveLanding = m_perkDisplay:HasPerk(PerksMod.PerkNames.AggressiveLanding)
         if hasAgressiveLanding then
             local value = PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].value
+            DCEI.ApplyBehavior(m_player:GetPlayerUnit(), PerksMod.Perks[PerksMod.PerkNames.AggressiveLanding].valueAlt)
             
             local enemies = m_roomEnemies:GetRoomEnemies()
             for _, enemy in ipairs(enemies) do

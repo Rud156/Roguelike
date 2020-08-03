@@ -55,14 +55,14 @@ local COLLECTIBLES_TABLE = {
 local COLLECTIBLES_LIST = {
     "_Collectible_Speed_Potion",
     "_Collectible_Potion",
-    "_Collectible_Potion",
+    "_Collectible_Bomb",
     "_Collectible_Catalyst_Potion"
 }
 
 local COLLECTIBLE_NAMES = {
     SpeedPotion = "_Collectible_Speed_Potion",
     HealthPotion = "_Collectible_Potion",
-    Bomb = "_Collectible_Potion",
+    Bomb = "_Collectible_Bomb",
     CatalystPotion = "_Collectible_Catalyst_Potion"
 }
 

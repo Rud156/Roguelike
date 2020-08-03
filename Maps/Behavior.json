@@ -321,6 +321,19 @@
                     "suppressTurning": true
                 }
             }
+        },
+        "_PlayerCharacter_AgressiveJump": {
+            "maxStackCount": 1,
+            "duration": 0.1
+        },
+        "_PlayerCharacter_AdrenalineRush": {
+            "duration": 0.1
+        },
+        "_PlayerCharacter_Redemption": {
+            "duration": 0.1
+        },
+        "_PlayerCharacter_Deflection": {
+            "duration": 0.01
         }
     }
 }
