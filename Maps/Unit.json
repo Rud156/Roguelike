@@ -901,7 +901,7 @@
             "components": {
                 "unitStats": {
                     "radius": 0.125,
-                    "selectable": true
+                    "selectable": false
                 },
                 "health": {
                     "maxHealth": 10

@@ -85,7 +85,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
+                    "Event Destroy Immediate",
+                    "_Collectible_Chest_Open"
                 ]
             }
         },
@@ -197,7 +198,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
+                    "Event Destroy Immediate",
+                    "_Collectible_Chest_Open"
                 ]
             }
         },
@@ -213,7 +215,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
+                    "Event Destroy Immediate",
+                    "_Collectible_Chest_Open"
                 ]
             }
         },
@@ -229,7 +232,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
+                    "Event Destroy Immediate",
+                    "_Collectible_Chest_Open"
                 ]
             }
         },
@@ -3391,7 +3395,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
+                    "Event Destroy Immediate",
+                    "_Collectible_Chest_Open"
                 ]
             }
         },
@@ -3445,7 +3450,8 @@
                     "Events StandardUnit AttackAnimation",
                     "Events StandardUnit DeathAnimation",
                     "Events StandardUnit Selectable",
-                    "Event Destroy Immediate"
+                    "Event Destroy Immediate",
+                    "_Collectible_Chest_Open"
                 ]
             }
         },
@@ -4775,6 +4781,58 @@
                         {
                             "create": {
                                 "actor": "_FX_PlayerCharacter_Deflection"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Collectible_Chest_Open": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitSpawn": {}
+                    },
+                    "actions": [
+                        {
+                            "createTimer": {
+                                "name": "StartChestOpen",
+                                "duration": 1
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "PauseChestOpen"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "pauseAnimation": {
+                                "clipId": 8
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "StartChestOpen"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "playAnimationWithDuration": {
+                                "clipId": 8,
+                                "clipDuration": 0.6
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "PauseChestOpen",
+                                "duration": 0.55
                             }
                         }
                     ]

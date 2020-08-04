@@ -223,6 +223,7 @@ local m_skillDisplay
 -- Perks
 local m_perkDisplay
 local m_perkSelecting = false
+local m_perkChest
 -- Room Coins
 local m_droppedCoins = {}
 local m_coinTimer = 0
@@ -381,6 +382,7 @@ function Update()
     end
 
     UpdateCoinsCollection(GAME_LOOP_RATE)
+    UpdatePerkChestCollection()
     UpdatePlayerHealth(GAME_LOOP_RATE) -- Update Health first otherwise the Player will have current health as LastFramePlayerHealth
     
     if m_player ~= nil then
@@ -664,10 +666,7 @@ function HandleUnitSelected()
     DCEI.LogMessage("Selected Unit: " .. unitName)
 
     -- Add Collectibles to Inventory if successful. Then destroy the unit
-    if unitName == PerksMod.PerkChest then
-        HandlePerkChestClicked(unit)
-
-    elseif string.match(unitName, InventoryCollectibleBaseString) then
+    if string.match(unitName, InventoryCollectibleBaseString) then
         HandleInventoryUnitClicked(unit, unitName)
 
     elseif string.match(unitName, SkillTreeMod.MerchantMale) or string.match(unitName, SkillTreeMod.MerchantFemale) then
@@ -1798,7 +1797,7 @@ function CheckAndActivatePerkRoom()
     if RoomMod.IsSecretRoom(roomName) and not m_roomGenerator.challengeRoomCleared then
         local spawnUnit = DCEI.FindUnit(SPAWN_MARKER_UNIT)
         local spawnPosition = DCEI.GetUnitPosition2D(spawnUnit)
-        DCEI.CreateUnit(1, 1, PerksMod.PerkChest, spawnPosition.x, spawnPosition.y)
+        m_perkChest = DCEI.CreateUnit(1, 1, PerksMod.PerkChest, spawnPosition.x, spawnPosition.y)
     end
 end
 
@@ -1829,19 +1828,22 @@ function HandlePerkActivatedCallback(perkName)
     end
 end
 
-function HandlePerkChestClicked(unit)
-    local unitPosition = DCEI.GetUnitPosition2D(unit)
+function UpdatePerkChestCollection()
+    if m_perkChest == nil then
+        return
+    end
+
+    local unitPosition = DCEI.GetUnitPosition2D(m_perkChest)
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
 
     local distance = ExtensionFunction.VectorDistance(unitPosition, playerPosition)
     if distance > PerksMod.PerkChestDistance or m_perkSelecting then
-        DCEI.LogError("Player Too Far From Chest!!!")
         return
     end
 
     if m_perkDisplay ~= nil then
         m_perkSelecting = true
-        DCEI.CastAbilityAtPosition(PerksMod.PerkChestOpen, unit, unitPosition.x, unitPosition.y)
+        DCEI.CastAbilityAtPosition(PerksMod.PerkChestOpen, m_perkChest, unitPosition.x, unitPosition.y)
 
         DCEI.TriggerAddTimerEventElapsed(
             function()
@@ -1852,7 +1854,8 @@ function HandlePerkChestClicked(unit)
 
         DCEI.TriggerAddTimerEventElapsed(
             function()
-                DCEI.RemoveUnit(unit)
+                DCEI.RemoveUnit(m_perkChest)
+                m_perkChest = nil
             end,
             PerksMod.PerkChestWaitTime + PerksMod.PerkChestDestroyTime
         )
