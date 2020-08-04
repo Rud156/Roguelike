@@ -921,6 +921,9 @@
                 }
             },
             "references": {
+                "abilityList": [
+                    "_Collectible_PerksChest_Open"
+                ],
                 "behaviorList": [
                     "_Unit_Invincible"
                 ]

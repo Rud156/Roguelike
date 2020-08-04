@@ -3696,7 +3696,58 @@
                 "resource": {
                     "type": "GpuAnimation",
                     "name": "chest_sliver"
-                }
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitAbilityStart": {
+                                "ability": "_Collectible_PerksChest_Open"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 4
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_FX_Collectible_PerksChest_Open"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "_SFX_Collectible_PerksChest_Open"
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "PauseOpenAnim",
+                                    "duration": 0.55
+                                }
+                            },
+                            {
+                                "log": {
+                                    "message": "Playing Chest Open Animation"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "PauseOpenAnim"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         },
         "_FX_Enemy_Poisoned": {
@@ -3970,6 +4021,84 @@
                             "onTimer": {
                                 "name": "FailsafeRemove"
                             }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_FX_Collectible_PerksChest_Open": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_blindingflash_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "_SFX_Collectible_PerksChest_Open": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "hero_chosen_blindingflash_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
                         },
                         "actions": [
                             {

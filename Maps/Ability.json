@@ -282,6 +282,16 @@
                 "finishTime": 0.3,
                 "range": 1
             }
+        },
+        "_Collectible_PerksChest_Open": {
+            "abilityType": 2,
+            "castType": 1,
+            "targetRangeMode": 0,
+            "effect": "DoNothing",
+            "stats": {
+                "prepTime": 0.3,
+                "finishTime": 0.3
+            }
         }
     }
 }

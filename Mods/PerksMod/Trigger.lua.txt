@@ -114,6 +114,12 @@ local PERK_NAMES = {
 }
 
 local PERK_CHEST = "_Collectible_Perk"
+local PERK_CHEST_OPEN = "_Collectible_PerksChest_Open"
+local PERK_CHEST_DISTANCE = 2
+local PERK_CHEST_ANIM_WAITTIME = 0.33
+local PERK_CHEST_DESTROY_TIME = 0.55
+
+local PERK_DELAYED_ENEMY_SPAWN = 1.5
 
 local PerkIconDisplay = {
     perkName = "",
@@ -384,7 +390,10 @@ function PerkDisplay:HandleButtonClicked(index, perkName)
         2
     )
 end
-function PerkDisplay:ShowRandomPerks(player)
+function PerkDisplay:ShowRandomPerks(player, roomGenerator)
+    local lastActiveSeed = roomGenerator:GetRandomSeed()
+    math.randomseed(os.time())
+    
     local notActivePerks = {}
 
     for _, perk in pairs(PERK_NAMES) do
@@ -418,6 +427,7 @@ function PerkDisplay:ShowRandomPerks(player)
         DCEI.SetText(bottomButton.perkNameDisplay, perk.perkName)
     end
 
+    math.randomseed(lastActiveSeed)
     self:DisplayPerks(player)
 end
 function PerkDisplay:DisplayPerks(player)
@@ -437,6 +447,9 @@ function PerkDisplay:DisplayPerks(player)
     self.player:HidePlayerUI()
     
     DCEI.HideJoystick(0)
+    for i = 0, 2 do
+        DCEI.HideJoystickButton(i)
+    end
 end
 function PerkDisplay:HidePerks()
     DCEI.SetActive(self.mainFrame, false)
@@ -446,6 +459,9 @@ function PerkDisplay:HidePerks()
         self.player = nil
     end
     DCEI.ShowJoystick(0)
+    for i = 0, 2 do
+        DCEI.ShowJoystickButton(i)
+    end
 end
 function PerkDisplay:EnableButtons()
     for _, button in ipairs(self.topLayerButtons) do
@@ -554,8 +570,15 @@ end
 
 mod.Perks = PERKS
 mod.PerkNames = PERK_NAMES
-mod.PerkChest = PERK_CHEST
 mod.PerkDisplay = PerkDisplay
+
+mod.PerkChest = PERK_CHEST
+mod.PerkChestOpen = PERK_CHEST_OPEN
+mod.PerkChestDistance = PERK_CHEST_DISTANCE
+mod.PerkChestDestroyTime = PERK_CHEST_DESTROY_TIME
+mod.PerkChestWaitTime = PERK_CHEST_ANIM_WAITTIME
+
+mod.PerkDelayedEnemySpawn = PERK_DELAYED_ENEMY_SPAWN
 
 mod.SavePerks = nil
 mod.LoadPerks = nil

@@ -1483,7 +1483,7 @@ end
 
 function HandlePerkButtonClicked()
     if m_perkDisplay ~= nil then
-        m_perkDisplay:ShowRandomPerks(m_player)
+        m_perkDisplay:ShowRandomPerks(m_player, m_roomGenerator)
     end
 end
 
@@ -1753,7 +1753,7 @@ function CheckAndSpawnPerks()
     end
 
     if not m_isBeginningRoom and not m_perkDisplay:GetDisplayedInRound() then
-        m_perkDisplay:ShowRandomPerks(m_player)
+        m_perkDisplay:ShowRandomPerks(m_player, m_roomGenerator)
     end
 
     if m_player == nil then
@@ -1820,17 +1820,42 @@ function HandlePerkActivatedCallback(perkName)
     end
 
     if m_perkSelecting then
-        ActivateChallengeRoom()
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                ActivateChallengeRoom()
+            end,
+            PerksMod.PerkDelayedEnemySpawn
+        )
     end
 end
 
 function HandlePerkChestClicked(unit)
+    local unitPosition = DCEI.GetUnitPosition2D(unit)
+    local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
+
+    local distance = ExtensionFunction.VectorDistance(unitPosition, playerPosition)
+    if distance > PerksMod.PerkChestDistance or m_perkSelecting then
+        DCEI.LogError("Player Too Far From Chest!!!")
+        return
+    end
+
     if m_perkDisplay ~= nil then
-        m_perkDisplay:ShowRandomPerks(m_player)
-        DCEI.RemoveUnit(unit)
-
         m_perkSelecting = true
+        DCEI.CastAbilityAtPosition(PerksMod.PerkChestOpen, unit, unitPosition.x, unitPosition.y)
 
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                m_perkDisplay:ShowRandomPerks(m_player, m_roomGenerator)
+            end,
+            PerksMod.PerkChestWaitTime
+        )
+
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                DCEI.RemoveUnit(unit)
+            end,
+            PerksMod.PerkChestWaitTime + PerksMod.PerkChestDestroyTime
+        )
     else
         DCEI.LogError("Perk Display Not Initialized!!!")
     end
