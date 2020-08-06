@@ -213,8 +213,6 @@ local m_miniMap
 local m_inventory
 local m_collectiblesUi
 local m_inventoryIconDisplay
--- Random
-local m_randomSeed
 -- Scene Transition
 local m_fader
 local m_sceneTransitionActive = false
@@ -231,9 +229,8 @@ local m_coinTimer = 0
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
     local randomSeed = os.time()
-    DCEI.LogMessage("Random Seed: " .. randomSeed)
+    DCEI.LogMessage("Random Seed General: " .. randomSeed)
     math.randomseed(randomSeed)
-    m_randomSeed = randomSeed
 
     m_leftSpawn = spawnPositionLeft
     m_rightSpawn = spawnPositionRight
@@ -698,16 +695,13 @@ function SpawnPlayerAndSetPosition()
     if roomType == nil then -- This should be the beginning room
         DCEI.LogMessage("Beginning Room. Generating Rooms")
 
-        m_roomGenerator = RoomGenerator:new(m_randomSeed, m_roomLevel)
+        m_roomGenerator = RoomGenerator:new(m_roomLevel)
         SkillUnlockedCallback(SkillTreeMod.SkillNames.Preplan)
         m_isBeginningRoom = true
     else
         DCEI.LogMessage("Loading Old Room Data")
 
         m_roomGenerator = RoomGenerator:LoadRoomStructure()
-        m_randomSeed = m_roomGenerator:GetRandomSeed()
-
-        math.randomseed(m_randomSeed)
         m_isBeginningRoom = false
     end
     -- Load/Generate Room Data
@@ -1006,11 +1000,7 @@ function UpdateCollisionWithExitDoor()
         m_roomGenerator:ClearSaveData()
         SaveMod.ClearItemDrops()
         
-        local randomSeed = os.time()
-        math.randomseed(randomSeed)
-        m_randomSeed = randomSeed
-        
-        m_roomGenerator = RoomGenerator:new(randomSeed, m_roomLevel)
+        m_roomGenerator = RoomGenerator:new(m_roomLevel)
         SkillUnlockedCallback(SkillTreeMod.SkillNames.Preplan)
         m_roomGenerator:SaveRoomStructure()
         
@@ -1602,7 +1592,6 @@ function HandleInventoryItemDropped(itemName, inventorySlot)
 
     DropInventoryItemToWorld(itemName)
 
-    RemoveInventoryItemBehaviour(itemName)
     inventorySlot:DropInventoryItem()
 end
 
@@ -1677,7 +1666,6 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
     else
         DropInventoryItemToWorld(itemName)
 
-        RemoveInventoryItemBehaviour(itemName)
         inventorySlot:DropInventoryItem()
     end
 end

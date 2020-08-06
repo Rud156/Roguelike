@@ -391,9 +391,6 @@ function PerkDisplay:HandleButtonClicked(index, perkName)
     )
 end
 function PerkDisplay:ShowRandomPerks(player, roomGenerator)
-    local lastActiveSeed = roomGenerator:GetRandomSeed()
-    math.randomseed(os.time())
-    
     local notActivePerks = {}
 
     for _, perk in pairs(PERK_NAMES) do
@@ -427,7 +424,6 @@ function PerkDisplay:ShowRandomPerks(player, roomGenerator)
         DCEI.SetText(bottomButton.perkNameDisplay, perk.perkName)
     end
 
-    math.randomseed(lastActiveSeed)
     self:DisplayPerks(player)
 end
 function PerkDisplay:DisplayPerks(player)

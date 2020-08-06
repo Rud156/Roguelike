@@ -73,8 +73,8 @@ local COLLECTIBLE_DROPPED_BEHAVIOUR = "_Collectible_Dropped"
 
 local MAX_TIMER_SLOTS = 10
 
-local INVENTORY_BASE_COUNT = 3
-local INVENTORY_TOTAL_COUNT = 4
+local INVENTORY_BASE_COUNT = 2
+local INVENTORY_TOTAL_COUNT = 3
 
 -- Item  Type
 -- -1: Empty

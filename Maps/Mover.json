@@ -62,7 +62,8 @@
                 "flightTime": 0.5,
                 "gravity": 12
             },
-            "noRotation": true
+            "noRotation": true,
+            "stayOnNavMesh": false
         },
         "_CoinCollect": {
             "ballistic": {

@@ -1036,6 +1036,10 @@ function Ooze:Update(deltaTime, playerPosition)
     self:UpdateHealthDisplay()
 end
 function Ooze:UpdatePoisonedState(deltaTime)
+    if self.enemyState == 3 then
+        return
+    end
+
     self.poisonTimer = self.poisonTimer - deltaTime
 
     if self.poisonTimer <= 0 then

@@ -176,7 +176,7 @@ local RoomGenerator  = {
     randomSeed = -1
 }
 RoomGenerator.__index = RoomGenerator
-function RoomGenerator:new(randomSeed, roomLevel)
+function RoomGenerator:new(roomLevel)
     local roomGenerator = {}
     setmetatable(roomGenerator, RoomGenerator)
 
@@ -206,13 +206,18 @@ function RoomGenerator:new(randomSeed, roomLevel)
 
     roomGenerator.challengeRoomCleared = false
 
-    roomGenerator.randomSeed = randomSeed
+    roomGenerator.randomSeed = os.time()
+    DCEI.LogMessage("Random Seed Room Generation: " .. roomGenerator.randomSeed)
+    
+    math.randomseed(roomGenerator.randomSeed) -- Use the Time Seed only for generation
     
     roomGenerator:GenerateRoomBase(roomLevel)
     roomGenerator:SaveRoomStructure()
     roomGenerator:PrintRooms()
     roomGenerator:PrintRoomVisitedMatrix()
     roomGenerator:PrintSpawnAndExit()
+
+    math.randomseed(os.time())
 
     return roomGenerator
 end
@@ -246,7 +251,7 @@ function RoomGenerator:SaveRoomStructure()
 
         challengeRoomCleared = self.challengeRoomCleared,
 
-        randomSeed = self.randomSeed
+        randomSeed = self.randomSeed -- Save it incase it is required later on...
     })
 end
 function RoomGenerator:LoadRoomStructure()
@@ -1476,9 +1481,6 @@ function RoomEnemies:newChallengeRoom(player, roomGenerator, skillDisplay, roomL
     return roomEnemies
 end
 function RoomEnemies:SpawnChallengeRoomEnemies(playerPosition, roomLevel)
-    local lastActiveSeed = self.roomGenerator:GetRandomSeed()
-    math.randomseed(os.time())
-
     local enemySet
 
     if roomLevel == 1 then
@@ -1512,8 +1514,6 @@ function RoomEnemies:SpawnChallengeRoomEnemies(playerPosition, roomLevel)
 
         table.insert(self.enemies, enemy)
     end
-
-    math.randomseed(lastActiveSeed)
 end
 function RoomEnemies:SpawnBossEnemy()
     local position = self:GetRandomValidPointInRoom()
@@ -1522,9 +1522,6 @@ function RoomEnemies:SpawnBossEnemy()
 end
 function RoomEnemies:SpawnEnemies(player, roomLevel)
     DCEI.LogMessage("Room Level: " .. roomLevel)
-
-    local lastActiveSeed = self.roomGenerator:GetRandomSeed()
-    math.randomseed(os.time())
 
     local enemySet
 
@@ -1560,8 +1557,6 @@ function RoomEnemies:SpawnEnemies(player, roomLevel)
 
         table.insert(self.enemies, enemy)
     end
-
-    math.randomseed(lastActiveSeed)
 end
 function RoomEnemies:UpdateEnemies(deltaTime, player)
     local playerPosition = DCEI.GetUnitPosition2D(player)
@@ -1730,7 +1725,7 @@ function RoomEnemies:ClearEnemies()
 end
 function RoomEnemies:ForceStunEnemies(stunTimer, playerPosition, stunDistance)
     for _, enemy in ipairs(self.enemies) do
-        if enemy:IsActive() then
+        if enemy:IsActive() and ArcadeCore.UnitIsAlive(enemy:GetMainUnit()) then
             local enemyPosition = DCEI.GetUnitPosition2D(enemy:GetMainUnit())
             local distance = mod.VectorDistance(enemyPosition, playerPosition)
 
