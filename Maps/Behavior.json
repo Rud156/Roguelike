@@ -334,6 +334,14 @@
         },
         "_PlayerCharacter_Deflection": {
             "duration": 0.01
+        },
+        "_Enemy_Attack_Reduction": {
+            "behaviorTagArray": [
+                {
+                    "name": "gt_enemy_attack_red",
+                    "count": 1
+                }
+            ]
         }
     }
 }

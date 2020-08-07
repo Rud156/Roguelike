@@ -157,6 +157,11 @@
                         "namedExpression": {
                             "name": "_Collectible_CatalystPotion_Target"
                         }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Enemy_Attack_Reduction"
+                        }
                     }
                 ]
             }
@@ -179,6 +184,11 @@
                     {
                         "namedExpression": {
                             "name": "_Collectible_CatalystPotion_Target"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Enemy_Attack_Reduction"
                         }
                     }
                 ]
@@ -373,7 +383,7 @@
         "_Launch_Enemy_GoblinMiner_RocketBarrage": {
             "launchMissile": {
                 "targetType": 0,
-                "missileUnit": "_Missile_Enemy_GoblinSiegeTower",
+                "missileUnit": "_Missile_Enemy_GoblinMiner_RocketBarrage",
                 "effect": "_Search_Enemy_GoblinMiner_RocketBarrage",
                 "launchLocation": 2,
                 "impactLocation": 2,
@@ -1129,6 +1139,11 @@
                     {
                         "namedExpression": {
                             "name": "_Collectible_CatalystPotion_Target"
+                        }
+                    },
+                    {
+                        "namedExpression": {
+                            "name": "_Enemy_Attack_Reduction"
                         }
                     }
                 ]

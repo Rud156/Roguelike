@@ -294,6 +294,33 @@
                     }
                 ]
             }
+        },
+        "_Enemy_Attack_Reduction": {
+            "add": {
+                "expressions": [
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "unit": 2,
+                                            "tagName": "gt_enemy_attack_red"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "damageAmount": {
+                                            "multiplier": -0.7
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     }
 }

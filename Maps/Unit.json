@@ -226,7 +226,8 @@
                     "_Enemy_Goblin_Attack"
                 ],
                 "behaviorList": [
-                    "_Enemy_CanHaveKnockback"
+                    "_Enemy_CanHaveKnockback",
+                    "_Enemy_Attack_Reduction"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -256,7 +257,8 @@
                     "_Enemy_GoblinChef_Attack"
                 ],
                 "behaviorList": [
-                    "_Enemy_CanHaveKnockback"
+                    "_Enemy_CanHaveKnockback",
+                    "_Enemy_Attack_Reduction"
                 ]
             }
         },
@@ -288,6 +290,9 @@
                     "_Enemy_GoblinMiner_Drill",
                     "_Enemy_GoblinMiner_RocketBarrage",
                     "_Enemy_GoblinMiner_Leap"
+                ],
+                "behaviorList": [
+                    "_Enemy_Attack_Reduction"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -334,7 +339,8 @@
                     "_Enemy_GoblinSapper_Attack"
                 ],
                 "behaviorList": [
-                    "_Enemy_CanHaveKnockback"
+                    "_Enemy_CanHaveKnockback",
+                    "_Enemy_Attack_Reduction"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -366,6 +372,9 @@
             "references": {
                 "abilityList": [
                     "_Enemy_Hobgoblin_Attack"
+                ],
+                "behaviorList": [
+                    "_Enemy_Attack_Reduction"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -398,7 +407,8 @@
                     "_Enemy_Ooze_Attack"
                 ],
                 "behaviorList": [
-                    "_Enemy_CanHaveKnockback"
+                    "_Enemy_CanHaveKnockback",
+                    "_Enemy_Attack_Reduction"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
@@ -860,6 +870,9 @@
             "references": {
                 "abilityList": [
                     "_Enemy_GoblinSiegeTower_Attack"
+                ],
+                "behaviorList": [
+                    "_Enemy_Attack_Reduction"
                 ]
             },
             "displayName": "data/GameData/unit/_CUnit/display_name"
