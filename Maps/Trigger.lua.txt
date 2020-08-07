@@ -155,8 +155,6 @@ local DOOR_OPEN_ANIM = "_Room_Exit_Open"
 local DOOR_CLOSE_ANIM = "_Room_Exit_Close"
 local ROOM_EXIT_DOOR = "_Room_Exit"
 local ROOM_NAME = "RoomName"
-local ROOM_LEVEL_STRING = "RoomLevel"
-local ROOM_LEVEL_MAX = 3
 
 -- Coins
 local COIN_COLLECTION_TIME = 0.75
@@ -228,9 +226,7 @@ local m_coinTimer = 0
 
 -- #region LifeCycle Functions
 function mod.Start(spawnPositionLeft, spawnPositionRight, spawnPositionTop, spawnPositionBottom)
-    local randomSeed = os.time()
-    DCEI.LogMessage("Random Seed General: " .. randomSeed)
-    math.randomseed(randomSeed)
+    math.randomseed(os.time())
 
     m_leftSpawn = spawnPositionLeft
     m_rightSpawn = spawnPositionRight
@@ -784,7 +780,7 @@ function SpawnEnemiesAndCloseDoors()
     end
 
     if not m_isBeginningRoom and not m_roomGenerator:IsPlayerRoomCleared() then
-        if playerRow == exitRow and playerColumn == exitColumn and m_roomLevel == ROOM_LEVEL_MAX then
+        if playerRow == exitRow and playerColumn == exitColumn and m_roomLevel == RoomMod.RoomLevelMax then
             m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_skillDisplay, m_roomLevel, true)
         else
             m_roomEnemies = RoomEnemies:new(m_player:GetPlayerUnit(), m_roomGenerator, m_skillDisplay, m_roomLevel, false)
@@ -982,7 +978,7 @@ function UpdateCollisionWithExitDoor()
     m_roomItemDrops:ClearData() -- Clear the data for the older dungeon
 
     m_roomLevel = m_roomLevel + 1
-    if m_roomLevel > ROOM_LEVEL_MAX then
+    if m_roomLevel > RoomMod.RoomLevelMax then
         UpdatePlayerBaseGold()
 
         m_roomGenerator:ClearSaveData()

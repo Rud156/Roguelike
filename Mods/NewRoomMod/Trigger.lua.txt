@@ -65,7 +65,8 @@ local SECRET_ROOMS = {
     "SR_T_0"
 }
 
-local BOSS_ROOM_LEVEL = 3
+local ROOM_LEVEL_MAX = 5
+local BOSS_ROOM_LEVEL = 5
 
 local LEFT = "L"
 local RIGHT = "R"
@@ -107,6 +108,22 @@ local LEVEL_3_ENEMY_SETS = {
     { 1, 1, 2, 2, 4, 4 },
 }
 
+local LEVEL_4_ENEMY_SETS = {
+    { 0, 0, 0, 3, 3, 1 },
+    { 0, 0, 0, 1, 2, 2 },
+    { 0, 0, 2, 2, 2, 2 },
+    { 3, 3, 3, 4, 4, 4 },
+    { 1, 1, 2, 2, 4, 4 },
+}
+
+local LEVEL_5_ENEMY_SETS = {
+    { 0, 0, 0, 3, 3, 1 },
+    { 0, 0, 0, 1, 2, 2 },
+    { 0, 0, 2, 2, 2, 2 },
+    { 3, 3, 3, 4, 4, 4 },
+    { 1, 1, 2, 2, 4, 4 },
+}
+
 local CHALLEGE_LEVEL_1_ENEMY_SETS = {
     { 2, 2, 0 },
     { 3, 3, 3, 4 },
@@ -124,6 +141,22 @@ local CHALLEGE_LEVEL_2_ENEMY_SETS = {
 }
 
 local CHALLEGE_LEVEL_3_ENEMY_SETS = {
+    { 2, 2, 0 },
+    { 3, 3, 3, 4 },
+    { 2, 2, 2, 2 },
+    { 0, 0, 0 },
+    { 3, 0, 0 }
+}
+
+local CHALLEGE_LEVEL_4_ENEMY_SETS = {
+    { 2, 2, 0 },
+    { 3, 3, 3, 4 },
+    { 2, 2, 2, 2 },
+    { 0, 0, 0 },
+    { 3, 0, 0 }
+}
+
+local CHALLEGE_LEVEL_5_ENEMY_SETS = {
     { 2, 2, 0 },
     { 3, 3, 3, 4 },
     { 2, 2, 2, 2 },
@@ -1466,6 +1499,8 @@ function RoomEnemies:new(player, roomGenerator, skillDisplay, roomLevel, spawnBo
     return roomEnemies
 end
 function RoomEnemies:newChallengeRoom(player, roomGenerator, skillDisplay, roomLevel)
+    math.randomseed(os.time())
+
     local roomEnemies = {}
     setmetatable(roomEnemies, RoomEnemies)
 
@@ -1481,14 +1516,19 @@ function RoomEnemies:newChallengeRoom(player, roomGenerator, skillDisplay, roomL
     return roomEnemies
 end
 function RoomEnemies:SpawnChallengeRoomEnemies(playerPosition, roomLevel)
+    
     local enemySet
 
     if roomLevel == 1 then
         enemySet = CHALLEGE_LEVEL_1_ENEMY_SETS
     elseif roomLevel == 2 then
         enemySet = CHALLEGE_LEVEL_2_ENEMY_SETS
-    else
+    elseif roomLevel == 3 then
         enemySet = CHALLEGE_LEVEL_3_ENEMY_SETS
+    elseif roomLevel == 4 then
+        enemySet = CHALLEGE_LEVEL_4_ENEMY_SETS
+    else
+        enemySet = CHALLEGE_LEVEL_5_ENEMY_SETS
     end
 
     local randomEnemySet = math.random(1, #enemySet)
@@ -1521,6 +1561,7 @@ function RoomEnemies:SpawnBossEnemy()
     table.insert(self.enemies, enemy)
 end
 function RoomEnemies:SpawnEnemies(player, roomLevel)
+    math.randomseed(os.time())
     DCEI.LogMessage("Room Level: " .. roomLevel)
 
     local enemySet
@@ -1529,8 +1570,12 @@ function RoomEnemies:SpawnEnemies(player, roomLevel)
         enemySet = LEVEL_1_ENEMY_SETS
     elseif roomLevel == 2 then
         enemySet = LEVEL_2_ENEMY_SETS
-    else
+    elseif roomLevel == 3 then
         enemySet = LEVEL_3_ENEMY_SETS
+    elseif roomLevel == 4 then
+        enemySet = LEVEL_4_ENEMY_SETS
+    else
+        enemySet = LEVEL_5_ENEMY_SETS
     end
 
     local playerPosition = DCEI.GetUnitPosition2D(player)
@@ -2480,6 +2525,7 @@ mod.MiniMap = MiniMap
 mod.ItemDrops = ItemDrops
 
 mod.RoomSize = ROOM_SIZE
+mod.RoomLevelMax = ROOM_LEVEL_MAX
 
 mod.WalkableTextureId = WALKABLE_TEXTURE_ID
 
