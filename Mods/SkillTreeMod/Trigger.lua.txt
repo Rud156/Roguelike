@@ -10,21 +10,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item3_blue_01",
             skillName = "Robust I",
-            skillCost = 5,
+            skillCost = 25,
             skillDescription = "Increase Dwarf Smith’s max health by 25",
             value = 25
         },
         {
             skillImage = "icon_catalyst_main_item3_blue_02",
             skillName = "Robust II",
-            skillCost = 10,
+            skillCost = 50,
             skillDescription = "Increase Dwarf Smith’s max health by 50",
             value = 50
         },
         {
             skillImage = "icon_catalyst_main_item3_blue_03",
             skillName = "Robust III",
-            skillCost = 15,
+            skillCost = 100,
             skillDescription = "Increase Dwarf Smith’s max health by 100",
             value = 100
         }
@@ -33,28 +33,28 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item1_blue_01",
             skillName = "Invulnerability I",
-            skillCost = 5,
+            skillCost = 20,
             skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.1",
             value = 0.1
         },
         {
             skillImage = "icon_catalyst_main_item1_blue_02",
             skillName = "Invulnerability II",
-            skillCost = 10,
+            skillCost = 40,
             skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.2",
             value = 0.2
         },
         {
             skillImage = "icon_catalyst_main_item1_blue_03",
             skillName = "Invulnerability I",
-            skillCost = 15,
+            skillCost = 60,
             skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.3",
             value = 0.3
         },
         {
             skillImage = "icon_catalyst_main_item1_blue_04",
             skillName = "Invulnerability IV",
-            skillCost = 20,
+            skillCost = 100,
             skillDescription = "Increase the amount of time Dwarf Smith does not take additional damage after being hit by 0.5",
             value = 0.5
         }
@@ -63,21 +63,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item4_blue_02",
             skillName = "Surefooted I",
-            skillCost = 5,
+            skillCost = 30,
             skillDescription = "Decrease the duration of any movement impairing effects by 10%",
             value = 0.10
         },
         {
             skillImage = "icon_catalyst_main_item4_blue_03",
             skillName = "Surefooted II",
-            skillCost = 10,
+            skillCost = 40,
             skillDescription = "Decrease the duration of any movement impairing effects by 20%",
             value = 0.20
         },
         {
             skillImage = "icon_catalyst_main_item4_blue_04",
             skillName = "Surefooted III",
-            skillCost = 15,
+            skillCost = 50,
             skillDescription = "Decrease the duration of any movement impairing effects by 30%",
             value = 0.30
         }
@@ -85,14 +85,14 @@ local SKILL_TREE = {
     Arsenal = {
         skillImage = "icon_enhance_frosttower_shatter",
         skillName = "Arsenal",
-        skillCost = 20,
+        skillCost = 100,
         skillDescription = "Able to pick a Perk at the beginning of a run",
         value = 0
     },
     Preplan = {
         skillImage = "icon_enhance_iceman_yodel_taunt",
         skillName = "Preplan",
-        skillCost = 20,
+        skillCost = 50,
         skillDescription = "Level exit room will be revealed on your mini map",
         value = 0
     },
@@ -100,21 +100,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item3_green_01",
             skillName = "Quick Recovery I",
-            skillCost = 5,
+            skillCost = 25,
             skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 15%",
             value = 0.15
         },
         {
             skillImage = "icon_catalyst_main_item3_green_02",
             skillName = "Quick Recovery II",
-            skillCost = 10,
+            skillCost = 50,
             skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 30%",
             value = 0.3
         },
         {
             skillImage = "icon_catalyst_main_item3_green_03",
             skillName = "Quick Recovery III",
-            skillCost = 15,
+            skillCost = 100,
             skillDescription = "Decrease Dwarf Smith’s stamina regeneration cooldown by 50%",
             value = 0.5
         }
@@ -123,21 +123,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item1_green_02",
             skillName = "Endurance I",
-            skillCost = 5,
+            skillCost = 50,
             skillDescription = "Increase Dwarf Smith’s stamina by 1",
             value = 1
         },
         {
             skillImage = "icon_catalyst_main_item1_green_03",
             skillName = "Endurance II",
-            skillCost = 10,
+            skillCost = 100,
             skillDescription = "Increase Dwarf Smith’s stamina by 2",
             value = 2
         },
         {
             skillImage = "icon_catalyst_main_item1_green_04",
             skillName = "Endurance III",
-            skillCost = 15,
+            skillCost = 150,
             skillDescription = "Increase Dwarf Smith’s stamina by 3",
             value = 3
         }
@@ -145,7 +145,7 @@ local SKILL_TREE = {
     BunnyHop = {
         skillImage = "icon_enhance_druidtower_wilds_shape",
         skillName = "Bunny Hop",
-        skillCost = 20,
+        skillCost = 50,
         skillDescription = "Increase Dwarf Smith’s jump distance by 30%",
         value = 0.3
     },
@@ -153,21 +153,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item4_green_02",
             skillName = "Improved Slam I",
-            skillCost = 5,
+            skillCost = 50,
             skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 10%",
             value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_I"
         },
         {
             skillImage = "icon_catalyst_main_item4_green_03",
             skillName = "Improved Slam II",
-            skillCost = 10,
+            skillCost = 75,
             skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 20%",
             value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_II"
         },
         {
             skillImage = "icon_catalyst_main_item4_green_04",
             skillName = "Improved Slam III",
-            skillCost = 15,
+            skillCost = 100,
             skillDescription = "Increase Dwarf Smith’s heavy attack impact radius by 30%",
             value = "_PlayerCharacter_Melee_HeavyAttack_ImprovedSlam_III"
         }
@@ -175,7 +175,7 @@ local SKILL_TREE = {
     ExtraSpace = {
         skillImage = "icon_ingame_towerslot_druidtower",
         skillName = "Extra Space",
-        skillCost = 20,
+        skillCost = 100,
         skillDescription = "Increase Inventory Slot by 1",
         value = 1
     },
@@ -183,21 +183,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item3_orange_01",
             skillName = "War Machine I",
-            skillCost = 5,
+            skillCost = 50,
             skillDescription = "Increase Dwarf Smith’s light attack damage by 2",
             value = "_PlayerCharacter_WarMachine_I"
         },
         {
             skillImage = "icon_catalyst_main_item3_orange_02",
             skillName = "War Machine II",
-            skillCost = 10,
+            skillCost = 75,
             skillDescription = "Increase Dwarf Smith’s light attack damage by 5",
             value = "_PlayerCharacter_WarMachine_II"
         },
         {
             skillImage = "icon_catalyst_main_item3_orange_03",
             skillName = "War Machine III",
-            skillCost = 15,
+            skillCost = 100,
             skillDescription = "Increase Dwarf Smith’s light attack damage by 10",
             value =  "_PlayerCharacter_WarMachine_III"
         }
@@ -206,21 +206,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item1_orange_02",
             skillName = "Strength I",
-            skillCost = 5,
+            skillCost = 50,
             skillDescription = "Increase Dwarf Smith’s heavy attack damage by 1",
             value = "_PlayerCharacter_Strength_I"
         },
         {
             skillImage = "icon_catalyst_main_item1_orange_03",
             skillName = "Strength II",
-            skillCost = 10,
+            skillCost = 75,
             skillDescription = "Increase Dwarf Smith’s heavy attack damage by 2",
             value = "_PlayerCharacter_Strength_II"
         },
         {
             skillImage = "icon_catalyst_main_item1_orange_04",
             skillName = "Strength III",
-            skillCost = 15,
+            skillCost = 100,
             skillDescription = "Increase Dwarf Smith’s heavy attack damage by 3",
             value = "_PlayerCharacter_Strength_III"
         }
@@ -228,7 +228,7 @@ local SKILL_TREE = {
     Cruelty = {
         skillImage = "icon_enhance_dragoonbarracks_crush",
         skillName = "Cruelty",
-        skillCost = 20,
+        skillCost = 50,
         skillDescription = "Dwarf Smith will have 10% chance to critically strike enemies, using light attack",
         value = 0.1
     },
@@ -236,21 +236,21 @@ local SKILL_TREE = {
         {
             skillImage = "icon_catalyst_main_item4_orange_02",
             skillName = "Lucky Strike I",
-            skillCost = 5,
+            skillCost = 50,
             skillDescription = "Increase Dwarf Smith’s critical strike chance by 2%",
             value = 0.02
         },
         {
             skillImage = "icon_catalyst_main_item4_orange_03",
             skillName = "Lucky Strike II",
-            skillCost = 10,
+            skillCost = 75,
             skillDescription = "Increase Dwarf Smith’s critical strike chance by 4%",
             value = 0.04
         },
         {
             skillImage = "icon_catalyst_main_item4_orange_04",
             skillName = "Lucky Strike III",
-            skillCost = 15,
+            skillCost = 100,
             skillDescription = "Increase Dwarf Smith’s critical strike chance by 6%",
             value = 0.06
         }
@@ -265,7 +265,7 @@ local SKILL_TREE = {
     HeavyBlow = {
         skillImage = "icon_enhance_cannontower_concussiveblast",
         skillName = "Heavy Blow",
-        skillCost = 20,
+        skillCost = 100,
         skillDescription = "Dwarf Smith’s heavy attack now can stun BOSS enemy",
         value = 3
     },
