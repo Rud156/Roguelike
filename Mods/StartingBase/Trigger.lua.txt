@@ -12,9 +12,12 @@ function ValidateAndLoadSaveData()
     if savedRoomType ~= nil then
         local roomPath = BaseRoomMod.GetRoomPath(savedRoomType)
         DCEI.PlayLevel(roomPath, savedRoomType)
+        return true
     else
         BaseRoomGenerator:ClearSaveData() -- If nothing exits reload a fresh game
     end
+
+    return false
 end
 
 DCEI.TriggerAddTimerEventElapsed(
@@ -23,8 +26,12 @@ DCEI.TriggerAddTimerEventElapsed(
         local spawnPosition = DCEI.GetUnitPosition2D(spawnPoint)
         DCEI.RemoveUnit(spawnPoint)
 
-        ValidateAndLoadSaveData()
-        MainMap.Start(spawnPosition, nil, nil, nil)
+        local levelLoading = ValidateAndLoadSaveData()
+        if not levelLoading then
+            MainMap.Start(spawnPosition, nil, nil, nil)
+        else
+            DCEI.LogMessage("Already Loading Level")
+        end
     end,
     0
 )
