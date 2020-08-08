@@ -1484,10 +1484,11 @@ function HandleInventoryUnitClicked(unit, unitName)
 
     local behaviourStack = DCEI.UnitBehaviorStackCount(unit, CollectibleDropped)
     local usedGold = false
+    local itemCost
 
     if behaviourStack == 0 then
         local playerGold = m_player:GetPlayerGold()
-        local itemCost = InventoryCollectibles[unitName].itemCost
+        itemCost = InventoryCollectibles[unitName].itemCost
 
         -- Old Customer
         if m_perkDisplay:HasPerk(PerksMod.PerkNames.OldCustomer) then
@@ -1503,12 +1504,7 @@ function HandleInventoryUnitClicked(unit, unitName)
             return
         end
 
-        local row = m_roomGenerator.currentPlayerRow
-        local column = m_roomGenerator.currentPlayerColumn
-
-        m_roomGenerator:MarkMerchantItemAsBought(row, column, unitName)
         usedGold = true
-        m_player:UseGold(itemCost)
     end
 
     local success = m_inventory:CheckAndAddItemToSlot(unitName)
@@ -1528,6 +1524,13 @@ function HandleInventoryUnitClicked(unit, unitName)
             end
 
             m_roomItemDrops:RemoveItemFromList(unitName, unitPosition.x, unitPosition.y, roomName, playerRow, playerColumn)
+
+        else
+            local row = m_roomGenerator.currentPlayerRow
+            local column = m_roomGenerator.currentPlayerColumn
+
+            m_roomGenerator:MarkMerchantItemAsBought(row, column, unitName)
+            m_player:UseGold(itemCost)
         end
 
         DCEI.RemoveUnit(unit)
