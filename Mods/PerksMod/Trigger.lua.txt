@@ -443,9 +443,9 @@ function PerkDisplay:DisplayPerks(player)
     self.player:HidePlayerUI()
     
     DCEI.HideJoystick(0)
-    -- for i = 0, 2 do
-    --     DCEI.HideJoystickButton(i)
-    -- end
+    for i = 0, 2 do
+        DCEI.HideJoystickButton(i)
+    end
 end
 function PerkDisplay:HidePerks()
     DCEI.SetActive(self.mainFrame, false)
@@ -455,9 +455,9 @@ function PerkDisplay:HidePerks()
         self.player = nil
     end
     DCEI.ShowJoystick(0)
-    -- for i = 0, 2 do
-    --     DCEI.ShowJoystickButton(i)
-    -- end
+    for i = 0, 2 do
+        DCEI.ShowJoystickButton(i)
+    end
 end
 function PerkDisplay:EnableButtons()
     for _, button in ipairs(self.topLayerButtons) do

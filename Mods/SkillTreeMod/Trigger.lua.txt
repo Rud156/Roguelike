@@ -925,9 +925,9 @@ function SkillDisplay:ShowSkillTree(player)
 
     DCEI.HideJoystick(0)
     DCEI.HideJoystick(0)
-    -- for i = 0, 2 do
-    --     DCEI.HideJoystickButton(i)
-    -- end
+    for i = 0, 2 do
+        DCEI.HideJoystickButton(i)
+    end
 end
 function SkillDisplay:Hide()
     DCEI.SetActive(self.leftSideStack, false)
@@ -941,9 +941,9 @@ function SkillDisplay:Hide()
     end
     
     DCEI.ShowJoystick(0)
-    -- for i = 0, 2 do
-    --     DCEI.ShowJoystickButton(i)
-    -- end
+    for i = 0, 2 do
+        DCEI.ShowJoystickButton(i)
+    end
 end
 function SkillDisplay:HandleUnlockButtonClicked(skillName)
     local goldAmount = self.player:GetPlayerGold()
