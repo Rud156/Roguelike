@@ -1596,6 +1596,11 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
         return
     end
 
+    if itemName == "" or itemName == nil then
+        DCEI.LogMessage("Empty Inventory Slot")
+        return
+    end
+
     DCEI.LogMessage("Selected Item: " .. itemName)
 
     if itemName == InventoryCollectibleNames.HealthPotion then
@@ -1667,6 +1672,10 @@ function HandleInventorySlotClicked(itemName, inventorySlot)
 end
 
 function DropInventoryItemToWorld(itemName)
+    if itemName == "" or itemName == nil then
+        return
+    end
+
     local playerPosition = DCEI.GetUnitPosition2D(m_player:GetPlayerUnit())
     local item = DCEI.CreateUnit(1, 1, itemName, playerPosition.x, playerPosition.y)
     DCEI.ApplyBehavior(item, CollectibleDropped)

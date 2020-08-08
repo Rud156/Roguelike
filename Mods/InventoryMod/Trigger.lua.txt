@@ -138,7 +138,7 @@ function InventorySlot:new(emptyItemImage, backgroundImage, uiParent, slotClicke
     inventory.emptyItemImage = emptyItemImage
     
     inventory.itemType = -1
-    inventory.itemName = itemName
+    inventory.itemName = ""
     inventory.itemDescription = ""
 
     inventory.stackability = -1
