@@ -6,7 +6,7 @@ local SaveMod = GameModules["Mods/SaveMod"]
 local BaseRoomGenerator = BaseRoomMod.RoomGenerator
 
 function ValidateAndLoadSaveData()
-    SaveMod.ClearAllData()
+    -- SaveMod.ClearAllData()
 
     local savedRoomType = DCEI.Save.Get(MainMap.RoomName)
     if savedRoomType ~= nil then
